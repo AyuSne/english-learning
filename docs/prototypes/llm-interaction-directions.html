@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM 学习界面 · 原型</title>
+<!--
+  原型：回答“和 LLM 交流的界面长什么样”。
+  三个结构不同的方向，?variant=A|B|C 切换，底部浮条或 ←/→ 轮换。用完即弃。
+  A 抽屉   — 阅读页右侧滑出，最轻，不离开文章
+  B 学习台 — 全屏三栏：上下文 / 指令与结果 / 版本与已保存
+  C 浮层   — 贴着选中词浮出的小卡，边读边问
+  已定的结构：上下文面板在输入上方、版本式结果卡、继续生成、保存到词条或文章、错误分类。
+-->
+<style>
+  :root { --paper:#FBFAF3; --panel:#FFFEF9; --ink:#1A1A17; --muted:#6E6A5E; --rule:#E6E0D0; --accent:#8F5A1A; --blue:#2F5FA8; --hl:#F2E4BE; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, "Microsoft YaHei UI", sans-serif;
+    -webkit-font-smoothing: antialiased; min-height: 100vh;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .serif { font-family: "Source Serif 4", Sitka, Georgia, "Songti SC", serif; }
+
+  /* 底部切换条 */
+  .bar-switch { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 2px; padding: 5px 6px; background: #101114; color: #fff;
+    border-radius: 999px; box-shadow: 0 8px 26px rgba(0,0,0,.28); z-index: 90; font-size: 12.5px; }
+  .bar-switch button { width: 30px; height: 28px; border-radius: 999px; color: #cfd2d8; }
+  .bar-switch button:hover { background: #24262c; color: #fff; }
+  .bar-switch .label { padding: 0 10px; white-space: nowrap; }
+  .bar-switch .label b { font-weight: 600; }
+  .badge { position: fixed; left: 16px; bottom: 18px; z-index: 80; font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: rgba(0,0,0,.55); color: #fff; }
+  .toast { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); background: #101114; color: #fff;
+    font-size: 13px; padding: 8px 14px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .18s; z-index: 95; }
+  .toast.on { opacity: 1; }
+
+  /* 共用控件 */
+  .label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  textarea.instr { width: 100%; border: 1px solid var(--rule); border-radius: 8px; background: transparent; color: inherit;
+    font: inherit; font-size: 13.5px; line-height: 1.65; padding: 10px 12px; resize: vertical; min-height: 66px; }
+  textarea.instr:focus { outline: 2px solid rgba(143,90,26,.25); outline-offset: 1px; }
+  .presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .presets button { font-size: 11.5px; color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 3px 9px; }
+  .presets button:hover { color: var(--ink); border-color: #CFC6B2; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { font-size: 11.5px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); }
+  .chip.on { color: var(--ink); border-color: #C9BFA9; background: #F7F1E2; }
+  .meta { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); padding: 8px 0; border-top: 1px dashed var(--rule); }
+  .btn { font-size: 13px; padding: 8px 14px; border-radius: 7px; border: 1px solid var(--rule); color: var(--ink); }
+  .btn:hover { background: #F7F1E2; }
+  .btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.primary:hover { background: #333; }
+  .btn.stop { border-color: #B4553F; color: #B4553F; }
+  .result { font-size: 14.5px; line-height: 1.75; }
+  .result p { margin: 0 0 .7em; }
+  .result b { font-weight: 600; }
+  .ver { display: flex; gap: 6px; align-items: center; }
+  .ver button { font-size: 11.5px; padding: 2px 9px; border: 1px solid var(--rule); border-radius: 999px; color: var(--muted); }
+  .ver button[aria-selected="true"] { color: var(--ink); border-color: #C9BFA9; background: #F7F1E2; }
+  .saved-tag { font-size: 11px; color: var(--accent); border: 1px solid rgba(143,90,26,.35); border-radius: 4px; padding: 1px 6px; }
+  .notice { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; line-height: 1.6; color: #9B3B2A;
+    background: #FBEEE9; border: 1px solid #EBCFC5; border-radius: 8px; padding: 9px 11px; }
+  .notice button { color: #9B3B2A; text-decoration: underline; font-size: 12.5px; }
+  .caret { display: inline-block; width: 7px; height: 1.05em; background: var(--accent); vertical-align: -2px; animation: blink .9s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* 阅读页背景（三个方向共用，只作场景） */
+  .reader { max-width: 620px; margin: 0 auto; padding: 56px 24px 160px; }
+  .reader .crumb { font-size: 12px; color: var(--muted); letter-spacing: .05em; margin-bottom: 26px; }
+  .reader p { font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 19px; line-height: 1.62; margin: 0 0 1.1em; }
+  .reader .letter { font-size: 12px; color: var(--muted); margin-right: 10px; }
+  .mark { color: var(--accent); border-bottom: 1px dotted currentColor; cursor: pointer; }
+  .mark.sel { background: var(--hl); color: var(--ink); border-bottom: 0; }
+
+  /* ---------- A 抽屉 ---------- */
+  .a-shell { display: grid; grid-template-columns: minmax(0,1fr) 430px; min-height: 100vh; }
+  .a-drawer { background: var(--panel); border-left: 1px solid var(--rule); padding: 20px 22px 90px; overflow: auto; height: 100vh; position: sticky; top: 0; }
+  .a-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+  .a-head h2 { font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 24px; margin: 0; font-weight: 600; }
+  .a-head .count { font-size: 11.5px; color: var(--muted); }
+  .a-section { margin-bottom: 18px; }
+  .a-actions { display: flex; gap: 8px; align-items: center; margin: 14px 0 18px; }
+  .a-result-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .a-save { position: sticky; bottom: 0; background: var(--panel); padding-top: 12px; border-top: 1px solid var(--rule); display: flex; gap: 8px; }
+
+  /* ---------- B 学习台 ---------- */
+  .b-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 26px; border-bottom: 1px solid var(--rule); }
+  .b-top h1 { font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 22px; margin: 0; font-weight: 600; }
+  .b-top .crumb { font-size: 12px; color: var(--muted); }
+  .b-grid { display: grid; grid-template-columns: 250px minmax(0,1fr) 290px; gap: 0; height: calc(100vh - 69px); }
+  .b-col { padding: 22px 24px 90px; overflow: auto; }
+  .b-col + .b-col { border-left: 1px solid var(--rule); }
+  .b-left h3, .b-right h3 { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .ctx-item { display: flex; gap: 9px; align-items: flex-start; padding: 9px 0; border-bottom: 1px dashed var(--rule); font-size: 13px; line-height: 1.55; }
+  .ctx-item input { margin-top: 3px; accent-color: var(--accent); }
+  .ctx-item small { display: block; color: var(--muted); font-size: 11.5px; }
+  .b-mid .result { font-size: 15px; }
+  .hist { border: 1px solid var(--rule); border-radius: 9px; padding: 12px; margin-bottom: 10px; font-size: 12.5px; line-height: 1.6; }
+  .hist .h { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+
+  /* ---------- C 浮层 ---------- */
+  .c-wrap { position: relative; min-height: 100vh; }
+  .c-pop { position: absolute; width: 430px; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
+    box-shadow: 0 18px 50px rgba(40,32,20,.16); padding: 16px 18px; z-index: 30; }
+  .c-pop::before { content: ""; position: absolute; top: 52px; left: -7px; width: 12px; height: 12px; background: var(--panel);
+    border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule); transform: rotate(45deg); }
+  .c-pop::before { top: 84px; }
+  .c-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .c-head .w { font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 19px; }
+  .c-compact textarea.instr { min-height: 54px; font-size: 13px; }
+  .c-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .c-result { margin-top: 12px; max-height: 240px; overflow: auto; padding-top: 12px; border-top: 1px dashed var(--rule); }
+  .c-result .result { font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="badge">原型 · LLM 学习界面</div>
+<div class="toast" id="toast"></div>
+<div class="bar-switch">
+  <button id="prev" aria-label="上一个方向">◀</button>
+  <span class="label"><b id="vkey">A</b> · <span id="vname">抽屉</span></span>
+  <button id="next" aria-label="下一个方向">▶</button>
+</div>
+
+<script>
+const VARIANTS = [
+  { key: "A", name: "抽屉" },
+  { key: "B", name: "学习台" },
+  { key: "C", name: "浮层" },
+];
+
+const INSTR = "解释这个词在这篇里的意思，给两个例句，再给一个容易混的近义词辨析。";
+const V2 = [
+  "<b>lament</b>（v.）悲叹、惋惜。文中鲁滨逊流落荒岛，本有理由抱怨，却把注意力放在还能感恩的事情上——lament 与 gratitude 正好构成对照。",
+  "例 1：She lamented the loss of a friend she had known for decades.<br>例 2：He lamented that no one had warned him in time.",
+  "近义辨析：lament 偏“为已发生的事悲叹”，常带遗憾；complain 只是“抱怨”，不一定有惋惜。",
+];
+const V1 = [
+  "<b>lament</b>（v.）悲叹、惋惜。鲁滨逊在荒岛上选择感恩而不是 lament。",
+  "例：He lamented the loss of a friend.",
+];
+const ARTICLE = {
+  crumb: "2023 年 6 月 · 第 1 套 · 长篇匹配",
+  paragraphs: [
+    ["A", "Gratitude may be more beneficial than we commonly suppose. One recent study asked participants to write a note of thanks to someone and then estimate how surprised and happy the recipient would feel — an impact that they consistently underestimated."],
+    ["B", "While this research into gratitude is relatively new, the principles involved are anything but. Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to <span class='mark' data-open='1'>lament</span>. But instead of giving in to despair, he makes a list of things for which he is grateful, including the fact that he is the sole survivor from the shipwreck."],
+    ["C", "Defoe’s masterpiece provides a portrait of gratitude in action that is as timely and relevant today as it has ever been. Simply put, for most of us, it is far more helpful to focus on the things in life for which we can express gratitude than those that incline us toward resentment and lamentation."],
+  ],
+};
+
+let state = { streaming: false, progress: 0, version: "v2", stopped: false, error: false, instr: INSTR };
+let timer = null;
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("on"), 1600);
+}
+
+function articleHTML() {
+  return `<div class="reader">
+    <div class="crumb">${ARTICLE.crumb}</div>
+    ${ARTICLE.paragraphs.map(([id, t]) => `<p><span class="letter">${id}</span>${t}</p>`).join("")}
+  </div>`;
+}
+
+function resultInner() {
+  const parts = state.version === "v2" ? V2 : V1;
+  const shown = state.progress > 0 ? parts.slice(0, state.progress) : [];
+  const body = shown.length
+    ? shown.map((p) => `<p>${p}</p>`).join("")
+    : `<p style="color:var(--muted)">还没有生成。写一句要求，点“生成”。</p>`;
+  const caret = state.streaming ? '<span class="caret"></span>' : "";
+  return body + caret;
+}
+function resultHTML() { return `<div class="result">${resultInner()}</div>`; }
+
+function errHTML() {
+  return `<div class="notice"><div>API Key 无效或已被删除，请更换后重试。<div style="margin-top:4px"><button data-act="toast" data-msg="打开设置 · 密钥">去改密钥</button></div></div></div>`;
+}
+
+/* ---------- A ---------- */
+function renderA() {
+  $("#app").innerHTML = `<div class="a-shell">
+    <div style="overflow:auto;height:100vh">${articleHTML()}</div>
+    <aside class="a-drawer">
+      <div class="a-head"><h2>lament</h2><span class="count">已收集 2 句 · 1 篇</span></div>
+      <div class="a-section">
+        <div class="label" style="margin-bottom:6px">学习指令</div>
+        <textarea class="instr" id="instr">${esc(state.instr)}</textarea>
+        <div class="presets">
+          <button data-act="preset" data-v="词义与用法">词义与用法</button>
+          <button data-act="preset" data-v="两个例句">两个例句</button>
+          <button data-act="preset" data-v="近义辨析">近义辨析</button>
+          <button data-act="preset" data-v="助记">助记</button>
+        </div>
+      </div>
+      <div class="a-section">
+        <div class="label" style="margin-bottom:6px">这次带上</div>
+        <div class="chips">
+          <span class="chip on">lament</span><span class="chip on">原句 2</span>
+          <span class="chip">段落 B</span><span class="chip">笔记 0</span>
+        </div>
+        <div class="meta"><span>2 条原句 · 约 260 字</span><span>OpenAI 兼容 · deepseek-chat</span></div>
+      </div>
+      <div class="a-actions">
+        <button class="btn primary" data-act="gen">生成</button>
+        <button class="btn stop" data-act="stop" style="display:${state.streaming ? "inline-block" : "none"}">停止</button>
+        <button class="btn" data-act="mockerr" style="margin-left:auto;color:var(--muted)">模拟失败</button>
+      </div>
+      ${state.error ? errHTML() : ""}
+      <div class="a-section">
+        <div class="a-result-head"><span class="label">结果</span>
+          <div class="ver"><button data-act="ver" data-v="v2" aria-selected="${state.version === "v2"}">v2</button><button data-act="ver" data-v="v1" aria-selected="${state.version === "v1"}">v1</button></div>
+        </div>
+        ${resultHTML()}
+      </div>
+      <div class="a-save">
+        <button class="btn primary" data-act="save">保存到词条</button>
+        <button class="btn" data-act="save-article">存为文章</button>
+        <button class="btn" data-act="gen" style="margin-left:auto">继续生成</button>
+      </div>
+    </aside>
+  </div>`;
+}
+
+/* ---------- B ---------- */
+function renderB() {
+  $("#app").innerHTML = `<div class="b-top">
+      <div><h1>学习 · lament</h1><div class="crumb">来自 2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B</div></div>
+      <div style="display:flex;gap:8px"><button class="btn" data-act="toast" data-msg="返回文章">返回文章</button></div>
+    </div>
+    <div class="b-grid">
+      <aside class="b-col b-left">
+        <h3>这次带上</h3>
+        <label class="ctx-item"><input type="checkbox" checked><span><b>lament</b><small>所选词 · 2 条原句</small></span></label>
+        <label class="ctx-item"><input type="checkbox" checked><span><b>原句 2 条</b><small>2023-06 s1 · 段 B / C</small></span></label>
+        <label class="ctx-item"><input type="checkbox"><span><b>段落 B 全文</b><small>约 150 字</small></span></label>
+        <label class="ctx-item"><input type="checkbox"><span><b>笔记</b><small>暂无</small></span></label>
+        <div class="meta"><span>合计约 260 字</span><span>1 个词</span></div>
+        <h3 style="margin-top:22px">已保存指令</h3>
+        <div class="ctx-item"><span><b>词义 + 例句</b><small>上次使用 10 分钟前</small></span></div>
+        <div class="ctx-item"><span><b>近义辨析</b><small>上次使用 2 天前</small></span></div>
+      </aside>
+      <section class="b-col b-mid">
+        <div class="label" style="margin-bottom:6px">学习指令</div>
+        <textarea class="instr" id="instr" style="min-height:80px">${esc(state.instr)}</textarea>
+        <div class="presets">
+          <button data-act="preset" data-v="词义与用法">词义与用法</button>
+          <button data-act="preset" data-v="两个例句">两个例句</button>
+          <button data-act="preset" data-v="近义辨析">近义辨析</button>
+          <button data-act="preset" data-v="生成文章">生成文章</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin:16px 0 6px">
+          <button class="btn primary" data-act="gen">生成</button>
+          <button class="btn stop" data-act="stop" style="display:${state.streaming ? "inline-block" : "none"}">停止</button>
+          <button class="btn" data-act="mockerr" style="margin-left:auto;color:var(--muted)">模拟失败</button>
+          <div class="ver" style="margin-left:10px"><button data-act="ver" data-v="v2" aria-selected="${state.version === "v2"}">v2</button><button data-act="ver" data-v="v1" aria-selected="${state.version === "v1"}">v1</button></div>
+        </div>
+        ${state.error ? errHTML() : ""}
+        <div style="margin-top:18px">${resultHTML()}</div>
+        <div style="display:flex;gap:8px;margin-top:22px;padding-top:16px;border-top:1px solid var(--rule)">
+          <button class="btn primary" data-act="save">保存到词条</button>
+          <button class="btn" data-act="save-article">存为文章</button>
+          <button class="btn" data-act="gen" style="margin-left:auto">继续生成</button>
+        </div>
+      </section>
+      <aside class="b-col b-right">
+        <h3>版本</h3>
+        <div class="hist"><div class="h"><span>v2 · 当前</span><span>刚刚</span></div>释义 + 两个例句 + 近义辨析</div>
+        <div class="hist"><div class="h"><span>v1</span><span>3 分钟前</span></div>只给了简释义</div>
+        <h3 style="margin-top:22px">已保存</h3>
+        <div class="hist"><div class="h"><span>释义</span><span>4 天前</span></div>“对处境感到悲叹、惋惜……”<br><span class="saved-tag">在词条页可编辑</span></div>
+      </aside>
+    </div>`;
+}
+
+/* ---------- C ---------- */
+function renderC() {
+  $("#app").innerHTML = `<div class="c-wrap">
+    ${articleHTML()}
+    <div class="c-pop" style="top:356px;left:calc(50% + 214px)">
+      <div class="c-head"><span class="w">lament</span><span style="font-size:11.5px;color:var(--muted)">2 句 · 1 篇</span></div>
+      <div class="c-compact">
+        <textarea class="instr" id="instr">${esc(state.instr)}</textarea>
+        <div class="presets">
+          <button data-act="preset" data-v="词义与用法">词义</button>
+          <button data-act="preset" data-v="两个例句">例句</button>
+          <button data-act="preset" data-v="近义辨析">辨析</button>
+        </div>
+        <div class="meta"><span>带上：lament · 原句 2 · 约 260 字</span><span>deepseek-chat</span></div>
+        <div class="c-actions">
+          <button class="btn primary" data-act="gen">生成</button>
+          <button class="btn stop" data-act="stop" style="display:${state.streaming ? "inline-block" : "none"}">停止</button>
+          <button class="btn" data-act="mockerr" style="margin-left:auto;color:var(--muted)">模拟失败</button>
+        </div>
+        ${state.error ? errHTML() : ""}
+        <div class="c-result">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="label">结果</span>
+            <div class="ver"><button data-act="ver" data-v="v2" aria-selected="${state.version === "v2"}">v2</button><button data-act="ver" data-v="v1" aria-selected="${state.version === "v1"}">v1</button></div>
+          </div>
+          ${resultHTML()}
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn" data-act="save" style="font-size:12px;padding:6px 10px">保存到词条</button>
+            <button class="btn" data-act="save-article" style="font-size:12px;padding:6px 10px">存为文章</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 行为 ---------- */
+function render() {
+  const key = new URLSearchParams(location.search).get("variant") || "A";
+  const v = VARIANTS.find((x) => x.key === key) || VARIANTS[0];
+  $("#vkey").textContent = v.key;
+  $("#vname").textContent = v.name;
+  if (v.key === "A") renderA();
+  if (v.key === "B") renderB();
+  if (v.key === "C") renderC();
+  document.title = `LLM 学习界面 · ${v.key} ${v.name}`;
+  document.querySelectorAll("[data-act]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const act = el.dataset.act;
+      if (act === "gen") generate();
+      else if (act === "stop") stopGen();
+      else if (act === "ver") { state.version = el.dataset.v; state.progress = 0; state.stopped = false; repaint(); }
+      else if (act === "preset") { state.instr = el.dataset.v; $("#instr").value = state.instr; }
+      else if (act === "save") toast("已保存到 lament 的学习内容（原型，不落盘）");
+      else if (act === "save-article") toast("已存为文章，标“AI 生成”（原型，不落盘）");
+      else if (act === "mockerr") { state.error = true; repaint(); }
+      else if (act === "toast") toast(el.dataset.msg);
+    });
+  });
+  const ta = document.querySelector("#instr");
+  if (ta) {
+    ta.value = state.instr;
+    ta.addEventListener("input", () => { state.instr = ta.value; });
+  }
+  document.querySelectorAll("[data-open]").forEach((el) => {
+    el.addEventListener("click", () => toast("打开 lament 的词条卡（原型）"));
+  });
+}
+
+function repaint() { render(); }
+
+function generate() {
+  clearInterval(timer);
+  state.error = false;
+  state.streaming = true;
+  state.stopped = false;
+  state.progress = 0;
+  repaint();
+  const total = state.version === "v2" ? V2.length : V1.length;
+  timer = setInterval(() => {
+    state.progress += 1;
+    const el = document.querySelector(".result");
+    if (el) el.innerHTML = resultInner();
+    if (state.progress >= total) {
+      clearInterval(timer);
+      state.streaming = false;
+      repaint();
+    }
+  }, 700);
+}
+
+function stopGen() {
+  clearInterval(timer);
+  state.streaming = false;
+  state.stopped = true;
+  repaint();
+}
+
+document.getElementById("prev").addEventListener("click", () => go(-1));
+document.getElementById("next").addEventListener("click", () => go(1));
+document.addEventListener("keydown", (e) => {
+  const t = document.activeElement;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+  if (e.key === "ArrowLeft") go(-1);
+  if (e.key === "ArrowRight") go(1);
+});
+function go(dir) {
+  const i = VARIANTS.findIndex((v) => v.key === (new URLSearchParams(location.search).get("variant") || "A"));
+  const n = VARIANTS[(i + dir + VARIANTS.length) % VARIANTS.length];
+  const url = new URL(location.href);
+  url.searchParams.set("variant", n.key);
+  history.replaceState(null, "", url);
+  render();
+}
+render();
+</script>
+</body>
+</html>
