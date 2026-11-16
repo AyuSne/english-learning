@@ -25,7 +25,7 @@
 
 - 页码 9–10；段落 6（1–6）；449 词；28 句；原文注释 3 条
 - 跨页段落：6(p9→10)
-- 首句：Phonics, which involves sounding out words syllable by syllable, is the best way to teach …
+- 首句：Phonics, which involves sounding out words syllable by syllable, is the best way to teach…
 - 末句：Without proper training, they bring this to classrooms.
 
 ## 2023年6月 · 第2套
@@ -214,7 +214,7 @@
 
 - 页码 6–7；段落 11（1–11）；451 词；26 句；原文注释 0 条
 - 跨页段落：9(p6→7)
-- 首句：Imagine you’re an alien sent to Earth to document the behaviour of the mammals inhabiting …
+- 首句：Imagine you’re an alien sent to Earth to document the behaviour of the mammals inhabiting…
 - 末句：…better at handling your own fear, and who knows when that will become critically relevant?
 
 ### 仔细阅读 · cet6-2024-12-s1-c2
@@ -272,7 +272,7 @@
 ### 长篇匹配 · cet6-2025-06-s1-b
 
 - 页码 4–5；段落 14（A–N）；1221 词；49 句；原文注释 2 条
-- 首句：Librarians know the value of their community services, and their patrons appreciate their …
+- 首句：Librarians know the value of their community services, and their patrons appreciate their…
 - 末句：…y leaders of the important role that public libraries play in communities large and small.
 
 ### 仔细阅读 · cet6-2025-06-s1-c1
@@ -306,7 +306,7 @@
 ### 仔细阅读 · cet6-2025-06-s2-c2
 
 - 页码 7–8；段落 7（1–7）；443 词；25 句；原文注释 0 条
-- 首句：GDP growth is not a good indicator of how well a country is performing, and should not be …
+- 首句：GDP growth is not a good indicator of how well a country is performing, and should not be…
 - 末句：…zens as their highest priority is to demand that they view citizens as ends in themselves.
 
 ## 2025年6月 · 第3套
@@ -458,7 +458,7 @@
 
 - 页码 5–6；段落 8（1–8）；448 词；26 句；原文注释 0 条
 - 跨页段落：5(p5→6)
-- 首句：On a warm October morning, Daniel Agok woke up to another disappointing day at his school …
+- 首句：On a warm October morning, Daniel Agok woke up to another disappointing day at his school…
 - 末句：His students are developing hardware and software skills.
 
 ## 需人工确认
