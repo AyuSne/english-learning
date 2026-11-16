@@ -9,6 +9,7 @@
 | `manifest.json` | 63 篇索引：id、标题、文件、页码、统计、注释数、源文件哈希 |
 | `<id>.json` | 单篇文章，含段落、句子与原文注释 |
 | `review-checklist.md` | 人工核对清单，由脚本生成 |
+| `spot-check.md` | 每场次抽 1 篇的全文抽检稿，由脚本生成 |
 
 文章单元：每套 3 篇 —— 长篇匹配 1 篇、仔细阅读 2 篇（Passage One / Two）。题干、选项、答案、听力、选词填空与翻译不入库。
 
@@ -59,6 +60,7 @@
 python tools/build-corpus.py    # 从 PDF 重建 63 篇与 manifest
 python tools/check-corpus.py    # 结构、中文残留、标点、注释定位、统计一致性
 python tools/make-review.py     # 重新生成核对清单
+python tools/make-spotcheck.py  # 重新生成 7 篇抽检稿
 ```
 
 提取按 2023—2026 年六级版面模板定位（Part III 的 Section B / Section C、Passage One/Two、题号 36—55）。他人改动版面或换年份时，先跑 `check-corpus.py` 与 `review-checklist.md` 再采信。
