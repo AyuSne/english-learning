@@ -12,6 +12,7 @@
   B 工作台   — 三栏：文章库 / 正文纸页 / 常驻检查器
   C 夜读     — 深色、页边注、底部抽屉
   D 素读     — 浅色纸、页边注、专注模式、两级词状态（依据 docs/research/reading-ui-primary-sources.md）
+  词状态：颜色为主（琥珀=已收集、蓝=稍后看、麦底=选中），线型只作辅助；产品已确认用颜色。
 -->
 <style>
   :root { --size: 19px; }
@@ -75,8 +76,9 @@
   }
   body[data-variant="A"] .a-drawer[data-open="true"] { transform: translateX(0); }
   body[data-variant="A"] .gloss { font-size: .64em; color: var(--muted); vertical-align: .35em; margin-left:.15em; font-family:"Microsoft YaHei UI",sans-serif; }
-  body[data-variant="A"] .collected { background: linear-gradient(transparent 58%, var(--collected) 58%); cursor: pointer; }
-  body[data-variant="A"] .collected:hover { background: var(--collected); }
+  body[data-variant="A"] .collected { color:#8F5A1A; border-bottom:1px dotted currentColor; cursor:pointer; }
+  body[data-variant="A"] .collected:hover { background:#F3EAD2; }
+  body[data-variant="A"] .later { color:#2B5A9E; border-bottom:1px solid currentColor; cursor:pointer; }
   body[data-variant="A"] .selected { background: var(--hl); border-radius: 2px; }
   body[data-variant="A"] .take { display:inline-block; margin-left:6px; vertical-align:.1em; font-family:"Segoe UI",sans-serif; font-size: 11px; letter-spacing:.02em; color: var(--accent); border:1px solid currentColor; border-radius: 4px; padding: 1px 5px; cursor:pointer; }
 
@@ -107,8 +109,9 @@
   body[data-variant="B"] .b-tabs button[aria-selected="true"] { color:var(--ink); border-color: var(--accent); }
   body[data-variant="B"] .b-panel { padding:18px; overflow:auto; }
   body[data-variant="B"] .gloss { font-size:.66em; color:var(--muted); vertical-align:.32em; margin-left:.15em; }
-  body[data-variant="B"] .collected { background: var(--collected); border-radius:3px; padding:0 1px; cursor:pointer; }
-  body[data-variant="B"] .collected:hover { box-shadow: inset 0 -1px 0 var(--accent); }
+  body[data-variant="B"] .collected { color:#8F5A1A; border-bottom:1px dotted currentColor; cursor:pointer; }
+  body[data-variant="B"] .collected:hover { background:#FBF3E3; }
+  body[data-variant="B"] .later { color:#1F5AC0; border-bottom:1px solid currentColor; cursor:pointer; }
   body[data-variant="B"] .selected { background: var(--hl); border-radius:3px; }
   body[data-variant="B"] .take { font-size:11px; color:var(--accent); border:1px solid currentColor; border-radius:4px; padding:0 4px; margin-left:4px; cursor:pointer; }
 
@@ -127,7 +130,8 @@
   body[data-variant="C"] .c-note { font-size:12.5px; line-height:1.6; color:var(--muted); border-left:2px solid var(--rule); padding: 2px 0 2px 12px; margin-bottom: 26px; }
   body[data-variant="C"] .c-note b { color: var(--ink); font-weight:600; }
   body[data-variant="C"] .gloss { display:none; }
-  body[data-variant="C"] .collected { color: var(--accent); border-bottom:1px dashed rgba(217,164,65,.45); cursor:pointer; }
+  body[data-variant="C"] .collected { color:#D9A441; border-bottom:1px dotted currentColor; cursor:pointer; }
+  body[data-variant="C"] .later { color:#7FB2E5; border-bottom:1px solid currentColor; cursor:pointer; }
   body[data-variant="C"] .selected { background: var(--hl); }
   body[data-variant="C"] .take { color:var(--accent); font-size:11px; margin-left:6px; border-bottom:1px solid currentColor; cursor:pointer; }
   body[data-variant="C"] .c-sheet {
@@ -160,11 +164,14 @@
   body[data-variant="D"] .d-page.d-focus .d-body p { opacity:.24; }
   body[data-variant="D"] .d-page.d-focus .d-body p.is-current { opacity:1; }
   body[data-variant="D"] .d-body .gloss { display:none; }
-  body[data-variant="D"] .d-body .collected { border-bottom:1px dotted var(--collected); cursor:pointer; }
+  body[data-variant="D"] .d-body .collected { color:#8F5A1A; border-bottom:1px dotted currentColor; cursor:pointer; }
   body[data-variant="D"] .d-body .collected:hover { background:#F4EDD9; }
+  body[data-variant="D"] .d-body .later { color:#2F5FA8; border-bottom:1px solid currentColor; cursor:pointer; }
   body[data-variant="D"] .d-body .selected { background: var(--hl); }
   body[data-variant="D"] .d-body .take { font-size:10.5px; color:var(--accent); border:1px solid currentColor; border-radius:3px; padding:0 4px; margin-left:5px; cursor:pointer; }
   body[data-variant="D"] .d-notes { padding-top:.4em; }
+  body[data-variant="D"] .d-legend { margin-left:14px; }
+  body[data-variant="D"] .d-legend b { font-weight:600; }
   body[data-variant="D"] .d-note { font-size:12px; line-height:1.6; color:var(--muted); border-top:1px solid var(--rule); padding:9px 0 0; margin-bottom:20px; }
   body[data-variant="D"] .d-note .lbl { display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:3px; }
   body[data-variant="D"] .d-note b { display:block; font-family:Georgia,serif; font-size:14px; color:var(--ink); font-weight:600; }
@@ -239,6 +246,7 @@ const DATA = {
   },
   glosses: { lament: "悲叹", shipwreck: "海难" },
   collected: ["gratitude", "lament", "shipwreck"],
+  later: ["despair"],
   selection: "write a note of thanks",
   entries: {
     lament: {
@@ -295,6 +303,11 @@ function rangesFor(text) {
     const i = text.indexOf(w);
     if (i >= 0) out.push({ start: i, end: i + w.length, type: "gloss", word: w, gloss: g });
   }
+  for (const w of DATA.later) {
+    const re = new RegExp("\\b" + w + "\\b", "gi");
+    let m;
+    while ((m = re.exec(text))) out.push({ start: m.index, end: m.index + w.length, type: "later", word: w });
+  }
   for (const w of DATA.collected) {
     const re = new RegExp("\\b" + w + "\\b", "gi");
     let m;
@@ -321,6 +334,8 @@ function markup(text) {
       html += `<span class="collected" data-word="${r.word}">${inner}</span><span class="gloss">（${r.gloss}）</span>`;
     } else if (r.type === "collected") {
       html += `<span class="collected" data-word="${r.word}">${inner}</span>`;
+    } else if (r.type === "later") {
+      html += `<span class="later" data-word="${r.word}">${inner}</span>`;
     } else {
       html += `<span class="selected">${inner}</span><span class="take" data-take="1">收下</span>`;
     }
@@ -386,7 +401,7 @@ function renderA() {
     </div>
   </div>
   <main class="a-page">
-    <div class="a-meta">${esc(DATA.article.meta)} · 已收 3 个表达</div>
+    <div class="a-meta">${esc(DATA.article.meta)} · 已收 3 个表达 <span style="margin-left:14px"><b style="color:#8F5A1A">琥珀</b> 已收集 · <b style="color:#2B5A9E">蓝</b> 稍后看</span></div>
     <div class="a-body">${g}</div>
     <div class="a-foot"><span>读到段 C · 62%</span><button>进入本篇选词</button></div>
   </main>
@@ -486,7 +501,7 @@ function renderD() {
     </div>
   </div>
   <div class="d-page">
-    <div class="d-meta">${esc(DATA.article.meta)} · 已收 3 个表达</div>
+    <div class="d-meta">${esc(DATA.article.meta)} · 已收 3 个表达 <span class="d-legend"><b style="color:#8F5A1A">琥珀</b> 已收集 · <b style="color:#2F5FA8">蓝</b> 稍后看</span></div>
     <div class="d-grid">
       <article class="d-body">${paras}</article>
       <aside class="d-notes">${notes}</aside>
