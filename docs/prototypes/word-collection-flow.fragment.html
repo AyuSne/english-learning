@@ -1,0 +1,283 @@
+<div id="word-collection-flow">
+  <style>
+    #word-collection-flow { --wc-bg:light-dark(#fff,#1a1d1b); --wc-soft:light-dark(#f5f7f4,#222823); --wc-ink:light-dark(#26322b,#e5ede6); --wc-muted:light-dark(#667369,#a6b2a8); --wc-line:light-dark(#dce4dc,#38433a); --wc-accent:light-dark(#2d6644,#a2d5ad); --wc-accent-bg:light-dark(#e7f2e7,#2c4634); color:var(--wc-ink); font:14px/1.6 "Segoe UI","Microsoft YaHei",sans-serif; }
+    #word-collection-flow * { box-sizing:border-box; }
+    #word-collection-flow .wc-intro { padding:0 100px 16px 0; }
+    #word-collection-flow .wc-kicker { color:var(--wc-muted); font-size:12px; }
+    #word-collection-flow .wc-intro h2 { font-size:20px; font-weight:500; margin:4px 0; }
+    #word-collection-flow .wc-intro p { margin:0; }
+    #word-collection-flow .wc-app { background:var(--wc-bg); border:1px solid var(--wc-line); border-radius:12px; overflow:hidden; }
+    #word-collection-flow button, #word-collection-flow textarea, #word-collection-flow select { font:inherit; }
+    #word-collection-flow button { cursor:pointer; border:1px solid var(--wc-line); border-radius:6px; background:var(--wc-bg); color:var(--wc-ink); padding:7px 11px; min-height:34px; }
+    #word-collection-flow button:hover { background:var(--wc-soft); }
+    #word-collection-flow button:disabled { opacity:.5; cursor:default; }
+    #word-collection-flow .wc-primary { color:var(--wc-bg); background:var(--wc-accent); border-color:var(--wc-accent); }
+    #word-collection-flow .wc-primary:hover { background:var(--wc-accent); opacity:.9; }
+    #word-collection-flow .wc-head { padding:15px 20px; border-bottom:1px solid var(--wc-line); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    #word-collection-flow .wc-name { font-weight:500; font-size:17px; }
+    #word-collection-flow .wc-count { color:var(--wc-muted); font-size:12px; }
+    #word-collection-flow .wc-nav { display:flex; gap:6px; flex-wrap:wrap; }
+    #word-collection-flow .wc-nav button { border-color:transparent; background:transparent; }
+    #word-collection-flow .wc-nav button[aria-pressed="true"] { background:var(--wc-accent-bg); color:var(--wc-accent); }
+    #word-collection-flow .wc-workspace { display:grid; grid-template-columns:180px minmax(0,1fr); min-height:410px; }
+    #word-collection-flow .wc-sidebar { padding:16px 12px; background:var(--wc-soft); border-right:1px solid var(--wc-line); }
+    #word-collection-flow .wc-sidebar h3 { margin:0 8px 10px; font-size:12px; font-weight:500; color:var(--wc-muted); }
+    #word-collection-flow .wc-sidebtn { display:block; width:100%; text-align:left; margin-bottom:7px; border-color:transparent; background:transparent; overflow-wrap:anywhere; }
+    #word-collection-flow .wc-sidebtn[aria-pressed="true"] { background:var(--wc-bg); border-color:var(--wc-line); }
+    #word-collection-flow .wc-sidebtn small { display:block; color:var(--wc-muted); font-size:12px; }
+    #word-collection-flow .wc-main { min-width:0; padding:23px 26px; }
+    #word-collection-flow h3 { margin:0 0 8px; font-size:19px; font-weight:500; }
+    #word-collection-flow .wc-meta { color:var(--wc-muted); font-size:12px; margin-bottom:18px; }
+    #word-collection-flow .wc-article p { font:18px/1.9 Georgia,"Times New Roman",serif; margin:0 0 18px; }
+    #word-collection-flow .wc-article .wc-hit { font:inherit; display:inline; min-height:0; padding:0 2px; border:0; border-radius:2px; background:var(--wc-accent-bg); color:var(--wc-ink); vertical-align:baseline; }
+    #word-collection-flow .wc-article .wc-hit[aria-pressed="true"] { box-shadow:inset 0 -2px var(--wc-accent); }
+    #word-collection-flow .wc-focused { background:var(--wc-accent-bg); }
+    #word-collection-flow .wc-selection { padding:14px 0 0; border-top:1px solid var(--wc-line); }
+    #word-collection-flow .wc-selection blockquote { margin:7px 0 12px; color:var(--wc-muted); }
+    #word-collection-flow .wc-row { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+    #word-collection-flow .wc-space { justify-content:space-between; }
+    #word-collection-flow .wc-entry-head { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+    #word-collection-flow .wc-entry-head h3 { font:29px Georgia,serif; }
+    #word-collection-flow .wc-quote { padding:16px 0; border-bottom:1px solid var(--wc-line); }
+    #word-collection-flow .wc-quote p { font:17px/1.75 Georgia,serif; margin:0 0 7px; }
+    #word-collection-flow .wc-link { padding:0; min-height:30px; border:0; background:transparent; color:var(--wc-accent); text-align:left; }
+    #word-collection-flow details { margin-top:18px; }
+    #word-collection-flow summary { cursor:pointer; color:var(--wc-accent); }
+    #word-collection-flow .wc-note { margin-top:10px; padding:11px 0; white-space:pre-wrap; border-bottom:1px solid var(--wc-line); }
+    #word-collection-flow label { display:block; }
+    #word-collection-flow .wc-check { display:flex; align-items:flex-start; gap:8px; padding:5px 0; }
+    #word-collection-flow .wc-check input { margin-top:5px; accent-color:var(--wc-accent); }
+    #word-collection-flow textarea, #word-collection-flow select { width:100%; max-width:100%; border:1px solid var(--wc-line); border-radius:6px; color:var(--wc-ink); background:var(--wc-bg); padding:9px 10px; }
+    #word-collection-flow textarea { min-height:92px; resize:vertical; }
+    #word-collection-flow .wc-field { margin:16px 0; }
+    #word-collection-flow .wc-field > label { margin-bottom:6px; font-weight:500; }
+    #word-collection-flow .wc-context { padding:11px 13px; margin-top:9px; background:var(--wc-soft); font-size:12px; color:var(--wc-muted); white-space:pre-wrap; overflow-wrap:anywhere; }
+    #word-collection-flow .wc-status { padding:11px 20px; background:var(--wc-accent-bg); color:var(--wc-accent); border-top:1px solid var(--wc-line); min-height:45px; }
+    #word-collection-flow .wc-guides { margin-top:16px; }
+    #word-collection-flow .wc-guides h3 { font-size:14px; margin:0 0 8px; }
+    #word-collection-flow .wc-guides nav { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:9px; }
+    #word-collection-flow .wc-guides button[aria-pressed="true"] { background:var(--wc-accent-bg); color:var(--wc-accent); }
+    #word-collection-flow .wc-guide-detail { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    #word-collection-flow .wc-state { margin-top:13px; color:var(--wc-muted); font-size:12px; overflow-wrap:anywhere; }
+    @media(max-width:600px) {
+      #word-collection-flow .wc-workspace { grid-template-columns:minmax(0,1fr); }
+      #word-collection-flow .wc-sidebar { border-right:0; border-bottom:1px solid var(--wc-line); display:flex; gap:7px; flex-wrap:wrap; }
+      #word-collection-flow .wc-sidebar h3 { width:100%; margin-bottom:0; }
+      #word-collection-flow .wc-sidebtn { width:auto; max-width:100%; margin:0; flex:1 1 130px; }
+      #word-collection-flow .wc-main { padding:19px 16px; }
+      #word-collection-flow .wc-head { padding:13px 16px; }
+      #word-collection-flow .wc-intro { padding-right:70px; }
+    }
+    @media(pointer:coarse) { #word-collection-flow button { min-height:44px; } #word-collection-flow .wc-article .wc-hit { min-height:0; } }
+  </style>
+  <div class="wc-intro">
+    <div class="wc-kicker">交互草图 · 示例内容 · 本轮操作仅用于体验</div>
+    <h2>收下原句，再回到文章</h2>
+    <p>验证新增原句、词条积累与来源回查，是否能形成你想要的连续感。</p>
+  </div>
+  <div class="wc-app" aria-label="文章与词汇交互示例">
+    <header class="wc-head">
+      <div><div class="wc-name">文章与词汇</div><div id="wc-totals" class="wc-count"></div></div>
+      <nav class="wc-nav" aria-label="学习入口">
+        <button type="button" data-action="nav" data-view="read">阅读文章</button>
+        <button type="button" data-action="nav" data-view="entries">我的词条</button>
+        <button type="button" data-action="nav" data-view="learn">自由学习</button>
+      </nav>
+    </header>
+    <div class="wc-workspace"><aside class="wc-sidebar" id="wc-sidebar"></aside><main class="wc-main" id="wc-main"></main></div>
+    <div class="wc-status" id="wc-status" role="status" aria-live="polite"></div>
+  </div>
+  <section class="wc-guides" aria-label="引导体验">
+    <h3>也可以按一条路径体验</h3>
+    <nav aria-label="体验场景">
+      <button type="button" data-action="scenario" data-scenario="collect">收集新原句</button>
+      <button type="button" data-action="scenario" data-scenario="duplicate">重复圈选</button>
+      <button type="button" data-action="scenario" data-scenario="generated">读一篇生成文章</button>
+    </nav>
+    <div class="wc-guide-detail" id="wc-guide"></div>
+    <div class="wc-state" id="wc-state"></div>
+  </section>
+  <script>
+  (function () {
+    var root = document.getElementById("word-collection-flow");
+    if (!root) return;
+    var samples = [
+      { id:"a1", title:"A different approach", source:"AI 生成示例", sentences:[
+        {id:"a1s1",text:"A different approach helped Mira understand the unfamiliar passage.",form:"approach",lemma:"approach"},
+        {id:"a1s2",text:"She approached each new word through the sentence in which it appeared.",form:"approached",lemma:"approach"},
+        {id:"a1s3",text:"When she felt uncertain, she could confide in a friend who enjoyed reading.",form:"confide in",lemma:"confide in"}
+      ]},
+      { id:"a2", title:"Small discoveries", source:"AI 生成示例", sentences:[
+        {id:"a2s1",text:"Approaching a difficult text becomes easier when we connect new words with familiar experiences.",form:"Approaching",lemma:"approach"},
+        {id:"a2s2",text:"An approachable teacher can make a complicated idea feel simple.",form:"approachable",lemma:"approachable"},
+        {id:"a2s3",text:"Mira kept a notebook so that each discovery could lead her back to the story."}
+      ]}
+    ];
+    var generated = {id:"g1",title:"A new way to remember",source:"AI 生成 · 示例产物",sentences:[
+      {id:"g1s1",text:"A careful approach gave Mira a new way to read.",form:"approach",lemma:"approach"},
+      {id:"g1s2",text:"She approached a friend she could trust, and they compared their notes.",form:"approached",lemma:"approach"},
+      {id:"g1s3",text:"Even a complicated idea felt simple when she could confide in someone.",form:"confide in",lemma:"confide in"}
+    ]};
+    var model = (function () {
+      function quote(a,s) { return {key:a.id+":"+s.id,articleId:a.id,articleTitle:a.title,source:a.source,sentenceId:s.id,text:s.text,form:s.form}; }
+      function initial() {
+        return {view:"read",articleId:"a1",focusId:null,selection:null,activeEntry:"approach",articles:JSON.parse(JSON.stringify(samples)),
+          entries:{approach:{name:"approach",quotes:[quote(samples[0],samples[0].sentences[0])],notes:[]}},
+          context:["a1:a1s1"],includeNotes:false,instruction:"用一个小故事帮助我记忆这个词，并说明它怎样使用。",
+          instructions:["用一个小故事帮助我记忆这个词，并说明它怎样使用。"],draft:"",articleDraft:false,
+          message:"示例已经收集过 approach 的第一条原句。点击正文中的表达，继续收集。"};
+      }
+      function reduce(state,action) {
+        var s=JSON.parse(JSON.stringify(state)),entry,a,sentence,q;
+        switch(action.type) {
+          case "nav": s.view=action.view; break;
+          case "read": s.view="read";s.articleId=action.articleId;s.focusId=action.sentenceId||null;s.selection=null;s.message=action.sentenceId?"已回到这条原句所在的文章。":"已打开文章。";break;
+          case "select":
+            a=s.articles.find(function(x){return x.id===action.articleId;});
+            sentence=a.sentences.find(function(x){return x.id===action.sentenceId;});
+            s.selection={lemma:sentence.lemma,quote:quote(a,sentence)};s.activeEntry=sentence.lemma;
+            s.message="已选中 "+sentence.form+"，可以收下它所在的原句。";break;
+          case "collect":
+            if(!s.selection){s.message="先在正文中选一个表达。";break;}
+            q=s.selection.quote;entry=s.entries[s.selection.lemma];
+            if(!entry){entry={name:s.selection.lemma,quotes:[],notes:[]};s.entries[entry.name]=entry;}
+            if(entry.quotes.some(function(x){return x.key===q.key;})){s.message="这条原句已经收集过，收藏数量保持不变。";break;}
+            entry.quotes.push(q);s.message="新收下 1 条原句 · "+entry.name+" 已有 "+entry.quotes.length+" 条，来自 "+new Set(entry.quotes.map(function(x){return x.articleId;})).size+" 篇文章。";break;
+          case "entry":
+            s.activeEntry=action.name;s.view=action.view||"entries";entry=s.entries[action.name];
+            if(entry)s.context=[entry.quotes[entry.quotes.length-1].key];
+            s.draft="";break;
+          case "context":
+            if(s.context.indexOf(action.key)>=0)s.context=s.context.filter(function(x){return x!==action.key;});else s.context.push(action.key);break;
+          case "includeNotes":s.includeNotes=action.value;break;
+          case "instruction":s.instruction=action.value;break;
+          case "saveInstruction":
+            if(s.instruction.trim()&&s.instructions.indexOf(s.instruction.trim())<0)s.instructions.push(s.instruction.trim());
+            s.message="这条学习指令已保存在本轮示例中，仍可继续修改。";break;
+          case "sample":
+            s.draft=s.activeEntry==="approach"?"approach 可以指处理问题的方法，也可以表示接近。\n\n示例助记：想象你走近一本书（approach），再找到理解它的方法（an approach）。\n\n这是预置的示例回复，用于体验编辑与保存。":"示例学习内容："+s.activeEntry+"。\n\n可以把你喜欢的解释、例句或助记放在这里，修改后保存。";
+            s.message="已载入示例回复。本草图没有调用真实 LLM。";break;
+          case "draft":s.draft=action.value;break;
+          case "saveNote":
+            entry=s.entries[s.activeEntry];
+            if(!entry||!s.draft.trim()){s.message="先选择已收集的词条，并准备要保存的内容。";break;}
+            if(entry.notes.indexOf(s.draft.trim())<0)entry.notes.push(s.draft.trim());
+            s.message="已收下这段学习内容；原句收藏数量不变。";break;
+          case "articleDraft":s.articleDraft=true;s.message="已载入生成文章示例，可以先看内容再保存。";break;
+          case "saveArticle":
+            if(!s.articles.some(function(x){return x.id==="g1";}))s.articles.push(JSON.parse(JSON.stringify(generated)));
+            s.articleDraft=false;s.view="read";s.articleId="g1";s.selection=null;s.focusId=null;
+            s.message="生成文章已进入示例文章库，保留 AI 来源，可以继续阅读和圈词。";break;
+        }
+        return s;
+      }
+      return {initial:initial,reduce:reduce};
+    }());
+    var state=model.initial(),scenario=null,step=0;
+    var paths={
+      collect:{text:"在第二篇文章再遇见 approach，然后回到词条看积累。",steps:[
+        {label:"打开第二篇文章",action:{type:"read",articleId:"a2"}},
+        {label:"选中 Approaching",action:{type:"select",articleId:"a2",sentenceId:"a2s1"}},
+        {label:"收下新原句",action:{type:"collect"}},
+        {label:"打开 approach 词条",action:{type:"entry",name:"approach"}}
+      ]},
+      duplicate:{text:"再次收藏第一条原句，观察数量是否保持不变。",steps:[
+        {label:"打开第一篇文章",action:{type:"read",articleId:"a1"}},
+        {label:"再次选中 approach",action:{type:"select",articleId:"a1",sentenceId:"a1s1"}},
+        {label:"再次收下原句",action:{type:"collect"}}
+      ]},
+      generated:{text:"把生成文章保存进文章库，再从新的阅读来源收集原句。",steps:[
+        {label:"打开自由学习",action:{type:"nav",view:"learn"}},
+        {label:"查看生成文章示例",action:{type:"articleDraft"}},
+        {label:"保存并阅读",action:{type:"saveArticle"}},
+        {label:"选中 approached",action:{type:"select",articleId:"g1",sentenceId:"g1s2"}},
+        {label:"收下这条原句",action:{type:"collect"}},
+        {label:"查看词条中的不同来源",action:{type:"entry",name:"approach"}}
+      ]}
+    };
+    function esc(x){return String(x).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    function entry(){return state.entries[state.activeEntry]||state.entries[Object.keys(state.entries)[0]];}
+    function button(label,attrs,kind){return '<button type="button" '+attrs+' class="'+(kind||"")+'">'+label+'</button>';}
+    function sidebar(){
+      if(state.view==="read")return '<h3>示例文章</h3>'+state.articles.map(function(a){return button(esc(a.title)+'<small>'+esc(a.source)+'</small>','data-action="read" data-article="'+a.id+'" aria-pressed="'+(state.articleId===a.id)+'"',"wc-sidebtn");}).join("");
+      return '<h3>我的词条</h3>'+Object.values(state.entries).map(function(e){return button(esc(e.name)+'<small>'+e.quotes.length+' 条原句 · '+new Set(e.quotes.map(function(q){return q.articleId;})).size+' 篇文章</small>','data-action="entry" data-entry="'+esc(e.name)+'" aria-pressed="'+(state.activeEntry===e.name)+'"',"wc-sidebtn");}).join("");
+    }
+    function readView(){
+      var a=state.articles.find(function(x){return x.id===state.articleId;});
+      var html='<h3>'+esc(a.title)+'</h3><div class="wc-meta">'+esc(a.source)+' · 点击浅色标出的表达，可体验选词</div><article class="wc-article">';
+      a.sentences.forEach(function(s){
+        var content=esc(s.text);
+        if(s.form){var at=s.text.indexOf(s.form);content=esc(s.text.slice(0,at))+button(esc(s.form),'data-action="select" data-article="'+a.id+'" data-sentence="'+s.id+'" aria-pressed="'+(!!state.selection&&state.selection.quote.key===a.id+":"+s.id)+'"',"wc-hit")+esc(s.text.slice(at+s.form.length));}
+        html+='<p id="wc-'+s.id+'" class="'+(state.focusId===s.id?'wc-focused':'')+'">'+content+'</p>';
+      });
+      html+='</article>';
+      if(state.selection){
+        html+='<section class="wc-selection"><div>选中：<strong>'+esc(state.selection.quote.form)+'</strong> → 词条 '+esc(state.selection.lemma)+'</div><blockquote>'+esc(state.selection.quote.text)+'</blockquote><div class="wc-row">'+button("收下原句",'data-action="collect"',"wc-primary");
+        if(state.entries[state.selection.lemma])html+=button("打开词条",'data-action="entry" data-entry="'+esc(state.selection.lemma)+'"');
+        html+='</div></section>';
+      }
+      return html;
+    }
+    function entryView(){
+      var e=entry(),n=new Set(e.quotes.map(function(q){return q.articleId;})).size;
+      return '<div class="wc-entry-head"><h3>'+esc(e.name)+'</h3><span class="wc-count">已收集 '+e.quotes.length+' 条原句 · 来自 '+n+' 篇文章</span></div>'+
+        e.quotes.map(function(q){return '<section class="wc-quote"><p>'+esc(q.text)+'</p><div class="wc-row wc-space"><span class="wc-count">'+esc(q.articleTitle)+' · '+esc(q.source)+' · 原词形 '+esc(q.form)+'</span>'+button("回到文章 ↗",'data-action="read" data-article="'+q.articleId+'" data-sentence="'+q.sentenceId+'"',"wc-link")+'</div></section>';}).join("")+
+        '<details><summary>展开学习内容（'+e.notes.length+'）</summary>'+(e.notes.length?e.notes.map(function(n){return '<div class="wc-note">'+esc(n)+'</div>';}).join(""):'<p class="wc-meta">还没有保存学习内容，可以按自己的要求整理。</p>')+'</details><div class="wc-row" style="margin-top:18px">'+button("围绕这个词自由学习",'data-action="nav" data-view="learn"',"wc-primary")+'</div>';
+    }
+    function learningView(){
+      var e=entry(),selected=e.quotes.filter(function(q){return state.context.indexOf(q.key)>=0;});
+      var html='<h3>按自己的要求学习</h3><div class="wc-meta">当前对象：'+esc(e.name)+' · 指令可自由输入，回复使用可编辑的预置示例</div>';
+      html+='<div class="wc-field"><label>本次参考的原句</label>'+e.quotes.map(function(q){return '<label class="wc-check"><input type="checkbox" data-context="'+q.key+'" '+(state.context.indexOf(q.key)>=0?'checked':'')+'><span>'+esc(q.text)+'</span></label>';}).join("")+
+        '<label class="wc-check"><input type="checkbox" data-notes="true" '+(state.includeNotes?'checked':'')+'><span>加入已保存的学习笔记</span></label><div class="wc-context" id="wc-context-preview">'+esc('词：'+e.name+'\n'+selected.map(function(q){return q.text;}).join('\n')+(state.includeNotes?'\n笔记：'+e.notes.join('\n'):''))+'</div></div>';
+      html+='<div class="wc-field"><label for="wc-preset">我的常用指令</label><select id="wc-preset"><option value="">选择后仍可修改</option>'+state.instructions.map(function(t,i){return '<option value="'+i+'">'+esc(t)+'</option>';}).join("")+'</select></div>';
+      html+='<div class="wc-field"><label for="wc-instruction">这次希望怎样学</label><textarea id="wc-instruction">'+esc(state.instruction)+'</textarea></div><div class="wc-row">'+button("保存这条指令",'data-action="saveInstruction"')+button("载入示例回复",'data-action="sample"',"wc-primary")+button("生成文章示例",'data-action="articleDraft"')+'</div>';
+      if(state.draft)html+='<div class="wc-field"><label for="wc-draft">示例回复 · 可编辑后保存</label><textarea id="wc-draft" style="min-height:140px">'+esc(state.draft)+'</textarea></div>'+button("收下这段内容",'data-action="saveNote"',"wc-primary");
+      if(state.articleDraft)html+='<section class="wc-field"><h3>'+esc(generated.title)+'</h3><div class="wc-meta">AI 生成文章示例</div>'+generated.sentences.map(function(s){return '<p>'+esc(s.text)+'</p>';}).join("")+'<div style="margin-top:12px">'+button("保存为文章并阅读",'data-action="saveArticle"',"wc-primary")+'</div></section>';
+      return html;
+    }
+    function saveViewState(){
+      if(window.openai&&window.openai.setWidgetState)window.openai.setWidgetState({modelContent:{view:state.view,activeEntry:state.activeEntry,quotes:Object.values(state.entries).reduce(function(n,e){return n+e.quotes.length;},0),lastAction:state.message},privateContent:{view:state.view}}).catch(function(){});
+    }
+    function render(){
+      var es=Object.values(state.entries),quotes=es.reduce(function(n,e){return n+e.quotes.length;},0);
+      root.querySelector("#wc-totals").textContent=es.length+" 个词条 · "+quotes+" 条原句";
+      root.querySelectorAll(".wc-nav button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.view===state.view));});
+      root.querySelector("#wc-sidebar").innerHTML=sidebar();
+      root.querySelector("#wc-main").innerHTML=state.view==="read"?readView():state.view==="entries"?entryView():learningView();
+      root.querySelector("#wc-status").textContent=state.message;
+      root.querySelectorAll("[data-scenario]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.scenario===scenario));});
+      var path=paths[scenario];
+      root.querySelector("#wc-guide").innerHTML=path?'<span>'+esc(path.text)+'</span>'+button(step<path.steps.length?(step+1)+' / '+path.steps.length+' · '+esc(path.steps[step].label):'这条路径已走完','data-action="next" '+(step>=path.steps.length?'disabled':''),"wc-primary"):'<span class="wc-count">上方可以自由点击；选择一条路径会从示例初始状态开始。</span>';
+      var e=entry();root.querySelector("#wc-state").textContent="本轮状态：当前词条 "+e.name+"；原句 "+e.quotes.length+" 条；学习内容 "+e.notes.length+" 条；已保存指令 "+state.instructions.length+" 条。";
+    }
+    function dispatch(a){state=model.reduce(state,a);render();saveViewState();}
+    root.addEventListener("click",function(ev){
+      var b=ev.target.closest("button[data-action]");if(!b||!root.contains(b))return;
+      var a=b.dataset.action;
+      if(a==="scenario"){scenario=b.dataset.scenario;step=0;state=model.initial();render();saveViewState();return;}
+      if(a==="next"){var p=paths[scenario];if(p&&step<p.steps.length){state=model.reduce(state,p.steps[step].action);step++;render();saveViewState();}return;}
+      if(a==="nav")dispatch({type:"nav",view:b.dataset.view});
+      else if(a==="read")dispatch({type:"read",articleId:b.dataset.article,sentenceId:b.dataset.sentence});
+      else if(a==="select")dispatch({type:"select",articleId:b.dataset.article,sentenceId:b.dataset.sentence});
+      else if(a==="entry")dispatch({type:"entry",name:b.dataset.entry});
+      else dispatch({type:a});
+    });
+    root.addEventListener("change",function(ev){
+      if(ev.target.dataset.context)dispatch({type:"context",key:ev.target.dataset.context});
+      else if(ev.target.dataset.notes)dispatch({type:"includeNotes",value:ev.target.checked});
+      else if(ev.target.id==="wc-preset"&&ev.target.value!=="")dispatch({type:"instruction",value:state.instructions[Number(ev.target.value)]});
+    });
+    root.addEventListener("input",function(ev){
+      if(ev.target.id==="wc-instruction")state=model.reduce(state,{type:"instruction",value:ev.target.value});
+      if(ev.target.id==="wc-draft")state=model.reduce(state,{type:"draft",value:ev.target.value});
+    });
+    var saved=window.openai&&window.openai.widgetState;
+    if(saved&&saved.privateContent&&["read","entries","learn"].indexOf(saved.privateContent.view)>=0)state.view=saved.privateContent.view;
+    window.addEventListener("openai:set_globals",function(ev){
+      var data=ev.detail&&ev.detail.globals&&ev.detail.globals.widgetState;
+      if(data&&data.privateContent&&["read","entries","learn"].indexOf(data.privateContent.view)>=0){state.view=data.privateContent.view;render();}
+    });
+    render();
+  }());
+  </script>
+</div>
