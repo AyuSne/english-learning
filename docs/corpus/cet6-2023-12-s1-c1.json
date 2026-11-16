@@ -1,0 +1,301 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s1-c1",
+ "label": "2023年12月 · 第1套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第1套).pdf",
+  "sha256": "9b17a246c154b45216f679fc5bc8f1e83ce6d68782bda2fefa3cb4e5654dc203",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "One of the great successes of the Republican Party in recent decades is the relentless propagation of a simple formula for economic growth: tax cuts.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "One of the great successes of the Republican Party in recent decades is the relentless propagation of a simple formula for economic growth: tax cuts.",
+     "start": 0,
+     "end": 149,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The formula doesn’t work, but that has not affected its popularity. And while the cult of tax cuts has attracted many critics, it lacks for obvious rivals.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The formula doesn’t work, but that has not affected its popularity.",
+     "start": 0,
+     "end": 67,
+     "page": 6
+    },
+    {
+     "text": "And while the cult of tax cuts has attracted many critics, it lacks for obvious rivals.",
+     "start": 68,
+     "end": 155,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Democratic politicians have tended to campaign on helping people left behind by economic growth. When Democrats do talk about encouraging economic growth, they often sound like Republicans.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Democratic politicians have tended to campaign on helping people left behind by economic growth.",
+     "start": 0,
+     "end": 96,
+     "page": 6
+    },
+    {
+     "text": "When Democrats do talk about encouraging economic growth, they often sound like Republicans.",
+     "start": 97,
+     "end": 189,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "This is not just a political problem for Democrats; it is an economic problem for the United States. The nation needs a better story about the drivers of economic growth. The painful lessons of recent decades point to a promising candidate: higher wages.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "This is not just a political problem for Democrats; it is an economic problem for the United States.",
+     "start": 0,
+     "end": 100,
+     "page": 6
+    },
+    {
+     "text": "The nation needs a better story about the drivers of economic growth.",
+     "start": 101,
+     "end": 170,
+     "page": 6
+    },
+    {
+     "text": "The painful lessons of recent decades point to a promising candidate: higher wages.",
+     "start": 171,
+     "end": 254,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Raising the wages of American workers ought to be the priority of economic policymakers. We’d all be better off paying less attention to quarterly updates on the growth of the nation’s gross domestic product (GDP) and focusing instead on the growth of workers’ paychecks.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Raising the wages of American workers ought to be the priority of economic policymakers.",
+     "start": 0,
+     "end": 88,
+     "page": 6
+    },
+    {
+     "text": "We’d all be better off paying less attention to quarterly updates on the growth of the nation’s gross domestic product (GDP) and focusing instead on the growth of workers’ paychecks.",
+     "start": 89,
+     "end": 271,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Set aside, for the moment, the familiar argument for higher wages: fairness. The argument here is that higher wages can fuel the engine of economic growth.",
+   "page_start": 6,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Set aside, for the moment, the familiar argument for higher wages: fairness.",
+     "start": 0,
+     "end": 76,
+     "page": 6
+    },
+    {
+     "text": "The argument here is that higher wages can fuel the engine of economic growth.",
+     "start": 77,
+     "end": 155,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Perhaps the most famous illustration of the benefits is the story of Henry Ford’s decision in 1914 to pay $5 a day to workers on his Model T assembly lines. He did it to increase production — he was paying a premium to maintain a reliable workforce. The unexpected benefit was that Ford’s factory workers became Ford customers, too.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Perhaps the most famous illustration of the benefits is the story of Henry Ford’s decision in 1914 to pay $5 a day to workers on his Model T assembly lines.",
+     "start": 0,
+     "end": 156,
+     "page": 7
+    },
+    {
+     "text": "He did it to increase production — he was paying a premium to maintain a reliable workforce.",
+     "start": 157,
+     "end": 249,
+     "page": 7
+    },
+    {
+     "text": "The unexpected benefit was that Ford’s factory workers became Ford customers, too.",
+     "start": 250,
+     "end": 332,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "The same logic still holds: Consumption drives the American economy, and workers who are paid more can spend more.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The same logic still holds: Consumption drives the American economy, and workers who are paid more can spend more.",
+     "start": 0,
+     "end": 114,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Mainstream economists insist that it is impossible to order up a sustainable increase in wages because compensation levels reflect the unerring judgment of market forces.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Mainstream economists insist that it is impossible to order up a sustainable increase in wages because compensation levels reflect the unerring judgment of market forces.",
+     "start": 0,
+     "end": 170,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "text": "The conventional wisdom held that productivity growth was the only route to higher wages. Through that lens, efforts to negotiate higher wages were counterproductive. Minimum-wage laws would raise unemployment because there was only so much money in the wage pool, and if some people got more, others would get none.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The conventional wisdom held that productivity growth was the only route to higher wages.",
+     "start": 0,
+     "end": 89,
+     "page": 7
+    },
+    {
+     "text": "Through that lens, efforts to negotiate higher wages were counterproductive.",
+     "start": 90,
+     "end": 166,
+     "page": 7
+    },
+    {
+     "text": "Minimum-wage laws would raise unemployment because there was only so much money in the wage pool, and if some people got more, others would get none.",
+     "start": 167,
+     "end": 316,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "text": "It was in the context of this worldview that it became popular to argue that tax cuts would drive prosperity. Rich people would invest, productivity would increase, wages would rise.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "It was in the context of this worldview that it became popular to argue that tax cuts would drive prosperity.",
+     "start": 0,
+     "end": 109,
+     "page": 7
+    },
+    {
+     "text": "Rich people would invest, productivity would increase, wages would rise.",
+     "start": 110,
+     "end": 182,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "12",
+   "text": "In the real world, things are more complicated. Wages are influenced by a tug of war between employers and workers, and employers have been winning. One clear piece of evidence is the widening gap between productivity growth and wage growth since roughly 1970. Productivity has more than doubled; wages have lagged far behind.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "In the real world, things are more complicated.",
+     "start": 0,
+     "end": 47,
+     "page": 7
+    },
+    {
+     "text": "Wages are influenced by a tug of war between employers and workers, and employers have been winning.",
+     "start": 48,
+     "end": 148,
+     "page": 7
+    },
+    {
+     "text": "One clear piece of evidence is the widening gap between productivity growth and wage growth since roughly 1970.",
+     "start": 149,
+     "end": 260,
+     "page": 7
+    },
+    {
+     "text": "Productivity has more than doubled; wages have lagged far behind.",
+     "start": 261,
+     "end": 326,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "13",
+   "text": "A focus on wage growth would provide an antidote to the attractive simplicity of the belief in the magical power of tax cuts.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "A focus on wage growth would provide an antidote to the attractive simplicity of the belief in the magical power of tax cuts.",
+     "start": 0,
+     "end": 125,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "antidote",
+   "gloss": "矫正方法",
+   "start": 40,
+   "end": 48,
+   "paragraph": "13",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 13,
+  "sentences": 27,
+  "words": 451
+ }
+}

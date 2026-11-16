@@ -1,0 +1,601 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-06-s2-b",
+ "label": "2025年6月 · 第2套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 6,
+  "set": 2,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2025年6月英语六级真题(第2套).pdf",
+  "sha256": "ca040e3dc21b5487080c8827f35e200cc44d5d496e5fd9aba7aaa0ccbfc3e608",
+  "pages": [
+   4,
+   5
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "I can be a reluctant socialiser. I’m sometimes secretly pleased when social plans are called off. I get restless a few hours into a hangout. I even once went on a free 10-day silent meditation retreat — not for the meditation, but for the silence.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "I can be a reluctant socialiser.",
+     "start": 0,
+     "end": 32,
+     "page": 4
+    },
+    {
+     "text": "I’m sometimes secretly pleased when social plans are called off.",
+     "start": 33,
+     "end": 97,
+     "page": 4
+    },
+    {
+     "text": "I get restless a few hours into a hangout.",
+     "start": 98,
+     "end": 140,
+     "page": 4
+    },
+    {
+     "text": "I even once went on a free 10-day silent meditation retreat — not for the meditation, but for the silence.",
+     "start": 141,
+     "end": 247,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "So I can relate to author Anneli Rufus, who wrote in Party of One: The Loners’ Manifesto: “When parents on TV shows punished their kids by ordering them to go to their rooms, I was confused. I loved my room. Being there behind a locked door was a treat. To me a punishment was being ordered to play games with my cousin Louis.”",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "So I can relate to author Anneli Rufus, who wrote in Party of One: The Loners’ Manifesto: “When parents on TV shows punished their kids by ordering them to go to their rooms, I was confused.",
+     "start": 0,
+     "end": 190,
+     "page": 4
+    },
+    {
+     "text": "I loved my room.",
+     "start": 191,
+     "end": 207,
+     "page": 4
+    },
+    {
+     "text": "Being there behind a locked door was a treat.",
+     "start": 208,
+     "end": 253,
+     "page": 4
+    },
+    {
+     "text": "To me a punishment was being ordered to play games with my cousin Louis.”",
+     "start": 254,
+     "end": 327,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "Unsocial tendencies like these are often far from ideal. Abundant research shows the harms of social isolation, considered a serious public health problem in countries that have rapidly ageing populations (though talk of a ‘loneliness epidemic’ may be exaggerated). In the UK, the Royal College of General Practitioners says that loneliness has the same risk level for premature death as diabetes. Strong social connections are important for cognitive functioning, motor function and a smoothly running immune system.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Unsocial tendencies like these are often far from ideal.",
+     "start": 0,
+     "end": 56,
+     "page": 4
+    },
+    {
+     "text": "Abundant research shows the harms of social isolation, considered a serious public health problem in countries that have rapidly ageing populations (though talk of a ‘loneliness epidemic’ may be exaggerated).",
+     "start": 57,
+     "end": 265,
+     "page": 4
+    },
+    {
+     "text": "In the UK, the Royal College of General Practitioners says that loneliness has the same risk level for premature death as diabetes.",
+     "start": 266,
+     "end": 397,
+     "page": 4
+    },
+    {
+     "text": "Strong social connections are important for cognitive functioning, motor function and a smoothly running immune system.",
+     "start": 398,
+     "end": 517,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "This is especially clear from cases of extreme social isolation. Examples of people kept in captivity, children kept isolated in abusive orphanages, and prisoners kept in solitary confinement all show how prolonged solitude can lead to hallucinations and other forms of mental instability.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "This is especially clear from cases of extreme social isolation.",
+     "start": 0,
+     "end": 64,
+     "page": 4
+    },
+    {
+     "text": "Examples of people kept in captivity, children kept isolated in abusive orphanages, and prisoners kept in solitary confinement all show how prolonged solitude can lead to hallucinations and other forms of mental instability.",
+     "start": 65,
+     "end": 289,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "But these are severe and involuntary cases of aloneness. For those of us who just prefer plenty of alone time, emerging research suggests some good news: there are upsides to being alone — for both our work lives and our emotional well-being.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "But these are severe and involuntary cases of aloneness.",
+     "start": 0,
+     "end": 56,
+     "page": 4
+    },
+    {
+     "text": "For those of us who just prefer plenty of alone time, emerging research suggests some good news: there are upsides to being alone — for both our work lives and our emotional well-being.",
+     "start": 57,
+     "end": 242,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "Solitude is a time for reflection, for thinking about things more deeply. In a world increasingly focused on speed and competitiveness, solitude is precious and something to be treasured. And there are benefits in learning to love your solitude.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Solitude is a time for reflection, for thinking about things more deeply.",
+     "start": 0,
+     "end": 73,
+     "page": 4
+    },
+    {
+     "text": "In a world increasingly focused on speed and competitiveness, solitude is precious and something to be treasured.",
+     "start": 74,
+     "end": 187,
+     "page": 4
+    },
+    {
+     "text": "And there are benefits in learning to love your solitude.",
+     "start": 188,
+     "end": 245,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "One key benefit of solitude is improved creativity. Gregory Feist, who focuses on the psychology of creativity at California’s San Jose State University, has defined creativity as thinking or activity with two key elements: originality and usefulness. He has found that personality traits commonly associated with creativity are openness (receptiveness to new thoughts and experiences), self-confidence, and autonomy — which may include “a lack of concern for social norms” and “a preference for being alone”. In fact, Feist’s research on both artists and scientists shows that one of the most prominent features of creative folks is their lesser interest in socialising.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "One key benefit of solitude is improved creativity.",
+     "start": 0,
+     "end": 51,
+     "page": 4
+    },
+    {
+     "text": "Gregory Feist, who focuses on the psychology of creativity at California’s San Jose State University, has defined creativity as thinking or activity with two key elements: originality and usefulness.",
+     "start": 52,
+     "end": 251,
+     "page": 4
+    },
+    {
+     "text": "He has found that personality traits commonly associated with creativity are openness (receptiveness to new thoughts and experiences), self-confidence, and autonomy — which may include “a lack of concern for social norms” and “a preference for being alone”.",
+     "start": 252,
+     "end": 509,
+     "page": 4
+    },
+    {
+     "text": "In fact, Feist’s research on both artists and scientists shows that one of the most prominent features of creative folks is their lesser interest in socialising.",
+     "start": 510,
+     "end": 671,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "One reason for this is that such people are likely to spend sustained time alone working on their craft. Plus, Feist says, many artists “are trying to make sense of their internal world and a lot of internal personal experiences that they’re trying to give expression and meaning to through their art.” Solitude allows for the reflection and observation necessary for that creative process.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "One reason for this is that such people are likely to spend sustained time alone working on their craft.",
+     "start": 0,
+     "end": 104,
+     "page": 4
+    },
+    {
+     "text": "Plus, Feist says, many artists “are trying to make sense of their internal world and a lot of internal personal experiences that they’re trying to give expression and meaning to through their art.”",
+     "start": 105,
+     "end": 302,
+     "page": 4
+    },
+    {
+     "text": "Solitude allows for the reflection and observation necessary for that creative process.",
+     "start": 303,
+     "end": 390,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "A recent justification of these ideas came from University at Buffalo psychologist Julie Bowker, who researches social withdrawal. Social withdrawal is usually categorised into three types: shyness caused by fear or anxiety; avoidance, from a dislike of socialising; and unsociability, from a preference for solitude. A paper by Bowker and her colleagues was the first to show that a type of social withdrawal could have a positive effect — they found that creativity was linked specifically to unsociability. They also found that unsociability had no correlation with aggression (shyness and avoidance did). This was significant because while previous research had suggested that unsociability might be harmless, Bowker and colleagues’ paper showed that it could actually be beneficial. Unsociable people are likely to be “having just enough interaction,” Bowker says. “They have a preference for being alone, but they also don’t mind being with others.”",
+   "page_start": 4,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "A recent justification of these ideas came from University at Buffalo psychologist Julie Bowker, who researches social withdrawal.",
+     "start": 0,
+     "end": 130,
+     "page": 4
+    },
+    {
+     "text": "Social withdrawal is usually categorised into three types: shyness caused by fear or anxiety; avoidance, from a dislike of socialising; and unsociability, from a preference for solitude.",
+     "start": 131,
+     "end": 317,
+     "page": 4
+    },
+    {
+     "text": "A paper by Bowker and her colleagues was the first to show that a type of social withdrawal could have a positive effect — they found that creativity was linked specifically to unsociability.",
+     "start": 318,
+     "end": 509,
+     "page": 4
+    },
+    {
+     "text": "They also found that unsociability had no correlation with aggression (shyness and avoidance did).",
+     "start": 510,
+     "end": 608,
+     "page": 4
+    },
+    {
+     "text": "This was significant because while previous research had suggested that unsociability might be harmless, Bowker and colleagues’ paper showed that it could actually be beneficial.",
+     "start": 609,
+     "end": 787,
+     "page": 4
+    },
+    {
+     "text": "Unsociable people are likely to be “having just enough interaction,” Bowker says.",
+     "start": 788,
+     "end": 869,
+     "page": 4
+    },
+    {
+     "text": "“They have a preference for being alone, but they also don’t mind being with others.”",
+     "start": 870,
+     "end": 955,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "Still, it turns out that solitude is important for more than creativity. It’s commonly believed that leaders need to be sociable. But this depends, among other things, on the personalities of their employees. One 2011 study showed that in branches of a pizza chain where employees were more passive, outgoing bosses were associated with higher profits. But in branches where employees were more active, introverted leaders were more effective. One reason for this is that introverted people are less likely to feel threatened by strong personalities and suggestions. They’re also more likely to listen.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Still, it turns out that solitude is important for more than creativity.",
+     "start": 0,
+     "end": 72,
+     "page": 5
+    },
+    {
+     "text": "It’s commonly believed that leaders need to be sociable.",
+     "start": 73,
+     "end": 129,
+     "page": 5
+    },
+    {
+     "text": "But this depends, among other things, on the personalities of their employees.",
+     "start": 130,
+     "end": 208,
+     "page": 5
+    },
+    {
+     "text": "One 2011 study showed that in branches of a pizza chain where employees were more passive, outgoing bosses were associated with higher profits.",
+     "start": 209,
+     "end": 352,
+     "page": 5
+    },
+    {
+     "text": "But in branches where employees were more active, introverted leaders were more effective.",
+     "start": 353,
+     "end": 443,
+     "page": 5
+    },
+    {
+     "text": "One reason for this is that introverted people are less likely to feel threatened by strong personalities and suggestions.",
+     "start": 444,
+     "end": 566,
+     "page": 5
+    },
+    {
+     "text": "They’re also more likely to listen.",
+     "start": 567,
+     "end": 602,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Since ancient times, meanwhile, people have been aware of a link between isolation and mental focus. After all, cultures with traditions of religious hermits believe that solitude is important for enlightenment. Recent research has given us a better understanding of why. One benefit of unsociability is the brain’s state of active mental rest, which goes hand-in-hand with the stillness of being alone. When another person is present, your brain can’t help but pay some attention. This can be a positive distraction. But it’s still a distraction.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Since ancient times, meanwhile, people have been aware of a link between isolation and mental focus.",
+     "start": 0,
+     "end": 100,
+     "page": 5
+    },
+    {
+     "text": "After all, cultures with traditions of religious hermits believe that solitude is important for enlightenment.",
+     "start": 101,
+     "end": 211,
+     "page": 5
+    },
+    {
+     "text": "Recent research has given us a better understanding of why.",
+     "start": 212,
+     "end": 271,
+     "page": 5
+    },
+    {
+     "text": "One benefit of unsociability is the brain’s state of active mental rest, which goes hand-in-hand with the stillness of being alone.",
+     "start": 272,
+     "end": 403,
+     "page": 5
+    },
+    {
+     "text": "When another person is present, your brain can’t help but pay some attention.",
+     "start": 404,
+     "end": 481,
+     "page": 5
+    },
+    {
+     "text": "This can be a positive distraction.",
+     "start": 482,
+     "end": 517,
+     "page": 5
+    },
+    {
+     "text": "But it’s still a distraction.",
+     "start": 518,
+     "end": 547,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "Daydreaming in the absence of such distractions activates the brain’s default-mode network. Among other functions, this network helps to consolidate memory and understand others’ emotions. Giving free rein to a wandering mind not only helps with focus in the long term but strengthens your sense of both yourself and others. Paradoxically, therefore, periods of solitude actually help when it comes time to socialise once more. And the occasional absence of focus ultimately helps concentration in the long run.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Daydreaming in the absence of such distractions activates the brain’s default-mode network.",
+     "start": 0,
+     "end": 91,
+     "page": 5
+    },
+    {
+     "text": "Among other functions, this network helps to consolidate memory and understand others’ emotions.",
+     "start": 92,
+     "end": 188,
+     "page": 5
+    },
+    {
+     "text": "Giving free rein to a wandering mind not only helps with focus in the long term but strengthens your sense of both yourself and others.",
+     "start": 189,
+     "end": 324,
+     "page": 5
+    },
+    {
+     "text": "Paradoxically, therefore, periods of solitude actually help when it comes time to socialise once more.",
+     "start": 325,
+     "end": 427,
+     "page": 5
+    },
+    {
+     "text": "And the occasional absence of focus ultimately helps concentration in the long run.",
+     "start": 428,
+     "end": 511,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "A more recent advocate of thoughtful and productive solitude is Susan Cain, author of Quiet: The Power of Introverts in a World That Can’t Stop Talking and founder of Quiet Revolution, a company that promotes quiet and introvert-friendly workplaces. “These days, we tend to believe that creativity emerges from a decidedly unreserved socialising process, but in fact it requires sustained attention and deep focus,” she says. “Also, humans are such absorbent social beings that when we surround ourselves with others, we automatically take in their opinions and aesthetics. To truly chart our own path or vision, we have to be willing to isolate ourselves, at least for some period of time.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "A more recent advocate of thoughtful and productive solitude is Susan Cain, author of Quiet: The Power of Introverts in a World That Can’t Stop Talking and founder of Quiet Revolution, a company that promotes quiet and introvert-friendly workplaces.",
+     "start": 0,
+     "end": 249,
+     "page": 5
+    },
+    {
+     "text": "“These days, we tend to believe that creativity emerges from a decidedly unreserved socialising process, but in fact it requires sustained attention and deep focus,” she says.",
+     "start": 250,
+     "end": 425,
+     "page": 5
+    },
+    {
+     "text": "“Also, humans are such absorbent social beings that when we surround ourselves with others, we automatically take in their opinions and aesthetics.",
+     "start": 426,
+     "end": 573,
+     "page": 5
+    },
+    {
+     "text": "To truly chart our own path or vision, we have to be willing to isolate ourselves, at least for some period of time.”",
+     "start": 574,
+     "end": 691,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "N",
+   "text": "Still, the line between useful solitude and dangerous isolation can be blurry. “Almost anything can be adaptive and maladaptive, depending on how extreme they get,” Feist says. A disorder has to do with dysfunction. If someone stops caring about people and cuts off all contact, this could point to an irrational neglect of social relations. But creative unsociability is a far cry from this. In fact, Feist says, “there’s a real danger with people who are never alone.” It’s hard to examine one’s own thoughts, feelings and motives, to be self-aware, and fully relaxed unless you have occasional solitude. In addition, introverts tend to have fewer but stronger friendships — which has been linked to greater happiness.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Still, the line between useful solitude and dangerous isolation can be blurry.",
+     "start": 0,
+     "end": 78,
+     "page": 5
+    },
+    {
+     "text": "“Almost anything can be adaptive and maladaptive, depending on how extreme they get,” Feist says.",
+     "start": 79,
+     "end": 176,
+     "page": 5
+    },
+    {
+     "text": "A disorder has to do with dysfunction.",
+     "start": 177,
+     "end": 215,
+     "page": 5
+    },
+    {
+     "text": "If someone stops caring about people and cuts off all contact, this could point to an irrational neglect of social relations.",
+     "start": 216,
+     "end": 341,
+     "page": 5
+    },
+    {
+     "text": "But creative unsociability is a far cry from this.",
+     "start": 342,
+     "end": 392,
+     "page": 5
+    },
+    {
+     "text": "In fact, Feist says, “there’s a real danger with people who are never alone.”",
+     "start": 393,
+     "end": 470,
+     "page": 5
+    },
+    {
+     "text": "It’s hard to examine one’s own thoughts, feelings and motives, to be self-aware, and fully relaxed unless you have occasional solitude.",
+     "start": 471,
+     "end": 606,
+     "page": 5
+    },
+    {
+     "text": "In addition, introverts tend to have fewer but stronger friendships — which has been linked to greater happiness.",
+     "start": 607,
+     "end": 720,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "O",
+   "text": "As with many things, quality reigns over quantity. Nurturing a few solid relationships without feeling the need to constantly populate your life with endless chatting ultimately may be better for you.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "As with many things, quality reigns over quantity.",
+     "start": 0,
+     "end": 50,
+     "page": 5
+    },
+    {
+     "text": "Nurturing a few solid relationships without feeling the need to constantly populate your life with endless chatting ultimately may be better for you.",
+     "start": 51,
+     "end": 200,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "P",
+   "text": "Thus, if your personality tends toward unsociability, you shouldn’t feel the need to change. Of course, that comes with qualifications. But as long as you have regular social contact, you are choosing solitude rather than being forced into it, you have at least a few good friends and your solitude is good for your well-being or productivity, there’s no point agonising over how to fit a square personality into a round hole.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Thus, if your personality tends toward unsociability, you shouldn’t feel the need to change.",
+     "start": 0,
+     "end": 92,
+     "page": 5
+    },
+    {
+     "text": "Of course, that comes with qualifications.",
+     "start": 93,
+     "end": 135,
+     "page": 5
+    },
+    {
+     "text": "But as long as you have regular social contact, you are choosing solitude rather than being forced into it, you have at least a few good friends and your solitude is good for your well-being or productivity, there’s no point agonising over how to fit a square personality into a round hole.",
+     "start": 136,
+     "end": 426,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "meditation",
+   "gloss": "冥想",
+   "start": 182,
+   "end": 192,
+   "paragraph": "A",
+   "sentence": 3
+  },
+  {
+   "surface": "hallucinations",
+   "gloss": "幻觉",
+   "start": 236,
+   "end": 250,
+   "paragraph": "D",
+   "sentence": 1
+  },
+  {
+   "surface": "introverted",
+   "gloss": "内向的",
+   "start": 403,
+   "end": 414,
+   "paragraph": "J",
+   "sentence": 4
+  },
+  {
+   "surface": "hermits",
+   "gloss": "隐士",
+   "start": 150,
+   "end": 157,
+   "paragraph": "K",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 16,
+  "sentences": 69,
+  "words": 1207
+ }
+}

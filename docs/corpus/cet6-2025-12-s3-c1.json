@@ -1,0 +1,212 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-12-s3-c1",
+ "label": "2025年12月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 12,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2025年12月英语六级真题(第3套).pdf",
+  "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e",
+  "pages": [
+   4,
+   4
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Mindfulness has been shown to have a number of meaningful health benefits — it can help reduce anxiety and promote healing in those suffering from chronic illness.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Mindfulness has been shown to have a number of meaningful health benefits — it can help reduce anxiety and promote healing in those suffering from chronic illness.",
+     "start": 0,
+     "end": 163,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The practice is based on an insight first described in ancient Buddhist texts that human beings have the capacity to observe experience without being caught up in it. This means simply that it is possible to observe ourselves having a craving, or a happy thought, or even a scary emotion, without reacting in the moment in a way that amplifies the feeling or sends the mind spiraling off into thinking about old memories or anticipating events.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The practice is based on an insight first described in ancient Buddhist texts that human beings have the capacity to observe experience without being caught up in it.",
+     "start": 0,
+     "end": 166,
+     "page": 4
+    },
+    {
+     "text": "This means simply that it is possible to observe ourselves having a craving, or a happy thought, or even a scary emotion, without reacting in the moment in a way that amplifies the feeling or sends the mind spiraling off into thinking about old memories or anticipating events.",
+     "start": 167,
+     "end": 444,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "This practice of mindfulness can help calm the mind and the body as we learn not to react to experience with likes and dislikes or judgments of good and bad. It does not make us cold or indifferent but more fully present.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "This practice of mindfulness can help calm the mind and the body as we learn not to react to experience with likes and dislikes or judgments of good and bad.",
+     "start": 0,
+     "end": 157,
+     "page": 4
+    },
+    {
+     "text": "It does not make us cold or indifferent but more fully present.",
+     "start": 158,
+     "end": 221,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "One of the challenges of practicing mindfulness in our contemporary world is that there has been a profound transformation in human attention. The artist Jenny Odell argues that in our “attention economy” human attention has been transformed into a commodity that big corporations buy and sell. This economy rests on a technological revolution of mobile phones and social media that makes it possible for corporations to target our attention with their content at every moment.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "One of the challenges of practicing mindfulness in our contemporary world is that there has been a profound transformation in human attention.",
+     "start": 0,
+     "end": 142,
+     "page": 4
+    },
+    {
+     "text": "The artist Jenny Odell argues that in our “attention economy” human attention has been transformed into a commodity that big corporations buy and sell.",
+     "start": 143,
+     "end": 294,
+     "page": 4
+    },
+    {
+     "text": "This economy rests on a technological revolution of mobile phones and social media that makes it possible for corporations to target our attention with their content at every moment.",
+     "start": 295,
+     "end": 477,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "The devices most people use are a perpetual diversion from the present moment. The result is that it can feel as though our ability to focus, and be fully present, has been stolen. But mindfulness can help us resist the attention economy and relish the things that make life special, like being together with those we love.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The devices most people use are a perpetual diversion from the present moment.",
+     "start": 0,
+     "end": 78,
+     "page": 4
+    },
+    {
+     "text": "The result is that it can feel as though our ability to focus, and be fully present, has been stolen.",
+     "start": 79,
+     "end": 180,
+     "page": 4
+    },
+    {
+     "text": "But mindfulness can help us resist the attention economy and relish the things that make life special, like being together with those we love.",
+     "start": 181,
+     "end": 323,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Most mindfulness research focuses on the individual benefits of the practice, but some scholars assert that we can not only practice mindfulness for ourselves but also practice it for others. It can help us build stronger, healthier relationships.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Most mindfulness research focuses on the individual benefits of the practice, but some scholars assert that we can not only practice mindfulness for ourselves but also practice it for others.",
+     "start": 0,
+     "end": 191,
+     "page": 4
+    },
+    {
+     "text": "It can help us build stronger, healthier relationships.",
+     "start": 192,
+     "end": 247,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "The sad truth is that living in the attention economy, most of us have become bad listeners. However, just as it is possible to watch ourselves having an experience without reacting, it’s possible to watch another person have an experience without getting tied up in reactivity and judgment.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The sad truth is that living in the attention economy, most of us have become bad listeners.",
+     "start": 0,
+     "end": 92,
+     "page": 4
+    },
+    {
+     "text": "However, just as it is possible to watch ourselves having an experience without reacting, it’s possible to watch another person have an experience without getting tied up in reactivity and judgment.",
+     "start": 93,
+     "end": 291,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "The gift of mindfulness is a practice of listening with compassion to others describe their experiences. To give this gift means putting away your phone, turning off social media, and setting aside other common distractions. It means practicing being fully present in another person’s presence and listening to them with complete attention without judgment, while resisting the urge to make the interaction about you.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The gift of mindfulness is a practice of listening with compassion to others describe their experiences.",
+     "start": 0,
+     "end": 104,
+     "page": 4
+    },
+    {
+     "text": "To give this gift means putting away your phone, turning off social media, and setting aside other common distractions.",
+     "start": 105,
+     "end": 224,
+     "page": 4
+    },
+    {
+     "text": "It means practicing being fully present in another person’s presence and listening to them with complete attention without judgment, while resisting the urge to make the interaction about you.",
+     "start": 225,
+     "end": 417,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "If we judge the value of gifts based on their price, this gift may seem worthless, but in a distracted world, it is a precious one.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "If we judge the value of gifts based on their price, this gift may seem worthless, but in a distracted world, it is a precious one.",
+     "start": 0,
+     "end": 131,
+     "page": 4
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 19,
+  "words": 453
+ }
+}

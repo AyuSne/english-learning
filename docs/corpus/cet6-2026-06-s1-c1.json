@@ -1,0 +1,192 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s1-c1",
+ "label": "2026年6月 · 第1套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第1套).pdf",
+  "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f",
+  "pages": [
+   6,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Children’s use of social media is a problem. That doesn’t mean it should be stopped. While younger children should not be on platforms where 13 is the minimum age, it is neither practical nor desirable to imagine a world in which teenagers are prevented from accessing the platforms and messaging systems that the adults around them use to organise their lives.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Children’s use of social media is a problem.",
+     "start": 0,
+     "end": 44,
+     "page": 6
+    },
+    {
+     "text": "That doesn’t mean it should be stopped.",
+     "start": 45,
+     "end": 84,
+     "page": 6
+    },
+    {
+     "text": "While younger children should not be on platforms where 13 is the minimum age, it is neither practical nor desirable to imagine a world in which teenagers are prevented from accessing the platforms and messaging systems that the adults around them use to organise their lives.",
+     "start": 85,
+     "end": 361,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "But the pleasure and stimulation that people of all ages find on their screens and smartphones must not blind us to the harm that spending time in this way can cause. The finding that the alarmingly high rate of depression in British teenage girls is closely correlated to time spent on social media is extremely concerning. Research found that two in five girls are on social media for at least three hours a day — with half as many boys engaged to the same extent. More than a third of depressed girls have experienced online harassment. About half of affected girls suffered disrupted sleep, compared with 20% of depressed boys.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "But the pleasure and stimulation that people of all ages find on their screens and smartphones must not blind us to the harm that spending time in this way can cause.",
+     "start": 0,
+     "end": 166,
+     "page": 6
+    },
+    {
+     "text": "The finding that the alarmingly high rate of depression in British teenage girls is closely correlated to time spent on social media is extremely concerning.",
+     "start": 167,
+     "end": 324,
+     "page": 6
+    },
+    {
+     "text": "Research found that two in five girls are on social media for at least three hours a day — with half as many boys engaged to the same extent.",
+     "start": 325,
+     "end": 466,
+     "page": 6
+    },
+    {
+     "text": "More than a third of depressed girls have experienced online harassment.",
+     "start": 467,
+     "end": 539,
+     "page": 6
+    },
+    {
+     "text": "About half of affected girls suffered disrupted sleep, compared with 20% of depressed boys.",
+     "start": 540,
+     "end": 631,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Although the research does not prove that social media causes depression, the importance of the finding that there is a connection should not be underestimated. Schools have done important work in communicating key messages about the risks of online abuse. But when it comes to broader questions about “screen time”, many professionals as well as parents are confused and uncertain.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Although the research does not prove that social media causes depression, the importance of the finding that there is a connection should not be underestimated.",
+     "start": 0,
+     "end": 160,
+     "page": 6
+    },
+    {
+     "text": "Schools have done important work in communicating key messages about the risks of online abuse.",
+     "start": 161,
+     "end": 256,
+     "page": 6
+    },
+    {
+     "text": "But when it comes to broader questions about “screen time”, many professionals as well as parents are confused and uncertain.",
+     "start": 257,
+     "end": 382,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "The health secretary, Matt Hancock, wants official guidelines on time and age limits. This idea has the virtue of simplicity, though some experts question its effects and call for a greater degree of differentiation, arguing that time online by itself is not a bad thing and it all depends on what you are doing. Also due this year is information commissioner Elizabeth Denham’s Age Appropriate Design Code, covering the use of children’s personal data. Both initiatives are welcome. But the government is playing catch-up. Statutory regulation of the digital media giants is long overdue. The failure to protect children from data harvesting and targeted advertising thus far is as shocking as the lack of concern shown by the companies themselves with regard to children’s psychological health.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The health secretary, Matt Hancock, wants official guidelines on time and age limits.",
+     "start": 0,
+     "end": 85,
+     "page": 6
+    },
+    {
+     "text": "This idea has the virtue of simplicity, though some experts question its effects and call for a greater degree of differentiation, arguing that time online by itself is not a bad thing and it all depends on what you are doing.",
+     "start": 86,
+     "end": 312,
+     "page": 6
+    },
+    {
+     "text": "Also due this year is information commissioner Elizabeth Denham’s Age Appropriate Design Code, covering the use of children’s personal data.",
+     "start": 313,
+     "end": 453,
+     "page": 6
+    },
+    {
+     "text": "Both initiatives are welcome.",
+     "start": 454,
+     "end": 483,
+     "page": 6
+    },
+    {
+     "text": "But the government is playing catch-up.",
+     "start": 484,
+     "end": 523,
+     "page": 6
+    },
+    {
+     "text": "Statutory regulation of the digital media giants is long overdue.",
+     "start": 524,
+     "end": 589,
+     "page": 6
+    },
+    {
+     "text": "The failure to protect children from data harvesting and targeted advertising thus far is as shocking as the lack of concern shown by the companies themselves with regard to children’s psychological health.",
+     "start": 590,
+     "end": 796,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Of course, social media companies are not the source of all our ills, and can offer a too-easy target for politicians keen to divert attention from inadequately resourced schools and health services. There are other reasons for the rising incidence of depression in young people, with increasing pressure to succeed in education and in life more broadly — to be famous, beautiful, rich — often cited as a source of unhappiness or anxiety which can, if aggravated by other factors, and not managed, tip into ill health. Safeguarding means more than the avoidance of physical threat.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Of course, social media companies are not the source of all our ills, and can offer a too-easy target for politicians keen to divert attention from inadequately resourced schools and health services.",
+     "start": 0,
+     "end": 199,
+     "page": 6
+    },
+    {
+     "text": "There are other reasons for the rising incidence of depression in young people, with increasing pressure to succeed in education and in life more broadly — to be famous, beautiful, rich — often cited as a source of unhappiness or anxiety which can, if aggravated by other factors, and not managed, tip into ill health.",
+     "start": 200,
+     "end": 518,
+     "page": 6
+    },
+    {
+     "text": "Safeguarding means more than the avoidance of physical threat.",
+     "start": 519,
+     "end": 581,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 5,
+  "sentences": 21,
+  "words": 453
+ }
+}

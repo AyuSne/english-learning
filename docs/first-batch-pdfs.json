@@ -1,0 +1,178 @@
+{
+  "confirmed_on": "2026-11-16",
+  "purpose": "首版文章阅读与词汇学习的首批PDF材料",
+  "article_scope": [
+    "仔细阅读完整正文",
+    "长篇匹配完整正文"
+  ],
+  "files": [
+    {
+      "year": 2023,
+      "month": 6,
+      "set": 1,
+      "path": "真题PDF/六级/2023年6月英语六级真题(第1套).pdf",
+      "pages": 10,
+      "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5"
+    },
+    {
+      "year": 2023,
+      "month": 6,
+      "set": 2,
+      "path": "真题PDF/六级/2023年6月英语六级真题(第2套).pdf",
+      "pages": 10,
+      "sha256": "7f2690572f05d9db6c0b30da8eb52a0261b73b9e594db291075659cac54abcdf"
+    },
+    {
+      "year": 2023,
+      "month": 6,
+      "set": 3,
+      "path": "真题PDF/六级/2023年6月英语六级真题(第3套).pdf",
+      "pages": 7,
+      "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "set": 1,
+      "path": "真题PDF/六级/2023年12月英语六级真题(第1套).pdf",
+      "pages": 9,
+      "sha256": "9b17a246c154b45216f679fc5bc8f1e83ce6d68782bda2fefa3cb4e5654dc203"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "set": 2,
+      "path": "真题PDF/六级/2023年12月英语六级真题(第2套).pdf",
+      "pages": 9,
+      "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "set": 3,
+      "path": "真题PDF/六级/2023年12月英语六级真题(第3套).pdf",
+      "pages": 7,
+      "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c"
+    },
+    {
+      "year": 2024,
+      "month": 6,
+      "set": 1,
+      "path": "真题PDF/六级/2024年6月英语六级真题(第1套).pdf",
+      "pages": 8,
+      "sha256": "4a0f39536c2a6747a1e535d46a0aa7de069e2a1b4d893ebf4ffb1d177d8aafea"
+    },
+    {
+      "year": 2024,
+      "month": 6,
+      "set": 2,
+      "path": "真题PDF/六级/2024年6月英语六级真题(第2套).pdf",
+      "pages": 8,
+      "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7"
+    },
+    {
+      "year": 2024,
+      "month": 6,
+      "set": 3,
+      "path": "真题PDF/六级/2024年6月英语六级真题(第3套).pdf",
+      "pages": 6,
+      "sha256": "5c96942b0b63e7b16fca4faf6c9fd09c73361a602a502bcdde2826d459e49d37"
+    },
+    {
+      "year": 2024,
+      "month": 12,
+      "set": 1,
+      "path": "真题PDF/六级/2024年12月英语六级真题(第1套).pdf",
+      "pages": 8,
+      "sha256": "f57dccaa559f5bcff40b16c2d5c271bcc0abfeb9052aa9469751fdb37d7e60e6"
+    },
+    {
+      "year": 2024,
+      "month": 12,
+      "set": 2,
+      "path": "真题PDF/六级/2024年12月英语六级真题(第2套).pdf",
+      "pages": 8,
+      "sha256": "69e9ef6fe86844241dd608af7009cbc41944811575aa48ba20a22995b78152b0"
+    },
+    {
+      "year": 2024,
+      "month": 12,
+      "set": 3,
+      "path": "真题PDF/六级/2024年12月英语六级真题(第3套).pdf",
+      "pages": 6,
+      "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67"
+    },
+    {
+      "year": 2025,
+      "month": 6,
+      "set": 1,
+      "path": "真题PDF/六级/2025年6月英语六级真题(第1套).pdf",
+      "pages": 8,
+      "sha256": "e9204d7d82b502a69898862bbcd794be019fe0977f28ab5d1ab4243d730cfc16"
+    },
+    {
+      "year": 2025,
+      "month": 6,
+      "set": 2,
+      "path": "真题PDF/六级/2025年6月英语六级真题(第2套).pdf",
+      "pages": 8,
+      "sha256": "ca040e3dc21b5487080c8827f35e200cc44d5d496e5fd9aba7aaa0ccbfc3e608"
+    },
+    {
+      "year": 2025,
+      "month": 6,
+      "set": 3,
+      "path": "真题PDF/六级/2025年6月英语六级真题(第3套).pdf",
+      "pages": 6,
+      "sha256": "1310d1f9e49ae67a9cd0faa6f0c9a1a02c24e28819a05dec18a8e4004a10ab49"
+    },
+    {
+      "year": 2025,
+      "month": 12,
+      "set": 1,
+      "path": "真题PDF/六级/2025年12月英语六级真题(第1套).pdf",
+      "pages": 8,
+      "sha256": "a0855c46e0da9fc29f349b38d17a6cabf26d63be6c2758d169fc1dd031d3c062"
+    },
+    {
+      "year": 2025,
+      "month": 12,
+      "set": 2,
+      "path": "真题PDF/六级/2025年12月英语六级真题(第2套).pdf",
+      "pages": 8,
+      "sha256": "b103d8f0a56418713e5c7ff4a185b234b0b86578a8c2211f4261810e92006fd1"
+    },
+    {
+      "year": 2025,
+      "month": 12,
+      "set": 3,
+      "path": "真题PDF/六级/2025年12月英语六级真题(第3套).pdf",
+      "pages": 6,
+      "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e"
+    },
+    {
+      "year": 2026,
+      "month": 6,
+      "set": 1,
+      "path": "真题PDF/六级/2026年6月英语六级真题(第1套).pdf",
+      "pages": 8,
+      "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f"
+    },
+    {
+      "year": 2026,
+      "month": 6,
+      "set": 2,
+      "path": "真题PDF/六级/2026年6月英语六级真题(第2套).pdf",
+      "pages": 8,
+      "sha256": "7616f631dd8758925e8a17f68cf826d38a7d5104177420b3334df87a4387555e"
+    },
+    {
+      "year": 2026,
+      "month": 6,
+      "set": 3,
+      "path": "真题PDF/六级/2026年6月英语六级真题(第3套).pdf",
+      "pages": 6,
+      "sha256": "dbd77e981aa91b5e3d4b8c8e4dd799f83d869951c44f841d9f981305847ba6dd"
+    }
+  ]
+}

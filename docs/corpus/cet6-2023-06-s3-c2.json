@@ -1,0 +1,214 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s3-c2",
+ "label": "2023年6月 · 第3套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第3套).pdf",
+  "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Many oppose workplace surveillance, because of the inherent dehumanizing effect it has and the relentless pressure it brings. But it’s on the rise around the world as firms look to become more efficient by squeezing more productivity from their workers. More than half of companies with over $750m in annual revenue used “non-traditional” monitoring techniques on staff last year.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Many oppose workplace surveillance, because of the inherent dehumanizing effect it has and the relentless pressure it brings.",
+     "start": 0,
+     "end": 125,
+     "page": 6
+    },
+    {
+     "text": "But it’s on the rise around the world as firms look to become more efficient by squeezing more productivity from their workers.",
+     "start": 126,
+     "end": 253,
+     "page": 6
+    },
+    {
+     "text": "More than half of companies with over $750m in annual revenue used “non-traditional” monitoring techniques on staff last year.",
+     "start": 254,
+     "end": 380,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Monitoring employee performance gives firms the ability to assess how their staff are performing and interacting, which can be good for both the firm and employees themselves. A growing number of analytics companies offer this service. They gather “data exhaust” left by employees’ email and instant messaging apps, and use name badges equipped with radio-frequency identification devices and microphones. These can check how much time you spend talking, your volume and tone of voice, even if you do not dominate conversations. While this may sound intrusive, exponents argue that it can also protect employees against bullying and sexual harassment.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Monitoring employee performance gives firms the ability to assess how their staff are performing and interacting, which can be good for both the firm and employees themselves.",
+     "start": 0,
+     "end": 175,
+     "page": 6
+    },
+    {
+     "text": "A growing number of analytics companies offer this service.",
+     "start": 176,
+     "end": 235,
+     "page": 6
+    },
+    {
+     "text": "They gather “data exhaust” left by employees’ email and instant messaging apps, and use name badges equipped with radio-frequency identification devices and microphones.",
+     "start": 236,
+     "end": 405,
+     "page": 6
+    },
+    {
+     "text": "These can check how much time you spend talking, your volume and tone of voice, even if you do not dominate conversations.",
+     "start": 406,
+     "end": 528,
+     "page": 6
+    },
+    {
+     "text": "While this may sound intrusive, exponents argue that it can also protect employees against bullying and sexual harassment.",
+     "start": 529,
+     "end": 651,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Some of this data analysis can produce unexpected results. For example, it was found that people who sat at 12-person lunch tables tended to interact, share ideas more and outperform those who regularly sat at four-person tables, a fact that would probably have gone undetected without such data analysis.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Some of this data analysis can produce unexpected results.",
+     "start": 0,
+     "end": 58,
+     "page": 6
+    },
+    {
+     "text": "For example, it was found that people who sat at 12-person lunch tables tended to interact, share ideas more and outperform those who regularly sat at four-person tables, a fact that would probably have gone undetected without such data analysis.",
+     "start": 59,
+     "end": 305,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Over the last few years a Stockholm co-working space called Epicenter has gone much further and holds popular “chipping parties”, where people can have microchips implanted in their hands. They can use the implants to access electronically-controlled doors, or monitor how typing speed correlates with heart rate. Implanted chips may seem extreme, but it is a relatively small step from ID cards and biometrics to such devices.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Over the last few years a Stockholm co-working space called Epicenter has gone much further and holds popular “chipping parties”, where people can have microchips implanted in their hands.",
+     "start": 0,
+     "end": 188,
+     "page": 6
+    },
+    {
+     "text": "They can use the implants to access electronically-controlled doors, or monitor how typing speed correlates with heart rate.",
+     "start": 189,
+     "end": 313,
+     "page": 6
+    },
+    {
+     "text": "Implanted chips may seem extreme, but it is a relatively small step from ID cards and biometrics to such devices.",
+     "start": 314,
+     "end": 427,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "As long as such schemes are voluntary, there will probably be a growing number of convenienceoriented uses so that a substantial number of workers would opt to have a chip inserted. But if implanted chips are used to reduce slack time or rest breaks, that could prove to be detrimental. And if surveillance tools take away autonomy, that’s when they prove most unpopular. A lot depends on how such monitoring initiatives are communicated and this could prevent possible revolts being staged.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "As long as such schemes are voluntary, there will probably be a growing number of convenienceoriented uses so that a substantial number of workers would opt to have a chip inserted.",
+     "start": 0,
+     "end": 181,
+     "page": 6
+    },
+    {
+     "text": "But if implanted chips are used to reduce slack time or rest breaks, that could prove to be detrimental.",
+     "start": 182,
+     "end": 286,
+     "page": 6
+    },
+    {
+     "text": "And if surveillance tools take away autonomy, that’s when they prove most unpopular.",
+     "start": 287,
+     "end": 371,
+     "page": 6
+    },
+    {
+     "text": "A lot depends on how such monitoring initiatives are communicated and this could prevent possible revolts being staged.",
+     "start": 372,
+     "end": 491,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "If bosses don’t communicate effectively, employees assume the worst. But if they’re open about the information they’re collecting and what they’re doing with it, research suggests 46% of employees are generally okay with it. Although many such monitoring schemes use anonymised data and participation is voluntary, many staffers remain sceptical and fear an erosion of their civil liberties.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "If bosses don’t communicate effectively, employees assume the worst.",
+     "start": 0,
+     "end": 68,
+     "page": 6
+    },
+    {
+     "text": "But if they’re open about the information they’re collecting and what they’re doing with it, research suggests 46% of employees are generally okay with it.",
+     "start": 69,
+     "end": 224,
+     "page": 6
+    },
+    {
+     "text": "Although many such monitoring schemes use anonymised data and participation is voluntary, many staffers remain sceptical and fear an erosion of their civil liberties.",
+     "start": 225,
+     "end": 391,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "So workplace surveillance could be empowering for staff and useful for companies looking to become more efficient and profitable. But implemented in the wrong way, it could also become an unpopular tool of oppression that proves counterproductive.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "So workplace surveillance could be empowering for staff and useful for companies looking to become more efficient and profitable.",
+     "start": 0,
+     "end": 129,
+     "page": 7
+    },
+    {
+     "text": "But implemented in the wrong way, it could also become an unpopular tool of oppression that proves counterproductive.",
+     "start": 130,
+     "end": 247,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 22,
+  "words": 450
+ }
+}

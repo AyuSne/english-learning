@@ -1,0 +1,741 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-12-s3-b",
+ "label": "2025年12月 · 第3套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 12,
+  "set": 3,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2025年12月英语六级真题(第3套).pdf",
+  "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e",
+  "pages": [
+   2,
+   3
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "Timed traffic lights are set according to schedules that are supposed to coordinate with peak traffic hours. Cities need to monitor and update signal light time schedules at least every two years to keep these systems effective. In Los Angeles, California, an ambitious project to go a step further and synchronize every red light in Los Angeles cost over 400 million dollars. Ask a resident of the city and they are likely to agree that saving time on the road is well worth it. If implemented nationwide, synchronization could shave 10% off traffic congestion and 20% off air pollution. Congestion costs time, money, and lives. Big data can help improve how millions of people safely share the road. However, none of this would be possible without the traffic light!",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Timed traffic lights are set according to schedules that are supposed to coordinate with peak traffic hours.",
+     "start": 0,
+     "end": 108,
+     "page": 2
+    },
+    {
+     "text": "Cities need to monitor and update signal light time schedules at least every two years to keep these systems effective.",
+     "start": 109,
+     "end": 228,
+     "page": 2
+    },
+    {
+     "text": "In Los Angeles, California, an ambitious project to go a step further and synchronize every red light in Los Angeles cost over 400 million dollars.",
+     "start": 229,
+     "end": 376,
+     "page": 2
+    },
+    {
+     "text": "Ask a resident of the city and they are likely to agree that saving time on the road is well worth it.",
+     "start": 377,
+     "end": 479,
+     "page": 2
+    },
+    {
+     "text": "If implemented nationwide, synchronization could shave 10% off traffic congestion and 20% off air pollution.",
+     "start": 480,
+     "end": 588,
+     "page": 2
+    },
+    {
+     "text": "Congestion costs time, money, and lives.",
+     "start": 589,
+     "end": 629,
+     "page": 2
+    },
+    {
+     "text": "Big data can help improve how millions of people safely share the road.",
+     "start": 630,
+     "end": 701,
+     "page": 2
+    },
+    {
+     "text": "However, none of this would be possible without the traffic light!",
+     "start": 702,
+     "end": 768,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "The first traffic light was invented in London in the 1860’s, but it was hardly recognizable — or effective. It had been adapted from the railroad signal system by a railway manager, John Peak Knight, in 1868. The railroads used red gas lights at night to signal stops and green gas lights during the daytime. Knight installed a similar gas light, semaphore system near London’s Westminster Bridge in December of 1868.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The first traffic light was invented in London in the 1860’s, but it was hardly recognizable — or effective.",
+     "start": 0,
+     "end": 108,
+     "page": 2
+    },
+    {
+     "text": "It had been adapted from the railroad signal system by a railway manager, John Peak Knight, in 1868.",
+     "start": 109,
+     "end": 209,
+     "page": 2
+    },
+    {
+     "text": "The railroads used red gas lights at night to signal stops and green gas lights during the daytime.",
+     "start": 210,
+     "end": 309,
+     "page": 2
+    },
+    {
+     "text": "Knight installed a similar gas light, semaphore system near London’s Westminster Bridge in December of 1868.",
+     "start": 310,
+     "end": 418,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "The life of the first traffic light signal was short-lived. A gas leak caused one of the signal lights to explode on its police officer operator within a month of being installed.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The life of the first traffic light signal was short-lived.",
+     "start": 0,
+     "end": 59,
+     "page": 2
+    },
+    {
+     "text": "A gas leak caused one of the signal lights to explode on its police officer operator within a month of being installed.",
+     "start": 60,
+     "end": 179,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "Automating traffic signals stalled after the London incident. Forty years passed before cars crowding city streets urged the development of traffic lights in the United States. London would not see another traffic light until 1929.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Automating traffic signals stalled after the London incident.",
+     "start": 0,
+     "end": 61,
+     "page": 2
+    },
+    {
+     "text": "Forty years passed before cars crowding city streets urged the development of traffic lights in the United States.",
+     "start": 62,
+     "end": 176,
+     "page": 2
+    },
+    {
+     "text": "London would not see another traffic light until 1929.",
+     "start": 177,
+     "end": 231,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "The United States is a car culture like no other country. Unlike most European cities that started urban planning when horses were high-tech, many cities in the United States were designed around urban sprawl, suburban tracts, and motor cars.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The United States is a car culture like no other country.",
+     "start": 0,
+     "end": 57,
+     "page": 2
+    },
+    {
+     "text": "Unlike most European cities that started urban planning when horses were high-tech, many cities in the United States were designed around urban sprawl, suburban tracts, and motor cars.",
+     "start": 58,
+     "end": 242,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "As traffic and cities grew, so did the race to solve growing traffic problems. The first traffic signals were semaphores. Semaphores are towers with moving arms signaling for traffic to stop or go. They could be manual or automatic. There was no consistent design. Various models were invented and put into place in cities as the need arose.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "As traffic and cities grew, so did the race to solve growing traffic problems.",
+     "start": 0,
+     "end": 78,
+     "page": 2
+    },
+    {
+     "text": "The first traffic signals were semaphores.",
+     "start": 79,
+     "end": 121,
+     "page": 2
+    },
+    {
+     "text": "Semaphores are towers with moving arms signaling for traffic to stop or go.",
+     "start": 122,
+     "end": 197,
+     "page": 2
+    },
+    {
+     "text": "They could be manual or automatic.",
+     "start": 198,
+     "end": 232,
+     "page": 2
+    },
+    {
+     "text": "There was no consistent design.",
+     "start": 233,
+     "end": 264,
+     "page": 2
+    },
+    {
+     "text": "Various models were invented and put into place in cities as the need arose.",
+     "start": 265,
+     "end": 341,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "In 1912, Lester Wire was a police officer exhausted by traffic at Main Street and 200 South. He developed a manually switched stop light. The four-sided box, raised on a ten-foot pole, looked like a birdhouse and was operated manually by an officer. The officer would flip a switch to change between the dipped red and green lights.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "In 1912, Lester Wire was a police officer exhausted by traffic at Main Street and 200 South.",
+     "start": 0,
+     "end": 92,
+     "page": 2
+    },
+    {
+     "text": "He developed a manually switched stop light.",
+     "start": 93,
+     "end": 137,
+     "page": 2
+    },
+    {
+     "text": "The four-sided box, raised on a ten-foot pole, looked like a birdhouse and was operated manually by an officer.",
+     "start": 138,
+     "end": 249,
+     "page": 2
+    },
+    {
+     "text": "The officer would flip a switch to change between the dipped red and green lights.",
+     "start": 250,
+     "end": 332,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "Like the 1910 semaphore, the first electric signal used words. However, the words were no longer written on arms that raised and fell. The words “stop” or “move” were on lights. The posts lit up on each of four cornerposts around an intersection. It was not automated, though. A booth with an operator was required to flip the switches.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Like the 1910 semaphore, the first electric signal used words.",
+     "start": 0,
+     "end": 62,
+     "page": 2
+    },
+    {
+     "text": "However, the words were no longer written on arms that raised and fell.",
+     "start": 63,
+     "end": 134,
+     "page": 2
+    },
+    {
+     "text": "The words “stop” or “move” were on lights.",
+     "start": 135,
+     "end": 177,
+     "page": 2
+    },
+    {
+     "text": "The posts lit up on each of four cornerposts around an intersection.",
+     "start": 178,
+     "end": 246,
+     "page": 2
+    },
+    {
+     "text": "It was not automated, though.",
+     "start": 247,
+     "end": 276,
+     "page": 2
+    },
+    {
+     "text": "A booth with an operator was required to flip the switches.",
+     "start": 277,
+     "end": 336,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "The system allowed police officers to move from the middle of the street to a corner. From that vantage, an officer could oversee the crowd. If an emergency vehicle came, the officer could flip a switch and clear the intersection by triggering all red lights. The emergency vehicle could now pass effortlessly. Finally, in San Francisco the first red and green electric light system that could be operated automatically (or manually) was introduced in 1917.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The system allowed police officers to move from the middle of the street to a corner.",
+     "start": 0,
+     "end": 85,
+     "page": 2
+    },
+    {
+     "text": "From that vantage, an officer could oversee the crowd.",
+     "start": 86,
+     "end": 140,
+     "page": 2
+    },
+    {
+     "text": "If an emergency vehicle came, the officer could flip a switch and clear the intersection by triggering all red lights.",
+     "start": 141,
+     "end": 259,
+     "page": 2
+    },
+    {
+     "text": "The emergency vehicle could now pass effortlessly.",
+     "start": 260,
+     "end": 310,
+     "page": 2
+    },
+    {
+     "text": "Finally, in San Francisco the first red and green electric light system that could be operated automatically (or manually) was introduced in 1917.",
+     "start": 311,
+     "end": 457,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "In 1920, the first three-color light system was introduced in Detroit — also known as Motor City, USA. The evolution of traffic light signals could not have a more appropriate context than Motor City. Ford Motor Company was founded in Detroit in 1903 (and other motor companies followed). Ford made cars affordable for more common people, rather than the wealthy, by creating larger scale factory production.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "In 1920, the first three-color light system was introduced in Detroit — also known as Motor City, USA.",
+     "start": 0,
+     "end": 102,
+     "page": 3
+    },
+    {
+     "text": "The evolution of traffic light signals could not have a more appropriate context than Motor City.",
+     "start": 103,
+     "end": 200,
+     "page": 3
+    },
+    {
+     "text": "Ford Motor Company was founded in Detroit in 1903 (and other motor companies followed).",
+     "start": 201,
+     "end": 288,
+     "page": 3
+    },
+    {
+     "text": "Ford made cars affordable for more common people, rather than the wealthy, by creating larger scale factory production.",
+     "start": 289,
+     "end": 408,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Stop and go were insufficient for the new volumes of cars zooming through intersections. Streets were full of new numbers of cars in addition to delivery wagons, bustling crowds, bicycles, horse-drawn carriages, and street cars. The introduction of the cautionary yellow light helped increase driver safety, decreasing accidents that come from running red lights.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Stop and go were insufficient for the new volumes of cars zooming through intersections.",
+     "start": 0,
+     "end": 88,
+     "page": 3
+    },
+    {
+     "text": "Streets were full of new numbers of cars in addition to delivery wagons, bustling crowds, bicycles, horse-drawn carriages, and street cars.",
+     "start": 89,
+     "end": 228,
+     "page": 3
+    },
+    {
+     "text": "The introduction of the cautionary yellow light helped increase driver safety, decreasing accidents that come from running red lights.",
+     "start": 229,
+     "end": 363,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "Stop lights were incredibly important in chaotic city streets. Crosswalks weren’t even introduced until 1951. The first pedestrian fatality in the United States was in 1899.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Stop lights were incredibly important in chaotic city streets.",
+     "start": 0,
+     "end": 62,
+     "page": 3
+    },
+    {
+     "text": "Crosswalks weren’t even introduced until 1951.",
+     "start": 63,
+     "end": 109,
+     "page": 3
+    },
+    {
+     "text": "The first pedestrian fatality in the United States was in 1899.",
+     "start": 110,
+     "end": 173,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "The development of the modern traffic light may have started in London, but it grew up in the United States. In Cleveland, an African-American inventor named Garrett Morgan came up with an affordable, patented traffic signal. The yellow light made intersections safer than the old stop and go system. The new design was inexpensive enough that it allowed the installation of a lot more lights.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "The development of the modern traffic light may have started in London, but it grew up in the United States.",
+     "start": 0,
+     "end": 108,
+     "page": 3
+    },
+    {
+     "text": "In Cleveland, an African-American inventor named Garrett Morgan came up with an affordable, patented traffic signal.",
+     "start": 109,
+     "end": 225,
+     "page": 3
+    },
+    {
+     "text": "The yellow light made intersections safer than the old stop and go system.",
+     "start": 226,
+     "end": 300,
+     "page": 3
+    },
+    {
+     "text": "The new design was inexpensive enough that it allowed the installation of a lot more lights.",
+     "start": 301,
+     "end": 393,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "N",
+   "text": "Morgan sold the patent to General Electric — and the spread of the traffic light was green lighted. Green means go. It is that simple, but it’s still best to check both ways for oncoming traffic that may not be paying attention or is running the light. Yellow means slow down and prepare to stop. It does not mean full-throttle ahead. While you may get away with gunning it into the intersection, running a yellow can lead to tickets and dangerous accidents. Red lights are a clear and consistent warning to stop. Even where right turns are allowed on red lights, you must come to a complete stop before turning right. You must also yield to any through traffic, which has the right of way. In most states and cities, you can take a right on red unless otherwise indicated. New York City does not allow a right on red.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Morgan sold the patent to General Electric — and the spread of the traffic light was green lighted.",
+     "start": 0,
+     "end": 99,
+     "page": 3
+    },
+    {
+     "text": "Green means go.",
+     "start": 100,
+     "end": 115,
+     "page": 3
+    },
+    {
+     "text": "It is that simple, but it’s still best to check both ways for oncoming traffic that may not be paying attention or is running the light.",
+     "start": 116,
+     "end": 252,
+     "page": 3
+    },
+    {
+     "text": "Yellow means slow down and prepare to stop.",
+     "start": 253,
+     "end": 296,
+     "page": 3
+    },
+    {
+     "text": "It does not mean full-throttle ahead.",
+     "start": 297,
+     "end": 334,
+     "page": 3
+    },
+    {
+     "text": "While you may get away with gunning it into the intersection, running a yellow can lead to tickets and dangerous accidents.",
+     "start": 335,
+     "end": 458,
+     "page": 3
+    },
+    {
+     "text": "Red lights are a clear and consistent warning to stop.",
+     "start": 459,
+     "end": 513,
+     "page": 3
+    },
+    {
+     "text": "Even where right turns are allowed on red lights, you must come to a complete stop before turning right.",
+     "start": 514,
+     "end": 618,
+     "page": 3
+    },
+    {
+     "text": "You must also yield to any through traffic, which has the right of way.",
+     "start": 619,
+     "end": 690,
+     "page": 3
+    },
+    {
+     "text": "In most states and cities, you can take a right on red unless otherwise indicated.",
+     "start": 691,
+     "end": 773,
+     "page": 3
+    },
+    {
+     "text": "New York City does not allow a right on red.",
+     "start": 774,
+     "end": 818,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "O",
+   "text": "Red arrows mean you cannot turn right on a red in most states. The green arrow, in these cases, is the only time you can make the turn. However, you can take a right on a red arrow after a full stop in the states of Illinois, Kansas, Louisiana, Maryland, Michigan, New Hampshire, North Dakota, Oregon, South Carolina, Utah, Washington State and Wyoming.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Red arrows mean you cannot turn right on a red in most states.",
+     "start": 0,
+     "end": 62,
+     "page": 3
+    },
+    {
+     "text": "The green arrow, in these cases, is the only time you can make the turn.",
+     "start": 63,
+     "end": 135,
+     "page": 3
+    },
+    {
+     "text": "However, you can take a right on a red arrow after a full stop in the states of Illinois, Kansas, Louisiana, Maryland, Michigan, New Hampshire, North Dakota, Oregon, South Carolina, Utah, Washington State and Wyoming.",
+     "start": 136,
+     "end": 353,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "P",
+   "text": "Flashing Red is the same as a stop sign, generally used at four-way intersections where there is minimal traffic. When arriving at a flashing red light, make a full and complete stop. Flashing Red Arrows similarly mean to stop and then proceed to take the turn. Flashing Yellow lights mean yield or signal caution, like outside of a fire station. There are no all-direction flashing yellow lights, since it is prohibited in the United States. If you have a flashing yellow light, you are to yield to oncoming traffic.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Flashing Red is the same as a stop sign, generally used at four-way intersections where there is minimal traffic.",
+     "start": 0,
+     "end": 113,
+     "page": 3
+    },
+    {
+     "text": "When arriving at a flashing red light, make a full and complete stop.",
+     "start": 114,
+     "end": 183,
+     "page": 3
+    },
+    {
+     "text": "Flashing Red Arrows similarly mean to stop and then proceed to take the turn.",
+     "start": 184,
+     "end": 261,
+     "page": 3
+    },
+    {
+     "text": "Flashing Yellow lights mean yield or signal caution, like outside of a fire station.",
+     "start": 262,
+     "end": 346,
+     "page": 3
+    },
+    {
+     "text": "There are no all-direction flashing yellow lights, since it is prohibited in the United States.",
+     "start": 347,
+     "end": 442,
+     "page": 3
+    },
+    {
+     "text": "If you have a flashing yellow light, you are to yield to oncoming traffic.",
+     "start": 443,
+     "end": 517,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "Q",
+   "text": "Flashing Yellow Arrows are part of a four-signal traffic light. These are used in some states after a protected green turn signal, or arrow, but before a steady yellow arrow. When a flashing yellow arrow is shown, you can take the turn after yielding to pedestrians and traffic. Steady Yellow Arrows maintain the normal yellow light caution in three-light signals, meaning to stop or prepare to stop. In a four-signal system that has a flashing yellow arrow, the steady yellow arrow is a signal that the yield period is ending. The red arrow is about to start. Vehicles should stop if safely possible. Traffic tickets are possible for running a steady yellow arrow.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Flashing Yellow Arrows are part of a four-signal traffic light.",
+     "start": 0,
+     "end": 63,
+     "page": 3
+    },
+    {
+     "text": "These are used in some states after a protected green turn signal, or arrow, but before a steady yellow arrow.",
+     "start": 64,
+     "end": 174,
+     "page": 3
+    },
+    {
+     "text": "When a flashing yellow arrow is shown, you can take the turn after yielding to pedestrians and traffic.",
+     "start": 175,
+     "end": 278,
+     "page": 3
+    },
+    {
+     "text": "Steady Yellow Arrows maintain the normal yellow light caution in three-light signals, meaning to stop or prepare to stop.",
+     "start": 279,
+     "end": 400,
+     "page": 3
+    },
+    {
+     "text": "In a four-signal system that has a flashing yellow arrow, the steady yellow arrow is a signal that the yield period is ending.",
+     "start": 401,
+     "end": 527,
+     "page": 3
+    },
+    {
+     "text": "The red arrow is about to start.",
+     "start": 528,
+     "end": 560,
+     "page": 3
+    },
+    {
+     "text": "Vehicles should stop if safely possible.",
+     "start": 561,
+     "end": 601,
+     "page": 3
+    },
+    {
+     "text": "Traffic tickets are possible for running a steady yellow arrow.",
+     "start": 602,
+     "end": 665,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "R",
+   "text": "Traffic light meaning is fairly consistent across the board with various deviations. Green means it’s safe to proceed (though you should still exercise caution). Yellow means caution and yield. Red means danger and stop. Always drive defensively and obey traffic signals.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Traffic light meaning is fairly consistent across the board with various deviations.",
+     "start": 0,
+     "end": 84,
+     "page": 3
+    },
+    {
+     "text": "Green means it’s safe to proceed (though you should still exercise caution).",
+     "start": 85,
+     "end": 161,
+     "page": 3
+    },
+    {
+     "text": "Yellow means caution and yield.",
+     "start": 162,
+     "end": 193,
+     "page": 3
+    },
+    {
+     "text": "Red means danger and stop.",
+     "start": 194,
+     "end": 220,
+     "page": 3
+    },
+    {
+     "text": "Always drive defensively and obey traffic signals.",
+     "start": 221,
+     "end": 271,
+     "page": 3
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "synchronize",
+   "gloss": "使同步",
+   "start": 303,
+   "end": 314,
+   "paragraph": "A",
+   "sentence": 2
+  },
+  {
+   "surface": "congestion",
+   "gloss": "堵塞",
+   "start": 551,
+   "end": 561,
+   "paragraph": "A",
+   "sentence": 4
+  },
+  {
+   "surface": "semaphore",
+   "gloss": "臂板信号",
+   "start": 348,
+   "end": 357,
+   "paragraph": "B",
+   "sentence": 3
+  },
+  {
+   "surface": "intersection",
+   "gloss": "十字路口",
+   "start": 233,
+   "end": 245,
+   "paragraph": "H",
+   "sentence": 3
+  },
+  {
+   "surface": "vantage",
+   "gloss": "有利地 位",
+   "start": 96,
+   "end": 103,
+   "paragraph": "I",
+   "sentence": 1
+  },
+  {
+   "surface": "full-throttle",
+   "gloss": "全 速",
+   "start": 314,
+   "end": 327,
+   "paragraph": "N",
+   "sentence": 4
+  }
+ ],
+ "stats": {
+  "paragraphs": 18,
+  "sentences": 87,
+  "words": 1223
+ }
+}

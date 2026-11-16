@@ -1,0 +1,1076 @@
+{
+ "schema": 1,
+ "articles": [
+  {
+   "id": "cet6-2023-06-s1-b",
+   "label": "2023年6月 · 第1套 · 长篇匹配",
+   "file": "cet6-2023-06-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    5,
+    7
+   ],
+   "stats": {
+    "paragraphs": 13,
+    "sentences": 53,
+    "words": 1183
+   },
+   "annotations": 5,
+   "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5"
+  },
+  {
+   "id": "cet6-2023-06-s1-c1",
+   "label": "2023年6月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2023-06-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 22,
+    "words": 453
+   },
+   "annotations": 1,
+   "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5"
+  },
+  {
+   "id": "cet6-2023-06-s1-c2",
+   "label": "2023年6月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2023-06-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    9,
+    10
+   ],
+   "stats": {
+    "paragraphs": 6,
+    "sentences": 28,
+    "words": 449
+   },
+   "annotations": 3,
+   "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5"
+  },
+  {
+   "id": "cet6-2023-06-s2-b",
+   "label": "2023年6月 · 第2套 · 长篇匹配",
+   "file": "cet6-2023-06-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    5,
+    7
+   ],
+   "stats": {
+    "paragraphs": 14,
+    "sentences": 57,
+    "words": 1225
+   },
+   "annotations": 3,
+   "sha256": "7f2690572f05d9db6c0b30da8eb52a0261b73b9e594db291075659cac54abcdf"
+  },
+  {
+   "id": "cet6-2023-06-s2-c1",
+   "label": "2023年6月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2023-06-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 5,
+    "sentences": 23,
+    "words": 450
+   },
+   "annotations": 2,
+   "sha256": "7f2690572f05d9db6c0b30da8eb52a0261b73b9e594db291075659cac54abcdf"
+  },
+  {
+   "id": "cet6-2023-06-s2-c2",
+   "label": "2023年6月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2023-06-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    9,
+    9
+   ],
+   "stats": {
+    "paragraphs": 11,
+    "sentences": 26,
+    "words": 449
+   },
+   "annotations": 2,
+   "sha256": "7f2690572f05d9db6c0b30da8eb52a0261b73b9e594db291075659cac54abcdf"
+  },
+  {
+   "id": "cet6-2023-06-s3-b",
+   "label": "2023年6月 · 第3套 · 长篇匹配",
+   "file": "cet6-2023-06-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    4
+   ],
+   "stats": {
+    "paragraphs": 11,
+    "sentences": 53,
+    "words": 1193
+   },
+   "annotations": 4,
+   "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4"
+  },
+  {
+   "id": "cet6-2023-06-s3-c1",
+   "label": "2023年6月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2023-06-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 22,
+    "words": 451
+   },
+   "annotations": 1,
+   "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4"
+  },
+  {
+   "id": "cet6-2023-06-s3-c2",
+   "label": "2023年6月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2023-06-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 22,
+    "words": 450
+   },
+   "annotations": 0,
+   "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4"
+  },
+  {
+   "id": "cet6-2023-12-s1-b",
+   "label": "2023年12月 · 第1套 · 长篇匹配",
+   "file": "cet6-2023-12-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    6
+   ],
+   "stats": {
+    "paragraphs": 11,
+    "sentences": 63,
+    "words": 1220
+   },
+   "annotations": 3,
+   "sha256": "9b17a246c154b45216f679fc5bc8f1e83ce6d68782bda2fefa3cb4e5654dc203"
+  },
+  {
+   "id": "cet6-2023-12-s1-c1",
+   "label": "2023年12月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2023-12-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 13,
+    "sentences": 27,
+    "words": 451
+   },
+   "annotations": 1,
+   "sha256": "9b17a246c154b45216f679fc5bc8f1e83ce6d68782bda2fefa3cb4e5654dc203"
+  },
+  {
+   "id": "cet6-2023-12-s1-c2",
+   "label": "2023年12月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2023-12-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    8,
+    8
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 18,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "9b17a246c154b45216f679fc5bc8f1e83ce6d68782bda2fefa3cb4e5654dc203"
+  },
+  {
+   "id": "cet6-2023-12-s2-b",
+   "label": "2023年12月 · 第2套 · 长篇匹配",
+   "file": "cet6-2023-12-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    6
+   ],
+   "stats": {
+    "paragraphs": 13,
+    "sentences": 55,
+    "words": 1237
+   },
+   "annotations": 5,
+   "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25"
+  },
+  {
+   "id": "cet6-2023-12-s2-c1",
+   "label": "2023年12月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2023-12-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    7
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 16,
+    "words": 455
+   },
+   "annotations": 3,
+   "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25"
+  },
+  {
+   "id": "cet6-2023-12-s2-c2",
+   "label": "2023年12月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2023-12-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    8,
+    9
+   ],
+   "stats": {
+    "paragraphs": 4,
+    "sentences": 18,
+    "words": 450
+   },
+   "annotations": 1,
+   "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25"
+  },
+  {
+   "id": "cet6-2023-12-s3-b",
+   "label": "2023年12月 · 第3套 · 长篇匹配",
+   "file": "cet6-2023-12-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    4
+   ],
+   "stats": {
+    "paragraphs": 12,
+    "sentences": 59,
+    "words": 1226
+   },
+   "annotations": 2,
+   "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c"
+  },
+  {
+   "id": "cet6-2023-12-s3-c1",
+   "label": "2023年12月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2023-12-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 12,
+    "sentences": 25,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c"
+  },
+  {
+   "id": "cet6-2023-12-s3-c2",
+   "label": "2023年12月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2023-12-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    6
+   ],
+   "stats": {
+    "paragraphs": 6,
+    "sentences": 21,
+    "words": 450
+   },
+   "annotations": 0,
+   "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c"
+  },
+  {
+   "id": "cet6-2024-06-s1-b",
+   "label": "2024年6月 · 第1套 · 长篇匹配",
+   "file": "cet6-2024-06-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    6
+   ],
+   "stats": {
+    "paragraphs": 14,
+    "sentences": 52,
+    "words": 1212
+   },
+   "annotations": 0,
+   "sha256": "4a0f39536c2a6747a1e535d46a0aa7de069e2a1b4d893ebf4ffb1d177d8aafea"
+  },
+  {
+   "id": "cet6-2024-06-s1-c1",
+   "label": "2024年6月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2024-06-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 25,
+    "words": 446
+   },
+   "annotations": 0,
+   "sha256": "4a0f39536c2a6747a1e535d46a0aa7de069e2a1b4d893ebf4ffb1d177d8aafea"
+  },
+  {
+   "id": "cet6-2024-06-s1-c2",
+   "label": "2024年6月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2024-06-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 11,
+    "sentences": 26,
+    "words": 445
+   },
+   "annotations": 1,
+   "sha256": "4a0f39536c2a6747a1e535d46a0aa7de069e2a1b4d893ebf4ffb1d177d8aafea"
+  },
+  {
+   "id": "cet6-2024-06-s2-b",
+   "label": "2024年6月 · 第2套 · 长篇匹配",
+   "file": "cet6-2024-06-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 15,
+    "sentences": 42,
+    "words": 1233
+   },
+   "annotations": 1,
+   "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7"
+  },
+  {
+   "id": "cet6-2024-06-s2-c1",
+   "label": "2024年6月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2024-06-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    6
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 25,
+    "words": 452
+   },
+   "annotations": 0,
+   "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7"
+  },
+  {
+   "id": "cet6-2024-06-s2-c2",
+   "label": "2024年6月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2024-06-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 22,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7"
+  },
+  {
+   "id": "cet6-2024-06-s3-b",
+   "label": "2024年6月 · 第3套 · 长篇匹配",
+   "file": "cet6-2024-06-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    3
+   ],
+   "stats": {
+    "paragraphs": 12,
+    "sentences": 63,
+    "words": 1242
+   },
+   "annotations": 0,
+   "sha256": "5c96942b0b63e7b16fca4faf6c9fd09c73361a602a502bcdde2826d459e49d37"
+  },
+  {
+   "id": "cet6-2024-06-s3-c1",
+   "label": "2024年6月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2024-06-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 21,
+    "words": 452
+   },
+   "annotations": 1,
+   "sha256": "5c96942b0b63e7b16fca4faf6c9fd09c73361a602a502bcdde2826d459e49d37"
+  },
+  {
+   "id": "cet6-2024-06-s3-c2",
+   "label": "2024年6月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2024-06-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    5,
+    6
+   ],
+   "stats": {
+    "paragraphs": 4,
+    "sentences": 24,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "5c96942b0b63e7b16fca4faf6c9fd09c73361a602a502bcdde2826d459e49d37"
+  },
+  {
+   "id": "cet6-2024-12-s1-b",
+   "label": "2024年12月 · 第1套 · 长篇匹配",
+   "file": "cet6-2024-12-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 15,
+    "sentences": 65,
+    "words": 1202
+   },
+   "annotations": 5,
+   "sha256": "f57dccaa559f5bcff40b16c2d5c271bcc0abfeb9052aa9469751fdb37d7e60e6"
+  },
+  {
+   "id": "cet6-2024-12-s1-c1",
+   "label": "2024年12月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2024-12-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 11,
+    "sentences": 26,
+    "words": 451
+   },
+   "annotations": 0,
+   "sha256": "f57dccaa559f5bcff40b16c2d5c271bcc0abfeb9052aa9469751fdb37d7e60e6"
+  },
+  {
+   "id": "cet6-2024-12-s1-c2",
+   "label": "2024年12月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2024-12-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 22,
+    "words": 451
+   },
+   "annotations": 1,
+   "sha256": "f57dccaa559f5bcff40b16c2d5c271bcc0abfeb9052aa9469751fdb37d7e60e6"
+  },
+  {
+   "id": "cet6-2024-12-s2-b",
+   "label": "2024年12月 · 第2套 · 长篇匹配",
+   "file": "cet6-2024-12-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 14,
+    "sentences": 52,
+    "words": 1224
+   },
+   "annotations": 2,
+   "sha256": "69e9ef6fe86844241dd608af7009cbc41944811575aa48ba20a22995b78152b0"
+  },
+  {
+   "id": "cet6-2024-12-s2-c1",
+   "label": "2024年12月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2024-12-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 26,
+    "words": 450
+   },
+   "annotations": 0,
+   "sha256": "69e9ef6fe86844241dd608af7009cbc41944811575aa48ba20a22995b78152b0"
+  },
+  {
+   "id": "cet6-2024-12-s2-c2",
+   "label": "2024年12月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2024-12-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 10,
+    "sentences": 25,
+    "words": 450
+   },
+   "annotations": 1,
+   "sha256": "69e9ef6fe86844241dd608af7009cbc41944811575aa48ba20a22995b78152b0"
+  },
+  {
+   "id": "cet6-2024-12-s3-b",
+   "label": "2024年12月 · 第3套 · 长篇匹配",
+   "file": "cet6-2024-12-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    3
+   ],
+   "stats": {
+    "paragraphs": 13,
+    "sentences": 57,
+    "words": 1209
+   },
+   "annotations": 1,
+   "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67"
+  },
+  {
+   "id": "cet6-2024-12-s3-c1",
+   "label": "2024年12月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2024-12-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    4
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 24,
+    "words": 442
+   },
+   "annotations": 2,
+   "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67"
+  },
+  {
+   "id": "cet6-2024-12-s3-c2",
+   "label": "2024年12月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2024-12-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    5,
+    6
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 22,
+    "words": 452
+   },
+   "annotations": 0,
+   "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67"
+  },
+  {
+   "id": "cet6-2025-06-s1-b",
+   "label": "2025年6月 · 第1套 · 长篇匹配",
+   "file": "cet6-2025-06-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 14,
+    "sentences": 49,
+    "words": 1221
+   },
+   "annotations": 2,
+   "sha256": "e9204d7d82b502a69898862bbcd794be019fe0977f28ab5d1ab4243d730cfc16"
+  },
+  {
+   "id": "cet6-2025-06-s1-c1",
+   "label": "2025年6月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2025-06-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 12,
+    "sentences": 25,
+    "words": 453
+   },
+   "annotations": 0,
+   "sha256": "e9204d7d82b502a69898862bbcd794be019fe0977f28ab5d1ab4243d730cfc16"
+  },
+  {
+   "id": "cet6-2025-06-s1-c2",
+   "label": "2025年6月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2025-06-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 10,
+    "sentences": 23,
+    "words": 450
+   },
+   "annotations": 0,
+   "sha256": "e9204d7d82b502a69898862bbcd794be019fe0977f28ab5d1ab4243d730cfc16"
+  },
+  {
+   "id": "cet6-2025-06-s2-b",
+   "label": "2025年6月 · 第2套 · 长篇匹配",
+   "file": "cet6-2025-06-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 16,
+    "sentences": 69,
+    "words": 1207
+   },
+   "annotations": 4,
+   "sha256": "ca040e3dc21b5487080c8827f35e200cc44d5d496e5fd9aba7aaa0ccbfc3e608"
+  },
+  {
+   "id": "cet6-2025-06-s2-c1",
+   "label": "2025年6月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2025-06-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    6
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 20,
+    "words": 450
+   },
+   "annotations": 0,
+   "sha256": "ca040e3dc21b5487080c8827f35e200cc44d5d496e5fd9aba7aaa0ccbfc3e608"
+  },
+  {
+   "id": "cet6-2025-06-s2-c2",
+   "label": "2025年6月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2025-06-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 25,
+    "words": 443
+   },
+   "annotations": 0,
+   "sha256": "ca040e3dc21b5487080c8827f35e200cc44d5d496e5fd9aba7aaa0ccbfc3e608"
+  },
+  {
+   "id": "cet6-2025-06-s3-b",
+   "label": "2025年6月 · 第3套 · 长篇匹配",
+   "file": "cet6-2025-06-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    3
+   ],
+   "stats": {
+    "paragraphs": 15,
+    "sentences": 60,
+    "words": 1193
+   },
+   "annotations": 3,
+   "sha256": "1310d1f9e49ae67a9cd0faa6f0c9a1a02c24e28819a05dec18a8e4004a10ab49"
+  },
+  {
+   "id": "cet6-2025-06-s3-c1",
+   "label": "2025年6月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2025-06-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    4
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 19,
+    "words": 454
+   },
+   "annotations": 0,
+   "sha256": "1310d1f9e49ae67a9cd0faa6f0c9a1a02c24e28819a05dec18a8e4004a10ab49"
+  },
+  {
+   "id": "cet6-2025-06-s3-c2",
+   "label": "2025年6月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2025-06-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    5,
+    6
+   ],
+   "stats": {
+    "paragraphs": 10,
+    "sentences": 20,
+    "words": 454
+   },
+   "annotations": 2,
+   "sha256": "1310d1f9e49ae67a9cd0faa6f0c9a1a02c24e28819a05dec18a8e4004a10ab49"
+  },
+  {
+   "id": "cet6-2025-12-s1-b",
+   "label": "2025年12月 · 第1套 · 长篇匹配",
+   "file": "cet6-2025-12-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 16,
+    "sentences": 67,
+    "words": 1231
+   },
+   "annotations": 2,
+   "sha256": "a0855c46e0da9fc29f349b38d17a6cabf26d63be6c2758d169fc1dd031d3c062"
+  },
+  {
+   "id": "cet6-2025-12-s1-c1",
+   "label": "2025年12月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2025-12-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    6
+   ],
+   "stats": {
+    "paragraphs": 10,
+    "sentences": 29,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "a0855c46e0da9fc29f349b38d17a6cabf26d63be6c2758d169fc1dd031d3c062"
+  },
+  {
+   "id": "cet6-2025-12-s1-c2",
+   "label": "2025年12月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2025-12-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 24,
+    "words": 455
+   },
+   "annotations": 0,
+   "sha256": "a0855c46e0da9fc29f349b38d17a6cabf26d63be6c2758d169fc1dd031d3c062"
+  },
+  {
+   "id": "cet6-2025-12-s2-b",
+   "label": "2025年12月 · 第2套 · 长篇匹配",
+   "file": "cet6-2025-12-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    6
+   ],
+   "stats": {
+    "paragraphs": 17,
+    "sentences": 62,
+    "words": 1203
+   },
+   "annotations": 1,
+   "sha256": "b103d8f0a56418713e5c7ff4a185b234b0b86578a8c2211f4261810e92006fd1"
+  },
+  {
+   "id": "cet6-2025-12-s2-c1",
+   "label": "2025年12月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2025-12-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 25,
+    "words": 443
+   },
+   "annotations": 1,
+   "sha256": "b103d8f0a56418713e5c7ff4a185b234b0b86578a8c2211f4261810e92006fd1"
+  },
+  {
+   "id": "cet6-2025-12-s2-c2",
+   "label": "2025年12月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2025-12-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 20,
+    "words": 442
+   },
+   "annotations": 2,
+   "sha256": "b103d8f0a56418713e5c7ff4a185b234b0b86578a8c2211f4261810e92006fd1"
+  },
+  {
+   "id": "cet6-2025-12-s3-b",
+   "label": "2025年12月 · 第3套 · 长篇匹配",
+   "file": "cet6-2025-12-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    3
+   ],
+   "stats": {
+    "paragraphs": 18,
+    "sentences": 87,
+    "words": 1223
+   },
+   "annotations": 6,
+   "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e"
+  },
+  {
+   "id": "cet6-2025-12-s3-c1",
+   "label": "2025年12月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2025-12-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    4
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 19,
+    "words": 453
+   },
+   "annotations": 0,
+   "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e"
+  },
+  {
+   "id": "cet6-2025-12-s3-c2",
+   "label": "2025年12月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2025-12-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    5,
+    6
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 27,
+    "words": 451
+   },
+   "annotations": 2,
+   "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e"
+  },
+  {
+   "id": "cet6-2026-06-s1-b",
+   "label": "2026年6月 · 第1套 · 长篇匹配",
+   "file": "cet6-2026-06-s1-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    5
+   ],
+   "stats": {
+    "paragraphs": 13,
+    "sentences": 48,
+    "words": 1209
+   },
+   "annotations": 3,
+   "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f"
+  },
+  {
+   "id": "cet6-2026-06-s1-c1",
+   "label": "2026年6月 · 第1套 · 仔细阅读 Passage One",
+   "file": "cet6-2026-06-s1-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    6
+   ],
+   "stats": {
+    "paragraphs": 5,
+    "sentences": 21,
+    "words": 453
+   },
+   "annotations": 0,
+   "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f"
+  },
+  {
+   "id": "cet6-2026-06-s1-c2",
+   "label": "2026年6月 · 第1套 · 仔细阅读 Passage Two",
+   "file": "cet6-2026-06-s1-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 20,
+    "words": 453
+   },
+   "annotations": 0,
+   "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f"
+  },
+  {
+   "id": "cet6-2026-06-s2-b",
+   "label": "2026年6月 · 第2套 · 长篇匹配",
+   "file": "cet6-2026-06-s2-b.json",
+   "kind": "long_match",
+   "pages": [
+    4,
+    6
+   ],
+   "stats": {
+    "paragraphs": 13,
+    "sentences": 51,
+    "words": 1213
+   },
+   "annotations": 5,
+   "sha256": "7616f631dd8758925e8a17f68cf826d38a7d5104177420b3334df87a4387555e"
+  },
+  {
+   "id": "cet6-2026-06-s2-c1",
+   "label": "2026年6月 · 第2套 · 仔细阅读 Passage One",
+   "file": "cet6-2026-06-s2-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    6,
+    7
+   ],
+   "stats": {
+    "paragraphs": 7,
+    "sentences": 22,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "7616f631dd8758925e8a17f68cf826d38a7d5104177420b3334df87a4387555e"
+  },
+  {
+   "id": "cet6-2026-06-s2-c2",
+   "label": "2026年6月 · 第2套 · 仔细阅读 Passage Two",
+   "file": "cet6-2026-06-s2-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    7,
+    8
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 23,
+    "words": 450
+   },
+   "annotations": 0,
+   "sha256": "7616f631dd8758925e8a17f68cf826d38a7d5104177420b3334df87a4387555e"
+  },
+  {
+   "id": "cet6-2026-06-s3-b",
+   "label": "2026年6月 · 第3套 · 长篇匹配",
+   "file": "cet6-2026-06-s3-b.json",
+   "kind": "long_match",
+   "pages": [
+    2,
+    3
+   ],
+   "stats": {
+    "paragraphs": 16,
+    "sentences": 54,
+    "words": 1235
+   },
+   "annotations": 4,
+   "sha256": "dbd77e981aa91b5e3d4b8c8e4dd799f83d869951c44f841d9f981305847ba6dd"
+  },
+  {
+   "id": "cet6-2026-06-s3-c1",
+   "label": "2026年6月 · 第3套 · 仔细阅读 Passage One",
+   "file": "cet6-2026-06-s3-c1.json",
+   "kind": "careful_reading",
+   "pages": [
+    4,
+    4
+   ],
+   "stats": {
+    "paragraphs": 9,
+    "sentences": 14,
+    "words": 446
+   },
+   "annotations": 0,
+   "sha256": "dbd77e981aa91b5e3d4b8c8e4dd799f83d869951c44f841d9f981305847ba6dd"
+  },
+  {
+   "id": "cet6-2026-06-s3-c2",
+   "label": "2026年6月 · 第3套 · 仔细阅读 Passage Two",
+   "file": "cet6-2026-06-s3-c2.json",
+   "kind": "careful_reading",
+   "pages": [
+    5,
+    6
+   ],
+   "stats": {
+    "paragraphs": 8,
+    "sentences": 26,
+    "words": 448
+   },
+   "annotations": 0,
+   "sha256": "dbd77e981aa91b5e3d4b8c8e4dd799f83d869951c44f841d9f981305847ba6dd"
+  }
+ ]
+}

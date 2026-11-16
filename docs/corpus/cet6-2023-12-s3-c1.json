@@ -1,0 +1,272 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s3-c1",
+ "label": "2023年12月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第3套).pdf",
+  "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c",
+  "pages": [
+   4,
+   5
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Research is meant to benefit society by raising public awareness and creating products and innovations that enhance development. For research to serve its full purpose, the results must leave the confines of research laboratories and academic journals.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Research is meant to benefit society by raising public awareness and creating products and innovations that enhance development.",
+     "start": 0,
+     "end": 128,
+     "page": 4
+    },
+    {
+     "text": "For research to serve its full purpose, the results must leave the confines of research laboratories and academic journals.",
+     "start": 129,
+     "end": 252,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Findings effectively communicated can go a long way to serve the interests of the public. They can help address social injustices or improve treatments offered to patients.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Findings effectively communicated can go a long way to serve the interests of the public.",
+     "start": 0,
+     "end": 89,
+     "page": 4
+    },
+    {
+     "text": "They can help address social injustices or improve treatments offered to patients.",
+     "start": 90,
+     "end": 172,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Many researchers seem to be content with sharing the results of their studies in academic journals or at conferences. But few journals allow everybody to read the findings. Even articles freely available are usually written in academic language incomprehensible to the average reader.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Many researchers seem to be content with sharing the results of their studies in academic journals or at conferences.",
+     "start": 0,
+     "end": 117,
+     "page": 4
+    },
+    {
+     "text": "But few journals allow everybody to read the findings.",
+     "start": 118,
+     "end": 172,
+     "page": 4
+    },
+    {
+     "text": "Even articles freely available are usually written in academic language incomprehensible to the average reader.",
+     "start": 173,
+     "end": 284,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "For researchers in the tenure-track system, their main goal is winning tenure, which in part can be achieved by getting a number of papers published in prominent journals. Pressures like this mean communitylevel outreach is not prioritised.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "For researchers in the tenure-track system, their main goal is winning tenure, which in part can be achieved by getting a number of papers published in prominent journals.",
+     "start": 0,
+     "end": 171,
+     "page": 4
+    },
+    {
+     "text": "Pressures like this mean communitylevel outreach is not prioritised.",
+     "start": 172,
+     "end": 240,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Many researchers lack the writing skills to describe their results to a general audience. They may also worry about whether the public will understand their findings, or about findings being used to influence controversial policies. These concerns cause some researchers to shy away from communicating their findings outside the academic community.",
+   "page_start": 4,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Many researchers lack the writing skills to describe their results to a general audience.",
+     "start": 0,
+     "end": 89,
+     "page": 4
+    },
+    {
+     "text": "They may also worry about whether the public will understand their findings, or about findings being used to influence controversial policies.",
+     "start": 90,
+     "end": 232,
+     "page": 4
+    },
+    {
+     "text": "These concerns cause some researchers to shy away from communicating their findings outside the academic community.",
+     "start": 233,
+     "end": 348,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Propagating research findings beyond academic publications is particularly crucial for addressing certain social discrepancies. It can help families, communities, healthcare providers, policymakers, government agencies and other stakeholders to understand and respond to crises that plague society.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Propagating research findings beyond academic publications is particularly crucial for addressing certain social discrepancies.",
+     "start": 0,
+     "end": 127,
+     "page": 5
+    },
+    {
+     "text": "It can help families, communities, healthcare providers, policymakers, government agencies and other stakeholders to understand and respond to crises that plague society.",
+     "start": 128,
+     "end": 298,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "The benefits of sharing findings flow both ways. Engaging with other researchers and the public can lead to unexpected new connections and new ideas that could suggest fruitful new directions for research.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "The benefits of sharing findings flow both ways.",
+     "start": 0,
+     "end": 48,
+     "page": 5
+    },
+    {
+     "text": "Engaging with other researchers and the public can lead to unexpected new connections and new ideas that could suggest fruitful new directions for research.",
+     "start": 49,
+     "end": 205,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "To benefit both researchers and the communities, the need to find innovative, accessible ways to share the work cannot be overstated.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "To benefit both researchers and the communities, the need to find innovative, accessible ways to share the work cannot be overstated.",
+     "start": 0,
+     "end": 133,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Institutions and funding organisations should support more researchers to publish in open access journals so that the public doesn’t have to pay to read them. Institutions and researchers should invest in partnerships that expand capacity for sharing results more broadly.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Institutions and funding organisations should support more researchers to publish in open access journals so that the public doesn’t have to pay to read them.",
+     "start": 0,
+     "end": 158,
+     "page": 5
+    },
+    {
+     "text": "Institutions and researchers should invest in partnerships that expand capacity for sharing results more broadly.",
+     "start": 159,
+     "end": 272,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "text": "Furthermore, ethics committees should make it mandatory for researchers to share their results with the public. Every research participant should opt in or out of receiving results, as part of the process of giving informed consent.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Furthermore, ethics committees should make it mandatory for researchers to share their results with the public.",
+     "start": 0,
+     "end": 111,
+     "page": 5
+    },
+    {
+     "text": "Every research participant should opt in or out of receiving results, as part of the process of giving informed consent.",
+     "start": 112,
+     "end": 232,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "text": "There could be misunderstanding of the findings presented by the researcher because of technical terms. But this can be resolved by researchers engaging the services of professional writers or communication officers to help with translating their study into more accessible language and share it widely with media outlets and the public.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "There could be misunderstanding of the findings presented by the researcher because of technical terms.",
+     "start": 0,
+     "end": 103,
+     "page": 5
+    },
+    {
+     "text": "But this can be resolved by researchers engaging the services of professional writers or communication officers to help with translating their study into more accessible language and share it widely with media outlets and the public.",
+     "start": 104,
+     "end": 337,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "12",
+   "text": "Sharing results with the people who are most affected by them makes us better researchers and ensures that our work can be used to improve people’s lives. Institutions and collaborators must recognise the value of doing so.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Sharing results with the people who are most affected by them makes us better researchers and ensures that our work can be used to improve people’s lives.",
+     "start": 0,
+     "end": 154,
+     "page": 5
+    },
+    {
+     "text": "Institutions and collaborators must recognise the value of doing so.",
+     "start": 155,
+     "end": 223,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 12,
+  "sentences": 25,
+  "words": 448
+ }
+}

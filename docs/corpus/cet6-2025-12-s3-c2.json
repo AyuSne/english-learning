@@ -1,0 +1,261 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-12-s3-c2",
+ "label": "2025年12月 · 第3套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 12,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2025年12月英语六级真题(第3套).pdf",
+  "sha256": "bf908f7ebc17c8f28d1f7ae8bece2bacda73361489005de555ce410b5666886e",
+  "pages": [
+   5,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "The other day I had to log into a service I hadn’t used before. Since I was a new user, the website decided that it needed to check I wasn’t a robot and so set me a Captcha test to determine whether the user is a person or a machine.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "The other day I had to log into a service I hadn’t used before.",
+     "start": 0,
+     "end": 63,
+     "page": 5
+    },
+    {
+     "text": "Since I was a new user, the website decided that it needed to check I wasn’t a robot and so set me a Captcha test to determine whether the user is a person or a machine.",
+     "start": 64,
+     "end": 233,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "I was presented with an image of a roadside scene over which was laid a grid. My “challenge” was to click on each cell in the grid that contained a traffic sign. I did so, a bit irritated. Then I was presented with another image and another grid — also with a request to identify road signs. Like a lamb, I complied, after which the website accepted my input.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "I was presented with an image of a roadside scene over which was laid a grid.",
+     "start": 0,
+     "end": 77,
+     "page": 5
+    },
+    {
+     "text": "My “challenge” was to click on each cell in the grid that contained a traffic sign.",
+     "start": 78,
+     "end": 161,
+     "page": 5
+    },
+    {
+     "text": "I did so, a bit irritated.",
+     "start": 162,
+     "end": 188,
+     "page": 5
+    },
+    {
+     "text": "Then I was presented with another image and another grid — also with a request to identify road signs.",
+     "start": 189,
+     "end": 291,
+     "page": 5
+    },
+    {
+     "text": "Like a lamb, I complied, after which the website accepted my input.",
+     "start": 292,
+     "end": 359,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "And then I realised what I had been doing was adding to a dataset for training the machine-learning software that guides self-driving cars. So, to gain access to an automated service that will benefit financially from my input, I first have to do some unpaid labor to help improve the performance of autonomous vehicles.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "And then I realised what I had been doing was adding to a dataset for training the machine-learning software that guides self-driving cars.",
+     "start": 0,
+     "end": 139,
+     "page": 5
+    },
+    {
+     "text": "So, to gain access to an automated service that will benefit financially from my input, I first have to do some unpaid labor to help improve the performance of autonomous vehicles.",
+     "start": 140,
+     "end": 320,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Neat, eh? But note also the delicious additional irony that the Captcha is described as an “automated Turing test”. The Turing test was conceived, you may recall, as a way of enabling humans to determine whether a machine could respond in such a way that one couldn’t tell whether it was a human or a robot. So we have wandered into a world in which machines make us do tricks to prove that we are humans!",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Neat, eh?",
+     "start": 0,
+     "end": 9,
+     "page": 5
+    },
+    {
+     "text": "But note also the delicious additional irony that the Captcha is described as an “automated Turing test”.",
+     "start": 10,
+     "end": 115,
+     "page": 5
+    },
+    {
+     "text": "The Turing test was conceived, you may recall, as a way of enabling humans to determine whether a machine could respond in such a way that one couldn’t tell whether it was a human or a robot.",
+     "start": 116,
+     "end": 307,
+     "page": 5
+    },
+    {
+     "text": "So we have wandered into a world in which machines make us do tricks to prove that we are humans!",
+     "start": 308,
+     "end": 405,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "The strangest aspect of this unparalleled shift is how under-discussed it has been. The metaphor of the boiling frog comes to mind. Have we become so subtly conditioned by digital technology that we don’t see what’s been happening to us? Have we been conditioned to accept a world governed by “smart” tech, trading convenience to the point where we become a bit like machines ourselves?",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The strangest aspect of this unparalleled shift is how under-discussed it has been.",
+     "start": 0,
+     "end": 83,
+     "page": 5
+    },
+    {
+     "text": "The metaphor of the boiling frog comes to mind.",
+     "start": 84,
+     "end": 131,
+     "page": 5
+    },
+    {
+     "text": "Have we become so subtly conditioned by digital technology that we don’t see what’s been happening to us?",
+     "start": 132,
+     "end": 237,
+     "page": 5
+    },
+    {
+     "text": "Have we been conditioned to accept a world governed by “smart” tech, trading convenience to the point where we become a bit like machines ourselves?",
+     "start": 238,
+     "end": 386,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "In a recent startling and thoughtful book, two scholars — Brett Frischmann, a law professor, and Evan Selinger, a philosopher — argue that the answer to that question is “yes”.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "In a recent startling and thoughtful book, two scholars — Brett Frischmann, a law professor, and Evan Selinger, a philosopher — argue that the answer to that question is “yes”.",
+     "start": 0,
+     "end": 176,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "And they’re right. There’s nothing technophobic about that. We shape our tools and then our tools shape us. Technology is supposed to provide tools that serve human ends. But, as the machine-learning Captcha demonstrates, a significant proportion of digital tech now sees (and uses) humans as means to ends that are not ours. In the process, they reduce us to the status of cheery rats running on treadmills designed by people who do not have our interests at heart. So back to the frog metaphor. Are we smart enough to jump out before it’s too late? You don’t even have to Google it to know the answer.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "And they’re right.",
+     "start": 0,
+     "end": 18,
+     "page": 6
+    },
+    {
+     "text": "There’s nothing technophobic about that.",
+     "start": 19,
+     "end": 59,
+     "page": 6
+    },
+    {
+     "text": "We shape our tools and then our tools shape us.",
+     "start": 60,
+     "end": 107,
+     "page": 6
+    },
+    {
+     "text": "Technology is supposed to provide tools that serve human ends.",
+     "start": 108,
+     "end": 170,
+     "page": 6
+    },
+    {
+     "text": "But, as the machine-learning Captcha demonstrates, a significant proportion of digital tech now sees (and uses) humans as means to ends that are not ours.",
+     "start": 171,
+     "end": 325,
+     "page": 6
+    },
+    {
+     "text": "In the process, they reduce us to the status of cheery rats running on treadmills designed by people who do not have our interests at heart.",
+     "start": 326,
+     "end": 466,
+     "page": 6
+    },
+    {
+     "text": "So back to the frog metaphor.",
+     "start": 467,
+     "end": 496,
+     "page": 6
+    },
+    {
+     "text": "Are we smart enough to jump out before it’s too late?",
+     "start": 497,
+     "end": 550,
+     "page": 6
+    },
+    {
+     "text": "You don’t even have to Google it to know the answer.",
+     "start": 551,
+     "end": 603,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "technophobic",
+   "gloss": "技术恐惧的",
+   "start": 35,
+   "end": 47,
+   "paragraph": "7",
+   "sentence": 1
+  },
+  {
+   "surface": "treadmills",
+   "gloss": "踏车",
+   "start": 397,
+   "end": 407,
+   "paragraph": "7",
+   "sentence": 5
+  }
+ ],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 27,
+  "words": 451
+ }
+}

@@ -1,0 +1,202 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-06-s2-c1",
+ "label": "2025年6月 · 第2套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 6,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2025年6月英语六级真题(第2套).pdf",
+  "sha256": "ca040e3dc21b5487080c8827f35e200cc44d5d496e5fd9aba7aaa0ccbfc3e608",
+  "pages": [
+   6,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Simulators are most often utilized within industries such as nuclear power, aviation and surgery where failure results in disastrous consequences. To maximize the value from a simulation learning experience, participants should immediately and directly apply their learning to a specific intervention within their organization.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Simulators are most often utilized within industries such as nuclear power, aviation and surgery where failure results in disastrous consequences.",
+     "start": 0,
+     "end": 146,
+     "page": 6
+    },
+    {
+     "text": "To maximize the value from a simulation learning experience, participants should immediately and directly apply their learning to a specific intervention within their organization.",
+     "start": 147,
+     "end": 327,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Most organizations aspire to deploy significant change programs, only to find them nearly impossible to implement. That is largely because successful change requires more than a vision, it requires a workforce that not only doesn’t resist change, but embraces it.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Most organizations aspire to deploy significant change programs, only to find them nearly impossible to implement.",
+     "start": 0,
+     "end": 114,
+     "page": 6
+    },
+    {
+     "text": "That is largely because successful change requires more than a vision, it requires a workforce that not only doesn’t resist change, but embraces it.",
+     "start": 115,
+     "end": 263,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "To achieve success, an organization must build a transformation program that will allow change to be rapidly pulled across its departments and throughout its layers. Regardless of the level of senior management commitment, unless key thought leaders at all levels embrace the change, the initiative will wither and die. To create this kind of widespread passion, learning leaders must expose the workforce to what could be, which will enable them to rethink their mental models, enable them to break free from their deep-rooted paradigms and embrace the opportunity to learn.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "To achieve success, an organization must build a transformation program that will allow change to be rapidly pulled across its departments and throughout its layers.",
+     "start": 0,
+     "end": 165,
+     "page": 6
+    },
+    {
+     "text": "Regardless of the level of senior management commitment, unless key thought leaders at all levels embrace the change, the initiative will wither and die.",
+     "start": 166,
+     "end": 319,
+     "page": 6
+    },
+    {
+     "text": "To create this kind of widespread passion, learning leaders must expose the workforce to what could be, which will enable them to rethink their mental models, enable them to break free from their deep-rooted paradigms and embrace the opportunity to learn.",
+     "start": 320,
+     "end": 575,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Allowing participants to enter a simulated environment provides them with the opportunity to experience alternative realities which can prompt them to rethink their current beliefs.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Allowing participants to enter a simulated environment provides them with the opportunity to experience alternative realities which can prompt them to rethink their current beliefs.",
+     "start": 0,
+     "end": 181,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Behavioral change is not easy for most adults. Lectures, training programs and workshops can explain the intellectual elements of transformation, but they are seldom effective at getting to the behavioral aspects that lie at the heart of a significant change initiative. Further, under normal working conditions, managers rarely see the full effect of their employee development efforts. As such, an intervention like a simulation can provide the stimulus for change.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Behavioral change is not easy for most adults.",
+     "start": 0,
+     "end": 46,
+     "page": 6
+    },
+    {
+     "text": "Lectures, training programs and workshops can explain the intellectual elements of transformation, but they are seldom effective at getting to the behavioral aspects that lie at the heart of a significant change initiative.",
+     "start": 47,
+     "end": 270,
+     "page": 6
+    },
+    {
+     "text": "Further, under normal working conditions, managers rarely see the full effect of their employee development efforts.",
+     "start": 271,
+     "end": 387,
+     "page": 6
+    },
+    {
+     "text": "As such, an intervention like a simulation can provide the stimulus for change.",
+     "start": 388,
+     "end": 467,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "An effective simulation can be better than experience as a learning tool because it accelerates time, compresses space, and unlike reality, is specifically designed to maximize participant learning. Simulations provide an immersive learning experience where skills, processes and knowledge all can be highlighted in a way reality cannot. The ability to explore, experiment and repeatedly apply new knowledge in unlimited, risk-free models is what makes simulation one of the most productive forms of learning.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "An effective simulation can be better than experience as a learning tool because it accelerates time, compresses space, and unlike reality, is specifically designed to maximize participant learning.",
+     "start": 0,
+     "end": 198,
+     "page": 6
+    },
+    {
+     "text": "Simulations provide an immersive learning experience where skills, processes and knowledge all can be highlighted in a way reality cannot.",
+     "start": 199,
+     "end": 337,
+     "page": 6
+    },
+    {
+     "text": "The ability to explore, experiment and repeatedly apply new knowledge in unlimited, risk-free models is what makes simulation one of the most productive forms of learning.",
+     "start": 338,
+     "end": 509,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Well-designed simulations can enable individuals and groups to develop a deep level of understanding about how their decisions and intuitive responses to business stimuli affect their fellow participants and the organization as a whole. To reap the benefits, however, simulations must feel like reality. At the end of the successful simulation, participants must declare “this is us.” If they don’t, they will view the experience as a game, which can be difficult to apply on the job, or worse, irrelevant to everyday work tasks. To maximize benefits from simulation, participants should immediately apply the learning from the experience to forge a smooth link between learning and doing.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Well-designed simulations can enable individuals and groups to develop a deep level of understanding about how their decisions and intuitive responses to business stimuli affect their fellow participants and the organization as a whole.",
+     "start": 0,
+     "end": 236,
+     "page": 6
+    },
+    {
+     "text": "To reap the benefits, however, simulations must feel like reality.",
+     "start": 237,
+     "end": 303,
+     "page": 6
+    },
+    {
+     "text": "At the end of the successful simulation, participants must declare “this is us.”",
+     "start": 304,
+     "end": 384,
+     "page": 6
+    },
+    {
+     "text": "If they don’t, they will view the experience as a game, which can be difficult to apply on the job, or worse, irrelevant to everyday work tasks.",
+     "start": 385,
+     "end": 529,
+     "page": 6
+    },
+    {
+     "text": "To maximize benefits from simulation, participants should immediately apply the learning from the experience to forge a smooth link between learning and doing.",
+     "start": 530,
+     "end": 689,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 20,
+  "words": 450
+ }
+}

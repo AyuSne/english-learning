@@ -1,0 +1,543 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-12-s2-b",
+ "label": "2025年12月 · 第2套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 12,
+  "set": 2,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2025年12月英语六级真题(第2套).pdf",
+  "sha256": "b103d8f0a56418713e5c7ff4a185b234b0b86578a8c2211f4261810e92006fd1",
+  "pages": [
+   4,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "Projects, relationships, and jobs don’t always work out as planned — and it’s not always clear when to give up. We’ve all repeatedly heard the saying that “quitters never win”, but sometimes the best decision is to cut our losses.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Projects, relationships, and jobs don’t always work out as planned — and it’s not always clear when to give up.",
+     "start": 0,
+     "end": 111,
+     "page": 4
+    },
+    {
+     "text": "We’ve all repeatedly heard the saying that “quitters never win”, but sometimes the best decision is to cut our losses.",
+     "start": 112,
+     "end": 230,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "Think about that relationship you held on to even after it had run its course or the job you stayed in despite your boss making you miserable. Many of us try to hold onto the last ray of hope, thinking we can make it work, whatever “it” is. And while perseverance is generally an excellent quality, it may also incline you to over-invest in something that is no longer a good idea.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Think about that relationship you held on to even after it had run its course or the job you stayed in despite your boss making you miserable.",
+     "start": 0,
+     "end": 142,
+     "page": 4
+    },
+    {
+     "text": "Many of us try to hold onto the last ray of hope, thinking we can make it work, whatever “it” is.",
+     "start": 143,
+     "end": 240,
+     "page": 4
+    },
+    {
+     "text": "And while perseverance is generally an excellent quality, it may also incline you to over-invest in something that is no longer a good idea.",
+     "start": 241,
+     "end": 381,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "As an executive coach, I work with numerous passionate and hard-working leaders who don’t want to “quit”. But the smartest leaders learn to discern the difference between quitting too soon and holding onto something that they shouldn’t.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "As an executive coach, I work with numerous passionate and hard-working leaders who don’t want to “quit”.",
+     "start": 0,
+     "end": 105,
+     "page": 4
+    },
+    {
+     "text": "But the smartest leaders learn to discern the difference between quitting too soon and holding onto something that they shouldn’t.",
+     "start": 106,
+     "end": 236,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "We are all susceptible to the sunk-cost delusion, an unconscious bias that leads us to persist in an endeavor we have already invested time, effort, or money into — even when abandoning it would be more beneficial. We realize that we can’t get back the resources we’ve given, so we persevere — investing in a project that should be halted, staying in a relationship that should be over, or finishing a book we no longer enjoy and should put down, because we’re already halfway through it. If quitting is “not your thing”, you may be especially susceptible to this bias.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "We are all susceptible to the sunk-cost delusion, an unconscious bias that leads us to persist in an endeavor we have already invested time, effort, or money into — even when abandoning it would be more beneficial.",
+     "start": 0,
+     "end": 214,
+     "page": 4
+    },
+    {
+     "text": "We realize that we can’t get back the resources we’ve given, so we persevere — investing in a project that should be halted, staying in a relationship that should be over, or finishing a book we no longer enjoy and should put down, because we’re already halfway through it.",
+     "start": 215,
+     "end": 488,
+     "page": 4
+    },
+    {
+     "text": "If quitting is “not your thing”, you may be especially susceptible to this bias.",
+     "start": 489,
+     "end": 569,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "The sunk-cost delusion causes us to overly worry about what we’ll lose if we move on and not think enough about the costs of not moving on. To offset this bias, deliberately refocus your thinking on the gains so you can more objectively weigh the alternatives. Ask yourself: What might I gain by cutting my losses now? Will you be happier or have time for another (better) opportunity? Then ask yourself: What will it cost me to soldier on? For example, is it possible that you’ll be throwing more good money after what you’ve already lost? Or that you won’t have the energy to capitalize on other promising possibilities?",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The sunk-cost delusion causes us to overly worry about what we’ll lose if we move on and not think enough about the costs of not moving on.",
+     "start": 0,
+     "end": 139,
+     "page": 4
+    },
+    {
+     "text": "To offset this bias, deliberately refocus your thinking on the gains so you can more objectively weigh the alternatives.",
+     "start": 140,
+     "end": 260,
+     "page": 4
+    },
+    {
+     "text": "Ask yourself: What might I gain by cutting my losses now?",
+     "start": 261,
+     "end": 318,
+     "page": 4
+    },
+    {
+     "text": "Will you be happier or have time for another (better) opportunity?",
+     "start": 319,
+     "end": 385,
+     "page": 4
+    },
+    {
+     "text": "Then ask yourself: What will it cost me to soldier on?",
+     "start": 386,
+     "end": 440,
+     "page": 4
+    },
+    {
+     "text": "For example, is it possible that you’ll be throwing more good money after what you’ve already lost?",
+     "start": 441,
+     "end": 540,
+     "page": 4
+    },
+    {
+     "text": "Or that you won’t have the energy to capitalize on other promising possibilities?",
+     "start": 541,
+     "end": 622,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "The illusion of control can also interfere with our best judgment, leading us to overestimate our ability to control events and attain a positive outcome. This bias gives us a sense of agency and can promote mental health. However, the bias can also result in escalating commitment to a losing course of action. Especially when combined with an “I’m not a quitter” mentality, feeling like we have more control over an event or person than we do puts us at risk of doubling down when we should pull out.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The illusion of control can also interfere with our best judgment, leading us to overestimate our ability to control events and attain a positive outcome.",
+     "start": 0,
+     "end": 154,
+     "page": 4
+    },
+    {
+     "text": "This bias gives us a sense of agency and can promote mental health.",
+     "start": 155,
+     "end": 222,
+     "page": 4
+    },
+    {
+     "text": "However, the bias can also result in escalating commitment to a losing course of action.",
+     "start": 223,
+     "end": 311,
+     "page": 4
+    },
+    {
+     "text": "Especially when combined with an “I’m not a quitter” mentality, feeling like we have more control over an event or person than we do puts us at risk of doubling down when we should pull out.",
+     "start": 312,
+     "end": 502,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "To counteract this bias, consider your situation and make a simple two-column list of what’s in your control and what’s not. Think rigorously. While you may be able to influence other people and various circumstances, you can’t force them to change or go your way.",
+   "page_start": 4,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "To counteract this bias, consider your situation and make a simple two-column list of what’s in your control and what’s not.",
+     "start": 0,
+     "end": 124,
+     "page": 4
+    },
+    {
+     "text": "Think rigorously.",
+     "start": 125,
+     "end": 142,
+     "page": 5
+    },
+    {
+     "text": "While you may be able to influence other people and various circumstances, you can’t force them to change or go your way.",
+     "start": 143,
+     "end": 264,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "Getting clear on what you can control and what you can’t is essential to making a quality decision about whether to call it quits or persevere. With a written list in hand, you can ensure you focus on what you can control and better assess whether your continued efforts are worth the expense. Expending effort and emotion on things you can’t control can be both draining and disempowering.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Getting clear on what you can control and what you can’t is essential to making a quality decision about whether to call it quits or persevere.",
+     "start": 0,
+     "end": 143,
+     "page": 5
+    },
+    {
+     "text": "With a written list in hand, you can ensure you focus on what you can control and better assess whether your continued efforts are worth the expense.",
+     "start": 144,
+     "end": 293,
+     "page": 5
+    },
+    {
+     "text": "Expending effort and emotion on things you can’t control can be both draining and disempowering.",
+     "start": 294,
+     "end": 390,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "Research indicates that people link their self-identity and social status to their commitments. And because we identify with our commitments, withdrawing from one can feel like a threat to our identity or status.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Research indicates that people link their self-identity and social status to their commitments.",
+     "start": 0,
+     "end": 95,
+     "page": 5
+    },
+    {
+     "text": "And because we identify with our commitments, withdrawing from one can feel like a threat to our identity or status.",
+     "start": 96,
+     "end": 212,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "Take my client Ryan, a leader at a technology company. Ryan had invested two years and a lot of effort in a design project that wasn’t delivering the needed outcomes, but the thought of abandoning it after all she had put in was hard to bear. As Ryan and I explored whether she should cancel the initiative she’d been leading or continue to persevere, she stated, “The thing is, I’m not a quitter.” This singular, fixed sense of self was clouding her judgment and limiting her choices for action.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Take my client Ryan, a leader at a technology company.",
+     "start": 0,
+     "end": 54,
+     "page": 5
+    },
+    {
+     "text": "Ryan had invested two years and a lot of effort in a design project that wasn’t delivering the needed outcomes, but the thought of abandoning it after all she had put in was hard to bear.",
+     "start": 55,
+     "end": 242,
+     "page": 5
+    },
+    {
+     "text": "As Ryan and I explored whether she should cancel the initiative she’d been leading or continue to persevere, she stated, “The thing is, I’m not a quitter.”",
+     "start": 243,
+     "end": 398,
+     "page": 5
+    },
+    {
+     "text": "This singular, fixed sense of self was clouding her judgment and limiting her choices for action.",
+     "start": 399,
+     "end": 496,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Our self-concept and identity are mental concepts that influence our behavior. If you strongly identify as not being a quitter, you can end up staying stuck in a course of action due to your narrow and rigid self-concept. To overcome this kind of internal obstacle, recall your other positive traits and personality characteristics. Ask yourself: What additional strengths do I have (or aspire to have) that would be helpful to employ here? For example, when I asked Ryan what other positive qualities from her personality she needed to leverage for decision making, she replied, “Discernment and bravery.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Our self-concept and identity are mental concepts that influence our behavior.",
+     "start": 0,
+     "end": 78,
+     "page": 5
+    },
+    {
+     "text": "If you strongly identify as not being a quitter, you can end up staying stuck in a course of action due to your narrow and rigid self-concept.",
+     "start": 79,
+     "end": 221,
+     "page": 5
+    },
+    {
+     "text": "To overcome this kind of internal obstacle, recall your other positive traits and personality characteristics.",
+     "start": 222,
+     "end": 332,
+     "page": 5
+    },
+    {
+     "text": "Ask yourself: What additional strengths do I have (or aspire to have) that would be helpful to employ here?",
+     "start": 333,
+     "end": 440,
+     "page": 5
+    },
+    {
+     "text": "For example, when I asked Ryan what other positive qualities from her personality she needed to leverage for decision making, she replied, “Discernment and bravery.”",
+     "start": 441,
+     "end": 606,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "Now, examine your situation through the lens of each of these facets of yourself. What does the discerning part of you say? The brave part? Considering your decision through these different characteristics will enable you to see that you have more choices. It’s also helpful to seek external sources of information, rather than relying solely on your thinking and instincts. But it’s important to think through whose opinions you solicit.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Now, examine your situation through the lens of each of these facets of yourself.",
+     "start": 0,
+     "end": 81,
+     "page": 5
+    },
+    {
+     "text": "What does the discerning part of you say?",
+     "start": 82,
+     "end": 123,
+     "page": 5
+    },
+    {
+     "text": "The brave part?",
+     "start": 124,
+     "end": 139,
+     "page": 5
+    },
+    {
+     "text": "Considering your decision through these different characteristics will enable you to see that you have more choices.",
+     "start": 140,
+     "end": 256,
+     "page": 5
+    },
+    {
+     "text": "It’s also helpful to seek external sources of information, rather than relying solely on your thinking and instincts.",
+     "start": 257,
+     "end": 374,
+     "page": 5
+    },
+    {
+     "text": "But it’s important to think through whose opinions you solicit.",
+     "start": 375,
+     "end": 438,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "Ideally, seek out people who are less invested in your decision than you are. If you’re considering whether to shut down your entrepreneurial venture, for instance, reach out to other founders as opposed to just your business partner. Similarly, if you’re looking for love advice, ask someone removed from the ups and downs of your relationship instead of relying only on your best friend. In all cases, I recommend describing your situation and following up with a question like: “How would you manage this situation?”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Ideally, seek out people who are less invested in your decision than you are.",
+     "start": 0,
+     "end": 77,
+     "page": 5
+    },
+    {
+     "text": "If you’re considering whether to shut down your entrepreneurial venture, for instance, reach out to other founders as opposed to just your business partner.",
+     "start": 78,
+     "end": 234,
+     "page": 5
+    },
+    {
+     "text": "Similarly, if you’re looking for love advice, ask someone removed from the ups and downs of your relationship instead of relying only on your best friend.",
+     "start": 235,
+     "end": 389,
+     "page": 5
+    },
+    {
+     "text": "In all cases, I recommend describing your situation and following up with a question like: “How would you manage this situation?”",
+     "start": 390,
+     "end": 519,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "N",
+   "text": "Alternately, you could also seek out hard data that illuminates your real chance of success in whatever endeavor you are contemplating. Sticking with the example of the entrepreneurial venture, numbers are your best friend. Use them to remove yourself from the love you have for this idea and consider your burn rate relative to growth plan, industry growth rates, and other factors that predict start-up success. External sources of information can help you see angles and possibilities you might not have considered.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Alternately, you could also seek out hard data that illuminates your real chance of success in whatever endeavor you are contemplating.",
+     "start": 0,
+     "end": 135,
+     "page": 5
+    },
+    {
+     "text": "Sticking with the example of the entrepreneurial venture, numbers are your best friend.",
+     "start": 136,
+     "end": 223,
+     "page": 5
+    },
+    {
+     "text": "Use them to remove yourself from the love you have for this idea and consider your burn rate relative to growth plan, industry growth rates, and other factors that predict start-up success.",
+     "start": 224,
+     "end": 413,
+     "page": 5
+    },
+    {
+     "text": "External sources of information can help you see angles and possibilities you might not have considered.",
+     "start": 414,
+     "end": 518,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "O",
+   "text": "When something that seemed so promising at the start doesn’t turn out the way we imagined, we can become overly self-critical. Nobody likes to feel that they’ve made a poor decision, especially if making intelligent decisions is a quality you hold in high esteem. The most effective strategy here is to give yourself a break. Practicing self-compassion increases your resilience, emotional intelligence, compassion toward others, and can boost your performance as well as help you develop a growth mindset.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "When something that seemed so promising at the start doesn’t turn out the way we imagined, we can become overly self-critical.",
+     "start": 0,
+     "end": 126,
+     "page": 5
+    },
+    {
+     "text": "Nobody likes to feel that they’ve made a poor decision, especially if making intelligent decisions is a quality you hold in high esteem.",
+     "start": 127,
+     "end": 263,
+     "page": 5
+    },
+    {
+     "text": "The most effective strategy here is to give yourself a break.",
+     "start": 264,
+     "end": 325,
+     "page": 5
+    },
+    {
+     "text": "Practicing self-compassion increases your resilience, emotional intelligence, compassion toward others, and can boost your performance as well as help you develop a growth mindset.",
+     "start": 326,
+     "end": 506,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "P",
+   "text": "Instead of deliberating and criticizing yourself, focus instead on what you can learn from this situation. For example, Ryan recognized she had developed various new skills and leadership capabilities from leading the design project. And despite ultimately deciding to drop it, she was still happy she had tried and grateful for what the experience taught her.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Instead of deliberating and criticizing yourself, focus instead on what you can learn from this situation.",
+     "start": 0,
+     "end": 106,
+     "page": 5
+    },
+    {
+     "text": "For example, Ryan recognized she had developed various new skills and leadership capabilities from leading the design project.",
+     "start": 107,
+     "end": 233,
+     "page": 5
+    },
+    {
+     "text": "And despite ultimately deciding to drop it, she was still happy she had tried and grateful for what the experience taught her.",
+     "start": 234,
+     "end": 360,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "Q",
+   "text": "Undeniably, perseverance can help us succeed. But for your well-being, it’s important to learn how to distinguish quitting too soon and clinging to a losing course of action. While letting go can be difficult, it will free up your time, energy, and mental space to imagine new possibilities and pursue new opportunities.",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Undeniably, perseverance can help us succeed.",
+     "start": 0,
+     "end": 45,
+     "page": 5
+    },
+    {
+     "text": "But for your well-being, it’s important to learn how to distinguish quitting too soon and clinging to a losing course of action.",
+     "start": 46,
+     "end": 174,
+     "page": 5
+    },
+    {
+     "text": "While letting go can be difficult, it will free up your time, energy, and mental space to imagine new possibilities and pursue new opportunities.",
+     "start": 175,
+     "end": 320,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "resilience",
+   "gloss": "韧性",
+   "start": 368,
+   "end": 378,
+   "paragraph": "O",
+   "sentence": 3
+  }
+ ],
+ "stats": {
+  "paragraphs": 17,
+  "sentences": 62,
+  "words": 1203
+ }
+}

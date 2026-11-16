@@ -1,0 +1,214 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s2-c1",
+ "label": "2026年6月 · 第2套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第2套).pdf",
+  "sha256": "7616f631dd8758925e8a17f68cf826d38a7d5104177420b3334df87a4387555e",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "What does self-discipline look like at work? Sometimes, it’s the ability to resist temptation, such as distractions to avoid a particular task. Other times it’s the ability to persist with a task when your energy and motivation seem low.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "What does self-discipline look like at work?",
+     "start": 0,
+     "end": 44,
+     "page": 6
+    },
+    {
+     "text": "Sometimes, it’s the ability to resist temptation, such as distractions to avoid a particular task.",
+     "start": 45,
+     "end": 143,
+     "page": 6
+    },
+    {
+     "text": "Other times it’s the ability to persist with a task when your energy and motivation seem low.",
+     "start": 144,
+     "end": 237,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "What do you believe about the nature of your own self-discipline? Is it something that runs on internal energy that is spent with use? Or is it something that is bolstered as you apply it and persist?",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "What do you believe about the nature of your own self-discipline?",
+     "start": 0,
+     "end": 65,
+     "page": 6
+    },
+    {
+     "text": "Is it something that runs on internal energy that is spent with use?",
+     "start": 66,
+     "end": 134,
+     "page": 6
+    },
+    {
+     "text": "Or is it something that is bolstered as you apply it and persist?",
+     "start": 135,
+     "end": 200,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Your answer matters, as it determines how much self-discipline you experience. For years, research in psychology pointed to self-control as a resource that is depleted with use and needs to be restored through breaks, rest, or sleep. More recently, however, research points to the importance of mindset. If you view self-discipline as an expendable resource, your willpower tends to fade with use. If you believe that exercising your self-control strengthens and fuels it, that is more likely to be your experience as you resist temptation or push yourself to get something done that is not appealing.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Your answer matters, as it determines how much self-discipline you experience.",
+     "start": 0,
+     "end": 78,
+     "page": 6
+    },
+    {
+     "text": "For years, research in psychology pointed to self-control as a resource that is depleted with use and needs to be restored through breaks, rest, or sleep.",
+     "start": 79,
+     "end": 233,
+     "page": 6
+    },
+    {
+     "text": "More recently, however, research points to the importance of mindset.",
+     "start": 234,
+     "end": 303,
+     "page": 6
+    },
+    {
+     "text": "If you view self-discipline as an expendable resource, your willpower tends to fade with use.",
+     "start": 304,
+     "end": 397,
+     "page": 6
+    },
+    {
+     "text": "If you believe that exercising your self-control strengthens and fuels it, that is more likely to be your experience as you resist temptation or push yourself to get something done that is not appealing.",
+     "start": 398,
+     "end": 601,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "If you don’t already view self-discipline as a force that feeds itself, what might you do? Reflect on times that you had initial difficulty resisting temptation, getting started on something, or sticking with it, but pushed ahead and accomplished the task or met the goal. That’s the kind of experience we’re talking about with this particular belief about self-discipline, and you’ve already had such an experience, so you’ve shown that it’s possible. When you feel your willpower and motivation fading, remind yourself of those previous experiences and imagine the same happening now.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "If you don’t already view self-discipline as a force that feeds itself, what might you do?",
+     "start": 0,
+     "end": 90,
+     "page": 6
+    },
+    {
+     "text": "Reflect on times that you had initial difficulty resisting temptation, getting started on something, or sticking with it, but pushed ahead and accomplished the task or met the goal.",
+     "start": 91,
+     "end": 272,
+     "page": 6
+    },
+    {
+     "text": "That’s the kind of experience we’re talking about with this particular belief about self-discipline, and you’ve already had such an experience, so you’ve shown that it’s possible.",
+     "start": 273,
+     "end": 452,
+     "page": 6
+    },
+    {
+     "text": "When you feel your willpower and motivation fading, remind yourself of those previous experiences and imagine the same happening now.",
+     "start": 453,
+     "end": 586,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "What if your experiences have always seemed to indicate that your self-control diminishes with use, and you need breaks to recharge? There’s nothing wrong with that as long as you can afford to take those breaks. If not, remind yourself that not everyone experiences self-discipline as a depletable resource and that your experience might be different if you focus on gathering more energy at this point rather than focusing on how difficult it is to continue or the need for a break.",
+   "page_start": 6,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "What if your experiences have always seemed to indicate that your self-control diminishes with use, and you need breaks to recharge?",
+     "start": 0,
+     "end": 132,
+     "page": 6
+    },
+    {
+     "text": "There’s nothing wrong with that as long as you can afford to take those breaks.",
+     "start": 133,
+     "end": 212,
+     "page": 6
+    },
+    {
+     "text": "If not, remind yourself that not everyone experiences self-discipline as a depletable resource and that your experience might be different if you focus on gathering more energy at this point rather than focusing on how difficult it is to continue or the need for a break.",
+     "start": 213,
+     "end": 484,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Also, if you know someone who is a role model of self-discipline, picture that person in your situation, persisting in the task. Regardless of how you do it, as you push forward to continue to accomplish progress, be sure to mentally reinforce yourself by taking pride in your ability to exert more willpower as you persist.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Also, if you know someone who is a role model of self-discipline, picture that person in your situation, persisting in the task.",
+     "start": 0,
+     "end": 128,
+     "page": 7
+    },
+    {
+     "text": "Regardless of how you do it, as you push forward to continue to accomplish progress, be sure to mentally reinforce yourself by taking pride in your ability to exert more willpower as you persist.",
+     "start": 129,
+     "end": 324,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "The benefits of exerting willpower are cumulative. Your self-discipline is akin to a muscle, and each time you resist temptation or persist in a task despite a lack of motivation, you strengthen that muscle, leading to less effort and resistance in similar instances in the future.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The benefits of exerting willpower are cumulative.",
+     "start": 0,
+     "end": 50,
+     "page": 7
+    },
+    {
+     "text": "Your self-discipline is akin to a muscle, and each time you resist temptation or persist in a task despite a lack of motivation, you strengthen that muscle, leading to less effort and resistance in similar instances in the future.",
+     "start": 51,
+     "end": 281,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 22,
+  "words": 448
+ }
+}

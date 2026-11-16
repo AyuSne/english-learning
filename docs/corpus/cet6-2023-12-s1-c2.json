@@ -1,0 +1,198 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s1-c2",
+ "label": "2023年12月 · 第1套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第1套).pdf",
+  "sha256": "9b17a246c154b45216f679fc5bc8f1e83ce6d68782bda2fefa3cb4e5654dc203",
+  "pages": [
+   8,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Journal editors decide what gets published and what doesn’t, affecting the careers of other academics and influencing the direction that a field takes. You’d hope, then, that journals would do everything they can to establish a diverse editorial board, reflecting a variety of voices, experiences, and identities.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Journal editors decide what gets published and what doesn’t, affecting the careers of other academics and influencing the direction that a field takes.",
+     "start": 0,
+     "end": 151,
+     "page": 8
+    },
+    {
+     "text": "You’d hope, then, that journals would do everything they can to establish a diverse editorial board, reflecting a variety of voices, experiences, and identities.",
+     "start": 152,
+     "end": 313,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Unfortunately a new study in Nature Neuroscience makes for disheartening reading. The team finds that the majority of editors in top psychology and neuroscience journals are male and based in the United States: a situation that may be amplifying existing gender inequalities in the field and influencing the kind of research that gets published.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Unfortunately a new study in Nature Neuroscience makes for disheartening reading.",
+     "start": 0,
+     "end": 81,
+     "page": 8
+    },
+    {
+     "text": "The team finds that the majority of editors in top psychology and neuroscience journals are male and based in the United States: a situation that may be amplifying existing gender inequalities in the field and influencing the kind of research that gets published.",
+     "start": 82,
+     "end": 345,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Men were found to account for 60% of the editors of psychology journals. There were significantly more male than female editors at each level of seniority, and men made up the majority of editors in over three quarters of the journals. Crucially, the proportion of female editors was significantly lower than the overall proportion of women psychology researchers.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Men were found to account for 60% of the editors of psychology journals.",
+     "start": 0,
+     "end": 72,
+     "page": 8
+    },
+    {
+     "text": "There were significantly more male than female editors at each level of seniority, and men made up the majority of editors in over three quarters of the journals.",
+     "start": 73,
+     "end": 235,
+     "page": 8
+    },
+    {
+     "text": "Crucially, the proportion of female editors was significantly lower than the overall proportion of women psychology researchers.",
+     "start": 236,
+     "end": 364,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "The differences were even starker in the neuroscience journals: 70% of editors were male, and men held the majority of editorial positions in 88% of journals. In this case, the proportion of female editors was not significantly lower than the proportion of female researchers working in neuroscience — a finding that reveals enduring gender disparities in the field more broadly.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "The differences were even starker in the neuroscience journals: 70% of editors were male, and men held the majority of editorial positions in 88% of journals.",
+     "start": 0,
+     "end": 158,
+     "page": 8
+    },
+    {
+     "text": "In this case, the proportion of female editors was not significantly lower than the proportion of female researchers working in neuroscience — a finding that reveals enduring gender disparities in the field more broadly.",
+     "start": 159,
+     "end": 379,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Based on their results, the team concludes that “the ideas, values and decision-making biases of men are overrepresented in the editorial positions of the most recognized academic journals in psychology and neuroscience.”",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Based on their results, the team concludes that “the ideas, values and decision-making biases of men are overrepresented in the editorial positions of the most recognized academic journals in psychology and neuroscience.”",
+     "start": 0,
+     "end": 221,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Gender inequality in science is often attributed to the fact that senior academics are more likely to be male, because historically science was male-dominated: it’s argued that as time goes on and more women rise to senior roles, the field will become more equal. Yet this study showed that even the junior roles in psychology journals tended to be held disproportionately by men, despite the fact that there are actually more female than male junior psychology faculty.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Gender inequality in science is often attributed to the fact that senior academics are more likely to be male, because historically science was male-dominated: it’s argued that as time goes on and more women rise to senior roles, the field will become more equal.",
+     "start": 0,
+     "end": 263,
+     "page": 8
+    },
+    {
+     "text": "Yet this study showed that even the junior roles in psychology journals tended to be held disproportionately by men, despite the fact that there are actually more female than male junior psychology faculty.",
+     "start": 264,
+     "end": 470,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "This implies that a lack of female academics is not the problem. Instead, there are structural reasons that women are disadvantaged in science. Women receive lower salaries and face greater childcare demands, for instance, which can result in fewer publications and grants — the kinds of things that journals look for when deciding who to appoint. Rather than simply blaming the inequality of editorial boards on tradition, we should be actively breaking down these existing barriers.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "This implies that a lack of female academics is not the problem.",
+     "start": 0,
+     "end": 64,
+     "page": 8
+    },
+    {
+     "text": "Instead, there are structural reasons that women are disadvantaged in science.",
+     "start": 65,
+     "end": 143,
+     "page": 8
+    },
+    {
+     "text": "Women receive lower salaries and face greater childcare demands, for instance, which can result in fewer publications and grants — the kinds of things that journals look for when deciding who to appoint.",
+     "start": 144,
+     "end": 347,
+     "page": 8
+    },
+    {
+     "text": "Rather than simply blaming the inequality of editorial boards on tradition, we should be actively breaking down these existing barriers.",
+     "start": 348,
+     "end": 484,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "A lack of diversity among journal editors also likely contributes to psychology’s WEIRD problem. If journal editors are largely men from the United States, then they will probably place higher value on papers that are relevant to Western, male populations, whether consciously or not.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "A lack of diversity among journal editors also likely contributes to psychology’s WEIRD problem.",
+     "start": 0,
+     "end": 96,
+     "page": 8
+    },
+    {
+     "text": "If journal editors are largely men from the United States, then they will probably place higher value on papers that are relevant to Western, male populations, whether consciously or not.",
+     "start": 97,
+     "end": 284,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 18,
+  "words": 448
+ }
+}

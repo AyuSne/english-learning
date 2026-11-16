@@ -1,0 +1,233 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s3-c1",
+ "label": "2024年6月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第3套).pdf",
+  "sha256": "5c96942b0b63e7b16fca4faf6c9fd09c73361a602a502bcdde2826d459e49d37",
+  "pages": [
+   4,
+   5
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "The “American Dream” promises that in the Land of Opportunity, any individual can climb the economic ladder and prosper through hard work and ambition alone. And yet, young Americans today are struggling to earn more than their parents did at the same age, and upward mobility in the US actually compares unfavourably to that of other industrialised nations.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The “American Dream” promises that in the Land of Opportunity, any individual can climb the economic ladder and prosper through hard work and ambition alone.",
+     "start": 0,
+     "end": 157,
+     "page": 4
+    },
+    {
+     "text": "And yet, young Americans today are struggling to earn more than their parents did at the same age, and upward mobility in the US actually compares unfavourably to that of other industrialised nations.",
+     "start": 158,
+     "end": 358,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "So why does the idea of the American Dream persist? A new study in the American Journal of Political Science identifies one factor that has been overlooked: the influence of reality TV.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "So why does the idea of the American Dream persist?",
+     "start": 0,
+     "end": 51,
+     "page": 4
+    },
+    {
+     "text": "A new study in the American Journal of Political Science identifies one factor that has been overlooked: the influence of reality TV.",
+     "start": 52,
+     "end": 185,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Reality shows have come to dominate US television over the past 20 years, notes Eunji Kim from Vanderbilt University. And the overwhelming majority of these have a “rags-to-riches” storyline: they feature ordinary Americans who work hard to achieve great economic success. And while these programmes are regularly among the most-watched shows, news broadcasts — which paint a more realistic view of the economic hardship faced by millions of Americans — get a much smaller proportion of the viewership.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Reality shows have come to dominate US television over the past 20 years, notes Eunji Kim from Vanderbilt University.",
+     "start": 0,
+     "end": 117,
+     "page": 4
+    },
+    {
+     "text": "And the overwhelming majority of these have a “rags-to-riches” storyline: they feature ordinary Americans who work hard to achieve great economic success.",
+     "start": 118,
+     "end": 272,
+     "page": 4
+    },
+    {
+     "text": "And while these programmes are regularly among the most-watched shows, news broadcasts — which paint a more realistic view of the economic hardship faced by millions of Americans — get a much smaller proportion of the viewership.",
+     "start": 273,
+     "end": 502,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Rags-to-riches stories are ubiquitous on TV — but does watching these programmes actually convince people that economic mobility is easily attainable? To find out, Kim’s team had participants watch a 5-minute clip from a reality show with a rags-to-riches storyline. Control participants watched a clip from a reality show that didn’t have a rags-to-riches story. After watching the shows, participants rated how much they agreed with four statements relating to the American Dream.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Rags-to-riches stories are ubiquitous on TV — but does watching these programmes actually convince people that economic mobility is easily attainable?",
+     "start": 0,
+     "end": 150,
+     "page": 4
+    },
+    {
+     "text": "To find out, Kim’s team had participants watch a 5-minute clip from a reality show with a rags-to-riches storyline.",
+     "start": 151,
+     "end": 266,
+     "page": 4
+    },
+    {
+     "text": "Control participants watched a clip from a reality show that didn’t have a rags-to-riches story.",
+     "start": 267,
+     "end": 363,
+     "page": 4
+    },
+    {
+     "text": "After watching the shows, participants rated how much they agreed with four statements relating to the American Dream.",
+     "start": 364,
+     "end": 482,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "The results showed that those who’d watched a rags-to-riches clip did indeed have a significantly greater belief in the American Dream. Interestingly, when participants were separated by party affiliation, this effect was significant among Republicans but not Democrats, suggesting that the kind of messages implicit in these TV shows may play into people’s existing socioeconomic beliefs.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The results showed that those who’d watched a rags-to-riches clip did indeed have a significantly greater belief in the American Dream.",
+     "start": 0,
+     "end": 135,
+     "page": 4
+    },
+    {
+     "text": "Interestingly, when participants were separated by party affiliation, this effect was significant among Republicans but not Democrats, suggesting that the kind of messages implicit in these TV shows may play into people’s existing socioeconomic beliefs.",
+     "start": 136,
+     "end": 389,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Kim also conducted a survey of 3,000 US residents. They also rated the extent to which they believed success in life is related to various internal factors (such as ambition) and external factors (such as family wealth). Finally, they read a list of TV programmes and indicated which they regularly watched.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Kim also conducted a survey of 3,000 US residents.",
+     "start": 0,
+     "end": 50,
+     "page": 4
+    },
+    {
+     "text": "They also rated the extent to which they believed success in life is related to various internal factors (such as ambition) and external factors (such as family wealth).",
+     "start": 51,
+     "end": 220,
+     "page": 4
+    },
+    {
+     "text": "Finally, they read a list of TV programmes and indicated which they regularly watched.",
+     "start": 221,
+     "end": 307,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Participants who were heavy viewers of rags-to-riches programmes or frequent viewers had a stronger belief in the American Dream than those who never watched such shows.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Participants who were heavy viewers of rags-to-riches programmes or frequent viewers had a stronger belief in the American Dream than those who never watched such shows.",
+     "start": 0,
+     "end": 169,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Kim concludes that “rags-to-riches entertainment media are an important cultural force that promotes and perpetuates beliefs in upward mobility”. And here’s the problem: if people mistakenly believe that hard work is all that is needed for individuals to make a better life for themselves, they may be less supportive of policies that could actually combat inequality.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Kim concludes that “rags-to-riches entertainment media are an important cultural force that promotes and perpetuates beliefs in upward mobility”.",
+     "start": 0,
+     "end": 145,
+     "page": 5
+    },
+    {
+     "text": "And here’s the problem: if people mistakenly believe that hard work is all that is needed for individuals to make a better life for themselves, they may be less supportive of policies that could actually combat inequality.",
+     "start": 146,
+     "end": 368,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "“In this era of choice, entertainment media are what captures hearts and minds,” Kim writes. “Its political consequences are anything but trivial”.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "“In this era of choice, entertainment media are what captures hearts and minds,” Kim writes.",
+     "start": 0,
+     "end": 92,
+     "page": 5
+    },
+    {
+     "text": "“Its political consequences are anything but trivial”.",
+     "start": 93,
+     "end": 147,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "ubiquitous",
+   "gloss": "无处不在的",
+   "start": 27,
+   "end": 37,
+   "paragraph": "4",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 21,
+  "words": 452
+ }
+}

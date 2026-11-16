@@ -1,0 +1,241 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-12-s2-c1",
+ "label": "2025年12月 · 第2套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 12,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2025年12月英语六级真题(第2套).pdf",
+  "sha256": "b103d8f0a56418713e5c7ff4a185b234b0b86578a8c2211f4261810e92006fd1",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "As interdependent beings we cannot thrive independent of others. We like to work with people who are likeminded, with whom we share a common interest, or who also believe in a cause we are serious about. This is evident in how we have organized ourselves into various collective groups such as nations, regions, communities, organizations, and families.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "As interdependent beings we cannot thrive independent of others.",
+     "start": 0,
+     "end": 64,
+     "page": 6
+    },
+    {
+     "text": "We like to work with people who are likeminded, with whom we share a common interest, or who also believe in a cause we are serious about.",
+     "start": 65,
+     "end": 203,
+     "page": 6
+    },
+    {
+     "text": "This is evident in how we have organized ourselves into various collective groups such as nations, regions, communities, organizations, and families.",
+     "start": 204,
+     "end": 353,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Does the group you belong to have a strong collective consciousness or shared beliefs? Is there interdependence among its members? Do you consider this group a significant part of your existence? If your answers are affirmative, then you are experiencing a micro version of solidarity.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Does the group you belong to have a strong collective consciousness or shared beliefs?",
+     "start": 0,
+     "end": 86,
+     "page": 6
+    },
+    {
+     "text": "Is there interdependence among its members?",
+     "start": 87,
+     "end": 130,
+     "page": 6
+    },
+    {
+     "text": "Do you consider this group a significant part of your existence?",
+     "start": 131,
+     "end": 195,
+     "page": 6
+    },
+    {
+     "text": "If your answers are affirmative, then you are experiencing a micro version of solidarity.",
+     "start": 196,
+     "end": 285,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "What is solidarity? Its simplest definition in the dictionary is: “... a unifying opinion, feeling, purpose or interest among a group of people.”",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "What is solidarity?",
+     "start": 0,
+     "end": 19,
+     "page": 6
+    },
+    {
+     "text": "Its simplest definition in the dictionary is: “... a unifying opinion, feeling, purpose or interest among a group of people.”",
+     "start": 20,
+     "end": 145,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "In this increasingly diverse society we live in, solidarity takes on a complex and multifaceted character as it forms bonds of interdependence among unique individuals living in a fast-changing environment and working within a complex division of labor.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "In this increasingly diverse society we live in, solidarity takes on a complex and multifaceted character as it forms bonds of interdependence among unique individuals living in a fast-changing environment and working within a complex division of labor.",
+     "start": 0,
+     "end": 253,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "One facet of solidarity fits well with the principles of communitarianism. In this setting, individuals give up their own interests to serve the common good. However, its strict adherence to social cohesiveness and exclusiveness restricts expression and practice of individual differences and preferences. Consequently, individuality and autonomy is sacrificed to maintain the unity of the group.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "One facet of solidarity fits well with the principles of communitarianism.",
+     "start": 0,
+     "end": 74,
+     "page": 6
+    },
+    {
+     "text": "In this setting, individuals give up their own interests to serve the common good.",
+     "start": 75,
+     "end": 157,
+     "page": 6
+    },
+    {
+     "text": "However, its strict adherence to social cohesiveness and exclusiveness restricts expression and practice of individual differences and preferences.",
+     "start": 158,
+     "end": 305,
+     "page": 6
+    },
+    {
+     "text": "Consequently, individuality and autonomy is sacrificed to maintain the unity of the group.",
+     "start": 306,
+     "end": 396,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Solidarity is also viewed as a reaction to the extreme emphasis on individualism and freedom of choice. It goes against the liberal idea of unrestricted individuals who see society as a hindrance to their freedom to make choices and to act according to what is good for them regardless of how these will affect others.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Solidarity is also viewed as a reaction to the extreme emphasis on individualism and freedom of choice.",
+     "start": 0,
+     "end": 103,
+     "page": 6
+    },
+    {
+     "text": "It goes against the liberal idea of unrestricted individuals who see society as a hindrance to their freedom to make choices and to act according to what is good for them regardless of how these will affect others.",
+     "start": 104,
+     "end": 318,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "But despite its many facets, social theorists have viewed solidarity as a key factor in bringing about order and progress in society. They believe that for human society to survive as it becomes more diverse, more new bonds need to be formed based on the differences. In the light of this, they regard a genuine solidarity as more than just shallow relationships based on common interests. Solidarity is not just a product of strategic calculations of how much it will benefit the self. It is not an exclusive class founded on the you-and-me-againstthe-world principle. Rather, it is inclusive and is not forced. Acting out of solidarity means supporting and standing up for each other — in recognition that one’s fate is in the fate of the other. It is a bond characterized by cooperative practices and strengthened by the concern for the well-being of others or the common good. It fights for the protection of human dignity and listens to and acts on the cries of the most vulnerable.",
+   "page_start": 6,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "But despite its many facets, social theorists have viewed solidarity as a key factor in bringing about order and progress in society.",
+     "start": 0,
+     "end": 133,
+     "page": 6
+    },
+    {
+     "text": "They believe that for human society to survive as it becomes more diverse, more new bonds need to be formed based on the differences.",
+     "start": 134,
+     "end": 267,
+     "page": 6
+    },
+    {
+     "text": "In the light of this, they regard a genuine solidarity as more than just shallow relationships based on common interests.",
+     "start": 268,
+     "end": 389,
+     "page": 6
+    },
+    {
+     "text": "Solidarity is not just a product of strategic calculations of how much it will benefit the self.",
+     "start": 390,
+     "end": 486,
+     "page": 7
+    },
+    {
+     "text": "It is not an exclusive class founded on the you-and-me-againstthe-world principle.",
+     "start": 487,
+     "end": 569,
+     "page": 7
+    },
+    {
+     "text": "Rather, it is inclusive and is not forced.",
+     "start": 570,
+     "end": 612,
+     "page": 7
+    },
+    {
+     "text": "Acting out of solidarity means supporting and standing up for each other — in recognition that one’s fate is in the fate of the other.",
+     "start": 613,
+     "end": 747,
+     "page": 7
+    },
+    {
+     "text": "It is a bond characterized by cooperative practices and strengthened by the concern for the well-being of others or the common good.",
+     "start": 748,
+     "end": 880,
+     "page": 7
+    },
+    {
+     "text": "It fights for the protection of human dignity and listens to and acts on the cries of the most vulnerable.",
+     "start": 881,
+     "end": 987,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "communitarianism",
+   "gloss": "社群主义",
+   "start": 57,
+   "end": 73,
+   "paragraph": "5",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 25,
+  "words": 443
+ }
+}

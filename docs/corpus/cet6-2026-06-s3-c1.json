@@ -1,0 +1,182 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s3-c1",
+ "label": "2026年6月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第3套).pdf",
+  "sha256": "dbd77e981aa91b5e3d4b8c8e4dd799f83d869951c44f841d9f981305847ba6dd",
+  "pages": [
+   4,
+   4
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Three artists have brought a lawsuit against Stability AL, DeviantArt, and Midjourney, alleging that the textto-image AI tools have infringed the rights of thousands of artists.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Three artists have brought a lawsuit against Stability AL, DeviantArt, and Midjourney, alleging that the textto-image AI tools have infringed the rights of thousands of artists.",
+     "start": 0,
+     "end": 177,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The lawsuit claims that the Stable Diffusion tool used by Stability AI, DeviantArt, and Midjourney was trained on billions of copyrighted images downloaded from the internet and used by the companies “without compensation or consent from the artists”.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The lawsuit claims that the Stable Diffusion tool used by Stability AI, DeviantArt, and Midjourney was trained on billions of copyrighted images downloaded from the internet and used by the companies “without compensation or consent from the artists”.",
+     "start": 0,
+     "end": 251,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "The artists are represented by The Joseph Saveri Law Firm and Matthew Butterick.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The artists are represented by The Joseph Saveri Law Firm and Matthew Butterick.",
+     "start": 0,
+     "end": 80,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "“If Stable Diffusion and similar products are allowed to continue to operate as they do now, the foreseeable result is they will replace the very artists whose stolen works power these AI products with whom they are competing,” the law firm wrote in a press release. “AI image products are not just an infringement of artists’ rights; they will eliminate ‘artist’ as a viable career path. In addition to obtaining compensation for the wrongful conduct, this lawsuit seeks to prevent that outcome and ensure these products follow the same rules as any other new technology that involves the use of massive amounts of intellectual property. If streaming music can be accomplished within the law, so can AI products.”",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "“If Stable Diffusion and similar products are allowed to continue to operate as they do now, the foreseeable result is they will replace the very artists whose stolen works power these AI products with whom they are competing,” the law firm wrote in a press release.",
+     "start": 0,
+     "end": 266,
+     "page": 4
+    },
+    {
+     "text": "“AI image products are not just an infringement of artists’ rights; they will eliminate ‘artist’ as a viable career path.",
+     "start": 267,
+     "end": 388,
+     "page": 4
+    },
+    {
+     "text": "In addition to obtaining compensation for the wrongful conduct, this lawsuit seeks to prevent that outcome and ensure these products follow the same rules as any other new technology that involves the use of massive amounts of intellectual property.",
+     "start": 389,
+     "end": 638,
+     "page": 4
+    },
+    {
+     "text": "If streaming music can be accomplished within the law, so can AI products.”",
+     "start": 639,
+     "end": 714,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Since text-to-image generators have increased in popularity in the past year, many artists have been vocalizing their opposition to AI art after seeing their own distorted signatures appear in AI art and finding out that their work was used to train the tools without their permission.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Since text-to-image generators have increased in popularity in the past year, many artists have been vocalizing their opposition to AI art after seeing their own distorted signatures appear in AI art and finding out that their work was used to train the tools without their permission.",
+     "start": 0,
+     "end": 285,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Not only are many artists furious at the possible copyright violations of AI art, but they have also been frustrated by how AI tools are able to sidestep the labor and art processes they are required to go through. As a result, many artists have been trying to ban AI art from art-sharing platforms.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Not only are many artists furious at the possible copyright violations of AI art, but they have also been frustrated by how AI tools are able to sidestep the labor and art processes they are required to go through.",
+     "start": 0,
+     "end": 214,
+     "page": 4
+    },
+    {
+     "text": "As a result, many artists have been trying to ban AI art from art-sharing platforms.",
+     "start": 215,
+     "end": 299,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "As AI innovation continues at a rapid speed, it seems that artists and lawmakers are trying to put a brake on further developments before it’s too late.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "As AI innovation continues at a rapid speed, it seems that artists and lawmakers are trying to put a brake on further developments before it’s too late.",
+     "start": 0,
+     "end": 152,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Many tech enthusiasts are still rallying around the promise of AI tools to create detailed images cheaply and quickly — anonymous tech supporters have already published a response to Butterick and Joseph Saveri’s lawsuit on a website, using the “fair use” clause as the basis for why copyrighted images could be used by the tool.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Many tech enthusiasts are still rallying around the promise of AI tools to create detailed images cheaply and quickly — anonymous tech supporters have already published a response to Butterick and Joseph Saveri’s lawsuit on a website, using the “fair use” clause as the basis for why copyrighted images could be used by the tool.",
+     "start": 0,
+     "end": 329,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Fair use, a legal doctrine that allows for a limited usage of copyrighted materials without permission by the original creators for purposes such as teaching and news sharing, is what a lot of generative model creators claim that their training data is covered by. However, since fair use applies differently to each case, it’s hard to make a blanket statement about all works in a dataset as being applicable.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Fair use, a legal doctrine that allows for a limited usage of copyrighted materials without permission by the original creators for purposes such as teaching and news sharing, is what a lot of generative model creators claim that their training data is covered by.",
+     "start": 0,
+     "end": 264,
+     "page": 4
+    },
+    {
+     "text": "However, since fair use applies differently to each case, it’s hard to make a blanket statement about all works in a dataset as being applicable.",
+     "start": 265,
+     "end": 410,
+     "page": 4
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 14,
+  "words": 446
+ }
+}

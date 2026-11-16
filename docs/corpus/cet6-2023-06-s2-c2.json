@@ -1,0 +1,287 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s2-c2",
+ "label": "2023年6月 · 第2套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第2套).pdf",
+  "sha256": "7f2690572f05d9db6c0b30da8eb52a0261b73b9e594db291075659cac54abcdf",
+  "pages": [
+   9,
+   9
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Chimpanzees, human beings’ closest animal relatives, share up to 98% of our genes. Yet humans and chimpanzees lead very different lives. Fewer than 300,000 wild chimpanzees live in a few forested corners of Africa today, while humans have colonized every corner of the globe. At more than 7 billion, human population dwarfs that of nearly all other mammals — despite our physical weaknesses.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Chimpanzees, human beings’ closest animal relatives, share up to 98% of our genes.",
+     "start": 0,
+     "end": 82,
+     "page": 9
+    },
+    {
+     "text": "Yet humans and chimpanzees lead very different lives.",
+     "start": 83,
+     "end": 136,
+     "page": 9
+    },
+    {
+     "text": "Fewer than 300,000 wild chimpanzees live in a few forested corners of Africa today, while humans have colonized every corner of the globe.",
+     "start": 137,
+     "end": 275,
+     "page": 9
+    },
+    {
+     "text": "At more than 7 billion, human population dwarfs that of nearly all other mammals — despite our physical weaknesses.",
+     "start": 276,
+     "end": 391,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "What could account for our species’ incredible evolutionary successes?",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "What could account for our species’ incredible evolutionary successes?",
+     "start": 0,
+     "end": 70,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "One obvious answer is our big brains. It could be that our raw intelligence gave us an unprecedented ability to think outside the box, innovating solutions to thorny problems as people migrated across the globe.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "One obvious answer is our big brains.",
+     "start": 0,
+     "end": 37,
+     "page": 9
+    },
+    {
+     "text": "It could be that our raw intelligence gave us an unprecedented ability to think outside the box, innovating solutions to thorny problems as people migrated across the globe.",
+     "start": 38,
+     "end": 211,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "But a growing number of cognitive scientists and anthropologists are rejecting that explanation. They think that, rather than making our living as innovators, we survive and thrive precisely because we don’t think for ourselves. Instead, people cope with challenging climates and ecological contexts by carefully copying others.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "But a growing number of cognitive scientists and anthropologists are rejecting that explanation.",
+     "start": 0,
+     "end": 96,
+     "page": 9
+    },
+    {
+     "text": "They think that, rather than making our living as innovators, we survive and thrive precisely because we don’t think for ourselves.",
+     "start": 97,
+     "end": 228,
+     "page": 9
+    },
+    {
+     "text": "Instead, people cope with challenging climates and ecological contexts by carefully copying others.",
+     "start": 229,
+     "end": 328,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "In a famous study, psychologists Victoria Horner and Andrew Whiten showed two groups of test subjects — children and chimpanzees — a mechanical box with a treat inside. In one condition, the box was opaque, while in the other it was transparent. The experimenters demonstrated how to open the box to retrieve the treat, but they also included the irrelevant step of tapping on the box with a stick.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "In a famous study, psychologists Victoria Horner and Andrew Whiten showed two groups of test subjects — children and chimpanzees — a mechanical box with a treat inside.",
+     "start": 0,
+     "end": 168,
+     "page": 9
+    },
+    {
+     "text": "In one condition, the box was opaque, while in the other it was transparent.",
+     "start": 169,
+     "end": 245,
+     "page": 9
+    },
+    {
+     "text": "The experimenters demonstrated how to open the box to retrieve the treat, but they also included the irrelevant step of tapping on the box with a stick.",
+     "start": 246,
+     "end": 398,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Oddly, the children carefully copied all the steps to open the box, even when they could see that the stick had no practical effect. That is, they copied irrationally: Instead of doing only what was necessary to get their reward, children slavishly imitated every action they’d witnessed.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Oddly, the children carefully copied all the steps to open the box, even when they could see that the stick had no practical effect.",
+     "start": 0,
+     "end": 132,
+     "page": 9
+    },
+    {
+     "text": "That is, they copied irrationally: Instead of doing only what was necessary to get their reward, children slavishly imitated every action they’d witnessed.",
+     "start": 133,
+     "end": 288,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Of course, that study only included three-and four-year-olds. But additional research has shown that older children and adults are even more likely to mindlessly copy others’ actions, and infants are less likely to over-imitate — that is, to precisely copy even impractical actions.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Of course, that study only included three-and four-year-olds.",
+     "start": 0,
+     "end": 61,
+     "page": 9
+    },
+    {
+     "text": "But additional research has shown that older children and adults are even more likely to mindlessly copy others’ actions, and infants are less likely to over-imitate — that is, to precisely copy even impractical actions.",
+     "start": 62,
+     "end": 282,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "By contrast, chimpanzees in the study only over-imitated in the opaque condition. In the transparent condition — where they saw that the stick was mechanically useless — they ignored that step entirely. Other research has since supported these findings.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "By contrast, chimpanzees in the study only over-imitated in the opaque condition.",
+     "start": 0,
+     "end": 81,
+     "page": 9
+    },
+    {
+     "text": "In the transparent condition — where they saw that the stick was mechanically useless — they ignored that step entirely.",
+     "start": 82,
+     "end": 202,
+     "page": 9
+    },
+    {
+     "text": "Other research has since supported these findings.",
+     "start": 203,
+     "end": 253,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "When it comes to copying, chimpanzees are more rational than human children or adults.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "When it comes to copying, chimpanzees are more rational than human children or adults.",
+     "start": 0,
+     "end": 86,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "text": "Where does the seemingly irrational human preference for over-imitation come from? Anthropologist Joseph Henrich points out that people around the world rely on technologies that are often so complex that no one can learn them rationally. Instead, people must learn them step by step, trusting in the wisdom of more experienced elders and peers.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Where does the seemingly irrational human preference for over-imitation come from?",
+     "start": 0,
+     "end": 82,
+     "page": 9
+    },
+    {
+     "text": "Anthropologist Joseph Henrich points out that people around the world rely on technologies that are often so complex that no one can learn them rationally.",
+     "start": 83,
+     "end": 238,
+     "page": 9
+    },
+    {
+     "text": "Instead, people must learn them step by step, trusting in the wisdom of more experienced elders and peers.",
+     "start": 239,
+     "end": 345,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "text": "So the next time you hear someone arguing passionately that everyone should embrace nonconformity and avoid imitating others, you might laugh a little bit. We’re not chimpanzees, after all.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "So the next time you hear someone arguing passionately that everyone should embrace nonconformity and avoid imitating others, you might laugh a little bit.",
+     "start": 0,
+     "end": 155,
+     "page": 9
+    },
+    {
+     "text": "We’re not chimpanzees, after all.",
+     "start": 156,
+     "end": 189,
+     "page": 9
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "Chimpanzees",
+   "gloss": "黑猩猩",
+   "start": 0,
+   "end": 11,
+   "paragraph": "1",
+   "sentence": 0
+  },
+  {
+   "surface": "anthropologists",
+   "gloss": "人类学家",
+   "start": 49,
+   "end": 64,
+   "paragraph": "4",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 11,
+  "sentences": 26,
+  "words": 449
+ }
+}

@@ -1,0 +1,211 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s2-c1",
+ "label": "2023年12月 · 第2套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第2套).pdf",
+  "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25",
+  "pages": [
+   7,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Could you get by without using the internet for four and a half years? That’s exactly what singer and actress Selena Gomez has done in a bid to improve her mental health.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Could you get by without using the internet for four and a half years?",
+     "start": 0,
+     "end": 70,
+     "page": 7
+    },
+    {
+     "text": "That’s exactly what singer and actress Selena Gomez has done in a bid to improve her mental health.",
+     "start": 71,
+     "end": 170,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "She has spoken extensively about the relationship between her social media usage and her mental wellbeing, recalling feeling like “an addict” when she became Instagram’s most followed user in 2016. “Taking a break from social media was the best decision that I’ve ever made for my mental health,” says she. “The unnecessary hate and comparisons went away once I put my phone down.”",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "She has spoken extensively about the relationship between her social media usage and her mental wellbeing, recalling feeling like “an addict” when she became Instagram’s most followed user in 2016.",
+     "start": 0,
+     "end": 197,
+     "page": 7
+    },
+    {
+     "text": "“Taking a break from social media was the best decision that I’ve ever made for my mental health,” says she.",
+     "start": 198,
+     "end": 306,
+     "page": 7
+    },
+    {
+     "text": "“The unnecessary hate and comparisons went away once I put my phone down.”",
+     "start": 307,
+     "end": 381,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Ditching the web at large, however, is a far more subtle and complicated prospect. The increasing digitisation of our society means that everything from paying a gas bill to plotting a route to a friend’s house and even making a phone call is at the mercy of your internet connection. Actively opting out of using the internet becomes a matter of privilege.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Ditching the web at large, however, is a far more subtle and complicated prospect.",
+     "start": 0,
+     "end": 82,
+     "page": 7
+    },
+    {
+     "text": "The increasing digitisation of our society means that everything from paying a gas bill to plotting a route to a friend’s house and even making a phone call is at the mercy of your internet connection.",
+     "start": 83,
+     "end": 284,
+     "page": 7
+    },
+    {
+     "text": "Actively opting out of using the internet becomes a matter of privilege.",
+     "start": 285,
+     "end": 357,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Ms Gomez’s multi-millionaire status has allowed her to take the “social” out of social media, so she can continue to leverage her enormous fame while keeping the trolls at bay . The fact that she’s still the second most-followed woman on Instagram suggests it’s entirely possible to maintain a significant web profile to promote various projects — by way of a dedicated team — without being exposed to the cruel comments, hate mail and rape or death threats.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Ms Gomez’s multi-millionaire status has allowed her to take the “social” out of social media, so she can continue to leverage her enormous fame while keeping the trolls at bay .",
+     "start": 0,
+     "end": 177,
+     "page": 7
+    },
+    {
+     "text": "The fact that she’s still the second most-followed woman on Instagram suggests it’s entirely possible to maintain a significant web profile to promote various projects — by way of a dedicated team — without being exposed to the cruel comments, hate mail and rape or death threats.",
+     "start": 178,
+     "end": 458,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "It goes without saying that this is fundamentally different from how the rest of us without beauty deals and films to publicise use the likes of Instagram, TikTok and Twitter, but even the concept of a digital detox requires having a device and connectivity to choose to disconnect from.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "It goes without saying that this is fundamentally different from how the rest of us without beauty deals and films to publicise use the likes of Instagram, TikTok and Twitter, but even the concept of a digital detox requires having a device and connectivity to choose to disconnect from.",
+     "start": 0,
+     "end": 287,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "The UK’s digital divide has worsened over the past two years, leaving poorer families without broadband connections in their homes. Digital exclusion is a major threat to wider societal equality in the UK, so witnessing companies like Facebook championing the metaverse as the next great frontier when school children are struggling to complete their homework feels particularly irritating.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The UK’s digital divide has worsened over the past two years, leaving poorer families without broadband connections in their homes.",
+     "start": 0,
+     "end": 131,
+     "page": 7
+    },
+    {
+     "text": "Digital exclusion is a major threat to wider societal equality in the UK, so witnessing companies like Facebook championing the metaverse as the next great frontier when school children are struggling to complete their homework feels particularly irritating.",
+     "start": 132,
+     "end": 390,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Consequently, it’s worth bearing in mind that while deleting all social media accounts will undoubtedly make some feel infinitely better, many other people benefit from the strong sense of community that sharing platforms can breed.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Consequently, it’s worth bearing in mind that while deleting all social media accounts will undoubtedly make some feel infinitely better, many other people benefit from the strong sense of community that sharing platforms can breed.",
+     "start": 0,
+     "end": 232,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Internet access will continue to grow in importance as we edge further towards web 3.0, and greater resources and initiatives are needed to provide the underprivileged with the connectivity they desperately need to learn, work and live. It’s crucial that people who feel that social media is having a detrimental effect on their mental health are allowed to switch off — and for those living in digital exclusion to be able to switch on in the first place.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Internet access will continue to grow in importance as we edge further towards web 3.0, and greater resources and initiatives are needed to provide the underprivileged with the connectivity they desperately need to learn, work and live.",
+     "start": 0,
+     "end": 236,
+     "page": 7
+    },
+    {
+     "text": "It’s crucial that people who feel that social media is having a detrimental effect on their mental health are allowed to switch off — and for those living in digital exclusion to be able to switch on in the first place.",
+     "start": 237,
+     "end": 456,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "trolls",
+   "gloss": "恶意挑衅的贴子",
+   "start": 162,
+   "end": 168,
+   "paragraph": "4",
+   "sentence": 0
+  },
+  {
+   "surface": "detox",
+   "gloss": "戒瘾",
+   "start": 210,
+   "end": 215,
+   "paragraph": "5",
+   "sentence": 0
+  },
+  {
+   "surface": "metaverse",
+   "gloss": "元宇宙",
+   "start": 260,
+   "end": 269,
+   "paragraph": "6",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 16,
+  "words": 455
+ }
+}

@@ -1,0 +1,230 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s2-c2",
+ "label": "2024年6月 · 第2套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第2套).pdf",
+  "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "The term “environmentalist” can mean different things. It used to refer to people trying to protect wildlife and natural ecosystems. In the 21st century, the term has evolved to capture the need to combat human-made climate change.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The term “environmentalist” can mean different things.",
+     "start": 0,
+     "end": 54,
+     "page": 7
+    },
+    {
+     "text": "It used to refer to people trying to protect wildlife and natural ecosystems.",
+     "start": 55,
+     "end": 132,
+     "page": 7
+    },
+    {
+     "text": "In the 21st century, the term has evolved to capture the need to combat human-made climate change.",
+     "start": 133,
+     "end": 231,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The distinction between these two strands of environmentalism is the cause of a split within the scientific community about nuclear energy.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The distinction between these two strands of environmentalism is the cause of a split within the scientific community about nuclear energy.",
+     "start": 0,
+     "end": 139,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "On one side are purists who believe nuclear power isn’t worth the risk and the exclusive solution to the climate crisis is renewable energy. The opposing side agrees that renewables are crucial, but says society needs an amount of power available to meet consumers’ basic demands when the sun isn’t shining and the wind isn’t blowing. Nuclear energy, being far cleaner than oil, gas and coal, is a natural option, especially where hydroelectric capacity is limited.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "On one side are purists who believe nuclear power isn’t worth the risk and the exclusive solution to the climate crisis is renewable energy.",
+     "start": 0,
+     "end": 140,
+     "page": 7
+    },
+    {
+     "text": "The opposing side agrees that renewables are crucial, but says society needs an amount of power available to meet consumers’ basic demands when the sun isn’t shining and the wind isn’t blowing.",
+     "start": 141,
+     "end": 334,
+     "page": 7
+    },
+    {
+     "text": "Nuclear energy, being far cleaner than oil, gas and coal, is a natural option, especially where hydroelectric capacity is limited.",
+     "start": 335,
+     "end": 465,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Leon Clarke, who helped author reports for the UN’s Intergovernmental Panel on Climate Change, isn’t an uncritical supporter of nuclear energy, but says it’s a valuable option to have if we’re serious about reaching carbon neutrality.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Leon Clarke, who helped author reports for the UN’s Intergovernmental Panel on Climate Change, isn’t an uncritical supporter of nuclear energy, but says it’s a valuable option to have if we’re serious about reaching carbon neutrality.",
+     "start": 0,
+     "end": 234,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "“Core to all of this is the degree to which you think we can actually meet climate goals with 100% renewables,” he said. “If you don’t believe we can do it, and you care about the climate, you are forced to think about something like nuclear.”",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "“Core to all of this is the degree to which you think we can actually meet climate goals with 100% renewables,” he said.",
+     "start": 0,
+     "end": 120,
+     "page": 7
+    },
+    {
+     "text": "“If you don’t believe we can do it, and you care about the climate, you are forced to think about something like nuclear.”",
+     "start": 121,
+     "end": 243,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "The achievability of universal 100% renewability is similarly contentious. Cities such as Burlington, Vermont, have been “100% renewable” for years. But these cities often have small populations, occasionally still rely on fossil fuel energy and have significant renewable resources at their immediate disposal. Meanwhile, countries that manage to run off renewables typically do so thanks to extraordinary hydroelectric capabilities.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The achievability of universal 100% renewability is similarly contentious.",
+     "start": 0,
+     "end": 74,
+     "page": 7
+    },
+    {
+     "text": "Cities such as Burlington, Vermont, have been “100% renewable” for years.",
+     "start": 75,
+     "end": 148,
+     "page": 7
+    },
+    {
+     "text": "But these cities often have small populations, occasionally still rely on fossil fuel energy and have significant renewable resources at their immediate disposal.",
+     "start": 149,
+     "end": 311,
+     "page": 7
+    },
+    {
+     "text": "Meanwhile, countries that manage to run off renewables typically do so thanks to extraordinary hydroelectric capabilities.",
+     "start": 312,
+     "end": 434,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Germany stands as the best case study for a large, industrialized country pushing into green energy. Chancellor Angela Merkel in 2011 announced Energiewende, an energy transition that would phase out nuclear and coal while phasing in renewables. Wind and solar power generation has increased over 400% since 2010, and renewables provided 46% of the country’s electricity in 2019.",
+   "page_start": 7,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Germany stands as the best case study for a large, industrialized country pushing into green energy.",
+     "start": 0,
+     "end": 100,
+     "page": 7
+    },
+    {
+     "text": "Chancellor Angela Merkel in 2011 announced Energiewende, an energy transition that would phase out nuclear and coal while phasing in renewables.",
+     "start": 101,
+     "end": 245,
+     "page": 7
+    },
+    {
+     "text": "Wind and solar power generation has increased over 400% since 2010, and renewables provided 46% of the country’s electricity in 2019.",
+     "start": 246,
+     "end": 379,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "But progress has halted in recent years. The instability of renewables doesn’t just mean energy is often not produced at night, but also that solar and wind can overwhelm the grid during the day, forcing utilities to pay customers to use their electricity. Lagging grid infrastructure struggles to transport this overabundance of green energy from Germany’s north to its industrial south, meaning many factories still run on coal and gas. The political limit has also been reached in some places, with citizens meeting the construction of new wind turbines with loud protests.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "But progress has halted in recent years.",
+     "start": 0,
+     "end": 40,
+     "page": 8
+    },
+    {
+     "text": "The instability of renewables doesn’t just mean energy is often not produced at night, but also that solar and wind can overwhelm the grid during the day, forcing utilities to pay customers to use their electricity.",
+     "start": 41,
+     "end": 256,
+     "page": 8
+    },
+    {
+     "text": "Lagging grid infrastructure struggles to transport this overabundance of green energy from Germany’s north to its industrial south, meaning many factories still run on coal and gas.",
+     "start": 257,
+     "end": 438,
+     "page": 8
+    },
+    {
+     "text": "The political limit has also been reached in some places, with citizens meeting the construction of new wind turbines with loud protests.",
+     "start": 439,
+     "end": 576,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "The result is that Germany’s greenhouse gas emissions have fallen by around 11.5% since 2010 — slower than the EU average of 13.5%.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "The result is that Germany’s greenhouse gas emissions have fallen by around 11.5% since 2010 — slower than the EU average of 13.5%.",
+     "start": 0,
+     "end": 131,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 22,
+  "words": 448
+ }
+}

@@ -1,0 +1,218 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s1-c2",
+ "label": "2026年6月 · 第1套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第1套).pdf",
+  "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "About a decade ago, the G-20, a forum of the world’s biggest economies, agreed to crack down on multinational corporations’ abusive use of tax havens. This resulted in a plan that aimed to curb practices that shielded a large chunk of corporate profits from tax authorities.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "About a decade ago, the G-20, a forum of the world’s biggest economies, agreed to crack down on multinational corporations’ abusive use of tax havens.",
+     "start": 0,
+     "end": 150,
+     "page": 7
+    },
+    {
+     "text": "This resulted in a plan that aimed to curb practices that shielded a large chunk of corporate profits from tax authorities.",
+     "start": 151,
+     "end": 274,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "But instead of reining in the use of tax havens — countries such as the Bahamas and Cayman Islands with very low or no effective tax rates — the problem has only gotten worse.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "But instead of reining in the use of tax havens — countries such as the Bahamas and Cayman Islands with very low or no effective tax rates — the problem has only gotten worse.",
+     "start": 0,
+     "end": 175,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "In a new study, we measured the excessive profits reported in tax havens that cannot be explained by ordinary economic activity such as employees, factories and research in that country. Our findings show a striking pattern of artificial shifting of paper profits to tax havens by corporations, which has been relentless since the 1980s.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "In a new study, we measured the excessive profits reported in tax havens that cannot be explained by ordinary economic activity such as employees, factories and research in that country.",
+     "start": 0,
+     "end": 186,
+     "page": 7
+    },
+    {
+     "text": "Our findings show a striking pattern of artificial shifting of paper profits to tax havens by corporations, which has been relentless since the 1980s.",
+     "start": 187,
+     "end": 337,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "We found that the world’s biggest multinational businesses shifted 37% of the profits — $969 billion — they earned in other countries to tax havens in 2019. The figure was less than 2% in the 1970s. The main reasons for the large increase were the growth of the tax avoidance industry in the 1980s and US policies that made it easier to shift profits from high-tax countries to tax havens.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "We found that the world’s biggest multinational businesses shifted 37% of the profits — $969 billion — they earned in other countries to tax havens in 2019.",
+     "start": 0,
+     "end": 156,
+     "page": 7
+    },
+    {
+     "text": "The figure was less than 2% in the 1970s.",
+     "start": 157,
+     "end": 198,
+     "page": 7
+    },
+    {
+     "text": "The main reasons for the large increase were the growth of the tax avoidance industry in the 1980s and US policies that made it easier to shift profits from high-tax countries to tax havens.",
+     "start": 199,
+     "end": 389,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "We estimate that the amount of corporate taxes lost as a result reached 10% of total corporate revenue in 2019, up from less than 0.1% in the 1970s. In 2019, the total government tax loss globally was $250 billion. US multinational corporations alone accounted for about half of that, followed by the UK and Germany.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "We estimate that the amount of corporate taxes lost as a result reached 10% of total corporate revenue in 2019, up from less than 0.1% in the 1970s.",
+     "start": 0,
+     "end": 148,
+     "page": 7
+    },
+    {
+     "text": "In 2019, the total government tax loss globally was $250 billion.",
+     "start": 149,
+     "end": 214,
+     "page": 7
+    },
+    {
+     "text": "US multinational corporations alone accounted for about half of that, followed by the UK and Germany.",
+     "start": 215,
+     "end": 316,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "How do policymakers fix this? So far, the world as a whole has been trying to solve this problem by cutting or scrapping corporate taxes in a very gradual way. In the past 40 years, the global effective corporate tax rate has fallen from 23% to 17%. At the same time, governments have relied more heavily on consumption taxes.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "How do policymakers fix this?",
+     "start": 0,
+     "end": 29,
+     "page": 7
+    },
+    {
+     "text": "So far, the world as a whole has been trying to solve this problem by cutting or scrapping corporate taxes in a very gradual way.",
+     "start": 30,
+     "end": 159,
+     "page": 7
+    },
+    {
+     "text": "In the past 40 years, the global effective corporate tax rate has fallen from 23% to 17%.",
+     "start": 160,
+     "end": 249,
+     "page": 7
+    },
+    {
+     "text": "At the same time, governments have relied more heavily on consumption taxes.",
+     "start": 250,
+     "end": 326,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "But the root cause of profit-shifting is the incentives involved, such as generous or lenient corporate tax rates in other countries. If countries could agree on a global minimum corporate tax rate of, say, 20%, the problem of profit-shifting would largely disappear, as tax havens would simply cease to exist.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "But the root cause of profit-shifting is the incentives involved, such as generous or lenient corporate tax rates in other countries.",
+     "start": 0,
+     "end": 133,
+     "page": 8
+    },
+    {
+     "text": "If countries could agree on a global minimum corporate tax rate of, say, 20%, the problem of profit-shifting would largely disappear, as tax havens would simply cease to exist.",
+     "start": 134,
+     "end": 310,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "This type of mechanism is exactly what more than 130 countries signed onto in 2021, with implementation of a 15% minimum tax set to begin soon in the EU, UK, Japan, Indonesia and many other countries. The US has notably not been able to pass this legislation.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "This type of mechanism is exactly what more than 130 countries signed onto in 2021, with implementation of a 15% minimum tax set to begin soon in the EU, UK, Japan, Indonesia and many other countries.",
+     "start": 0,
+     "end": 200,
+     "page": 8
+    },
+    {
+     "text": "The US has notably not been able to pass this legislation.",
+     "start": 201,
+     "end": 259,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Our research suggests implementing this type of tax reform is necessary in reversing the shift of ever-greater amounts of corporate profits to tax havens — instead of being taxed by the governments where they operate and create value.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Our research suggests implementing this type of tax reform is necessary in reversing the shift of ever-greater amounts of corporate profits to tax havens — instead of being taxed by the governments where they operate and create value.",
+     "start": 0,
+     "end": 234,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 20,
+  "words": 453
+ }
+}

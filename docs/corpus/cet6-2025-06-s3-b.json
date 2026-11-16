@@ -1,0 +1,531 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-06-s3-b",
+ "label": "2025年6月 · 第3套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 6,
+  "set": 3,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2025年6月英语六级真题(第3套).pdf",
+  "sha256": "1310d1f9e49ae67a9cd0faa6f0c9a1a02c24e28819a05dec18a8e4004a10ab49",
+  "pages": [
+   2,
+   3
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "As the scale and impacts of climate change become increasingly alarming, meat is a popular target for action. Advocates for the protection of the natural environment from destruction or pollution urge the public to eat less meat. Some activists have even called for taxing meat to reduce consumption of it.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "As the scale and impacts of climate change become increasingly alarming, meat is a popular target for action.",
+     "start": 0,
+     "end": 109,
+     "page": 2
+    },
+    {
+     "text": "Advocates for the protection of the natural environment from destruction or pollution urge the public to eat less meat.",
+     "start": 110,
+     "end": 229,
+     "page": 2
+    },
+    {
+     "text": "Some activists have even called for taxing meat to reduce consumption of it.",
+     "start": 230,
+     "end": 306,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "A key claim underlying these arguments holds that globally, meat production generates more greenhouse gases than the entire transportation sector. However, this claim is demonstrably wrong, as I will show. And its persistence has led to false assumptions about the linkage between meat and climate change.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "A key claim underlying these arguments holds that globally, meat production generates more greenhouse gases than the entire transportation sector.",
+     "start": 0,
+     "end": 146,
+     "page": 2
+    },
+    {
+     "text": "However, this claim is demonstrably wrong, as I will show.",
+     "start": 147,
+     "end": 205,
+     "page": 2
+    },
+    {
+     "text": "And its persistence has led to false assumptions about the linkage between meat and climate change.",
+     "start": 206,
+     "end": 305,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "My recent research focuses on ways in which animal agriculture affects air quality and climate change. In my view, there are many reasons for either choosing animal protein or opting for a vegetarian selection. However, abandoning meat and meat products is not the environmental panacea many would have us believe. And if taken to an extreme, it also could have harmful nutritional consequences.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "My recent research focuses on ways in which animal agriculture affects air quality and climate change.",
+     "start": 0,
+     "end": 102,
+     "page": 2
+    },
+    {
+     "text": "In my view, there are many reasons for either choosing animal protein or opting for a vegetarian selection.",
+     "start": 103,
+     "end": 210,
+     "page": 2
+    },
+    {
+     "text": "However, abandoning meat and meat products is not the environmental panacea many would have us believe.",
+     "start": 211,
+     "end": 314,
+     "page": 2
+    },
+    {
+     "text": "And if taken to an extreme, it also could have harmful nutritional consequences.",
+     "start": 315,
+     "end": 395,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "A healthy portion of meat’s negative reputation centers on the assertion that livestock is the largest source of greenhouse gases worldwide. For example, an analysis published in 2009 by the World Watch Institute based in Washington, D.C. asserted that 51 percent of global greenhouse gas emissions come from rearing and processing livestock. According to the US Environmental Protection Agency, the largest sources of US greenhouse gas emissions in 2016 were electricity production (28 percent of total emissions), transportation (28 percent) and industry (22 percent). All of agriculture accounted for a total of 9 percent, but all of animal agriculture contributes less than half of this amount, representing 3.9 percent of the total greenhouse emission in the US. That is very different from claiming that livestock represents as much as or more than transportation.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "A healthy portion of meat’s negative reputation centers on the assertion that livestock is the largest source of greenhouse gases worldwide.",
+     "start": 0,
+     "end": 140,
+     "page": 2
+    },
+    {
+     "text": "For example, an analysis published in 2009 by the World Watch Institute based in Washington, D.C. asserted that 51 percent of global greenhouse gas emissions come from rearing and processing livestock.",
+     "start": 141,
+     "end": 342,
+     "page": 2
+    },
+    {
+     "text": "According to the US Environmental Protection Agency, the largest sources of US greenhouse gas emissions in 2016 were electricity production (28 percent of total emissions), transportation (28 percent) and industry (22 percent).",
+     "start": 343,
+     "end": 570,
+     "page": 2
+    },
+    {
+     "text": "All of agriculture accounted for a total of 9 percent, but all of animal agriculture contributes less than half of this amount, representing 3.9 percent of the total greenhouse emission in the US.",
+     "start": 571,
+     "end": 767,
+     "page": 2
+    },
+    {
+     "text": "That is very different from claiming that livestock represents as much as or more than transportation.",
+     "start": 768,
+     "end": 870,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "Why is there such a misconception? In 2006 the United Nations Food and Agriculture Organization (FAO) published a study titled “Livestock’s Long Shadow,” which received widespread international attention. It stated that livestock produced a staggering 18 percent of the world’s greenhouse gas emissions. The agency drew a startling conclusion that livestock was doing more to harm the climate than all modes of transportation combined. This latter claim was wrong, and has since been corrected by Henning Stenfeld, the report’s senior author.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Why is there such a misconception?",
+     "start": 0,
+     "end": 34,
+     "page": 2
+    },
+    {
+     "text": "In 2006 the United Nations Food and Agriculture Organization (FAO) published a study titled “Livestock’s Long Shadow,” which received widespread international attention.",
+     "start": 35,
+     "end": 204,
+     "page": 2
+    },
+    {
+     "text": "It stated that livestock produced a staggering 18 percent of the world’s greenhouse gas emissions.",
+     "start": 205,
+     "end": 303,
+     "page": 2
+    },
+    {
+     "text": "The agency drew a startling conclusion that livestock was doing more to harm the climate than all modes of transportation combined.",
+     "start": 304,
+     "end": 435,
+     "page": 2
+    },
+    {
+     "text": "This latter claim was wrong, and has since been corrected by Henning Stenfeld, the report’s senior author.",
+     "start": 436,
+     "end": 542,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "The problem was that analysts from the FAO used a comprehensive life-cycle assessment to study the climate impact of livestock, but a different method when they analyzed transportation. For livestock, they considered every factor associated with producing meat. This included emissions from fertilizer production, converting land from forests to pastures, growing feed, and direct emissions from animals (manure as well as expelling of gas from the stomach) from birth to death.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The problem was that analysts from the FAO used a comprehensive life-cycle assessment to study the climate impact of livestock, but a different method when they analyzed transportation.",
+     "start": 0,
+     "end": 185,
+     "page": 2
+    },
+    {
+     "text": "For livestock, they considered every factor associated with producing meat.",
+     "start": 186,
+     "end": 261,
+     "page": 2
+    },
+    {
+     "text": "This included emissions from fertilizer production, converting land from forests to pastures, growing feed, and direct emissions from animals (manure as well as expelling of gas from the stomach) from birth to death.",
+     "start": 262,
+     "end": 478,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "However, when they looked at transportation’s carbon footprint, they ignored impacts on the climate from manufacturing vehicle materials and parts, assembling vehicles and maintaining roads, bridges and airports. Instead, they only considered the exhaust smoke emitted by finished cars, trucks, trains and planes. As a result, the FAO’s comparison of greenhouse gas emissions from livestock to those from transportation was greatly distorted.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "However, when they looked at transportation’s carbon footprint, they ignored impacts on the climate from manufacturing vehicle materials and parts, assembling vehicles and maintaining roads, bridges and airports.",
+     "start": 0,
+     "end": 212,
+     "page": 2
+    },
+    {
+     "text": "Instead, they only considered the exhaust smoke emitted by finished cars, trucks, trains and planes.",
+     "start": 213,
+     "end": 313,
+     "page": 2
+    },
+    {
+     "text": "As a result, the FAO’s comparison of greenhouse gas emissions from livestock to those from transportation was greatly distorted.",
+     "start": 314,
+     "end": 442,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "I pointed out this flaw during a speech to fellow scientists in San Francisco on March 22, 2010, which led to a flood of media coverage. To its credit, the FAO immediately owned up to its error. Unfortunately, the agency’s initial claim that livestock was responsible for the lion’s share of world greenhouse gas emissions had already received wide coverage. To this day, we struggle to “unring” the bell. In its most recent assessment report, the FAO estimated that livestock produces 14.5 percent of global greenhouse gas emissions from human activities. There is no comparable full life-cycle assessment for transportation. However, as Stenfeld has pointed out, direct emissions from transportation versus livestock can be compared and amount to 14 versus 5 percent, respectively.",
+   "page_start": 2,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "I pointed out this flaw during a speech to fellow scientists in San Francisco on March 22, 2010, which led to a flood of media coverage.",
+     "start": 0,
+     "end": 136,
+     "page": 2
+    },
+    {
+     "text": "To its credit, the FAO immediately owned up to its error.",
+     "start": 137,
+     "end": 194,
+     "page": 2
+    },
+    {
+     "text": "Unfortunately, the agency’s initial claim that livestock was responsible for the lion’s share of world greenhouse gas emissions had already received wide coverage.",
+     "start": 195,
+     "end": 358,
+     "page": 2
+    },
+    {
+     "text": "To this day, we struggle to “unring” the bell.",
+     "start": 359,
+     "end": 405,
+     "page": 2
+    },
+    {
+     "text": "In its most recent assessment report, the FAO estimated that livestock produces 14.5 percent of global greenhouse gas emissions from human activities.",
+     "start": 406,
+     "end": 556,
+     "page": 2
+    },
+    {
+     "text": "There is no comparable full life-cycle assessment for transportation.",
+     "start": 557,
+     "end": 626,
+     "page": 3
+    },
+    {
+     "text": "However, as Stenfeld has pointed out, direct emissions from transportation versus livestock can be compared and amount to 14 versus 5 percent, respectively.",
+     "start": 627,
+     "end": 783,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "Many people continue to think that avoiding meat as infrequently as once a week will make a significant difference to the climate. But according to one recent study, even if Americans eliminated all animal protein from their diets, they would reduce US greenhouse gas emissions by only 2.6 percent. According to our research at the University of California, Davis, if the practice of Meatless Monday were to be adopted by all Americans, we’d see a reduction of only 0.5 percent.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Many people continue to think that avoiding meat as infrequently as once a week will make a significant difference to the climate.",
+     "start": 0,
+     "end": 130,
+     "page": 3
+    },
+    {
+     "text": "But according to one recent study, even if Americans eliminated all animal protein from their diets, they would reduce US greenhouse gas emissions by only 2.6 percent.",
+     "start": 131,
+     "end": 298,
+     "page": 3
+    },
+    {
+     "text": "According to our research at the University of California, Davis, if the practice of Meatless Monday were to be adopted by all Americans, we’d see a reduction of only 0.5 percent.",
+     "start": 299,
+     "end": 478,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "Moreover, technological, genetic and management changes that have taken place in US agriculture over the past 70 years have made livestock production more efficient and less greenhouse gas-intensive. According to the FAO’s statistical database, total direct greenhouse gas emissions from US livestock have declined by 11.3 percent since 1961, while production of livestock meat has more than doubled.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Moreover, technological, genetic and management changes that have taken place in US agriculture over the past 70 years have made livestock production more efficient and less greenhouse gas-intensive.",
+     "start": 0,
+     "end": 199,
+     "page": 3
+    },
+    {
+     "text": "According to the FAO’s statistical database, total direct greenhouse gas emissions from US livestock have declined by 11.3 percent since 1961, while production of livestock meat has more than doubled.",
+     "start": 200,
+     "end": 400,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Demand for meat is rising in developing and emerging economies, especially in the Middle East, North Africa and Southeast Asia. For example, raising livestock such as goats in Kenya is an important source of food and income for many small-scale farmers and herders. But meat consumption per person in these regions still lags that of developed countries. In 2015, average annual meat consumption per person in developed countries was 92 kilograms, compared to 24 kilograms in the Middle East and North Africa and 18 kilograms in Southeast Asia. Still, given projected population growth in the developing world, there will certainly be an opportunity for countries such as the United States to bring their sustainable livestock rearing practices to the table.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Demand for meat is rising in developing and emerging economies, especially in the Middle East, North Africa and Southeast Asia.",
+     "start": 0,
+     "end": 127,
+     "page": 3
+    },
+    {
+     "text": "For example, raising livestock such as goats in Kenya is an important source of food and income for many small-scale farmers and herders.",
+     "start": 128,
+     "end": 265,
+     "page": 3
+    },
+    {
+     "text": "But meat consumption per person in these regions still lags that of developed countries.",
+     "start": 266,
+     "end": 354,
+     "page": 3
+    },
+    {
+     "text": "In 2015, average annual meat consumption per person in developed countries was 92 kilograms, compared to 24 kilograms in the Middle East and North Africa and 18 kilograms in Southeast Asia.",
+     "start": 355,
+     "end": 544,
+     "page": 3
+    },
+    {
+     "text": "Still, given projected population growth in the developing world, there will certainly be an opportunity for countries such as the United States to bring their sustainable livestock rearing practices to the table.",
+     "start": 545,
+     "end": 758,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "Removing animals from US agriculture would lower national greenhouse gas emissions to a small degree, but it would also make it harder to meet people’s nutritional requirements. Many critics of animal agriculture are quick to point out that if farmers raised only plants, they could produce more pounds of food and more calories per person. But humans also need many essential micro-and macro-nutrients for good health. It’s hard to make a compelling argument that the United States has a calorie deficit, given its high national rates of adult and child obesity. Moreover, not all plant parts are edible or desirable. Raising livestock is a way to add nutritional and economic value to plant agriculture.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Removing animals from US agriculture would lower national greenhouse gas emissions to a small degree, but it would also make it harder to meet people’s nutritional requirements.",
+     "start": 0,
+     "end": 177,
+     "page": 3
+    },
+    {
+     "text": "Many critics of animal agriculture are quick to point out that if farmers raised only plants, they could produce more pounds of food and more calories per person.",
+     "start": 178,
+     "end": 340,
+     "page": 3
+    },
+    {
+     "text": "But humans also need many essential micro-and macro-nutrients for good health.",
+     "start": 341,
+     "end": 419,
+     "page": 3
+    },
+    {
+     "text": "It’s hard to make a compelling argument that the United States has a calorie deficit, given its high national rates of adult and child obesity.",
+     "start": 420,
+     "end": 563,
+     "page": 3
+    },
+    {
+     "text": "Moreover, not all plant parts are edible or desirable.",
+     "start": 564,
+     "end": 618,
+     "page": 3
+    },
+    {
+     "text": "Raising livestock is a way to add nutritional and economic value to plant agriculture.",
+     "start": 619,
+     "end": 705,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "As one example, the energy in plants that livestock consume is most often contained in cellulose, which is indigestible for humans and many other mammals. But cows, sheep and other ruminant animals can break cellulose down and release the solar energy contained in this vast resource. According to the FAO, as much as 70 percent of all agricultural land globally is range land that can only be utilized as grazing land for ruminant livestock.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "As one example, the energy in plants that livestock consume is most often contained in cellulose, which is indigestible for humans and many other mammals.",
+     "start": 0,
+     "end": 154,
+     "page": 3
+    },
+    {
+     "text": "But cows, sheep and other ruminant animals can break cellulose down and release the solar energy contained in this vast resource.",
+     "start": 155,
+     "end": 284,
+     "page": 3
+    },
+    {
+     "text": "According to the FAO, as much as 70 percent of all agricultural land globally is range land that can only be utilized as grazing land for ruminant livestock.",
+     "start": 285,
+     "end": 442,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "N",
+   "text": "The world population is currently projected to reach 9.8 billion by 2050. Feeding this many people will raise immense challenges. Meat is more calorie-dense per serving than vegetarian options, and ruminant animals largely thrive on feed that is not suitable for humans. Raising livestock also offers much-needed income for smallscale farmers in developing nations. Worldwide, livestock provides a livelihood for 1 billion people.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "The world population is currently projected to reach 9.8 billion by 2050.",
+     "start": 0,
+     "end": 73,
+     "page": 3
+    },
+    {
+     "text": "Feeding this many people will raise immense challenges.",
+     "start": 74,
+     "end": 129,
+     "page": 3
+    },
+    {
+     "text": "Meat is more calorie-dense per serving than vegetarian options, and ruminant animals largely thrive on feed that is not suitable for humans.",
+     "start": 130,
+     "end": 270,
+     "page": 3
+    },
+    {
+     "text": "Raising livestock also offers much-needed income for smallscale farmers in developing nations.",
+     "start": 271,
+     "end": 365,
+     "page": 3
+    },
+    {
+     "text": "Worldwide, livestock provides a livelihood for 1 billion people.",
+     "start": 366,
+     "end": 430,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "O",
+   "text": "Climate change demands urgent attention, and the livestock industry has a large overall environmental footprint that affects air, water and land. These, combined with a rapidly rising world population, give us plenty of compelling reasons to continue to work for greater efficiencies in animal agriculture. I believe the place to start is with science-based facts.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Climate change demands urgent attention, and the livestock industry has a large overall environmental footprint that affects air, water and land.",
+     "start": 0,
+     "end": 145,
+     "page": 3
+    },
+    {
+     "text": "These, combined with a rapidly rising world population, give us plenty of compelling reasons to continue to work for greater efficiencies in animal agriculture.",
+     "start": 146,
+     "end": 306,
+     "page": 3
+    },
+    {
+     "text": "I believe the place to start is with science-based facts.",
+     "start": 307,
+     "end": 364,
+     "page": 3
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "panacea",
+   "gloss": "万灵药",
+   "start": 279,
+   "end": 286,
+   "paragraph": "C",
+   "sentence": 2
+  },
+  {
+   "surface": "cellulose",
+   "gloss": "纤维素",
+   "start": 87,
+   "end": 96,
+   "paragraph": "M",
+   "sentence": 0
+  },
+  {
+   "surface": "ruminant",
+   "gloss": "反刍的",
+   "start": 181,
+   "end": 189,
+   "paragraph": "M",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 15,
+  "sentences": 60,
+  "words": 1193
+ }
+}

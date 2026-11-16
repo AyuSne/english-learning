@@ -1,0 +1,228 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s2-c2",
+ "label": "2026年6月 · 第2套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第2套).pdf",
+  "sha256": "7616f631dd8758925e8a17f68cf826d38a7d5104177420b3334df87a4387555e",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Smartphones have always posed challenges for parents of teens. From social media apps to excessive screen time, the digital world is as threatening as the physical.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Smartphones have always posed challenges for parents of teens.",
+     "start": 0,
+     "end": 62,
+     "page": 7
+    },
+    {
+     "text": "From social media apps to excessive screen time, the digital world is as threatening as the physical.",
+     "start": 63,
+     "end": 164,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "A new study shows that about half of parents of teens are worried about their teens being exposed to explicit content online. This is a valid concern, of course. But there are ways to alleviate the spread of explicit content, from changing the settings in their kids’ phone to monitoring such content with apps like Bark.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "A new study shows that about half of parents of teens are worried about their teens being exposed to explicit content online.",
+     "start": 0,
+     "end": 125,
+     "page": 7
+    },
+    {
+     "text": "This is a valid concern, of course.",
+     "start": 126,
+     "end": 161,
+     "page": 7
+    },
+    {
+     "text": "But there are ways to alleviate the spread of explicit content, from changing the settings in their kids’ phone to monitoring such content with apps like Bark.",
+     "start": 162,
+     "end": 321,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Just as alarming, if not more so, is that the amount of time teens spend on social media can lead to anxiety and depression.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Just as alarming, if not more so, is that the amount of time teens spend on social media can lead to anxiety and depression.",
+     "start": 0,
+     "end": 124,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Excessive screen time has detrimental effects, for a lot of obvious reasons. Constant media consumption inhibits healthy activities associated with childhood, like spending time outside, exercising, talking to friends and family. If it interferes with sleep, that’s even worse.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Excessive screen time has detrimental effects, for a lot of obvious reasons.",
+     "start": 0,
+     "end": 76,
+     "page": 7
+    },
+    {
+     "text": "Constant media consumption inhibits healthy activities associated with childhood, like spending time outside, exercising, talking to friends and family.",
+     "start": 77,
+     "end": 229,
+     "page": 7
+    },
+    {
+     "text": "If it interferes with sleep, that’s even worse.",
+     "start": 230,
+     "end": 277,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Ample research shows too much smartphone use produces significant anxiety, depression, and feelings of isolation in teens. Teens log on to social media or spend time online trying to make connections, but end up feeling more alone and sadder than ever. Faceless communication not only produces feelings of isolation and loneliness but increases instances of online bullying and susceptibility to criminal conducts.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Ample research shows too much smartphone use produces significant anxiety, depression, and feelings of isolation in teens.",
+     "start": 0,
+     "end": 122,
+     "page": 7
+    },
+    {
+     "text": "Teens log on to social media or spend time online trying to make connections, but end up feeling more alone and sadder than ever.",
+     "start": 123,
+     "end": 252,
+     "page": 7
+    },
+    {
+     "text": "Faceless communication not only produces feelings of isolation and loneliness but increases instances of online bullying and susceptibility to criminal conducts.",
+     "start": 253,
+     "end": 414,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Though I’ve banned most social media, I’ve still battled smartphone time with my own kids. A lot of the time I wish I could throw my kids’ smartphones into the nearest lake. The convenience of communication — when they need a ride home from school after practice, for instance — often feels like it isn’t worth the battle to keep their screen time low and productive, and continue to encourage “real-life” activities outside and with friends and family. I understand the addiction and often tell them I’m not sure how I would have handled having a smartphone as a teen. As an adult, I too, struggle with overuse.",
+   "page_start": 7,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Though I’ve banned most social media, I’ve still battled smartphone time with my own kids.",
+     "start": 0,
+     "end": 90,
+     "page": 7
+    },
+    {
+     "text": "A lot of the time I wish I could throw my kids’ smartphones into the nearest lake.",
+     "start": 91,
+     "end": 173,
+     "page": 7
+    },
+    {
+     "text": "The convenience of communication — when they need a ride home from school after practice, for instance — often feels like it isn’t worth the battle to keep their screen time low and productive, and continue to encourage “real-life” activities outside and with friends and family.",
+     "start": 174,
+     "end": 453,
+     "page": 8
+    },
+    {
+     "text": "I understand the addiction and often tell them I’m not sure how I would have handled having a smartphone as a teen.",
+     "start": 454,
+     "end": 569,
+     "page": 8
+    },
+    {
+     "text": "As an adult, I too, struggle with overuse.",
+     "start": 570,
+     "end": 612,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "In a recent TV interview to promote a new film about a mother and daughter navigating social media use, actress Kate Winslet expressed her view on teens and social media — and her concern mirrors the trends. “I do definitely feel that the world of social media is frightening to parents because we don’t really know what’s there,” she said. “We don’t know how our children are using it. We don’t know the effects that it’s really having on them.”",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "In a recent TV interview to promote a new film about a mother and daughter navigating social media use, actress Kate Winslet expressed her view on teens and social media — and her concern mirrors the trends.",
+     "start": 0,
+     "end": 207,
+     "page": 8
+    },
+    {
+     "text": "“I do definitely feel that the world of social media is frightening to parents because we don’t really know what’s there,” she said.",
+     "start": 208,
+     "end": 340,
+     "page": 8
+    },
+    {
+     "text": "“We don’t know how our children are using it.",
+     "start": 341,
+     "end": 386,
+     "page": 8
+    },
+    {
+     "text": "We don’t know the effects that it’s really having on them.”",
+     "start": 387,
+     "end": 446,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "I don’t think the US government should regulate social media and teen smartphone use, but it is a vital topic for parents to understand and take seriously. Unfortunately, now, parents don’t just have to worry about real-world dangers, but all the ones sneaking online and the effects they have on teenagers and their mental health.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "I don’t think the US government should regulate social media and teen smartphone use, but it is a vital topic for parents to understand and take seriously.",
+     "start": 0,
+     "end": 155,
+     "page": 8
+    },
+    {
+     "text": "Unfortunately, now, parents don’t just have to worry about real-world dangers, but all the ones sneaking online and the effects they have on teenagers and their mental health.",
+     "start": 156,
+     "end": 331,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 23,
+  "words": 450
+ }
+}

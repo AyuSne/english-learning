@@ -1,0 +1,230 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-12-s3-c2",
+ "label": "2024年12月 · 第3套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 12,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年12月英语六级真题(第3套).pdf",
+  "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67",
+  "pages": [
+   5,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "One hundred thirty-five students, four teachers, one giant classroom: This is what 9th grade looks like at Westwood High School, in Mesa, Arizona’s largest school system. There, an innovative teaching model has taken hold, and is spreading to other schools in the district and beyond.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "One hundred thirty-five students, four teachers, one giant classroom: This is what 9th grade looks like at Westwood High School, in Mesa, Arizona’s largest school system.",
+     "start": 0,
+     "end": 170,
+     "page": 5
+    },
+    {
+     "text": "There, an innovative teaching model has taken hold, and is spreading to other schools in the district and beyond.",
+     "start": 171,
+     "end": 284,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Five years ago, faced with high teacher turnover and declining student enrollment, Westwood’s leaders decided to try something different. Working with professors at Arizona State University’s teachers college, they piloted a classroom model known as team teaching, which allows teachers to dissolve the walls that separate their classes across physical or grade divides.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Five years ago, faced with high teacher turnover and declining student enrollment, Westwood’s leaders decided to try something different.",
+     "start": 0,
+     "end": 137,
+     "page": 5
+    },
+    {
+     "text": "Working with professors at Arizona State University’s teachers college, they piloted a classroom model known as team teaching, which allows teachers to dissolve the walls that separate their classes across physical or grade divides.",
+     "start": 138,
+     "end": 370,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "The teachers share large groups of students — sometimes 100 or more — and rotate between group instruction, one-on-one interventions, small study groups, or whatever the teachers as a team agree is a priority that day. What looks at times like chaos is in fact a carefully orchestrated plan: Each morning, the Westwood teams meet to hammer out a personalized program for every student the team will focus on that day.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "The teachers share large groups of students — sometimes 100 or more — and rotate between group instruction, one-on-one interventions, small study groups, or whatever the teachers as a team agree is a priority that day.",
+     "start": 0,
+     "end": 218,
+     "page": 5
+    },
+    {
+     "text": "What looks at times like chaos is in fact a carefully orchestrated plan: Each morning, the Westwood teams meet to hammer out a personalized program for every student the team will focus on that day.",
+     "start": 219,
+     "end": 417,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "By giving teachers more opportunity to collaborate, Mesa’s administrators hoped to fill staffing gaps and boost teacher morale and retention. Initial research suggests the gamble could pay off.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "By giving teachers more opportunity to collaborate, Mesa’s administrators hoped to fill staffing gaps and boost teacher morale and retention.",
+     "start": 0,
+     "end": 141,
+     "page": 5
+    },
+    {
+     "text": "Initial research suggests the gamble could pay off.",
+     "start": 142,
+     "end": 193,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "“Teachers are doing fantastic things, but it’s very rare a teacher walks into another room to see what’s happening,” said Andi Fourlis, superintendent of Mesa Public Schools. “Our profession is so slow to advance because we are working in isolation.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "“Teachers are doing fantastic things, but it’s very rare a teacher walks into another room to see what’s happening,” said Andi Fourlis, superintendent of Mesa Public Schools.",
+     "start": 0,
+     "end": 174,
+     "page": 5
+    },
+    {
+     "text": "“Our profession is so slow to advance because we are working in isolation.”",
+     "start": 175,
+     "end": 250,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Of course, overhauling teaching approaches can’t fix all the frustrations teachers have, such as low pay, but early results from Mesa show team teaching may be helping to reverse low morale. In a survey of hundreds of the district’s teachers, researchers found those who worked on teams reported greater job satisfaction, more frequent collaborations with colleagues, and more positive interactions with students.",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Of course, overhauling teaching approaches can’t fix all the frustrations teachers have, such as low pay, but early results from Mesa show team teaching may be helping to reverse low morale.",
+     "start": 0,
+     "end": 190,
+     "page": 5
+    },
+    {
+     "text": "In a survey of hundreds of the district’s teachers, researchers found those who worked on teams reported greater job satisfaction, more frequent collaborations with colleagues, and more positive interactions with students.",
+     "start": 191,
+     "end": 413,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Another benefit of teams, teachers say, is that they can help each other improve their instruction. During one planning session, English teacher Jeff Hall shared a performance appraisal with a science teacher: Her recent lecture on something she called “the central dogma of biology” had bewildered him and their other teammates.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Another benefit of teams, teachers say, is that they can help each other improve their instruction.",
+     "start": 0,
+     "end": 99,
+     "page": 6
+    },
+    {
+     "text": "During one planning session, English teacher Jeff Hall shared a performance appraisal with a science teacher: Her recent lecture on something she called “the central dogma of biology” had bewildered him and their other teammates.",
+     "start": 100,
+     "end": 329,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "“If the science is too confusing for me, can you imagine the frustration you feel as kids?” Hall said. But the science teacher, he said, wouldn’t have known about the confusion on her own.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "“If the science is too confusing for me, can you imagine the frustration you feel as kids?”",
+     "start": 0,
+     "end": 91,
+     "page": 6
+    },
+    {
+     "text": "Hall said.",
+     "start": 92,
+     "end": 102,
+     "page": 6
+    },
+    {
+     "text": "But the science teacher, he said, wouldn’t have known about the confusion on her own.",
+     "start": 103,
+     "end": 188,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "The model is not for everyone. Some teachers approached about volunteering for a team have said they prefer to work alone. Team teaching can also be a scheduling nightmare, especially at schools like Westwood where only some staff work in teams. There are also thorny questions like how to evaluate four teachers on the performance of 135 students. But for the time being, it seems to be working.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The model is not for everyone.",
+     "start": 0,
+     "end": 30,
+     "page": 6
+    },
+    {
+     "text": "Some teachers approached about volunteering for a team have said they prefer to work alone.",
+     "start": 31,
+     "end": 122,
+     "page": 6
+    },
+    {
+     "text": "Team teaching can also be a scheduling nightmare, especially at schools like Westwood where only some staff work in teams.",
+     "start": 123,
+     "end": 245,
+     "page": 6
+    },
+    {
+     "text": "There are also thorny questions like how to evaluate four teachers on the performance of 135 students.",
+     "start": 246,
+     "end": 348,
+     "page": 6
+    },
+    {
+     "text": "But for the time being, it seems to be working.",
+     "start": 349,
+     "end": 396,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 22,
+  "words": 452
+ }
+}

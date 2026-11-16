@@ -1,0 +1,202 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s3-c2",
+ "label": "2024年6月 · 第3套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第3套).pdf",
+  "sha256": "5c96942b0b63e7b16fca4faf6c9fd09c73361a602a502bcdde2826d459e49d37",
+  "pages": [
+   5,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "When someone asks us “what do you do?” we nearly always reply with our occupation. Work, for many of us, is much more than a job. It is the defining aspect of our identity. For many of us it is through our job that we can define ourselves.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "When someone asks us “what do you do?” we nearly always reply with our occupation.",
+     "start": 0,
+     "end": 82,
+     "page": 5
+    },
+    {
+     "text": "Work, for many of us, is much more than a job.",
+     "start": 83,
+     "end": 129,
+     "page": 5
+    },
+    {
+     "text": "It is the defining aspect of our identity.",
+     "start": 130,
+     "end": 172,
+     "page": 5
+    },
+    {
+     "text": "For many of us it is through our job that we can define ourselves.",
+     "start": 173,
+     "end": 239,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "“Without my job I don’t know who I am,” is a sentence that has been uttered on more than a handful of occasions from my office chair. Indeed, it can be one of the most challenging aspects I work on with clients who have lost or been forced into changing their jobs. This loss provokes an identity crisis much greater than the loss of the job itself.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "“Without my job I don’t know who I am,” is a sentence that has been uttered on more than a handful of occasions from my office chair.",
+     "start": 0,
+     "end": 133,
+     "page": 5
+    },
+    {
+     "text": "Indeed, it can be one of the most challenging aspects I work on with clients who have lost or been forced into changing their jobs.",
+     "start": 134,
+     "end": 265,
+     "page": 5
+    },
+    {
+     "text": "This loss provokes an identity crisis much greater than the loss of the job itself.",
+     "start": 266,
+     "end": 349,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "One of the things I have come to understand, however, is that our identity is much more complex than we recognise at first glance. If we take the time to reflect we might recognise that as well as our work we can also identify as a friend, a spouse, a son or daughter, a parent, a member of a sports team or religious community. We may recognise that we feel and act differently in these roles and relationships than we do at work. The passive daughter becomes an assertive leader at work. Furthermore, our identities at work are not static. They change over time. I myself have been a shop assistant, a waitress, a student, a graduate, and a clinical psychologist. At each stage my ability to adapt to and develop my career identity has been crucial to my wellbeing. Whilst we like to eliminate uncertainty in our lives at some level we have to manage uncertainty, especially in today’s volatile and ever-shifting job market.",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "One of the things I have come to understand, however, is that our identity is much more complex than we recognise at first glance.",
+     "start": 0,
+     "end": 130,
+     "page": 5
+    },
+    {
+     "text": "If we take the time to reflect we might recognise that as well as our work we can also identify as a friend, a spouse, a son or daughter, a parent, a member of a sports team or religious community.",
+     "start": 131,
+     "end": 328,
+     "page": 6
+    },
+    {
+     "text": "We may recognise that we feel and act differently in these roles and relationships than we do at work.",
+     "start": 329,
+     "end": 431,
+     "page": 6
+    },
+    {
+     "text": "The passive daughter becomes an assertive leader at work.",
+     "start": 432,
+     "end": 489,
+     "page": 6
+    },
+    {
+     "text": "Furthermore, our identities at work are not static.",
+     "start": 490,
+     "end": 541,
+     "page": 6
+    },
+    {
+     "text": "They change over time.",
+     "start": 542,
+     "end": 564,
+     "page": 6
+    },
+    {
+     "text": "I myself have been a shop assistant, a waitress, a student, a graduate, and a clinical psychologist.",
+     "start": 565,
+     "end": 665,
+     "page": 6
+    },
+    {
+     "text": "At each stage my ability to adapt to and develop my career identity has been crucial to my wellbeing.",
+     "start": 666,
+     "end": 767,
+     "page": 6
+    },
+    {
+     "text": "Whilst we like to eliminate uncertainty in our lives at some level we have to manage uncertainty, especially in today’s volatile and ever-shifting job market.",
+     "start": 768,
+     "end": 926,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "How we see ourselves is central to the issue of our identity. When we tell ourselves “I’m good at starting projects but not so great at seeing them through” it can become part of our belief system. But if you have the unfortunate experience of an enforced job change you will need to examine those beliefs to see how grounded in reality they are. You will be required to ask yourself how helpful these beliefs are and consider personal change. We can change our beliefs, behaviours and emotional experience at any time through experimentation, practice and conscious self-discipline. In an age where career progression may lead us into new sectors it is ever more important to challenge our sense of self and explore whether you can create a new experience of your identity by changing the beliefs you hold about yourself in order to expand your career options. Ultimately it is you who define who you are. You are only your job if you let it be so.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "How we see ourselves is central to the issue of our identity.",
+     "start": 0,
+     "end": 61,
+     "page": 6
+    },
+    {
+     "text": "When we tell ourselves “I’m good at starting projects but not so great at seeing them through” it can become part of our belief system.",
+     "start": 62,
+     "end": 197,
+     "page": 6
+    },
+    {
+     "text": "But if you have the unfortunate experience of an enforced job change you will need to examine those beliefs to see how grounded in reality they are.",
+     "start": 198,
+     "end": 346,
+     "page": 6
+    },
+    {
+     "text": "You will be required to ask yourself how helpful these beliefs are and consider personal change.",
+     "start": 347,
+     "end": 443,
+     "page": 6
+    },
+    {
+     "text": "We can change our beliefs, behaviours and emotional experience at any time through experimentation, practice and conscious self-discipline.",
+     "start": 444,
+     "end": 583,
+     "page": 6
+    },
+    {
+     "text": "In an age where career progression may lead us into new sectors it is ever more important to challenge our sense of self and explore whether you can create a new experience of your identity by changing the beliefs you hold about yourself in order to expand your career options.",
+     "start": 584,
+     "end": 861,
+     "page": 6
+    },
+    {
+     "text": "Ultimately it is you who define who you are.",
+     "start": 862,
+     "end": 906,
+     "page": 6
+    },
+    {
+     "text": "You are only your job if you let it be so.",
+     "start": 907,
+     "end": 949,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 4,
+  "sentences": 24,
+  "words": 448
+ }
+}

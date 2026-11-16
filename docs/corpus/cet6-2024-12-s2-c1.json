@@ -1,0 +1,238 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-12-s2-c1",
+ "label": "2024年12月 · 第2套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 12,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年12月英语六级真题(第2套).pdf",
+  "sha256": "69e9ef6fe86844241dd608af7009cbc41944811575aa48ba20a22995b78152b0",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "With population increases and global urbanisation ever accelerating, much attention is focused on the sustainability of our cities and scarce attention is paid to the countryside.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "With population increases and global urbanisation ever accelerating, much attention is focused on the sustainability of our cities and scarce attention is paid to the countryside.",
+     "start": 0,
+     "end": 179,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Rural life is associated with closely-knit communities, sense of belonging, and a simple, tranquil life. Yet whilst some or all of these elements exist in the countryside, so do conservatism and a lack of employment opportunities. And it is mostly due to the latter that rural communities are suffering. Attracted by the improved economics of urban areas, country-dwellers across the world are moving out, contributing to the excessive crowdedness of densely populated cities, and leaving the countryside in desolation.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Rural life is associated with closely-knit communities, sense of belonging, and a simple, tranquil life.",
+     "start": 0,
+     "end": 104,
+     "page": 6
+    },
+    {
+     "text": "Yet whilst some or all of these elements exist in the countryside, so do conservatism and a lack of employment opportunities.",
+     "start": 105,
+     "end": 230,
+     "page": 6
+    },
+    {
+     "text": "And it is mostly due to the latter that rural communities are suffering.",
+     "start": 231,
+     "end": 303,
+     "page": 6
+    },
+    {
+     "text": "Attracted by the improved economics of urban areas, country-dwellers across the world are moving out, contributing to the excessive crowdedness of densely populated cities, and leaving the countryside in desolation.",
+     "start": 304,
+     "end": 519,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "So how can the countryside ensure its survival among these changes; or should it at all? Due to both the distance between residences and facilities and often intermittent public transport, those living in the countryside are heavier automobile users. Rural dwellers also use more energy maintaining their mostly detached buildings. We may be piled up like boxes in the city, but this brings energy efficiency that the countryside cannot match. Rural energy requirements result in higher carbon emissions per person than in the city, so it is actually irresponsible to endorse such a lifestyle choice.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "So how can the countryside ensure its survival among these changes; or should it at all?",
+     "start": 0,
+     "end": 88,
+     "page": 6
+    },
+    {
+     "text": "Due to both the distance between residences and facilities and often intermittent public transport, those living in the countryside are heavier automobile users.",
+     "start": 89,
+     "end": 250,
+     "page": 6
+    },
+    {
+     "text": "Rural dwellers also use more energy maintaining their mostly detached buildings.",
+     "start": 251,
+     "end": 331,
+     "page": 6
+    },
+    {
+     "text": "We may be piled up like boxes in the city, but this brings energy efficiency that the countryside cannot match.",
+     "start": 332,
+     "end": 443,
+     "page": 6
+    },
+    {
+     "text": "Rural energy requirements result in higher carbon emissions per person than in the city, so it is actually irresponsible to endorse such a lifestyle choice.",
+     "start": 444,
+     "end": 600,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Protecting the countryside is a hot topic. Those who have made their fortunes in the city often buy second homes in the countryside, visiting intermittently for a sample of a supposedly simple life. The side-effect of this is that house prices are pushed up due to increased demand, leaving them unaffordable for local people. A solution has yet to be found for this challenge, for market forces are further forcing residents out of the countryside. For those who believe in rural preservation, this is deplorable.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Protecting the countryside is a hot topic.",
+     "start": 0,
+     "end": 42,
+     "page": 6
+    },
+    {
+     "text": "Those who have made their fortunes in the city often buy second homes in the countryside, visiting intermittently for a sample of a supposedly simple life.",
+     "start": 43,
+     "end": 198,
+     "page": 6
+    },
+    {
+     "text": "The side-effect of this is that house prices are pushed up due to increased demand, leaving them unaffordable for local people.",
+     "start": 199,
+     "end": 326,
+     "page": 6
+    },
+    {
+     "text": "A solution has yet to be found for this challenge, for market forces are further forcing residents out of the countryside.",
+     "start": 327,
+     "end": 449,
+     "page": 6
+    },
+    {
+     "text": "For those who believe in rural preservation, this is deplorable.",
+     "start": 450,
+     "end": 514,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Whilst an idealised view of the countryside is common, the reality is that rural life has continuously evolved. Industrialisation brought an increase in divisions of labour, changing social links between rural people. The internet has introduced once foreign cultures into the countryside. Improved travel connections and affordability have made the world more accessible, creating a “global village”. Considering these changes, surely an evolving countryside is inevitable.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Whilst an idealised view of the countryside is common, the reality is that rural life has continuously evolved.",
+     "start": 0,
+     "end": 111,
+     "page": 6
+    },
+    {
+     "text": "Industrialisation brought an increase in divisions of labour, changing social links between rural people.",
+     "start": 112,
+     "end": 217,
+     "page": 6
+    },
+    {
+     "text": "The internet has introduced once foreign cultures into the countryside.",
+     "start": 218,
+     "end": 289,
+     "page": 6
+    },
+    {
+     "text": "Improved travel connections and affordability have made the world more accessible, creating a “global village”.",
+     "start": 290,
+     "end": 401,
+     "page": 6
+    },
+    {
+     "text": "Considering these changes, surely an evolving countryside is inevitable.",
+     "start": 402,
+     "end": 474,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Perhaps the countryside should also prepare itself for massive population increases in the future. With cities across the world growing rapidly, how will the current urban generation respond to the inevitable social changes of mass urbanisation? Will the longing for a simpler life become stronger, fueling a rural renaissance?",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Perhaps the countryside should also prepare itself for massive population increases in the future.",
+     "start": 0,
+     "end": 98,
+     "page": 6
+    },
+    {
+     "text": "With cities across the world growing rapidly, how will the current urban generation respond to the inevitable social changes of mass urbanisation?",
+     "start": 99,
+     "end": 245,
+     "page": 6
+    },
+    {
+     "text": "Will the longing for a simpler life become stronger, fueling a rural renaissance?",
+     "start": 246,
+     "end": 327,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "As the world continues to urbanise, the voices calling for rural preservation may well grow louder. But change is inevitable. We know that the world is going to see new cities emerging from the dust and current cities growing into megacities, but the future of the countryside is less clear.",
+   "page_start": 6,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "As the world continues to urbanise, the voices calling for rural preservation may well grow louder.",
+     "start": 0,
+     "end": 99,
+     "page": 6
+    },
+    {
+     "text": "But change is inevitable.",
+     "start": 100,
+     "end": 125,
+     "page": 6
+    },
+    {
+     "text": "We know that the world is going to see new cities emerging from the dust and current cities growing into megacities, but the future of the countryside is less clear.",
+     "start": 126,
+     "end": 291,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 26,
+  "words": 450
+ }
+}

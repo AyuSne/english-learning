@@ -1,0 +1,501 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s2-b",
+ "label": "2023年12月 · 第2套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 2,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第2套).pdf",
+  "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25",
+  "pages": [
+   4,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "Most visitors come to Cape Canaveral, on the northeast coast of Florida, for the tourist attractions. It’s home to the second-busiest cruise ship port in the world and is a gateway to the cosmos. Nearly 1.5 million visitors flock here every year to watch rockets, spacecraft, and satellites blast off into the solar system from Kennedy Space Center Visitor Complex. Nearly 64 kilometers of undeveloped beach and 648 square kilometers of protected refuge fan out from the cape’s sandy shores.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Most visitors come to Cape Canaveral, on the northeast coast of Florida, for the tourist attractions.",
+     "start": 0,
+     "end": 101,
+     "page": 4
+    },
+    {
+     "text": "It’s home to the second-busiest cruise ship port in the world and is a gateway to the cosmos.",
+     "start": 102,
+     "end": 195,
+     "page": 4
+    },
+    {
+     "text": "Nearly 1.5 million visitors flock here every year to watch rockets, spacecraft, and satellites blast off into the solar system from Kennedy Space Center Visitor Complex.",
+     "start": 196,
+     "end": 365,
+     "page": 4
+    },
+    {
+     "text": "Nearly 64 kilometers of undeveloped beach and 648 square kilometers of protected refuge fan out from the cape’s sandy shores.",
+     "start": 366,
+     "end": 491,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "Yet some of Cape Canaveral’s most legendary attractions lie unseen, wedged under the sea’s surface in mud and sand, for this part of the world has a reputation as a deadly ship trap. Over the centuries, dozens of majestic Old World sailing ships smashed and sank on this irregular stretch of windy Florida coast. They were vessels built for war and commerce, crossing the globe carrying everything from coins to cannons, boxes of silver and gold, chests of jewels and porcelain, and pearls from the Caribbean.",
+   "page_start": 4,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Yet some of Cape Canaveral’s most legendary attractions lie unseen, wedged under the sea’s surface in mud and sand, for this part of the world has a reputation as a deadly ship trap.",
+     "start": 0,
+     "end": 182,
+     "page": 4
+    },
+    {
+     "text": "Over the centuries, dozens of majestic Old World sailing ships smashed and sank on this irregular stretch of windy Florida coast.",
+     "start": 183,
+     "end": 312,
+     "page": 4
+    },
+    {
+     "text": "They were vessels built for war and commerce, crossing the globe carrying everything from coins to cannons, boxes of silver and gold, chests of jewels and porcelain, and pearls from the Caribbean.",
+     "start": 313,
+     "end": 509,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "Cape Canaveral contains one of the greatest concentrations of colonial shipwrecks in the world. In recent years, advances in radar, diving, detection equipment, computers, and GPS have transformed the hunt. The naked eye might see a pile of rocks, but technology can reveal the precious artifacts that lie hidden on the ocean floor.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Cape Canaveral contains one of the greatest concentrations of colonial shipwrecks in the world.",
+     "start": 0,
+     "end": 95,
+     "page": 5
+    },
+    {
+     "text": "In recent years, advances in radar, diving, detection equipment, computers, and GPS have transformed the hunt.",
+     "start": 96,
+     "end": 206,
+     "page": 5
+    },
+    {
+     "text": "The naked eye might see a pile of rocks, but technology can reveal the precious artifacts that lie hidden on the ocean floor.",
+     "start": 207,
+     "end": 332,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "As technology renders the seabed more accessible, the hunt for treasure-filled ships has drawn a fresh tide of salvors and their investors — as well as marine archaeologists wanting to bring to light the lost relics. But of late, when salvors have found vessels, their rights have been challenged in court. The big question: who should have control of these treasures?",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "As technology renders the seabed more accessible, the hunt for treasure-filled ships has drawn a fresh tide of salvors and their investors — as well as marine archaeologists wanting to bring to light the lost relics.",
+     "start": 0,
+     "end": 216,
+     "page": 5
+    },
+    {
+     "text": "But of late, when salvors have found vessels, their rights have been challenged in court.",
+     "start": 217,
+     "end": 306,
+     "page": 5
+    },
+    {
+     "text": "The big question: who should have control of these treasures?",
+     "start": 307,
+     "end": 368,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "High-stakes fights over shipwrecks pit archaeologists against treasure hunters in a vicious cycle of accusations. Archaeologists regard themselves as protectors of history, and they see salvors as careless destroyers. Salvors feel they do the hard work of searching for ships, only to have them stolen from under them when discovered. This kind of clash inevitably takes place on a grand scale. Aside from the salvors, their investors, and the maritime archaeologists who serve as expert witnesses, the battles sweep in local and international governments and organizations like UNESCO that work to protect under-water heritage. The court cases that ensue stretch on for years. Are finders keepers, or do the ships belong to the countries that made them and sent them sailing centuries ago? Where once salvors and archaeologists worked side by side, now they belong to opposing, and equally contemptuous, tribes.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "High-stakes fights over shipwrecks pit archaeologists against treasure hunters in a vicious cycle of accusations.",
+     "start": 0,
+     "end": 113,
+     "page": 5
+    },
+    {
+     "text": "Archaeologists regard themselves as protectors of history, and they see salvors as careless destroyers.",
+     "start": 114,
+     "end": 217,
+     "page": 5
+    },
+    {
+     "text": "Salvors feel they do the hard work of searching for ships, only to have them stolen from under them when discovered.",
+     "start": 218,
+     "end": 334,
+     "page": 5
+    },
+    {
+     "text": "This kind of clash inevitably takes place on a grand scale.",
+     "start": 335,
+     "end": 394,
+     "page": 5
+    },
+    {
+     "text": "Aside from the salvors, their investors, and the maritime archaeologists who serve as expert witnesses, the battles sweep in local and international governments and organizations like UNESCO that work to protect under-water heritage.",
+     "start": 395,
+     "end": 628,
+     "page": 5
+    },
+    {
+     "text": "The court cases that ensue stretch on for years.",
+     "start": 629,
+     "end": 677,
+     "page": 5
+    },
+    {
+     "text": "Are finders keepers, or do the ships belong to the countries that made them and sent them sailing centuries ago?",
+     "start": 678,
+     "end": 790,
+     "page": 5
+    },
+    {
+     "text": "Where once salvors and archaeologists worked side by side, now they belong to opposing, and equally contemptuous, tribes.",
+     "start": 791,
+     "end": 912,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "Nearly three million vessels lie wrecked on the Earth’s ocean floor — from old canoes to the Titanic — and likely less than one percent have been explored. Some — like an ancient Roman ship found off Antikythera, Greece, dated between 70 and 60 BC and carrying astonishingly sophisticated gears and dials for navigating by the sun — are critical to a new understanding of our past. No wonder there is an eternal stirring among everybody from salvors to scholars to find them.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Nearly three million vessels lie wrecked on the Earth’s ocean floor — from old canoes to the Titanic — and likely less than one percent have been explored.",
+     "start": 0,
+     "end": 155,
+     "page": 5
+    },
+    {
+     "text": "Some — like an ancient Roman ship found off Antikythera, Greece, dated between 70 and 60 BC and carrying astonishingly sophisticated gears and dials for navigating by the sun — are critical to a new understanding of our past.",
+     "start": 156,
+     "end": 381,
+     "page": 5
+    },
+    {
+     "text": "No wonder there is an eternal stirring among everybody from salvors to scholars to find them.",
+     "start": 382,
+     "end": 475,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "In May 2016, a salvor named Bobby Pritchett, president of Global Marine Exploration (GME) in Tampa, Florida, announced that he had discovered scattered remains of a ship buried a kilometer off Cape Canaveral. Over the prior three years, he and his crew had obtained 14 state permits to survey a nearly 260-square-kilometer area off the cape; they worked 250 days a year, backed by investor funds of, he claims, US $4 million. It was hard work. Crew members were up at dawn, dragging sensors from their expedition vessels back and forth, day in and day out, year after year, to detect metal of any kind. Using computer technology, Pritchett and his crew created intricate, color-coded maps marked with the GPS coordinates of thousands of finds, all invisible under a meter of sand.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "In May 2016, a salvor named Bobby Pritchett, president of Global Marine Exploration (GME) in Tampa, Florida, announced that he had discovered scattered remains of a ship buried a kilometer off Cape Canaveral.",
+     "start": 0,
+     "end": 208,
+     "page": 5
+    },
+    {
+     "text": "Over the prior three years, he and his crew had obtained 14 state permits to survey a nearly 260-square-kilometer area off the cape; they worked 250 days a year, backed by investor funds of, he claims, US $4 million.",
+     "start": 209,
+     "end": 425,
+     "page": 5
+    },
+    {
+     "text": "It was hard work.",
+     "start": 426,
+     "end": 443,
+     "page": 5
+    },
+    {
+     "text": "Crew members were up at dawn, dragging sensors from their expedition vessels back and forth, day in and day out, year after year, to detect metal of any kind.",
+     "start": 444,
+     "end": 602,
+     "page": 5
+    },
+    {
+     "text": "Using computer technology, Pritchett and his crew created intricate, color-coded maps marked with the GPS coordinates of thousands of finds, all invisible under a meter of sand.",
+     "start": 603,
+     "end": 780,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "One day in 2015, the magnetometer picked up metal that turned out to be an iron cannon; when the divers blew the sand away, they also discovered a more precious bronze cannon with markings indicating French royalty and, not far off, a famous marble column carved with the coat of arms of France, known from historical paintings. The discovery was cause for celebration. The artifacts indicated the divers had likely found the wreck of La Trinity, a 16th-century French vessel that had been at the center of a bloody battle between France and Spain that changed the fate of the United States of America.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "One day in 2015, the magnetometer picked up metal that turned out to be an iron cannon; when the divers blew the sand away, they also discovered a more precious bronze cannon with markings indicating French royalty and, not far off, a famous marble column carved with the coat of arms of France, known from historical paintings.",
+     "start": 0,
+     "end": 328,
+     "page": 5
+    },
+    {
+     "text": "The discovery was cause for celebration.",
+     "start": 329,
+     "end": 369,
+     "page": 5
+    },
+    {
+     "text": "The artifacts indicated the divers had likely found the wreck of La Trinity, a 16th-century French vessel that had been at the center of a bloody battle between France and Spain that changed the fate of the United States of America.",
+     "start": 370,
+     "end": 602,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "And then the legal storm began, with GME and Pritchett pitted against Florida and France. The Sunken Military Craft Act of 2004, a US federal act, protects any vessel that was on a military mission, allowing the originating country to claim their ship even centuries later. In 2018, two long years after Pritchett’s discovery, the federal district court ruled in favor of France. For Pritchett, the decision was devastating. Millions of dollars of investor funding and years of labor were lost.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "And then the legal storm began, with GME and Pritchett pitted against Florida and France.",
+     "start": 0,
+     "end": 89,
+     "page": 5
+    },
+    {
+     "text": "The Sunken Military Craft Act of 2004, a US federal act, protects any vessel that was on a military mission, allowing the originating country to claim their ship even centuries later.",
+     "start": 90,
+     "end": 273,
+     "page": 5
+    },
+    {
+     "text": "In 2018, two long years after Pritchett’s discovery, the federal district court ruled in favor of France.",
+     "start": 274,
+     "end": 379,
+     "page": 5
+    },
+    {
+     "text": "For Pritchett, the decision was devastating.",
+     "start": 380,
+     "end": 424,
+     "page": 5
+    },
+    {
+     "text": "Millions of dollars of investor funding and years of labor were lost.",
+     "start": 425,
+     "end": 494,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "But this is far from the first time a salvor has lost all rights to a discovery. In 2012, for instance, Spain won a five-year legal battle against Odyssey Marine Exploration, which had hauled 594,000 gold and silver coins from a Spanish wreck off the coast of Portugal across the Atlantic to the United States. “Treasure hunters can be naive,” says attorney David Concannon, who has had several maritime archaeologists as clients and represented two sides in the battles over the Titanic for 20 years. “Many treasure hunters don’t understand they are going to have to fight for their rights against a government that has an endless supply of money for legal battles that treasure hunters are likely to lose.”",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "But this is far from the first time a salvor has lost all rights to a discovery.",
+     "start": 0,
+     "end": 80,
+     "page": 6
+    },
+    {
+     "text": "In 2012, for instance, Spain won a five-year legal battle against Odyssey Marine Exploration, which had hauled 594,000 gold and silver coins from a Spanish wreck off the coast of Portugal across the Atlantic to the United States.",
+     "start": 81,
+     "end": 310,
+     "page": 6
+    },
+    {
+     "text": "“Treasure hunters can be naive,” says attorney David Concannon, who has had several maritime archaeologists as clients and represented two sides in the battles over the Titanic for 20 years.",
+     "start": 311,
+     "end": 501,
+     "page": 6
+    },
+    {
+     "text": "“Many treasure hunters don’t understand they are going to have to fight for their rights against a government that has an endless supply of money for legal battles that treasure hunters are likely to lose.”",
+     "start": 502,
+     "end": 708,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Putting an inflated price on artifacts rather than viewing them as cultural and historical treasures that transcend any price is what irritates many archaeologists. For the archaeologist, everything in a wreck matters — hair, fabric, a fragment of a newspaper, rat bones — all things speak volumes. Archaeologists don’t want artifacts ending up in a private collection instead of taking humanity on a journey of understanding.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Putting an inflated price on artifacts rather than viewing them as cultural and historical treasures that transcend any price is what irritates many archaeologists.",
+     "start": 0,
+     "end": 164,
+     "page": 6
+    },
+    {
+     "text": "For the archaeologist, everything in a wreck matters — hair, fabric, a fragment of a newspaper, rat bones — all things speak volumes.",
+     "start": 165,
+     "end": 298,
+     "page": 6
+    },
+    {
+     "text": "Archaeologists don’t want artifacts ending up in a private collection instead of taking humanity on a journey of understanding.",
+     "start": 299,
+     "end": 426,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "George Bass is one of the pioneers of under-water archaeology, and a researcher at Texas A&M University. He has testified in court against treasure hunters, but says archaeology is not without its own serious problems. He believes archaeologists need to do a better job themselves instead of routinely criticizing treasure hunters. “Archaeology has a terrible reputation for not publishing enough on its excavations and finds,” he says. Gathering data, unearthing and meticulously preserving and examining finds, verifying identity and origin, piecing together the larger story, and writing and publishing a comprehensive paper or book can take decades. A bit cynically, Bass describes colleagues who never published because they waited so long they became ill or died. Who is more at fault, Bass asks, the professional archaeologist who carefully excavates a site and never publishes on it or the treasure hunter who locates a submerged wreck, salvages part, conserves part, and publishes a book on the operation?",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "George Bass is one of the pioneers of under-water archaeology, and a researcher at Texas A&M University.",
+     "start": 0,
+     "end": 104,
+     "page": 6
+    },
+    {
+     "text": "He has testified in court against treasure hunters, but says archaeology is not without its own serious problems.",
+     "start": 105,
+     "end": 218,
+     "page": 6
+    },
+    {
+     "text": "He believes archaeologists need to do a better job themselves instead of routinely criticizing treasure hunters.",
+     "start": 219,
+     "end": 331,
+     "page": 6
+    },
+    {
+     "text": "“Archaeology has a terrible reputation for not publishing enough on its excavations and finds,” he says.",
+     "start": 332,
+     "end": 436,
+     "page": 6
+    },
+    {
+     "text": "Gathering data, unearthing and meticulously preserving and examining finds, verifying identity and origin, piecing together the larger story, and writing and publishing a comprehensive paper or book can take decades.",
+     "start": 437,
+     "end": 653,
+     "page": 6
+    },
+    {
+     "text": "A bit cynically, Bass describes colleagues who never published because they waited so long they became ill or died.",
+     "start": 654,
+     "end": 769,
+     "page": 6
+    },
+    {
+     "text": "Who is more at fault, Bass asks, the professional archaeologist who carefully excavates a site and never publishes on it or the treasure hunter who locates a submerged wreck, salvages part, conserves part, and publishes a book on the operation?",
+     "start": 770,
+     "end": 1014,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "Pritchett concedes that his find deserves careful excavation and preservation. “I think what I found should go in a museum,” he says. “But I also think I should get paid for what I found.” Indeed, it’s a bit of a mystery why governments, archaeologists, and treasure hunters can’t work together — and why salvors aren’t at least given a substantial finder’s fee before the original owner takes possession of the vessel and its artifacts.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Pritchett concedes that his find deserves careful excavation and preservation.",
+     "start": 0,
+     "end": 78,
+     "page": 6
+    },
+    {
+     "text": "“I think what I found should go in a museum,” he says.",
+     "start": 79,
+     "end": 133,
+     "page": 6
+    },
+    {
+     "text": "“But I also think I should get paid for what I found.”",
+     "start": 134,
+     "end": 188,
+     "page": 6
+    },
+    {
+     "text": "Indeed, it’s a bit of a mystery why governments, archaeologists, and treasure hunters can’t work together — and why salvors aren’t at least given a substantial finder’s fee before the original owner takes possession of the vessel and its artifacts.",
+     "start": 189,
+     "end": 437,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "artifacts",
+   "gloss": "人工制品",
+   "start": 287,
+   "end": 296,
+   "paragraph": "C",
+   "sentence": 2
+  },
+  {
+   "surface": "salvors",
+   "gloss": "打捞人员",
+   "start": 111,
+   "end": 118,
+   "paragraph": "D",
+   "sentence": 0
+  },
+  {
+   "surface": "archaeologists",
+   "gloss": "考古学家",
+   "start": 159,
+   "end": 173,
+   "paragraph": "D",
+   "sentence": 0
+  },
+  {
+   "surface": "magnetometer",
+   "gloss": "磁力计",
+   "start": 21,
+   "end": 33,
+   "paragraph": "H",
+   "sentence": 0
+  },
+  {
+   "surface": "excavations",
+   "gloss": "发掘",
+   "start": 404,
+   "end": 415,
+   "paragraph": "L",
+   "sentence": 3
+  }
+ ],
+ "stats": {
+  "paragraphs": 13,
+  "sentences": 55,
+  "words": 1237
+ }
+}

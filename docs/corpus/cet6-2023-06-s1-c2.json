@@ -1,0 +1,267 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s1-c2",
+ "label": "2023年6月 · 第1套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第1套).pdf",
+  "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5",
+  "pages": [
+   9,
+   10
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Phonics, which involves sounding out words syllable by syllable, is the best way to teach children to read. But in many classrooms, this can be a dirty word. So much so that some teachers have had to sneak phonics teaching materials into the classroom. Most American children are taught to read in a way that study after study has found to be wrong.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Phonics, which involves sounding out words syllable by syllable, is the best way to teach children to read.",
+     "start": 0,
+     "end": 107,
+     "page": 9
+    },
+    {
+     "text": "But in many classrooms, this can be a dirty word.",
+     "start": 108,
+     "end": 157,
+     "page": 9
+    },
+    {
+     "text": "So much so that some teachers have had to sneak phonics teaching materials into the classroom.",
+     "start": 158,
+     "end": 252,
+     "page": 9
+    },
+    {
+     "text": "Most American children are taught to read in a way that study after study has found to be wrong.",
+     "start": 253,
+     "end": 349,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The consequences of this are striking. Less than half of all American adults were proficient readers in 2017. American fourth graders rank 15th on the Progress in International Literacy Study, an international exam.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "The consequences of this are striking.",
+     "start": 0,
+     "end": 38,
+     "page": 9
+    },
+    {
+     "text": "Less than half of all American adults were proficient readers in 2017.",
+     "start": 39,
+     "end": 109,
+     "page": 9
+    },
+    {
+     "text": "American fourth graders rank 15th on the Progress in International Literacy Study, an international exam.",
+     "start": 110,
+     "end": 215,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "America is stuck in a debate about teaching children to read that has been going on for decades. Some advocate teaching symbol-sound relationships (the sound k can be spelled as c, k, ck, or ch), known as phonics. Others support an immersive approach (using pictures of a cat to learn the word cat), known as “whole language”. Most teachers today, almost three out of four according to a survey by the EdWeek Research Centre in 2019, use a mix called “balanced literacy”. This combination of methods is ineffective. “You can’t sprinkle in a little phonics,” says Tenette Smith, executive director of elementary education and reading at Mississippi’s education department. “It has to be systematic and explicitly taught.”",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "America is stuck in a debate about teaching children to read that has been going on for decades.",
+     "start": 0,
+     "end": 96,
+     "page": 9
+    },
+    {
+     "text": "Some advocate teaching symbol-sound relationships (the sound k can be spelled as c, k, ck, or ch), known as phonics.",
+     "start": 97,
+     "end": 213,
+     "page": 9
+    },
+    {
+     "text": "Others support an immersive approach (using pictures of a cat to learn the word cat), known as “whole language”.",
+     "start": 214,
+     "end": 326,
+     "page": 9
+    },
+    {
+     "text": "Most teachers today, almost three out of four according to a survey by the EdWeek Research Centre in 2019, use a mix called “balanced literacy”.",
+     "start": 327,
+     "end": 471,
+     "page": 9
+    },
+    {
+     "text": "This combination of methods is ineffective.",
+     "start": 472,
+     "end": 515,
+     "page": 9
+    },
+    {
+     "text": "“You can’t sprinkle in a little phonics,” says Tenette Smith, executive director of elementary education and reading at Mississippi’s education department.",
+     "start": 516,
+     "end": 671,
+     "page": 9
+    },
+    {
+     "text": "“It has to be systematic and explicitly taught.”",
+     "start": 672,
+     "end": 720,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Mississippi, often behind in social policy, has set an example here. In a state once notorious for its low reading scores, the Mississippi state legislature passed new literacy standards in 2013. Since then Mississippi has seen remarkable gains. Its fourth graders have moved from 49th (out of 50 states) to 29th on the National Assessment of Educational Progress, a nationwide exam. In 2019 it was the only state to improve its scores. For the first time since measurement began, Mississippi’s pupils are now average readers, a remarkable achievement in such a poor state.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Mississippi, often behind in social policy, has set an example here.",
+     "start": 0,
+     "end": 68,
+     "page": 9
+    },
+    {
+     "text": "In a state once notorious for its low reading scores, the Mississippi state legislature passed new literacy standards in 2013.",
+     "start": 69,
+     "end": 195,
+     "page": 9
+    },
+    {
+     "text": "Since then Mississippi has seen remarkable gains.",
+     "start": 196,
+     "end": 245,
+     "page": 9
+    },
+    {
+     "text": "Its fourth graders have moved from 49th (out of 50 states) to 29th on the National Assessment of Educational Progress, a nationwide exam.",
+     "start": 246,
+     "end": 383,
+     "page": 9
+    },
+    {
+     "text": "In 2019 it was the only state to improve its scores.",
+     "start": 384,
+     "end": 436,
+     "page": 9
+    },
+    {
+     "text": "For the first time since measurement began, Mississippi’s pupils are now average readers, a remarkable achievement in such a poor state.",
+     "start": 437,
+     "end": 573,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Mississippi’s success is attributed to implementing reading methods supported by a body of research known as the science of reading. In 1997 Congress requested the National Institute of Child Health and Human Development and the Department of Education to convene a National Reading Panel to end the “reading wars” and synthesize the evidence. The panel found that phonics, along with explicit instruction in phonemic awareness, fluency and comprehension, worked best.",
+   "page_start": 9,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Mississippi’s success is attributed to implementing reading methods supported by a body of research known as the science of reading.",
+     "start": 0,
+     "end": 132,
+     "page": 9
+    },
+    {
+     "text": "In 1997 Congress requested the National Institute of Child Health and Human Development and the Department of Education to convene a National Reading Panel to end the “reading wars” and synthesize the evidence.",
+     "start": 133,
+     "end": 343,
+     "page": 9
+    },
+    {
+     "text": "The panel found that phonics, along with explicit instruction in phonemic awareness, fluency and comprehension, worked best.",
+     "start": 344,
+     "end": 468,
+     "page": 9
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Yet over two decades on, “balanced literacy” is still being taught in classrooms. But advances in statistics and brain imaging have disproved the whole-language method. To the teacher who is a proficient reader, literacy seems like a natural process that requires educated guessing, rather than the deliberate process emphasized by phonics. Teachers can imagine that they learned to read through osmosis when they were children. Without proper training, they bring this to classrooms.",
+   "page_start": 9,
+   "page_end": 10,
+   "sentences": [
+    {
+     "text": "Yet over two decades on, “balanced literacy” is still being taught in classrooms.",
+     "start": 0,
+     "end": 81,
+     "page": 9
+    },
+    {
+     "text": "But advances in statistics and brain imaging have disproved the whole-language method.",
+     "start": 82,
+     "end": 168,
+     "page": 9
+    },
+    {
+     "text": "To the teacher who is a proficient reader, literacy seems like a natural process that requires educated guessing, rather than the deliberate process emphasized by phonics.",
+     "start": 169,
+     "end": 340,
+     "page": 9
+    },
+    {
+     "text": "Teachers can imagine that they learned to read through osmosis when they were children.",
+     "start": 341,
+     "end": 428,
+     "page": 9
+    },
+    {
+     "text": "Without proper training, they bring this to classrooms.",
+     "start": 429,
+     "end": 484,
+     "page": 10
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "syllable",
+   "gloss": "音节",
+   "start": 43,
+   "end": 51,
+   "paragraph": "1",
+   "sentence": 0
+  },
+  {
+   "surface": "phonemic",
+   "gloss": "音位的",
+   "start": 409,
+   "end": 417,
+   "paragraph": "5",
+   "sentence": 2
+  },
+  {
+   "surface": "osmosis",
+   "gloss": "潜移默化",
+   "start": 396,
+   "end": 403,
+   "paragraph": "6",
+   "sentence": 3
+  }
+ ],
+ "stats": {
+  "paragraphs": 6,
+  "sentences": 28,
+  "words": 449
+ }
+}

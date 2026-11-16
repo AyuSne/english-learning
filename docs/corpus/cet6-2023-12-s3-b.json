@@ -1,0 +1,493 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s3-b",
+ "label": "2023年12月 · 第3套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 3,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第3套).pdf",
+  "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c",
+  "pages": [
+   2,
+   4
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "You may have heard that learning another language is one method for preventing or at least postponing the onset of dementia. Dementia refers to the loss of cognitive abilities, and one of its most common forms is Alzheimer’s disease. At this time, the causes of the disease are not well understood, and consequently, there are no proven steps that people can take to prevent it. Nonetheless, some researchers have suggested that learning a foreign language might help delay the onset of dementia.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "You may have heard that learning another language is one method for preventing or at least postponing the onset of dementia.",
+     "start": 0,
+     "end": 124,
+     "page": 2
+    },
+    {
+     "text": "Dementia refers to the loss of cognitive abilities, and one of its most common forms is Alzheimer’s disease.",
+     "start": 125,
+     "end": 233,
+     "page": 2
+    },
+    {
+     "text": "At this time, the causes of the disease are not well understood, and consequently, there are no proven steps that people can take to prevent it.",
+     "start": 234,
+     "end": 378,
+     "page": 2
+    },
+    {
+     "text": "Nonetheless, some researchers have suggested that learning a foreign language might help delay the onset of dementia.",
+     "start": 379,
+     "end": 496,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "To explore this possibility more deeply, let’s look at some of the common misconceptions about dementia and the aging brain. First of all, dementia is not an inevitable part of the normal aging process. Most older adults do not develop Alzheimer’s disease or other forms of dementia. It is also important to remember that dementia is not the same thing as normal forgetfulness. At any age, we might experience difficulty finding the exact word we want or have trouble remembering the name of the person we just met. People with dementia have more serious problems, like feeling confused or getting lost in a familiar place. Think of it this way: If you forget where you parked your car at the mall, that’s normal; if you forget how to drive a car, that may be a signal that something more serious is going on.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "To explore this possibility more deeply, let’s look at some of the common misconceptions about dementia and the aging brain.",
+     "start": 0,
+     "end": 124,
+     "page": 2
+    },
+    {
+     "text": "First of all, dementia is not an inevitable part of the normal aging process.",
+     "start": 125,
+     "end": 202,
+     "page": 2
+    },
+    {
+     "text": "Most older adults do not develop Alzheimer’s disease or other forms of dementia.",
+     "start": 203,
+     "end": 283,
+     "page": 2
+    },
+    {
+     "text": "It is also important to remember that dementia is not the same thing as normal forgetfulness.",
+     "start": 284,
+     "end": 377,
+     "page": 2
+    },
+    {
+     "text": "At any age, we might experience difficulty finding the exact word we want or have trouble remembering the name of the person we just met.",
+     "start": 378,
+     "end": 515,
+     "page": 2
+    },
+    {
+     "text": "People with dementia have more serious problems, like feeling confused or getting lost in a familiar place.",
+     "start": 516,
+     "end": 623,
+     "page": 2
+    },
+    {
+     "text": "Think of it this way: If you forget where you parked your car at the mall, that’s normal; if you forget how to drive a car, that may be a signal that something more serious is going on.",
+     "start": 624,
+     "end": 809,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "The idea that dementia can be prevented is based on the comparison of the brain to a muscle. When people talk about the brain, they sometimes say things like “It is important to exercise your brain” or “To stay mentally fit, you have to give your brain a workout.” Although these are colorful analogies, in reality the brain is not a muscle. Unlike muscles, the brain is always active and works even during periods of rest and sleep. In addition, although some muscle cells have a lifespan of only a few days, brain cells last a lifetime. Not only that, but it has been shown that new brain cells are being created throughout one’s lifespan.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The idea that dementia can be prevented is based on the comparison of the brain to a muscle.",
+     "start": 0,
+     "end": 92,
+     "page": 2
+    },
+    {
+     "text": "When people talk about the brain, they sometimes say things like “It is important to exercise your brain” or “To stay mentally fit, you have to give your brain a workout.”",
+     "start": 93,
+     "end": 264,
+     "page": 2
+    },
+    {
+     "text": "Although these are colorful analogies, in reality the brain is not a muscle.",
+     "start": 265,
+     "end": 341,
+     "page": 2
+    },
+    {
+     "text": "Unlike muscles, the brain is always active and works even during periods of rest and sleep.",
+     "start": 342,
+     "end": 433,
+     "page": 2
+    },
+    {
+     "text": "In addition, although some muscle cells have a lifespan of only a few days, brain cells last a lifetime.",
+     "start": 434,
+     "end": 538,
+     "page": 2
+    },
+    {
+     "text": "Not only that, but it has been shown that new brain cells are being created throughout one’s lifespan.",
+     "start": 539,
+     "end": 641,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "While it makes for a colorful analogy, comparing the brain to a muscle is inaccurate and misleading. So, if the brain is not a muscle, can it still be exercised? Once again, researchers don’t know for sure. There are now many computer, online, and mobile device applications that claim to be able to “train your brain,” and they typically tap into a variety of cognitive abilities. However, research suggests that although this type of training may improve one’s abilities at the tasks themselves, they don’t seem to improve other abilities. In other words, practicing a letter-detection task will, over time, improve your letter-detection skills, but it will not necessarily enhance your other perceptual abilities.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "While it makes for a colorful analogy, comparing the brain to a muscle is inaccurate and misleading.",
+     "start": 0,
+     "end": 100,
+     "page": 2
+    },
+    {
+     "text": "So, if the brain is not a muscle, can it still be exercised?",
+     "start": 101,
+     "end": 161,
+     "page": 2
+    },
+    {
+     "text": "Once again, researchers don’t know for sure.",
+     "start": 162,
+     "end": 206,
+     "page": 2
+    },
+    {
+     "text": "There are now many computer, online, and mobile device applications that claim to be able to “train your brain,” and they typically tap into a variety of cognitive abilities.",
+     "start": 207,
+     "end": 381,
+     "page": 2
+    },
+    {
+     "text": "However, research suggests that although this type of training may improve one’s abilities at the tasks themselves, they don’t seem to improve other abilities.",
+     "start": 382,
+     "end": 541,
+     "page": 2
+    },
+    {
+     "text": "In other words, practicing a letter-detection task will, over time, improve your letter-detection skills, but it will not necessarily enhance your other perceptual abilities.",
+     "start": 542,
+     "end": 716,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "However, there is some reason to believe that learning languages might be different. The best evidence that foreign language learning confers cognitive benefits comes from research with those who are already bilingual. Bilingualism most commonly occurs when children are exposed to two languages, either in the home (mom speaks Dutch, dad speaks Spanish) or more formally in early schooling. But bilingualism certainly occurs in adulthood as well.",
+   "page_start": 2,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "However, there is some reason to believe that learning languages might be different.",
+     "start": 0,
+     "end": 84,
+     "page": 2
+    },
+    {
+     "text": "The best evidence that foreign language learning confers cognitive benefits comes from research with those who are already bilingual.",
+     "start": 85,
+     "end": 218,
+     "page": 2
+    },
+    {
+     "text": "Bilingualism most commonly occurs when children are exposed to two languages, either in the home (mom speaks Dutch, dad speaks Spanish) or more formally in early schooling.",
+     "start": 219,
+     "end": 391,
+     "page": 2
+    },
+    {
+     "text": "But bilingualism certainly occurs in adulthood as well.",
+     "start": 392,
+     "end": 447,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "Bilingualism and multilingualism are actually more common than you might think. In fact, it has been estimated that there are fewer monolingual speakers in the world than bilinguals and multilinguals. Although in many countries most inhabitants share just one language, other countries have several official languages. Switzerland, for example, has four official languages: German, French, Italian, and Romansh. Throughout large parts of Africa, Arabic, Swahili, French, and English are often known and used by individuals who speak a different, native language in their home than they do in the marketplace. So bilingualism and multilingualism are to be found throughout the world. And with regard to cognitive abilities, the research on those who speak more than one language paints an encouraging picture.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Bilingualism and multilingualism are actually more common than you might think.",
+     "start": 0,
+     "end": 79,
+     "page": 3
+    },
+    {
+     "text": "In fact, it has been estimated that there are fewer monolingual speakers in the world than bilinguals and multilinguals.",
+     "start": 80,
+     "end": 200,
+     "page": 3
+    },
+    {
+     "text": "Although in many countries most inhabitants share just one language, other countries have several official languages.",
+     "start": 201,
+     "end": 318,
+     "page": 3
+    },
+    {
+     "text": "Switzerland, for example, has four official languages: German, French, Italian, and Romansh.",
+     "start": 319,
+     "end": 411,
+     "page": 3
+    },
+    {
+     "text": "Throughout large parts of Africa, Arabic, Swahili, French, and English are often known and used by individuals who speak a different, native language in their home than they do in the marketplace.",
+     "start": 412,
+     "end": 608,
+     "page": 3
+    },
+    {
+     "text": "So bilingualism and multilingualism are to be found throughout the world.",
+     "start": 609,
+     "end": 682,
+     "page": 3
+    },
+    {
+     "text": "And with regard to cognitive abilities, the research on those who speak more than one language paints an encouraging picture.",
+     "start": 683,
+     "end": 808,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "For one thing, bilinguals are better at multitasking. One explanation of this superiority is that speakers of two languages are continually inhibiting one of their languages, and this process of inhibition confers general cognitive benefits to other activities. In fact, bilingual individuals outperform their monolingual counterparts on a variety of cognitive tasks, such as following complex instructions, and switching to new instructions. For the sake of completeness, it should be noted that the advantages of being bilingual are not universal across all cognitive domains. Bilingual individuals have been shown to have smaller vocabularies and to take longer in retrieving words from memory when compared to monolinguals. In the long run, however, the cognitive and linguistic advantages of being bilingual far outweigh these two drawbacks.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "For one thing, bilinguals are better at multitasking.",
+     "start": 0,
+     "end": 53,
+     "page": 3
+    },
+    {
+     "text": "One explanation of this superiority is that speakers of two languages are continually inhibiting one of their languages, and this process of inhibition confers general cognitive benefits to other activities.",
+     "start": 54,
+     "end": 261,
+     "page": 3
+    },
+    {
+     "text": "In fact, bilingual individuals outperform their monolingual counterparts on a variety of cognitive tasks, such as following complex instructions, and switching to new instructions.",
+     "start": 262,
+     "end": 442,
+     "page": 3
+    },
+    {
+     "text": "For the sake of completeness, it should be noted that the advantages of being bilingual are not universal across all cognitive domains.",
+     "start": 443,
+     "end": 578,
+     "page": 3
+    },
+    {
+     "text": "Bilingual individuals have been shown to have smaller vocabularies and to take longer in retrieving words from memory when compared to monolinguals.",
+     "start": 579,
+     "end": 727,
+     "page": 3
+    },
+    {
+     "text": "In the long run, however, the cognitive and linguistic advantages of being bilingual far outweigh these two drawbacks.",
+     "start": 728,
+     "end": 846,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "If the benefits of being bilingual spill over to other aspects of cognition, then we would expect to see a lower incidence of Alzheimer’s disease in bilinguals than in monolinguals, or at least a later onset of Alzheimer’s for bilinguals. In fact, there is evidence to support this claim. The psychologist Ellen Bialystok and her colleagues obtained the histories of 184 individuals who had made use of a memory clinic in Toronto. For those who showed signs of dementia, the monolinguals in the sample had an average age of 71.4 years at time of onset. The bilinguals, in contrast, received their diagnosis at 75.5 years, on average. In a study of this sort, a difference of four years is highly significant, and could not be explained by other systematic differences between the two groups. For example, the monolinguals reported, on average, a year and a half more schooling than their bilingual counterparts, so the effect was clearly not due to formal education.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "If the benefits of being bilingual spill over to other aspects of cognition, then we would expect to see a lower incidence of Alzheimer’s disease in bilinguals than in monolinguals, or at least a later onset of Alzheimer’s for bilinguals.",
+     "start": 0,
+     "end": 238,
+     "page": 3
+    },
+    {
+     "text": "In fact, there is evidence to support this claim.",
+     "start": 239,
+     "end": 288,
+     "page": 3
+    },
+    {
+     "text": "The psychologist Ellen Bialystok and her colleagues obtained the histories of 184 individuals who had made use of a memory clinic in Toronto.",
+     "start": 289,
+     "end": 430,
+     "page": 3
+    },
+    {
+     "text": "For those who showed signs of dementia, the monolinguals in the sample had an average age of 71.4 years at time of onset.",
+     "start": 431,
+     "end": 552,
+     "page": 3
+    },
+    {
+     "text": "The bilinguals, in contrast, received their diagnosis at 75.5 years, on average.",
+     "start": 553,
+     "end": 633,
+     "page": 3
+    },
+    {
+     "text": "In a study of this sort, a difference of four years is highly significant, and could not be explained by other systematic differences between the two groups.",
+     "start": 634,
+     "end": 791,
+     "page": 3
+    },
+    {
+     "text": "For example, the monolinguals reported, on average, a year and a half more schooling than their bilingual counterparts, so the effect was clearly not due to formal education.",
+     "start": 792,
+     "end": 966,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "A separate study, conducted in India, found strikingly similar results: bilingual patients developed symptoms of dementia 4.5 years later than monolinguals, even after other potential factors, such as gender and occupation, were controlled for. In addition, researchers have reported other positive effects of bilingualism for cognitive abilities in later life, even when the person acquired the language in adulthood. Crucially, Bialystok suggested that the positive benefits of being bilingual were only found in those who used both languages all the time.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "A separate study, conducted in India, found strikingly similar results: bilingual patients developed symptoms of dementia 4.5 years later than monolinguals, even after other potential factors, such as gender and occupation, were controlled for.",
+     "start": 0,
+     "end": 244,
+     "page": 3
+    },
+    {
+     "text": "In addition, researchers have reported other positive effects of bilingualism for cognitive abilities in later life, even when the person acquired the language in adulthood.",
+     "start": 245,
+     "end": 418,
+     "page": 3
+    },
+    {
+     "text": "Crucially, Bialystok suggested that the positive benefits of being bilingual were only found in those who used both languages all the time.",
+     "start": 419,
+     "end": 558,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "But encouraging as these kinds of studies are, they still have not established exactly how or why differences between bilinguals and monolinguals exist. Because these studies looked back at the histories of people who were already bilingual, the results can only say that a difference between the two groups was found, but not why that difference occurred. Further research is needed to determine what caused the differences in age of onset between the two groups.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "But encouraging as these kinds of studies are, they still have not established exactly how or why differences between bilinguals and monolinguals exist.",
+     "start": 0,
+     "end": 152,
+     "page": 3
+    },
+    {
+     "text": "Because these studies looked back at the histories of people who were already bilingual, the results can only say that a difference between the two groups was found, but not why that difference occurred.",
+     "start": 153,
+     "end": 356,
+     "page": 3
+    },
+    {
+     "text": "Further research is needed to determine what caused the differences in age of onset between the two groups.",
+     "start": 357,
+     "end": 464,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Other studies of successful aging suggest that being connected to one’s community and having plenty of social interaction is also important in delaying or even preventing the onset of dementia. Once again, however, the results are far less clear than the popular media might lead you to believe. Older individuals who lead active social lives are, almost by definition, healthier than their counterparts who rarely leave their homes or interact with others. So we can’t really say whether being socially active prevents the onset of dementia, or if people who don’t have dementia are more likely to be socially active.",
+   "page_start": 3,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Other studies of successful aging suggest that being connected to one’s community and having plenty of social interaction is also important in delaying or even preventing the onset of dementia.",
+     "start": 0,
+     "end": 193,
+     "page": 3
+    },
+    {
+     "text": "Once again, however, the results are far less clear than the popular media might lead you to believe.",
+     "start": 194,
+     "end": 295,
+     "page": 3
+    },
+    {
+     "text": "Older individuals who lead active social lives are, almost by definition, healthier than their counterparts who rarely leave their homes or interact with others.",
+     "start": 296,
+     "end": 457,
+     "page": 3
+    },
+    {
+     "text": "So we can’t really say whether being socially active prevents the onset of dementia, or if people who don’t have dementia are more likely to be socially active.",
+     "start": 458,
+     "end": 618,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "But even if studying a foreign language is not a magical cure-all, there is one thing it will do: It will make you a better speaker of a foreign language. Doing that confers a whole host of advantages we do know about.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "But even if studying a foreign language is not a magical cure-all, there is one thing it will do: It will make you a better speaker of a foreign language.",
+     "start": 0,
+     "end": 154,
+     "page": 4
+    },
+    {
+     "text": "Doing that confers a whole host of advantages we do know about.",
+     "start": 155,
+     "end": 218,
+     "page": 4
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "disease",
+   "gloss": "阿尔茨海默氏病",
+   "start": 225,
+   "end": 232,
+   "paragraph": "A",
+   "sentence": 1
+  },
+  {
+   "surface": "bilingual",
+   "gloss": "双语的",
+   "start": 208,
+   "end": 217,
+   "paragraph": "E",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 12,
+  "sentences": 59,
+  "words": 1226
+ }
+}

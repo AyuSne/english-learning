@@ -1,0 +1,481 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-12-s3-b",
+ "label": "2024年12月 · 第3套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 12,
+  "set": 3,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2024年12月英语六级真题(第3套).pdf",
+  "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67",
+  "pages": [
+   2,
+   3
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "Trade is one of the policy areas where the hostility that exists between populists and classical liberals is most visible. Free-traders point to the undeniable good that tariff-free trade has done for consumers across the world and to the observable alleviation of poverty in corners of the world where previously closed markets have been opened up. Protectionists point to the domestic producers who’ve paid the price for this globalized economy in the form of lost livelihoods and hollowed-out communities.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Trade is one of the policy areas where the hostility that exists between populists and classical liberals is most visible.",
+     "start": 0,
+     "end": 122,
+     "page": 2
+    },
+    {
+     "text": "Free-traders point to the undeniable good that tariff-free trade has done for consumers across the world and to the observable alleviation of poverty in corners of the world where previously closed markets have been opened up.",
+     "start": 123,
+     "end": 349,
+     "page": 2
+    },
+    {
+     "text": "Protectionists point to the domestic producers who’ve paid the price for this globalized economy in the form of lost livelihoods and hollowed-out communities.",
+     "start": 350,
+     "end": 508,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "The ongoing conservative civil war often degenerates into content-free tribal warfare, but trade is a rare exception. There are substantial, thought-out policy proposals on both sides of the argument.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The ongoing conservative civil war often degenerates into content-free tribal warfare, but trade is a rare exception.",
+     "start": 0,
+     "end": 117,
+     "page": 2
+    },
+    {
+     "text": "There are substantial, thought-out policy proposals on both sides of the argument.",
+     "start": 118,
+     "end": 200,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "Consequently, trade as a topic of discussion provides an opportunity for liberals and populists to have a real meeting of minds. Fruitful debates might actually take place in this area, as opposed to the familiar ritual we’ve become accustomed to of condemnation met with counter-condemnation.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Consequently, trade as a topic of discussion provides an opportunity for liberals and populists to have a real meeting of minds.",
+     "start": 0,
+     "end": 128,
+     "page": 2
+    },
+    {
+     "text": "Fruitful debates might actually take place in this area, as opposed to the familiar ritual we’ve become accustomed to of condemnation met with counter-condemnation.",
+     "start": 129,
+     "end": 293,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "Strange as it might sound, the problem with trade in the modern world isn’t a matter of dollars and cents. It’s a matter of false consciousness. This observation is bound to set Marxist alarm bells ringing in the minds of some readers, but it was first made by Alexis de Tocqueville in 1840.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Strange as it might sound, the problem with trade in the modern world isn’t a matter of dollars and cents.",
+     "start": 0,
+     "end": 106,
+     "page": 2
+    },
+    {
+     "text": "It’s a matter of false consciousness.",
+     "start": 107,
+     "end": 144,
+     "page": 2
+    },
+    {
+     "text": "This observation is bound to set Marxist alarm bells ringing in the minds of some readers, but it was first made by Alexis de Tocqueville in 1840.",
+     "start": 145,
+     "end": 291,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "Tracking the economic development of mankind from primitive to modern societies, Tocqueville observed a paradox unfolding over the centuries as economic realities and human experience of those realities strayed further and further from each other. In primitive societies, he notes, the division of labor was as yet undeveloped for the most part, requiring each person, family, or tribe to be relatively independent when it came to meeting their own basic material needs. Men built their own dwellings, farmed their own land, tended to their own livestock. This is not to deny that basic forms of trade took place, but, for the most part, our primitive ancestors lived fairly self-reliant, if crushingly poor, lives.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Tracking the economic development of mankind from primitive to modern societies, Tocqueville observed a paradox unfolding over the centuries as economic realities and human experience of those realities strayed further and further from each other.",
+     "start": 0,
+     "end": 247,
+     "page": 2
+    },
+    {
+     "text": "In primitive societies, he notes, the division of labor was as yet undeveloped for the most part, requiring each person, family, or tribe to be relatively independent when it came to meeting their own basic material needs.",
+     "start": 248,
+     "end": 470,
+     "page": 2
+    },
+    {
+     "text": "Men built their own dwellings, farmed their own land, tended to their own livestock.",
+     "start": 471,
+     "end": 555,
+     "page": 2
+    },
+    {
+     "text": "This is not to deny that basic forms of trade took place, but, for the most part, our primitive ancestors lived fairly self-reliant, if crushingly poor, lives.",
+     "start": 556,
+     "end": 715,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "However, the exclusively local and face-to-face nature of economic and political organization in the ancient and prehistoric worlds constantly impressed upon these primitive peoples the uncontrollable reality of others and their needs. As Tocqueville notes, “as soon as a man begins to deal with common affairs in public, he begins to perceive that he is not so independent of his fellow men as he had first imagined, and that in order to obtain their support he must often lend them his cooperation.”",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "However, the exclusively local and face-to-face nature of economic and political organization in the ancient and prehistoric worlds constantly impressed upon these primitive peoples the uncontrollable reality of others and their needs.",
+     "start": 0,
+     "end": 235,
+     "page": 2
+    },
+    {
+     "text": "As Tocqueville notes, “as soon as a man begins to deal with common affairs in public, he begins to perceive that he is not so independent of his fellow men as he had first imagined, and that in order to obtain their support he must often lend them his cooperation.”",
+     "start": 236,
+     "end": 501,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "At the advent of the modern world, the division of labor spread further and further throughout society. Each person became more and more dependent on others for their basic needs. And yet, robbed of the engagement with our neighbors and with our local communities that our ancestors were forced into by circumstance, we feel ourselves to be more and more independent of one another. As we become more and more dependent on others, we become less and less conscious of our dependence on others. This is the paradox of trade in the modern world.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "At the advent of the modern world, the division of labor spread further and further throughout society.",
+     "start": 0,
+     "end": 103,
+     "page": 2
+    },
+    {
+     "text": "Each person became more and more dependent on others for their basic needs.",
+     "start": 104,
+     "end": 179,
+     "page": 2
+    },
+    {
+     "text": "And yet, robbed of the engagement with our neighbors and with our local communities that our ancestors were forced into by circumstance, we feel ourselves to be more and more independent of one another.",
+     "start": 180,
+     "end": 382,
+     "page": 2
+    },
+    {
+     "text": "As we become more and more dependent on others, we become less and less conscious of our dependence on others.",
+     "start": 383,
+     "end": 493,
+     "page": 2
+    },
+    {
+     "text": "This is the paradox of trade in the modern world.",
+     "start": 494,
+     "end": 543,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "The false consciousness that this paradox generates causes havoc on the debates we have about free trade. There is scarcely a single commodity in any American household that isn’t dependent for its manufacture and sale, through one supply chain or another, on scores of different people spread out across the entire globe. But as Tocqueville already foresaw in 1840, we do not feel dependent on these strangers for our way of life. No sense of the dependence of our own material welfare on their work ever strikes our national consciousness. We rarely contemplate the globalized avenues of free trade with gratitude.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "The false consciousness that this paradox generates causes havoc on the debates we have about free trade.",
+     "start": 0,
+     "end": 105,
+     "page": 2
+    },
+    {
+     "text": "There is scarcely a single commodity in any American household that isn’t dependent for its manufacture and sale, through one supply chain or another, on scores of different people spread out across the entire globe.",
+     "start": 106,
+     "end": 322,
+     "page": 2
+    },
+    {
+     "text": "But as Tocqueville already foresaw in 1840, we do not feel dependent on these strangers for our way of life.",
+     "start": 323,
+     "end": 431,
+     "page": 2
+    },
+    {
+     "text": "No sense of the dependence of our own material welfare on their work ever strikes our national consciousness.",
+     "start": 432,
+     "end": 541,
+     "page": 2
+    },
+    {
+     "text": "We rarely contemplate the globalized avenues of free trade with gratitude.",
+     "start": 542,
+     "end": 616,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "There are two reasons for this. The first, to put it bluntly, is money. Money allows us to purchase the work of others without giving any thought to them as human beings. Unlike our ancestors in their primitive townships, we rarely have to meet face-to-face the people who’ve invented, built, shipped, or supplied our goods. No relationship has to be built before an exchange can take place. Simply agree on a price, and you can have any goods you wish without taking a second thought for the human being involved on the other side of the transaction. In this way, money makes us feel more independent than we actually are. Each of us senses the hold that it has over our fellows. We know that if we bid highly enough we can buy ourselves out of the timeconsuming labor of building relationships. Money is kind of like magic in that way. It gives us a set of rituals to perform and promises that if we do so we’ll be able to wield power over others. The illusion is created that having enough money to buy something is the equivalent of knowing how to make it yourself. Gratitude for the anonymous men and women who make up the supply chain rarely makes its way into our consciousness.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "There are two reasons for this.",
+     "start": 0,
+     "end": 31,
+     "page": 3
+    },
+    {
+     "text": "The first, to put it bluntly, is money.",
+     "start": 32,
+     "end": 71,
+     "page": 3
+    },
+    {
+     "text": "Money allows us to purchase the work of others without giving any thought to them as human beings.",
+     "start": 72,
+     "end": 170,
+     "page": 3
+    },
+    {
+     "text": "Unlike our ancestors in their primitive townships, we rarely have to meet face-to-face the people who’ve invented, built, shipped, or supplied our goods.",
+     "start": 171,
+     "end": 324,
+     "page": 3
+    },
+    {
+     "text": "No relationship has to be built before an exchange can take place.",
+     "start": 325,
+     "end": 391,
+     "page": 3
+    },
+    {
+     "text": "Simply agree on a price, and you can have any goods you wish without taking a second thought for the human being involved on the other side of the transaction.",
+     "start": 392,
+     "end": 551,
+     "page": 3
+    },
+    {
+     "text": "In this way, money makes us feel more independent than we actually are.",
+     "start": 552,
+     "end": 623,
+     "page": 3
+    },
+    {
+     "text": "Each of us senses the hold that it has over our fellows.",
+     "start": 624,
+     "end": 680,
+     "page": 3
+    },
+    {
+     "text": "We know that if we bid highly enough we can buy ourselves out of the timeconsuming labor of building relationships.",
+     "start": 681,
+     "end": 796,
+     "page": 3
+    },
+    {
+     "text": "Money is kind of like magic in that way.",
+     "start": 797,
+     "end": 837,
+     "page": 3
+    },
+    {
+     "text": "It gives us a set of rituals to perform and promises that if we do so we’ll be able to wield power over others.",
+     "start": 838,
+     "end": 949,
+     "page": 3
+    },
+    {
+     "text": "The illusion is created that having enough money to buy something is the equivalent of knowing how to make it yourself.",
+     "start": 950,
+     "end": 1069,
+     "page": 3
+    },
+    {
+     "text": "Gratitude for the anonymous men and women who make up the supply chain rarely makes its way into our consciousness.",
+     "start": 1070,
+     "end": 1185,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "Anonymity, in fact, is the second root cause of the free-trade paradox. Modernity has emancipated everyone from the limits of location and community. By and large, when we trade, we trade with strangers; when we vote, we vote for strangers; when we watch, read, or listen to stories, the tellers of the tales are strangers. As opposed to the ancestors Tocqueville compares us to, we do not know the people with whom we have to do, in either the economic or the political sphere. This is simply the shadow side of the miracle of markets, which, for the first time in history, have allowed strangers to look after each other. They’ve also allowed each of us to live more and more of our lives exclusively as strangers to other people. This is how Tocqueville — rather pessimistically — describes us: Each, standing apart, is like a stranger to the destiny of others; his children and personal friends forming for him the entire human race. As for the remainder of his fellow citizens, he is beside them, but he does not see them. He touches them, but he does not feel them. He exists only in and for himself.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Anonymity, in fact, is the second root cause of the free-trade paradox.",
+     "start": 0,
+     "end": 71,
+     "page": 3
+    },
+    {
+     "text": "Modernity has emancipated everyone from the limits of location and community.",
+     "start": 72,
+     "end": 149,
+     "page": 3
+    },
+    {
+     "text": "By and large, when we trade, we trade with strangers; when we vote, we vote for strangers; when we watch, read, or listen to stories, the tellers of the tales are strangers.",
+     "start": 150,
+     "end": 323,
+     "page": 3
+    },
+    {
+     "text": "As opposed to the ancestors Tocqueville compares us to, we do not know the people with whom we have to do, in either the economic or the political sphere.",
+     "start": 324,
+     "end": 478,
+     "page": 3
+    },
+    {
+     "text": "This is simply the shadow side of the miracle of markets, which, for the first time in history, have allowed strangers to look after each other.",
+     "start": 479,
+     "end": 623,
+     "page": 3
+    },
+    {
+     "text": "They’ve also allowed each of us to live more and more of our lives exclusively as strangers to other people.",
+     "start": 624,
+     "end": 732,
+     "page": 3
+    },
+    {
+     "text": "This is how Tocqueville — rather pessimistically — describes us: Each, standing apart, is like a stranger to the destiny of others; his children and personal friends forming for him the entire human race.",
+     "start": 733,
+     "end": 937,
+     "page": 3
+    },
+    {
+     "text": "As for the remainder of his fellow citizens, he is beside them, but he does not see them.",
+     "start": 938,
+     "end": 1027,
+     "page": 3
+    },
+    {
+     "text": "He touches them, but he does not feel them.",
+     "start": 1028,
+     "end": 1071,
+     "page": 3
+    },
+    {
+     "text": "He exists only in and for himself.",
+     "start": 1072,
+     "end": 1106,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "The last sentence but one is as apt a summary as one could hope to come by of how each of us functions in the modern economy: “He touches them, but he does not feel them.”",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "The last sentence but one is as apt a summary as one could hope to come by of how each of us functions in the modern economy: “He touches them, but he does not feel them.”",
+     "start": 0,
+     "end": 171,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "This is the greatest challenge facing defenders of free trade. It’s exceedingly difficult for human beings to feel gratitude toward strangers, and the global marketplace that has made us so rich has also made us strangers to one another. Our brains are hardwired for tribal life, and tribes do not take kindly to strangers. Impressing a sense of dependence upon and gratitude toward foreign strangers is therefore an uphill task.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "This is the greatest challenge facing defenders of free trade.",
+     "start": 0,
+     "end": 62,
+     "page": 3
+    },
+    {
+     "text": "It’s exceedingly difficult for human beings to feel gratitude toward strangers, and the global marketplace that has made us so rich has also made us strangers to one another.",
+     "start": 63,
+     "end": 237,
+     "page": 3
+    },
+    {
+     "text": "Our brains are hardwired for tribal life, and tribes do not take kindly to strangers.",
+     "start": 238,
+     "end": 323,
+     "page": 3
+    },
+    {
+     "text": "Impressing a sense of dependence upon and gratitude toward foreign strangers is therefore an uphill task.",
+     "start": 324,
+     "end": 429,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "If free-traders are going to win policy arguments in the future, they’ll have to find a way of forging bonds of affection between American consumers and foreign producers. Only by de-anonymizing the men and women who supply us with the goods and services we enjoy from overseas and by creating a sense of solidarity and relationship across borders that transcends economic interest can free trade win the day. Otherwise, the inborn biological upper hand that protectionists have in the form of nationalist solidarity is bound to win the day at the ballot box.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "If free-traders are going to win policy arguments in the future, they’ll have to find a way of forging bonds of affection between American consumers and foreign producers.",
+     "start": 0,
+     "end": 171,
+     "page": 3
+    },
+    {
+     "text": "Only by de-anonymizing the men and women who supply us with the goods and services we enjoy from overseas and by creating a sense of solidarity and relationship across borders that transcends economic interest can free trade win the day.",
+     "start": 172,
+     "end": 409,
+     "page": 3
+    },
+    {
+     "text": "Otherwise, the inborn biological upper hand that protectionists have in the form of nationalist solidarity is bound to win the day at the ballot box.",
+     "start": 410,
+     "end": 559,
+     "page": 3
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "populists",
+   "gloss": "民粹主义者",
+   "start": 73,
+   "end": 82,
+   "paragraph": "A",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 13,
+  "sentences": 57,
+  "words": 1209
+ }
+}

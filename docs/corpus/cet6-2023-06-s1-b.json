@@ -1,0 +1,489 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s1-b",
+ "label": "2023年6月 · 第1套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 1,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第1套).pdf",
+  "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5",
+  "pages": [
+   5,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "Gratitude may be more beneficial than we commonly suppose. One recent study asked participants to write a note of thanks to someone and then estimate how surprised and happy the recipient would feel — an impact that they consistently underestimated. Another study assessed the health benefits of writing thank-you notes. The researchers found that writing as few as three weekly thank-you notes over the course of three weeks improved life satisfaction, increased happy feelings and reduced symptoms of depression.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Gratitude may be more beneficial than we commonly suppose.",
+     "start": 0,
+     "end": 58,
+     "page": 5
+    },
+    {
+     "text": "One recent study asked participants to write a note of thanks to someone and then estimate how surprised and happy the recipient would feel — an impact that they consistently underestimated.",
+     "start": 59,
+     "end": 249,
+     "page": 5
+    },
+    {
+     "text": "Another study assessed the health benefits of writing thank-you notes.",
+     "start": 250,
+     "end": 320,
+     "page": 5
+    },
+    {
+     "text": "The researchers found that writing as few as three weekly thank-you notes over the course of three weeks improved life satisfaction, increased happy feelings and reduced symptoms of depression.",
+     "start": 321,
+     "end": 514,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "While this research into gratitude is relatively new, the principles involved are anything but. Students of mine in a political philosophy course at Indiana University are reading Daniel Defoe’s 300-year-old Robinson Crusoe, often regarded as the first novel published in English. Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to lament. But instead of giving in to despair, he makes a list of things for which he is grateful, including the fact that he is the sole survivor from the shipwreck and has been able to salvage many useful items from the wreckage.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "While this research into gratitude is relatively new, the principles involved are anything but.",
+     "start": 0,
+     "end": 95,
+     "page": 5
+    },
+    {
+     "text": "Students of mine in a political philosophy course at Indiana University are reading Daniel Defoe’s 300-year-old Robinson Crusoe, often regarded as the first novel published in English.",
+     "start": 96,
+     "end": 280,
+     "page": 5
+    },
+    {
+     "text": "Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to lament.",
+     "start": 281,
+     "end": 386,
+     "page": 5
+    },
+    {
+     "text": "But instead of giving in to despair, he makes a list of things for which he is grateful, including the fact that he is the sole survivor from the shipwreck and has been able to salvage many useful items from the wreckage.",
+     "start": 387,
+     "end": 608,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "Defoe’s masterpiece, which is often ranked as one of the world’s greatest novels, provides a portrait of gratitude in action that is as timely and relevant today as it has ever been. It is also one with which contemporary psychology and medicine are just beginning to catch up. Simply put, for most of us, it is far more helpful to focus on the things in life for which we can express gratitude than those that incline us toward resentment and lamentation.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Defoe’s masterpiece, which is often ranked as one of the world’s greatest novels, provides a portrait of gratitude in action that is as timely and relevant today as it has ever been.",
+     "start": 0,
+     "end": 182,
+     "page": 5
+    },
+    {
+     "text": "It is also one with which contemporary psychology and medicine are just beginning to catch up.",
+     "start": 183,
+     "end": 277,
+     "page": 5
+    },
+    {
+     "text": "Simply put, for most of us, it is far more helpful to focus on the things in life for which we can express gratitude than those that incline us toward resentment and lamentation.",
+     "start": 278,
+     "end": 456,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "When we focus on the things we regret, such as failed relationships, family disputes, and setbacks in career and finance, we tend to become more regretful. Conversely, when we focus on the things we are grateful for, a greater sense of happiness tends to spread through our lives. And while no one would argue for cultivating a false sense of blessedness, there is mounting evidence that counting our blessings is one of the best habits we can develop to promote mental and physical health.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "When we focus on the things we regret, such as failed relationships, family disputes, and setbacks in career and finance, we tend to become more regretful.",
+     "start": 0,
+     "end": 155,
+     "page": 5
+    },
+    {
+     "text": "Conversely, when we focus on the things we are grateful for, a greater sense of happiness tends to spread through our lives.",
+     "start": 156,
+     "end": 280,
+     "page": 5
+    },
+    {
+     "text": "And while no one would argue for cultivating a false sense of blessedness, there is mounting evidence that counting our blessings is one of the best habits we can develop to promote mental and physical health.",
+     "start": 281,
+     "end": 490,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "Gratitude has long enjoyed a privileged position in many of the world’s cultural traditions. For example, some ancient Western philosophers counsel gratitude that is both enduring and complete, and some Eastern thinkers portray it as not merely an attitude but a virtue to be put into practice.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Gratitude has long enjoyed a privileged position in many of the world’s cultural traditions.",
+     "start": 0,
+     "end": 92,
+     "page": 5
+    },
+    {
+     "text": "For example, some ancient Western philosophers counsel gratitude that is both enduring and complete, and some Eastern thinkers portray it as not merely an attitude but a virtue to be put into practice.",
+     "start": 93,
+     "end": 294,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "Recent scientific studies support these ancient teachings. Individuals who regularly engage in gratitude exercises, such as counting their blessings or expressing gratitude to others, exhibit increased satisfaction with relationships and fewer symptoms of physical illness. And the benefits are not only psychological and physical. They may also be moral — those who practice gratitude also view their lives less materialistically and suffer from less envy.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Recent scientific studies support these ancient teachings.",
+     "start": 0,
+     "end": 58,
+     "page": 5
+    },
+    {
+     "text": "Individuals who regularly engage in gratitude exercises, such as counting their blessings or expressing gratitude to others, exhibit increased satisfaction with relationships and fewer symptoms of physical illness.",
+     "start": 59,
+     "end": 273,
+     "page": 5
+    },
+    {
+     "text": "And the benefits are not only psychological and physical.",
+     "start": 274,
+     "end": 331,
+     "page": 5
+    },
+    {
+     "text": "They may also be moral — those who practice gratitude also view their lives less materialistically and suffer from less envy.",
+     "start": 332,
+     "end": 457,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "There are multiple explanations for such benefits of gratefulness. One is the fact that expressing gratitude encourages others to continue being generous, thus promoting a virtuous cycle of goodness in relationships. Similarly, grateful people may be more likely to reciprocate with acts of kindness of their own. Broadly speaking, a community in which people feel grateful to one another is likely to be a more pleasant place to live than one characterized by mutual suspicion and resentment. The beneficial effects of gratitude may extend even further. For example, when many people feel good about what someone else has done for them, they experience a sense of being lifted up, with a corresponding enhancement of their regard for humanity. Some are inspired to attempt to become better people themselves, doing more to help bring out the best in others and bringing more goodness into the world around them.",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "There are multiple explanations for such benefits of gratefulness.",
+     "start": 0,
+     "end": 66,
+     "page": 5
+    },
+    {
+     "text": "One is the fact that expressing gratitude encourages others to continue being generous, thus promoting a virtuous cycle of goodness in relationships.",
+     "start": 67,
+     "end": 216,
+     "page": 5
+    },
+    {
+     "text": "Similarly, grateful people may be more likely to reciprocate with acts of kindness of their own.",
+     "start": 217,
+     "end": 313,
+     "page": 6
+    },
+    {
+     "text": "Broadly speaking, a community in which people feel grateful to one another is likely to be a more pleasant place to live than one characterized by mutual suspicion and resentment.",
+     "start": 314,
+     "end": 493,
+     "page": 6
+    },
+    {
+     "text": "The beneficial effects of gratitude may extend even further.",
+     "start": 494,
+     "end": 554,
+     "page": 6
+    },
+    {
+     "text": "For example, when many people feel good about what someone else has done for them, they experience a sense of being lifted up, with a corresponding enhancement of their regard for humanity.",
+     "start": 555,
+     "end": 744,
+     "page": 6
+    },
+    {
+     "text": "Some are inspired to attempt to become better people themselves, doing more to help bring out the best in others and bringing more goodness into the world around them.",
+     "start": 745,
+     "end": 912,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "Gratitude also tends to strengthen a sense of connection with others. When people want to do good things that inspire gratitude, the level of dedication in relationships tends to grow and relationships seem to last longer. And when people feel more connected, they are more likely to choose to spend their time with one another and demonstrate their feelings of affection in daily acts.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Gratitude also tends to strengthen a sense of connection with others.",
+     "start": 0,
+     "end": 69,
+     "page": 6
+    },
+    {
+     "text": "When people want to do good things that inspire gratitude, the level of dedication in relationships tends to grow and relationships seem to last longer.",
+     "start": 70,
+     "end": 222,
+     "page": 6
+    },
+    {
+     "text": "And when people feel more connected, they are more likely to choose to spend their time with one another and demonstrate their feelings of affection in daily acts.",
+     "start": 223,
+     "end": 386,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "Of course, acts of kindness can also foster discomfort. For example, if people feel they are not worthy of kindness or suspect that some ulterior motive lies behind it, the benefits of gratitude will not be realized. Likewise, receiving a kindness can give rise to a sense of indebtedness, leaving beneficiaries feeling that they must now pay back whatever good they have received. Gratitude can flourish only if people are secure enough in themselves and sufficiently trusting to allow it to do so. Another obstacle to gratitude is often called a sense of entitlement. Instead of experiencing a benefaction as a good turn, people sometimes regard it as a mere payment of what they are owed, for which no one deserves any moral credit.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Of course, acts of kindness can also foster discomfort.",
+     "start": 0,
+     "end": 55,
+     "page": 6
+    },
+    {
+     "text": "For example, if people feel they are not worthy of kindness or suspect that some ulterior motive lies behind it, the benefits of gratitude will not be realized.",
+     "start": 56,
+     "end": 216,
+     "page": 6
+    },
+    {
+     "text": "Likewise, receiving a kindness can give rise to a sense of indebtedness, leaving beneficiaries feeling that they must now pay back whatever good they have received.",
+     "start": 217,
+     "end": 381,
+     "page": 6
+    },
+    {
+     "text": "Gratitude can flourish only if people are secure enough in themselves and sufficiently trusting to allow it to do so.",
+     "start": 382,
+     "end": 499,
+     "page": 6
+    },
+    {
+     "text": "Another obstacle to gratitude is often called a sense of entitlement.",
+     "start": 500,
+     "end": 569,
+     "page": 6
+    },
+    {
+     "text": "Instead of experiencing a benefaction as a good turn, people sometimes regard it as a mere payment of what they are owed, for which no one deserves any moral credit.",
+     "start": 570,
+     "end": 735,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "There are a number of practical steps anyone can take to promote a sense of gratitude. One is simply spending time on a regular basis thinking about someone who has made a difference, or perhaps writing a thank-you note or expressing such gratitude in person. Others are found in ancient religious disciplines, such as reflecting on benefactions received from another person or actually praying for the health and happiness of a benefactor. In addition to benefactions received, it is also possible to focus on opportunities to do good oneself, whether those acted on in the past or hoped for in the future. Some people are most grateful not for what others have done for them but for chances they enjoyed to help others. In regularly reflecting on the things in his life he is grateful for, Defoe’s Crusoe believes that he becomes a far better person than he would have been had he remained in the society from which he originally set out on his voyage.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "There are a number of practical steps anyone can take to promote a sense of gratitude.",
+     "start": 0,
+     "end": 86,
+     "page": 6
+    },
+    {
+     "text": "One is simply spending time on a regular basis thinking about someone who has made a difference, or perhaps writing a thank-you note or expressing such gratitude in person.",
+     "start": 87,
+     "end": 259,
+     "page": 6
+    },
+    {
+     "text": "Others are found in ancient religious disciplines, such as reflecting on benefactions received from another person or actually praying for the health and happiness of a benefactor.",
+     "start": 260,
+     "end": 440,
+     "page": 6
+    },
+    {
+     "text": "In addition to benefactions received, it is also possible to focus on opportunities to do good oneself, whether those acted on in the past or hoped for in the future.",
+     "start": 441,
+     "end": 607,
+     "page": 6
+    },
+    {
+     "text": "Some people are most grateful not for what others have done for them but for chances they enjoyed to help others.",
+     "start": 608,
+     "end": 721,
+     "page": 6
+    },
+    {
+     "text": "In regularly reflecting on the things in his life he is grateful for, Defoe’s Crusoe believes that he becomes a far better person than he would have been had he remained in the society from which he originally set out on his voyage.",
+     "start": 722,
+     "end": 954,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Reflecting on generosity and gratitude, the great basketball coach John Wooden once offered two counsels to his players and students. First, he said, “It is impossible to have a perfect day unless you have done something for someone who will never be able to repay you.” In saying this, Wooden sought to promote purely generous acts, as opposed to those performed with an expectation of reward. Second, he said, “Give thanks for your blessings every day.”",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Reflecting on generosity and gratitude, the great basketball coach John Wooden once offered two counsels to his players and students.",
+     "start": 0,
+     "end": 133,
+     "page": 6
+    },
+    {
+     "text": "First, he said, “It is impossible to have a perfect day unless you have done something for someone who will never be able to repay you.”",
+     "start": 134,
+     "end": 270,
+     "page": 6
+    },
+    {
+     "text": "In saying this, Wooden sought to promote purely generous acts, as opposed to those performed with an expectation of reward.",
+     "start": 271,
+     "end": 394,
+     "page": 6
+    },
+    {
+     "text": "Second, he said, “Give thanks for your blessings every day.”",
+     "start": 395,
+     "end": 455,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "Some faith traditions incorporate such practices into the rhythm of daily life. For example, adherents of some religions offer prayers of thanksgiving every morning before rising and every night before lying down to sleep. Others offer thanks throughout the day, such as before meals. Other less frequent special events, such as births, deaths and marriages, may also be heralded by such prayers.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Some faith traditions incorporate such practices into the rhythm of daily life.",
+     "start": 0,
+     "end": 79,
+     "page": 6
+    },
+    {
+     "text": "For example, adherents of some religions offer prayers of thanksgiving every morning before rising and every night before lying down to sleep.",
+     "start": 80,
+     "end": 222,
+     "page": 6
+    },
+    {
+     "text": "Others offer thanks throughout the day, such as before meals.",
+     "start": 223,
+     "end": 284,
+     "page": 6
+    },
+    {
+     "text": "Other less frequent special events, such as births, deaths and marriages, may also be heralded by such prayers.",
+     "start": 285,
+     "end": 396,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "When Defoe depicted Robinson Crusoe making thanksgiving a daily part of his island life, he was anticipating findings in social science and medicine that would not appear for hundreds of years. Yet he was also reflecting the wisdom of religious and philosophical traditions that extend back thousands of years. Gratitude is one of the healthiest and most nourishing of all states of mind, and those who adopt it as a habit are enriching not only their own lives but also the lives of those around them.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "When Defoe depicted Robinson Crusoe making thanksgiving a daily part of his island life, he was anticipating findings in social science and medicine that would not appear for hundreds of years.",
+     "start": 0,
+     "end": 193,
+     "page": 7
+    },
+    {
+     "text": "Yet he was also reflecting the wisdom of religious and philosophical traditions that extend back thousands of years.",
+     "start": 194,
+     "end": 310,
+     "page": 7
+    },
+    {
+     "text": "Gratitude is one of the healthiest and most nourishing of all states of mind, and those who adopt it as a habit are enriching not only their own lives but also the lives of those around them.",
+     "start": 311,
+     "end": 502,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "lament",
+   "gloss": "悲叹",
+   "start": 379,
+   "end": 385,
+   "paragraph": "B",
+   "sentence": 2
+  },
+  {
+   "surface": "shipwreck",
+   "gloss": "海难",
+   "start": 533,
+   "end": 542,
+   "paragraph": "B",
+   "sentence": 3
+  },
+  {
+   "surface": "reciprocate",
+   "gloss": "回报",
+   "start": 266,
+   "end": 277,
+   "paragraph": "G",
+   "sentence": 2
+  },
+  {
+   "surface": "ulterior",
+   "gloss": "别有用心的",
+   "start": 137,
+   "end": 145,
+   "paragraph": "I",
+   "sentence": 1
+  },
+  {
+   "surface": "benefaction",
+   "gloss": "善行",
+   "start": 596,
+   "end": 607,
+   "paragraph": "I",
+   "sentence": 5
+  }
+ ],
+ "stats": {
+  "paragraphs": 13,
+  "sentences": 53,
+  "words": 1183
+ }
+}

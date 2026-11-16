@@ -1,0 +1,248 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s1-c1",
+ "label": "2024年6月 · 第1套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第1套).pdf",
+  "sha256": "4a0f39536c2a6747a1e535d46a0aa7de069e2a1b4d893ebf4ffb1d177d8aafea",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Sarcasm and jazz have something surprisingly in common: You know them when you hear them. Sarcasm is mostly understood through tone of voice, which is used to portray the opposite of the literal words. For example, when someone says, “Well, that’s exactly what I need right now,” their tone can tell you it’s not what they need at all.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Sarcasm and jazz have something surprisingly in common: You know them when you hear them.",
+     "start": 0,
+     "end": 89,
+     "page": 6
+    },
+    {
+     "text": "Sarcasm is mostly understood through tone of voice, which is used to portray the opposite of the literal words.",
+     "start": 90,
+     "end": 201,
+     "page": 6
+    },
+    {
+     "text": "For example, when someone says, “Well, that’s exactly what I need right now,” their tone can tell you it’s not what they need at all.",
+     "start": 202,
+     "end": 335,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Most frequently, sarcasm highlights an irritation or is, quite simply, mean.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Most frequently, sarcasm highlights an irritation or is, quite simply, mean.",
+     "start": 0,
+     "end": 76,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "If you want to be happier and improve your relationships, cut out sarcasm. Why? Because sarcasm is actually hostility disguised as humor.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "If you want to be happier and improve your relationships, cut out sarcasm.",
+     "start": 0,
+     "end": 74,
+     "page": 6
+    },
+    {
+     "text": "Why?",
+     "start": 75,
+     "end": 79,
+     "page": 6
+    },
+    {
+     "text": "Because sarcasm is actually hostility disguised as humor.",
+     "start": 80,
+     "end": 137,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Despite smiling outwardly, many people who receive sarcastic comments feel put down and often think the sarcastic person is rude, or contemptible. Indeed, it’s not surprising that the origin of the word sarcasm derives from the Greek word “sarkazein” which literally means “to tear or strip the flesh off.” Hence, it’s no wonder that sarcasm is often preceded by the word “cutting” and that it hurts.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Despite smiling outwardly, many people who receive sarcastic comments feel put down and often think the sarcastic person is rude, or contemptible.",
+     "start": 0,
+     "end": 146,
+     "page": 6
+    },
+    {
+     "text": "Indeed, it’s not surprising that the origin of the word sarcasm derives from the Greek word “sarkazein” which literally means “to tear or strip the flesh off.”",
+     "start": 147,
+     "end": 306,
+     "page": 6
+    },
+    {
+     "text": "Hence, it’s no wonder that sarcasm is often preceded by the word “cutting” and that it hurts.",
+     "start": 307,
+     "end": 400,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "What’s more, since actions strongly determine thoughts and feelings, when a person consistently acts sarcastically it may only serve to heighten their underlying hostility and insecurity. After all, when you come right down to it, sarcasm can be used as a subtle form of bullying — and most bullies are angry, insecure, or cowardly.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "What’s more, since actions strongly determine thoughts and feelings, when a person consistently acts sarcastically it may only serve to heighten their underlying hostility and insecurity.",
+     "start": 0,
+     "end": 187,
+     "page": 6
+    },
+    {
+     "text": "After all, when you come right down to it, sarcasm can be used as a subtle form of bullying — and most bullies are angry, insecure, or cowardly.",
+     "start": 188,
+     "end": 332,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Alternatively, when a person stops voicing negative comments, especially sarcastic ones, they may soon start to feel happier and more self-confident. Also, other people in their life benefit even more because they no longer have to hear the emotionally hurtful language of sarcasm.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Alternatively, when a person stops voicing negative comments, especially sarcastic ones, they may soon start to feel happier and more self-confident.",
+     "start": 0,
+     "end": 149,
+     "page": 6
+    },
+    {
+     "text": "Also, other people in their life benefit even more because they no longer have to hear the emotionally hurtful language of sarcasm.",
+     "start": 150,
+     "end": 281,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Now, I’m not saying all sarcasm is bad. It may just be better used sparingly — like a potent spice in cooking. Too much of the spice, and the dish will be overwhelmed by it. Similarly, an occasional dash of sarcastic wit can spice up a chat and add an element of humor to it. But a big or steady serving of sarcasm will overwhelm the emotional flavor of any conversation and can taste very bitter to its recipient.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Now, I’m not saying all sarcasm is bad.",
+     "start": 0,
+     "end": 39,
+     "page": 6
+    },
+    {
+     "text": "It may just be better used sparingly — like a potent spice in cooking.",
+     "start": 40,
+     "end": 110,
+     "page": 6
+    },
+    {
+     "text": "Too much of the spice, and the dish will be overwhelmed by it.",
+     "start": 111,
+     "end": 173,
+     "page": 6
+    },
+    {
+     "text": "Similarly, an occasional dash of sarcastic wit can spice up a chat and add an element of humor to it.",
+     "start": 174,
+     "end": 275,
+     "page": 6
+    },
+    {
+     "text": "But a big or steady serving of sarcasm will overwhelm the emotional flavor of any conversation and can taste very bitter to its recipient.",
+     "start": 276,
+     "end": 414,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "So, tone down the sarcasm and work on clever wit instead, which is usually without any hostility and thus more appreciated by those you’re communicating with. In essence, sarcasm is easy while true, harmless wit takes talent.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "So, tone down the sarcasm and work on clever wit instead, which is usually without any hostility and thus more appreciated by those you’re communicating with.",
+     "start": 0,
+     "end": 158,
+     "page": 6
+    },
+    {
+     "text": "In essence, sarcasm is easy while true, harmless wit takes talent.",
+     "start": 159,
+     "end": 225,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Thus, the main difference between wit and sarcasm is that, as already stated, sarcasm is often hostility disguised as humor. It can be intended to hurt and is often bitter and biting. Witty statements are usually in response to someone’s unhelpful remarks or behaviors, and the intent is to untangle and clarify the issue by emphasizing its absurdities. Sarcastic statements are expressed in a cutting manner; witty remarks are delivered with undisguised and harmless humor.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Thus, the main difference between wit and sarcasm is that, as already stated, sarcasm is often hostility disguised as humor.",
+     "start": 0,
+     "end": 124,
+     "page": 7
+    },
+    {
+     "text": "It can be intended to hurt and is often bitter and biting.",
+     "start": 125,
+     "end": 183,
+     "page": 7
+    },
+    {
+     "text": "Witty statements are usually in response to someone’s unhelpful remarks or behaviors, and the intent is to untangle and clarify the issue by emphasizing its absurdities.",
+     "start": 184,
+     "end": 353,
+     "page": 7
+    },
+    {
+     "text": "Sarcastic statements are expressed in a cutting manner; witty remarks are delivered with undisguised and harmless humor.",
+     "start": 354,
+     "end": 474,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 25,
+  "words": 446
+ }
+}

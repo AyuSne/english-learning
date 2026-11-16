@@ -1,0 +1,175 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s2-c2",
+ "label": "2023年12月 · 第2套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第2套).pdf",
+  "sha256": "9a37ebb2abd2e4b42cc12afd89b706fc971fa838b1a370dbdf04212f13936e25",
+  "pages": [
+   8,
+   9
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Psychologists have long been in disagreement as to whether competition is a learned or a genetic component of human behavior. Whatever it is, you cannot but recognize the effect competition is exerting in academics and many other areas of contemporary life.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Psychologists have long been in disagreement as to whether competition is a learned or a genetic component of human behavior.",
+     "start": 0,
+     "end": 125,
+     "page": 8
+    },
+    {
+     "text": "Whatever it is, you cannot but recognize the effect competition is exerting in academics and many other areas of contemporary life.",
+     "start": 126,
+     "end": 257,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Psychologically speaking, competition has been seen as an inevitable consequence of human drives. According to Sigmund Freud, humans are born screaming for attention and full of organic drives for fulfillment in various areas. Initially, we compete for the attention of our parents. Thereafter, we are at the mercy of a battle between our base impulses for self-fulfillment and social and cultural norms which prohibit pure indulgence.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Psychologically speaking, competition has been seen as an inevitable consequence of human drives.",
+     "start": 0,
+     "end": 97,
+     "page": 8
+    },
+    {
+     "text": "According to Sigmund Freud, humans are born screaming for attention and full of organic drives for fulfillment in various areas.",
+     "start": 98,
+     "end": 226,
+     "page": 8
+    },
+    {
+     "text": "Initially, we compete for the attention of our parents.",
+     "start": 227,
+     "end": 282,
+     "page": 8
+    },
+    {
+     "text": "Thereafter, we are at the mercy of a battle between our base impulses for self-fulfillment and social and cultural norms which prohibit pure indulgence.",
+     "start": 283,
+     "end": 435,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Current work in anthropology has suggested, however, that this view of the role of competition in human behavior may be incorrect. Thomas Hobbes, one of the great philosophers of the seventeenth century, is perhaps best remembered for his characterization of the “natural world”, that is, the world before the imposition of the will of humanity, as being “nasty, brutish, and short.” This image of the pre-rational world is still widely held, reinforced by Charles Darwin’s highly influential work. The Origin of Species. which established the doctrine of natural selection. This doctrine, which takes for granted that those species best able to adapt to and master the natural environment in which they live will survive, has suggested that the struggle for survival is an inherent human trait which determines a person’s success. Darwin’s theory has even been summarized as “survival of the fittest” — a phrase Darwin himself never used — further highlighting competition’s role in success. As it has often been pointed out, however, there is nothing in the concept of natural selection that suggests that competition is the most successful strategy for “survival of the fittest.” Darwin asserted in The Origin of Species that the struggles he was describing should be viewed as metaphors and could easily include dependence and cooperation.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Current work in anthropology has suggested, however, that this view of the role of competition in human behavior may be incorrect.",
+     "start": 0,
+     "end": 130,
+     "page": 8
+    },
+    {
+     "text": "Thomas Hobbes, one of the great philosophers of the seventeenth century, is perhaps best remembered for his characterization of the “natural world”, that is, the world before the imposition of the will of humanity, as being “nasty, brutish, and short.”",
+     "start": 131,
+     "end": 383,
+     "page": 8
+    },
+    {
+     "text": "This image of the pre-rational world is still widely held, reinforced by Charles Darwin’s highly influential work.",
+     "start": 384,
+     "end": 498,
+     "page": 8
+    },
+    {
+     "text": "The Origin of Species. which established the doctrine of natural selection.",
+     "start": 499,
+     "end": 574,
+     "page": 8
+    },
+    {
+     "text": "This doctrine, which takes for granted that those species best able to adapt to and master the natural environment in which they live will survive, has suggested that the struggle for survival is an inherent human trait which determines a person’s success.",
+     "start": 575,
+     "end": 831,
+     "page": 8
+    },
+    {
+     "text": "Darwin’s theory has even been summarized as “survival of the fittest” — a phrase Darwin himself never used — further highlighting competition’s role in success.",
+     "start": 832,
+     "end": 992,
+     "page": 8
+    },
+    {
+     "text": "As it has often been pointed out, however, there is nothing in the concept of natural selection that suggests that competition is the most successful strategy for “survival of the fittest.”",
+     "start": 993,
+     "end": 1182,
+     "page": 8
+    },
+    {
+     "text": "Darwin asserted in The Origin of Species that the struggles he was describing should be viewed as metaphors and could easily include dependence and cooperation.",
+     "start": 1183,
+     "end": 1343,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Many studies have been conducted to test the importance placed on competition as opposed to other values, such as cooperation — by various cultures, and generally conclude that Americans uniquely praise competition as natural, inevitable, and desirable. In 1937, the world-renowned anthropologist Margaret Mead published Cooperation and Competition among Primitive Peoples, based on her studies of several societies that did not prize competition, and, in fact, seemed at times to place a negative value on it. One such society was the Zuni Indians of Arizona, and they, Mead found, valued cooperation far more than competition. After studying dozens of such cultures, Mead’s final conclusion was that competitiveness is a culturally created aspect of human behavior, and that its prevalence in a particular society is relative to how that society values it.",
+   "page_start": 8,
+   "page_end": 9,
+   "sentences": [
+    {
+     "text": "Many studies have been conducted to test the importance placed on competition as opposed to other values, such as cooperation — by various cultures, and generally conclude that Americans uniquely praise competition as natural, inevitable, and desirable.",
+     "start": 0,
+     "end": 253,
+     "page": 8
+    },
+    {
+     "text": "In 1937, the world-renowned anthropologist Margaret Mead published Cooperation and Competition among Primitive Peoples, based on her studies of several societies that did not prize competition, and, in fact, seemed at times to place a negative value on it.",
+     "start": 254,
+     "end": 510,
+     "page": 8
+    },
+    {
+     "text": "One such society was the Zuni Indians of Arizona, and they, Mead found, valued cooperation far more than competition.",
+     "start": 511,
+     "end": 628,
+     "page": 9
+    },
+    {
+     "text": "After studying dozens of such cultures, Mead’s final conclusion was that competitiveness is a culturally created aspect of human behavior, and that its prevalence in a particular society is relative to how that society values it.",
+     "start": 629,
+     "end": 858,
+     "page": 9
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "anthropology",
+   "gloss": "人类学",
+   "start": 16,
+   "end": 28,
+   "paragraph": "3",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 4,
+  "sentences": 18,
+  "words": 450
+ }
+}

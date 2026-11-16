@@ -1,0 +1,239 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s1-c1",
+ "label": "2023年6月 · 第1套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第1套).pdf",
+  "sha256": "1fb42ed5a9f077740d7cb5259b3d1c890d3d9810d216b7fd7139592534a1e9b5",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Technology is never a neutral tool for achieving human ends. Technological innovations reshape people as they use these innovations to control their environment. Artificial intelligence, for example, is altering humanity.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Technology is never a neutral tool for achieving human ends.",
+     "start": 0,
+     "end": 60,
+     "page": 7
+    },
+    {
+     "text": "Technological innovations reshape people as they use these innovations to control their environment.",
+     "start": 61,
+     "end": 161,
+     "page": 7
+    },
+    {
+     "text": "Artificial intelligence, for example, is altering humanity.",
+     "start": 162,
+     "end": 221,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "While the term AI conjures up anxieties about killer robots or catastrophic levels of unemployment, there are other, deeper implications. As AI increasingly shapes the human experience, how does this change what it means to be human? Central to the problem is a person’s capacity to make choices, particularly judgments that have moral implications.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "While the term AI conjures up anxieties about killer robots or catastrophic levels of unemployment, there are other, deeper implications.",
+     "start": 0,
+     "end": 137,
+     "page": 7
+    },
+    {
+     "text": "As AI increasingly shapes the human experience, how does this change what it means to be human?",
+     "start": 138,
+     "end": 233,
+     "page": 7
+    },
+    {
+     "text": "Central to the problem is a person’s capacity to make choices, particularly judgments that have moral implications.",
+     "start": 234,
+     "end": 349,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Aristotle argued that the capacity for making practical judgments depends on regularly making them — on habit and practice. We see the emergence of machines as substitute judges in a variety of everyday contexts as a potential threat to people learning how to effectively exercise judgment themselves.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Aristotle argued that the capacity for making practical judgments depends on regularly making them — on habit and practice.",
+     "start": 0,
+     "end": 123,
+     "page": 7
+    },
+    {
+     "text": "We see the emergence of machines as substitute judges in a variety of everyday contexts as a potential threat to people learning how to effectively exercise judgment themselves.",
+     "start": 124,
+     "end": 301,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "In the workplace, managers routinely make decisions about who to hire or fire and which loan to approve, to name a few. These are areas where algorithmic prescription is replacing human judgment, and so people who might have had the chance to develop practical judgment in these areas no longer will.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "In the workplace, managers routinely make decisions about who to hire or fire and which loan to approve, to name a few.",
+     "start": 0,
+     "end": 119,
+     "page": 7
+    },
+    {
+     "text": "These are areas where algorithmic prescription is replacing human judgment, and so people who might have had the chance to develop practical judgment in these areas no longer will.",
+     "start": 120,
+     "end": 300,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Recommendation engines, which are increasingly prevalent intermediaries in people’s consumption of culture, may serve to constrain choice and minimize luck. By presenting consumers with algorithmically selected choices of what to watch, read, stream and visit next, companies are replacing human taste with machine taste. In one sense, this is helpful. After all, machines can survey a wider range of choices than any individual is likely to have the time or energy to do on their own.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Recommendation engines, which are increasingly prevalent intermediaries in people’s consumption of culture, may serve to constrain choice and minimize luck.",
+     "start": 0,
+     "end": 156,
+     "page": 8
+    },
+    {
+     "text": "By presenting consumers with algorithmically selected choices of what to watch, read, stream and visit next, companies are replacing human taste with machine taste.",
+     "start": 157,
+     "end": 321,
+     "page": 8
+    },
+    {
+     "text": "In one sense, this is helpful.",
+     "start": 322,
+     "end": 352,
+     "page": 8
+    },
+    {
+     "text": "After all, machines can survey a wider range of choices than any individual is likely to have the time or energy to do on their own.",
+     "start": 353,
+     "end": 485,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "At the same time, though, this selection is optimizing for what people are likely to prefer based on what they’ve preferred in the past. We think there is some risk that people’s options will be constrained by their past in a new and unanticipated way.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "At the same time, though, this selection is optimizing for what people are likely to prefer based on what they’ve preferred in the past.",
+     "start": 0,
+     "end": 136,
+     "page": 8
+    },
+    {
+     "text": "We think there is some risk that people’s options will be constrained by their past in a new and unanticipated way.",
+     "start": 137,
+     "end": 252,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "As machine learning algorithms improve and as they train on more extensive data sets, larger parts of everyday life are likely to become utterly predictable. The predictions are going to get better and better, and they will ultimately make common experiences more efficient and pleasant.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "As machine learning algorithms improve and as they train on more extensive data sets, larger parts of everyday life are likely to become utterly predictable.",
+     "start": 0,
+     "end": 157,
+     "page": 8
+    },
+    {
+     "text": "The predictions are going to get better and better, and they will ultimately make common experiences more efficient and pleasant.",
+     "start": 158,
+     "end": 287,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Algorithms could soon — if they don’t already — have a better idea about which show you’d like to watch next and which job candidate you should hire than you do. One day, humans may even find a way for machines to make these decisions without some of the biases that humans typically display.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Algorithms could soon — if they don’t already — have a better idea about which show you’d like to watch next and which job candidate you should hire than you do.",
+     "start": 0,
+     "end": 161,
+     "page": 8
+    },
+    {
+     "text": "One day, humans may even find a way for machines to make these decisions without some of the biases that humans typically display.",
+     "start": 162,
+     "end": 292,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "But to the extent that unpredictability is part of how people understand themselves and part of what people like about themselves, humanity is in the process of losing something significant. As they become more and more predictable, the creatures inhabiting the increasingly AI-mediated world will become less and less like us.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "But to the extent that unpredictability is part of how people understand themselves and part of what people like about themselves, humanity is in the process of losing something significant.",
+     "start": 0,
+     "end": 190,
+     "page": 8
+    },
+    {
+     "text": "As they become more and more predictable, the creatures inhabiting the increasingly AI-mediated world will become less and less like us.",
+     "start": 191,
+     "end": 327,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "algorithmic",
+   "gloss": "算法的",
+   "start": 142,
+   "end": 153,
+   "paragraph": "4",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 22,
+  "words": 453
+ }
+}

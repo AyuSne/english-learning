@@ -1,0 +1,200 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-12-s3-c2",
+ "label": "2023年12月 · 第3套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 12,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年12月英语六级真题(第3套).pdf",
+  "sha256": "f4d786f50d1184e25fc1b27762db3bb462f9fedf12eb1cf497c7758644962e9c",
+  "pages": [
+   6,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Spiders make their presence felt in late August and through early autumn. This is the mating season of some of the most common varieties, when male house spiders come out of hidden corners to look for females, and garden spiders reach adult size and spin their most dazzling webs.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Spiders make their presence felt in late August and through early autumn.",
+     "start": 0,
+     "end": 73,
+     "page": 6
+    },
+    {
+     "text": "This is the mating season of some of the most common varieties, when male house spiders come out of hidden corners to look for females, and garden spiders reach adult size and spin their most dazzling webs.",
+     "start": 74,
+     "end": 280,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Yet while the spider is a familiar fixture of nursery poems or songs and Halloween decorations, its relationship with humans is complicated. Fear of spiders is common and has serious impacts on the lives of sufferers. Its prevalence appears unrelated to any rational assessment of risk. Spiders in the UK are almost all harmless. Farmland species perform valuable ecosystem services, by preying on insects that are our competitors for crops. But they are a constant source of human anxieties — with a cultural association with witches and wickedness dating back to the middle ages.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Yet while the spider is a familiar fixture of nursery poems or songs and Halloween decorations, its relationship with humans is complicated.",
+     "start": 0,
+     "end": 140,
+     "page": 6
+    },
+    {
+     "text": "Fear of spiders is common and has serious impacts on the lives of sufferers.",
+     "start": 141,
+     "end": 217,
+     "page": 6
+    },
+    {
+     "text": "Its prevalence appears unrelated to any rational assessment of risk.",
+     "start": 218,
+     "end": 286,
+     "page": 6
+    },
+    {
+     "text": "Spiders in the UK are almost all harmless.",
+     "start": 287,
+     "end": 329,
+     "page": 6
+    },
+    {
+     "text": "Farmland species perform valuable ecosystem services, by preying on insects that are our competitors for crops.",
+     "start": 330,
+     "end": 441,
+     "page": 6
+    },
+    {
+     "text": "But they are a constant source of human anxieties — with a cultural association with witches and wickedness dating back to the middle ages.",
+     "start": 442,
+     "end": 581,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Does this perhaps explain, in part, the lack of data about how spiders are faring in our age of ecological crisis? British butterflies are the most studied group of insects in the world, due to the long tradition of collecting and observing them. But spider conservationists point out that it was only in the 1980s that the classification of house spiders was properly sorted out. And while information about insect populations is gathered by experiments that measure the numbers hitting windscreens or traps, there have been few attempts to count spiders.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Does this perhaps explain, in part, the lack of data about how spiders are faring in our age of ecological crisis?",
+     "start": 0,
+     "end": 114,
+     "page": 6
+    },
+    {
+     "text": "British butterflies are the most studied group of insects in the world, due to the long tradition of collecting and observing them.",
+     "start": 115,
+     "end": 246,
+     "page": 6
+    },
+    {
+     "text": "But spider conservationists point out that it was only in the 1980s that the classification of house spiders was properly sorted out.",
+     "start": 247,
+     "end": 380,
+     "page": 6
+    },
+    {
+     "text": "And while information about insect populations is gathered by experiments that measure the numbers hitting windscreens or traps, there have been few attempts to count spiders.",
+     "start": 381,
+     "end": 556,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "The huge reductions in the numbers of flying insects can only mean a reduction in spiders’ food supply. A recent landmark study identified a 75% fall in insect populations between 1989 and 2016, with pesticide use thought to be to blame along with the destruction of wild areas for development. This means the overall picture for spiders is worrying, as it is for most creatures. But conservationists are most concerned about those varieties that are threatened due to habitat loss and fragmentation, which makes it impossible for them to migrate.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The huge reductions in the numbers of flying insects can only mean a reduction in spiders’ food supply.",
+     "start": 0,
+     "end": 103,
+     "page": 6
+    },
+    {
+     "text": "A recent landmark study identified a 75% fall in insect populations between 1989 and 2016, with pesticide use thought to be to blame along with the destruction of wild areas for development.",
+     "start": 104,
+     "end": 294,
+     "page": 6
+    },
+    {
+     "text": "This means the overall picture for spiders is worrying, as it is for most creatures.",
+     "start": 295,
+     "end": 379,
+     "page": 6
+    },
+    {
+     "text": "But conservationists are most concerned about those varieties that are threatened due to habitat loss and fragmentation, which makes it impossible for them to migrate.",
+     "start": 380,
+     "end": 547,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Of around 650 spider species regularly recorded in the UK, the majority thrive in marshes and wasteland. Conservation efforts, often led by determined individuals, have helped some species to recover by reintroducing them to new areas. With rewilding now firmly on the environmental policy agenda, the hope is that in future, spiders will be enabled to migrate by themselves, adapting to climate change by moving along wildlife corridors.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Of around 650 spider species regularly recorded in the UK, the majority thrive in marshes and wasteland.",
+     "start": 0,
+     "end": 104,
+     "page": 6
+    },
+    {
+     "text": "Conservation efforts, often led by determined individuals, have helped some species to recover by reintroducing them to new areas.",
+     "start": 105,
+     "end": 235,
+     "page": 6
+    },
+    {
+     "text": "With rewilding now firmly on the environmental policy agenda, the hope is that in future, spiders will be enabled to migrate by themselves, adapting to climate change by moving along wildlife corridors.",
+     "start": 236,
+     "end": 438,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "It seems unlikely that spiders will ever attract the same level of human enthusiasm as bees, birds or butterflies, in spite of their unique status as nature’s spinners. But as they reveal themselves in all their splendour this autumn, it would be a good thing if more animal lovers recognised the ways in which spiders are simply terrific.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "It seems unlikely that spiders will ever attract the same level of human enthusiasm as bees, birds or butterflies, in spite of their unique status as nature’s spinners.",
+     "start": 0,
+     "end": 168,
+     "page": 6
+    },
+    {
+     "text": "But as they reveal themselves in all their splendour this autumn, it would be a good thing if more animal lovers recognised the ways in which spiders are simply terrific.",
+     "start": 169,
+     "end": 339,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 6,
+  "sentences": 21,
+  "words": 450
+ }
+}

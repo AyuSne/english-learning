@@ -1,0 +1,231 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s3-c1",
+ "label": "2023年6月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第3套).pdf",
+  "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4",
+  "pages": [
+   4,
+   5
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "How on earth did we come to this? We protect our children obsessively from every harm; we scrutinize every carer, teacher or doctor with whom they come into contact. Yet despite all this, one group, which in no way has their best interests at heart, has almost unconstrained access.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "How on earth did we come to this?",
+     "start": 0,
+     "end": 33,
+     "page": 4
+    },
+    {
+     "text": "We protect our children obsessively from every harm; we scrutinize every carer, teacher or doctor with whom they come into contact.",
+     "start": 34,
+     "end": 165,
+     "page": 4
+    },
+    {
+     "text": "Yet despite all this, one group, which in no way has their best interests at heart, has almost unconstrained access.",
+     "start": 166,
+     "end": 282,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "We seem to take it for granted that advertisers and marketers are allowed to condition even the youngest children. Before children have even developed a proper sense of their own identity, or learned to handle money, they’re encouraged to associate status and self-worth with stuff, and to look to external things such as fame and wealth for validation. We’re turning out little consumers rather than young citizens who will value themselves for what they contribute to the society in which they live.",
+   "page_start": 4,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "We seem to take it for granted that advertisers and marketers are allowed to condition even the youngest children.",
+     "start": 0,
+     "end": 114,
+     "page": 4
+    },
+    {
+     "text": "Before children have even developed a proper sense of their own identity, or learned to handle money, they’re encouraged to associate status and self-worth with stuff, and to look to external things such as fame and wealth for validation.",
+     "start": 115,
+     "end": 353,
+     "page": 4
+    },
+    {
+     "text": "We’re turning out little consumers rather than young citizens who will value themselves for what they contribute to the society in which they live.",
+     "start": 354,
+     "end": 501,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "We’ve reached this point so gradually that many of us have never questioned it. It’s crept up on us in the 60 years since advertisers started to target the young and found that they could recruit them to a commercial assault on their parents. We’ve come to know it as “pester power” or the ability of children to pressure parents to make certain purchases.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "We’ve reached this point so gradually that many of us have never questioned it.",
+     "start": 0,
+     "end": 79,
+     "page": 5
+    },
+    {
+     "text": "It’s crept up on us in the 60 years since advertisers started to target the young and found that they could recruit them to a commercial assault on their parents.",
+     "start": 80,
+     "end": 242,
+     "page": 5
+    },
+    {
+     "text": "We’ve come to know it as “pester power” or the ability of children to pressure parents to make certain purchases.",
+     "start": 243,
+     "end": 356,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Many psychologists, child development experts and educators point to research suggesting that this emerging cradle-to-grave consumerism is contributing to growing rates of low self-esteem, depression and other forms of mental illness.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Many psychologists, child development experts and educators point to research suggesting that this emerging cradle-to-grave consumerism is contributing to growing rates of low self-esteem, depression and other forms of mental illness.",
+     "start": 0,
+     "end": 234,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Not all psychologists agree. There’re plenty working hand in glove with a £12bn-a-year industry that has turned the manipulation of adult emotions and desires into an art form — often literally. It’s also one that’s forever developing new ways to persuade our children to desire material possessions, and because of advertisements’ viral effect they only need to infect a few to reach the many. Advertising and marketing can serve a useful purpose for children. Marketing may help socialize children as consumers, inform them about products, and help them carve out unique identities as they reach adulthood",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Not all psychologists agree.",
+     "start": 0,
+     "end": 28,
+     "page": 5
+    },
+    {
+     "text": "There’re plenty working hand in glove with a £12bn-a-year industry that has turned the manipulation of adult emotions and desires into an art form — often literally.",
+     "start": 29,
+     "end": 194,
+     "page": 5
+    },
+    {
+     "text": "It’s also one that’s forever developing new ways to persuade our children to desire material possessions, and because of advertisements’ viral effect they only need to infect a few to reach the many.",
+     "start": 195,
+     "end": 394,
+     "page": 5
+    },
+    {
+     "text": "Advertising and marketing can serve a useful purpose for children.",
+     "start": 395,
+     "end": 461,
+     "page": 5
+    },
+    {
+     "text": "Marketing may help socialize children as consumers, inform them about products, and help them carve out unique identities as they reach adulthood",
+     "start": 462,
+     "end": 607,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Then, should we ban all advertising aimed at young children? I say yes.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Then, should we ban all advertising aimed at young children?",
+     "start": 0,
+     "end": 60,
+     "page": 5
+    },
+    {
+     "text": "I say yes.",
+     "start": 61,
+     "end": 71,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Of course there’ll be plenty of objections to an outright ban on advertising to the under-11s. There’ll be those who argue that would be a breach of freedom of speech and infringe the rights of corporations to brainwash little children into demanding their products.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Of course there’ll be plenty of objections to an outright ban on advertising to the under-11s.",
+     "start": 0,
+     "end": 94,
+     "page": 5
+    },
+    {
+     "text": "There’ll be those who argue that would be a breach of freedom of speech and infringe the rights of corporations to brainwash little children into demanding their products.",
+     "start": 95,
+     "end": 266,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Most parents hate what advertising does to their children, but we do have the power to end it and let our children grow up free from many of the pressures of consumerism until they’re old enough to make their own decisions. And though advertising is only part of an all-pervasive marketing culture we need to make a start somewhere. Let’s ban all advertising targeting children of primary school age and younger now.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Most parents hate what advertising does to their children, but we do have the power to end it and let our children grow up free from many of the pressures of consumerism until they’re old enough to make their own decisions.",
+     "start": 0,
+     "end": 223,
+     "page": 5
+    },
+    {
+     "text": "And though advertising is only part of an all-pervasive marketing culture we need to make a start somewhere.",
+     "start": 224,
+     "end": 332,
+     "page": 5
+    },
+    {
+     "text": "Let’s ban all advertising targeting children of primary school age and younger now.",
+     "start": 333,
+     "end": 416,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "all-pervasive",
+   "gloss": "无处不在的",
+   "start": 266,
+   "end": 279,
+   "paragraph": "8",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 22,
+  "words": 451
+ }
+}

@@ -1,0 +1,465 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s3-b",
+ "label": "2023年6月 · 第3套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 3,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第3套).pdf",
+  "sha256": "7647e045873dc9c4514cd6778354ad8cafb6f93c0967cbaf9f6f3640e5c9a4c4",
+  "pages": [
+   2,
+   4
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "When psychologist Jessica Pryor lived near an internationally renowned university, she once saw a student walking into a library holding a sleeping bag and a coffee maker. She has heard of graduate students spending 12 to 18 hours at a time in the lab. Their schedules are meant to be literally punishing: If they are scientists-in-training, they won’t allow themselves to watch Netflix until their experiments start generating results. “Relationships become estranged — people stop inviting them to social gatherings or dinner parties, which leads them to spend even more time in the lab,” Pryor told me.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "When psychologist Jessica Pryor lived near an internationally renowned university, she once saw a student walking into a library holding a sleeping bag and a coffee maker.",
+     "start": 0,
+     "end": 171,
+     "page": 2
+    },
+    {
+     "text": "She has heard of graduate students spending 12 to 18 hours at a time in the lab.",
+     "start": 172,
+     "end": 252,
+     "page": 2
+    },
+    {
+     "text": "Their schedules are meant to be literally punishing: If they are scientists-in-training, they won’t allow themselves to watch Netflix until their experiments start generating results.",
+     "start": 253,
+     "end": 436,
+     "page": 2
+    },
+    {
+     "text": "“Relationships become estranged — people stop inviting them to social gatherings or dinner parties, which leads them to spend even more time in the lab,” Pryor told me.",
+     "start": 437,
+     "end": 605,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "Along with other therapists, Pryor, who is now with the Family Institute at Northwestern University, is trying to sound the alarm about a tendency among young adults and college students to strive for perfection in their work — sometimes at any cost. Though it is often portrayed as a positive trait, Pryor and others say extreme perfectionism can lead to depression, anxiety, and even suicide.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "Along with other therapists, Pryor, who is now with the Family Institute at Northwestern University, is trying to sound the alarm about a tendency among young adults and college students to strive for perfection in their work — sometimes at any cost.",
+     "start": 0,
+     "end": 250,
+     "page": 2
+    },
+    {
+     "text": "Though it is often portrayed as a positive trait, Pryor and others say extreme perfectionism can lead to depression, anxiety, and even suicide.",
+     "start": 251,
+     "end": 394,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "What’s more, perfectionism seems to be on the rise. In a study of thousands of American, Canadian, and British college students published earlier this year, Thomas Curran of the University of Bath and Andrew Hill of York St. John University found that today’s college students report higher levels of perfectionism than college students did during the 1990s or early 2000s. They measured three types of perfectionism: self-oriented, or a desire to be perfect; socially prescribed, or a desire to live up to others’ expectations; and other-oriented, or holding others to unrealistic standards. From 1989 to 2016, they found, self-oriented perfectionism scores increased by 10 percent, socially prescribed scores rose by 33 percent, and other-oriented perfectionism increased by 16 percent.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "What’s more, perfectionism seems to be on the rise.",
+     "start": 0,
+     "end": 51,
+     "page": 2
+    },
+    {
+     "text": "In a study of thousands of American, Canadian, and British college students published earlier this year, Thomas Curran of the University of Bath and Andrew Hill of York St. John University found that today’s college students report higher levels of perfectionism than college students did during the 1990s or early 2000s.",
+     "start": 52,
+     "end": 373,
+     "page": 2
+    },
+    {
+     "text": "They measured three types of perfectionism: self-oriented, or a desire to be perfect; socially prescribed, or a desire to live up to others’ expectations; and other-oriented, or holding others to unrealistic standards.",
+     "start": 374,
+     "end": 592,
+     "page": 2
+    },
+    {
+     "text": "From 1989 to 2016, they found, self-oriented perfectionism scores increased by 10 percent, socially prescribed scores rose by 33 percent, and other-oriented perfectionism increased by 16 percent.",
+     "start": 593,
+     "end": 788,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "A person living with an other-oriented perfectionist might feel criticized by the perfectionist spouse for not doing household chores exactly the “right” way. “One of the most common things couples argue about is the proper way of loading the dishwasher,” says Amy Bach, a psychologist in Providence, Rhode Island.",
+   "page_start": 2,
+   "page_end": 2,
+   "sentences": [
+    {
+     "text": "A person living with an other-oriented perfectionist might feel criticized by the perfectionist spouse for not doing household chores exactly the “right” way.",
+     "start": 0,
+     "end": 158,
+     "page": 2
+    },
+    {
+     "text": "“One of the most common things couples argue about is the proper way of loading the dishwasher,” says Amy Bach, a psychologist in Providence, Rhode Island.",
+     "start": 159,
+     "end": 314,
+     "page": 2
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "Curran describes socially prescribed perfectionism as “My self-esteem is contingent on what other people think.” His study didn’t examine the causal reasons for its rise, but he assumes that the rise of both standardized testing and social media might play a role. These days, LinkedIn alerts us when our rival gets a new job, and Instagram can let us know how well “liked” our lives are compared with a friend’s. In an opinion piece earlier this year, Curran and Hill argue that society has also become more dog-eat-dog. “Over the last 50 years, public interest and civic responsibility have been progressively eroded,” they write, “replaced by a focus on self-interest and competition in a supposedly free and open marketplace.” We strive for perfection, it seems, because we feel we must in order to get ahead. Michael Brustein, a clinical psychologist in Manhattan, says when he first began practicing in 2007, he was surprised by how prevalent perfectionism was among his clients, despite how little his graduate training had focused on the phenomenon. He sees perfectionism in, among others, clients who are entrepreneurs, artists, and tech employees. “You’re in New York because you’re ambitious, you have this need to strive,” he says. “But then your whole identity gets wrapped into a goal.”",
+   "page_start": 2,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Curran describes socially prescribed perfectionism as “My self-esteem is contingent on what other people think.”",
+     "start": 0,
+     "end": 112,
+     "page": 2
+    },
+    {
+     "text": "His study didn’t examine the causal reasons for its rise, but he assumes that the rise of both standardized testing and social media might play a role.",
+     "start": 113,
+     "end": 264,
+     "page": 2
+    },
+    {
+     "text": "These days, LinkedIn alerts us when our rival gets a new job, and Instagram can let us know how well “liked” our lives are compared with a friend’s.",
+     "start": 265,
+     "end": 413,
+     "page": 2
+    },
+    {
+     "text": "In an opinion piece earlier this year, Curran and Hill argue that society has also become more dog-eat-dog.",
+     "start": 414,
+     "end": 521,
+     "page": 3
+    },
+    {
+     "text": "“Over the last 50 years, public interest and civic responsibility have been progressively eroded,” they write, “replaced by a focus on self-interest and competition in a supposedly free and open marketplace.”",
+     "start": 522,
+     "end": 730,
+     "page": 3
+    },
+    {
+     "text": "We strive for perfection, it seems, because we feel we must in order to get ahead.",
+     "start": 731,
+     "end": 813,
+     "page": 3
+    },
+    {
+     "text": "Michael Brustein, a clinical psychologist in Manhattan, says when he first began practicing in 2007, he was surprised by how prevalent perfectionism was among his clients, despite how little his graduate training had focused on the phenomenon.",
+     "start": 814,
+     "end": 1057,
+     "page": 3
+    },
+    {
+     "text": "He sees perfectionism in, among others, clients who are entrepreneurs, artists, and tech employees.",
+     "start": 1058,
+     "end": 1157,
+     "page": 3
+    },
+    {
+     "text": "“You’re in New York because you’re ambitious, you have this need to strive,” he says.",
+     "start": 1158,
+     "end": 1243,
+     "page": 3
+    },
+    {
+     "text": "“But then your whole identity gets wrapped into a goal.”",
+     "start": 1244,
+     "end": 1300,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "Perfectionism can, of course, be a positive force. Think of professional athletes, who train aggressively for ever-higher levels of competition. In well-adjusted perfectionism, someone who doesn’t get the gold is able to forget the setback and move on. In maladaptive perfectionism, meanwhile, people make an archive of all their failures. They revisit these archives constantly, thinking, as Pryor puts it, “I need to make myself feel terrible so I don’t do this again.” Then they double down, “raising the expectation bar even higher, which increases the likelihood of defeat, which makes you self-critical, so you raise the bar higher, work even harder,” she says. Next comes failure, shame, and pushing yourself even harder toward even higher and more impossible goals. Meeting them becomes an “all or nothing” premise. Pryor offered this example: “Even if I’m an incredible attorney, if I don’t make partner in the same pacing as one of my colleagues, clearly that means I’m a failure.”",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Perfectionism can, of course, be a positive force.",
+     "start": 0,
+     "end": 50,
+     "page": 3
+    },
+    {
+     "text": "Think of professional athletes, who train aggressively for ever-higher levels of competition.",
+     "start": 51,
+     "end": 144,
+     "page": 3
+    },
+    {
+     "text": "In well-adjusted perfectionism, someone who doesn’t get the gold is able to forget the setback and move on.",
+     "start": 145,
+     "end": 252,
+     "page": 3
+    },
+    {
+     "text": "In maladaptive perfectionism, meanwhile, people make an archive of all their failures.",
+     "start": 253,
+     "end": 339,
+     "page": 3
+    },
+    {
+     "text": "They revisit these archives constantly, thinking, as Pryor puts it, “I need to make myself feel terrible so I don’t do this again.”",
+     "start": 340,
+     "end": 471,
+     "page": 3
+    },
+    {
+     "text": "Then they double down, “raising the expectation bar even higher, which increases the likelihood of defeat, which makes you self-critical, so you raise the bar higher, work even harder,” she says.",
+     "start": 472,
+     "end": 667,
+     "page": 3
+    },
+    {
+     "text": "Next comes failure, shame, and pushing yourself even harder toward even higher and more impossible goals.",
+     "start": 668,
+     "end": 773,
+     "page": 3
+    },
+    {
+     "text": "Meeting them becomes an “all or nothing” premise.",
+     "start": 774,
+     "end": 823,
+     "page": 3
+    },
+    {
+     "text": "Pryor offered this example: “Even if I’m an incredible attorney, if I don’t make partner in the same pacing as one of my colleagues, clearly that means I’m a failure.”",
+     "start": 824,
+     "end": 991,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "Brustein says his perfectionist clients tend to devalue their accomplishments, so that every time a goal is achieved, the high lasts only a short time, like “a gas tank with a hole in it.” If the boss says you did a great job, it’s because he doesn’t know anything. If the audience likes your work, that’s because it’s too stupid to know what good art actually is. But, therapists say, there are also different ways perfectionism manifests. Some perfectionists are always pushing themselves forward. But others actually fall behind on work, unable to complete assignments unless they are, well, perfect. Or they might handicap their performance ahead of time. They’re the ones partying until 2 a.m. the night before the final, so that when the grade C rolls in, there’s a ready excuse.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "Brustein says his perfectionist clients tend to devalue their accomplishments, so that every time a goal is achieved, the high lasts only a short time, like “a gas tank with a hole in it.”",
+     "start": 0,
+     "end": 188,
+     "page": 3
+    },
+    {
+     "text": "If the boss says you did a great job, it’s because he doesn’t know anything.",
+     "start": 189,
+     "end": 265,
+     "page": 3
+    },
+    {
+     "text": "If the audience likes your work, that’s because it’s too stupid to know what good art actually is.",
+     "start": 266,
+     "end": 364,
+     "page": 3
+    },
+    {
+     "text": "But, therapists say, there are also different ways perfectionism manifests.",
+     "start": 365,
+     "end": 440,
+     "page": 3
+    },
+    {
+     "text": "Some perfectionists are always pushing themselves forward.",
+     "start": 441,
+     "end": 499,
+     "page": 3
+    },
+    {
+     "text": "But others actually fall behind on work, unable to complete assignments unless they are, well, perfect.",
+     "start": 500,
+     "end": 603,
+     "page": 3
+    },
+    {
+     "text": "Or they might handicap their performance ahead of time.",
+     "start": 604,
+     "end": 659,
+     "page": 3
+    },
+    {
+     "text": "They’re the ones partying until 2 a.m. the night before the final, so that when the grade C rolls in, there’s a ready excuse.",
+     "start": 660,
+     "end": 785,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "While educators and parents have successfully convinced students of the need to be high performing and diligent, the experts told me, they haven’t adequately prepared them for the inevitability of failure. Instead of praises like “You’re so smart,” parents and educators should say things like “You really stuck with it,” Pryor says, to emphasize the value of perseverance over intrinsic talent. Pryor notes that many of her clients are wary she’ll “turn them into some degenerate couch potato and teach them to be okay with it.” Instead, she tries to help them think through the parts of their perfectionism they’d like to keep, and to lose the parts that are ruining their lives.",
+   "page_start": 3,
+   "page_end": 3,
+   "sentences": [
+    {
+     "text": "While educators and parents have successfully convinced students of the need to be high performing and diligent, the experts told me, they haven’t adequately prepared them for the inevitability of failure.",
+     "start": 0,
+     "end": 205,
+     "page": 3
+    },
+    {
+     "text": "Instead of praises like “You’re so smart,” parents and educators should say things like “You really stuck with it,” Pryor says, to emphasize the value of perseverance over intrinsic talent.",
+     "start": 206,
+     "end": 395,
+     "page": 3
+    },
+    {
+     "text": "Pryor notes that many of her clients are wary she’ll “turn them into some degenerate couch potato and teach them to be okay with it.”",
+     "start": 396,
+     "end": 529,
+     "page": 3
+    },
+    {
+     "text": "Instead, she tries to help them think through the parts of their perfectionism they’d like to keep, and to lose the parts that are ruining their lives.",
+     "start": 530,
+     "end": 681,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "Bach, who sees many students from Brown University, says some of them don’t even go out on weekends, let alone weekdays. She tells them, “Aim high, but get comfortable with good enough.” When they don’t get some award, she encourages them to remember that “one outcome is not a basis for a broad conclusion about the person’s intelligence, qualifications, or potential for the future.”",
+   "page_start": 3,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Bach, who sees many students from Brown University, says some of them don’t even go out on weekends, let alone weekdays.",
+     "start": 0,
+     "end": 120,
+     "page": 3
+    },
+    {
+     "text": "She tells them, “Aim high, but get comfortable with good enough.”",
+     "start": 121,
+     "end": 186,
+     "page": 3
+    },
+    {
+     "text": "When they don’t get some award, she encourages them to remember that “one outcome is not a basis for a broad conclusion about the person’s intelligence, qualifications, or potential for the future.”",
+     "start": 187,
+     "end": 385,
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "The treatment for perfectionism might be as simple as having patients keep logs of things they can be proud of, or having them behave imperfectly in small ways, just to see how it feels. “We might have them hang the towels crooked or wear some clothing inside out,” says Martin Antony, a professor in the department of psychology at Ryerson University in Toronto.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The treatment for perfectionism might be as simple as having patients keep logs of things they can be proud of, or having them behave imperfectly in small ways, just to see how it feels.",
+     "start": 0,
+     "end": 186,
+     "page": 4
+    },
+    {
+     "text": "“We might have them hang the towels crooked or wear some clothing inside out,” says Martin Antony, a professor in the department of psychology at Ryerson University in Toronto.",
+     "start": 187,
+     "end": 363,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Brustein likes to get his perfectionist clients to create values that are important to them, then try to shift their focus to living according to those values rather than achieving specific goals. It’s a play on the “You really stuck with it” message for kids. In other words, it isn’t about doing a headstand in yoga class; it’s about going to yoga class in the first place, because you like to be the kind of person who takes care of herself. But he warns that some people go into therapy expecting too much — an instant transformation of themselves from a pathological perfectionist to a (still high-achieving) non-perfectionist. They try to be perfect, in other words, at no longer being perfect.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Brustein likes to get his perfectionist clients to create values that are important to them, then try to shift their focus to living according to those values rather than achieving specific goals.",
+     "start": 0,
+     "end": 196,
+     "page": 4
+    },
+    {
+     "text": "It’s a play on the “You really stuck with it” message for kids.",
+     "start": 197,
+     "end": 260,
+     "page": 4
+    },
+    {
+     "text": "In other words, it isn’t about doing a headstand in yoga class; it’s about going to yoga class in the first place, because you like to be the kind of person who takes care of herself.",
+     "start": 261,
+     "end": 444,
+     "page": 4
+    },
+    {
+     "text": "But he warns that some people go into therapy expecting too much — an instant transformation of themselves from a pathological perfectionist to a (still high-achieving) non-perfectionist.",
+     "start": 445,
+     "end": 632,
+     "page": 4
+    },
+    {
+     "text": "They try to be perfect, in other words, at no longer being perfect.",
+     "start": 633,
+     "end": 700,
+     "page": 4
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "estranged",
+   "gloss": "疏远的",
+   "start": 459,
+   "end": 468,
+   "paragraph": "A",
+   "sentence": 3
+  },
+  {
+   "surface": "maladaptive",
+   "gloss": "不当的",
+   "start": 256,
+   "end": 267,
+   "paragraph": "F",
+   "sentence": 3
+  },
+  {
+   "surface": "crooked",
+   "gloss": "不正的",
+   "start": 223,
+   "end": 230,
+   "paragraph": "J",
+   "sentence": 1
+  },
+  {
+   "surface": "pathological",
+   "gloss": "病态的",
+   "start": 559,
+   "end": 571,
+   "paragraph": "K",
+   "sentence": 3
+  }
+ ],
+ "stats": {
+  "paragraphs": 11,
+  "sentences": 53,
+  "words": 1193
+ }
+}

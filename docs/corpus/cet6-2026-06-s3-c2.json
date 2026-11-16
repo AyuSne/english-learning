@@ -1,0 +1,246 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s3-c2",
+ "label": "2026年6月 · 第3套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第3套).pdf",
+  "sha256": "dbd77e981aa91b5e3d4b8c8e4dd799f83d869951c44f841d9f981305847ba6dd",
+  "pages": [
+   5,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "On a warm October morning, Daniel Agok woke up to another disappointing day at his school in Wanyjok, South Sudan. The classes he had planned teaching computer skills to aspiring young professionals were canceled, due to an unreliable diesel generator and the absence of a municipal power grid in his area. Now, he would be losing frustrated customers as well as income. Agok is just one of the hundreds of millions of people in sub-Saharan Africa, many of whom are business owners, who still do not have dependable electricity. This inequitable access to energy continues to put their livelihood and future at risk.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "On a warm October morning, Daniel Agok woke up to another disappointing day at his school in Wanyjok, South Sudan.",
+     "start": 0,
+     "end": 114,
+     "page": 5
+    },
+    {
+     "text": "The classes he had planned teaching computer skills to aspiring young professionals were canceled, due to an unreliable diesel generator and the absence of a municipal power grid in his area.",
+     "start": 115,
+     "end": 306,
+     "page": 5
+    },
+    {
+     "text": "Now, he would be losing frustrated customers as well as income.",
+     "start": 307,
+     "end": 370,
+     "page": 5
+    },
+    {
+     "text": "Agok is just one of the hundreds of millions of people in sub-Saharan Africa, many of whom are business owners, who still do not have dependable electricity.",
+     "start": 371,
+     "end": 528,
+     "page": 5
+    },
+    {
+     "text": "This inequitable access to energy continues to put their livelihood and future at risk.",
+     "start": 529,
+     "end": 616,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The current system keeps a lid on the economic talents of people like Agok and his students. We must instead unleash their abilities and let Africa reach its true economic potential. That means wiring Africa with clean, dependable energy.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "The current system keeps a lid on the economic talents of people like Agok and his students.",
+     "start": 0,
+     "end": 92,
+     "page": 5
+    },
+    {
+     "text": "We must instead unleash their abilities and let Africa reach its true economic potential.",
+     "start": 93,
+     "end": 182,
+     "page": 5
+    },
+    {
+     "text": "That means wiring Africa with clean, dependable energy.",
+     "start": 183,
+     "end": 238,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Historically, national governments on the continent have led electrification efforts, but fewer than half of the people surveyed say that the national grid is providing a reliable supply of electricity.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Historically, national governments on the continent have led electrification efforts, but fewer than half of the people surveyed say that the national grid is providing a reliable supply of electricity.",
+     "start": 0,
+     "end": 202,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "This has led to expensive and harmful temporary “solutions”. In Nigeria alone experts estimate people spend $13 billion every year on fuel for toxic, polluting generators. That number will only grow as the continent’s population hits 2.5 billion people by 2050. Deploying modern grid infrastructure with speed and at scale is essential to replacing these temporary solutions with reliable and affordable alternatives.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "This has led to expensive and harmful temporary “solutions”.",
+     "start": 0,
+     "end": 60,
+     "page": 5
+    },
+    {
+     "text": "In Nigeria alone experts estimate people spend $13 billion every year on fuel for toxic, polluting generators.",
+     "start": 61,
+     "end": 171,
+     "page": 5
+    },
+    {
+     "text": "That number will only grow as the continent’s population hits 2.5 billion people by 2050.",
+     "start": 172,
+     "end": 261,
+     "page": 5
+    },
+    {
+     "text": "Deploying modern grid infrastructure with speed and at scale is essential to replacing these temporary solutions with reliable and affordable alternatives.",
+     "start": 262,
+     "end": 417,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "The rapidly growing private power sector in Africa holds the key to achieving the speed and scale necessary to close the continent’s energy access gap. Private companies today are building world-class infrastructure and driving forward economic growth with sustainable business models. In fact, many governments agree and have begun to embrace the private sector as partners in providing reliable power at scale. In South Africa, President Cyril Ramaphosa has streamlined licensing requirements and enlisted the private sector to play a key role.",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The rapidly growing private power sector in Africa holds the key to achieving the speed and scale necessary to close the continent’s energy access gap.",
+     "start": 0,
+     "end": 151,
+     "page": 5
+    },
+    {
+     "text": "Private companies today are building world-class infrastructure and driving forward economic growth with sustainable business models.",
+     "start": 152,
+     "end": 285,
+     "page": 5
+    },
+    {
+     "text": "In fact, many governments agree and have begun to embrace the private sector as partners in providing reliable power at scale.",
+     "start": 286,
+     "end": 412,
+     "page": 5
+    },
+    {
+     "text": "In South Africa, President Cyril Ramaphosa has streamlined licensing requirements and enlisted the private sector to play a key role.",
+     "start": 413,
+     "end": 546,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "South Africa is just one example. Across the continent, the private sector has delivered power faster and more reliably, and governments are increasingly turning to private partners.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "South Africa is just one example.",
+     "start": 0,
+     "end": 33,
+     "page": 6
+    },
+    {
+     "text": "Across the continent, the private sector has delivered power faster and more reliably, and governments are increasingly turning to private partners.",
+     "start": 34,
+     "end": 182,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "With the right funding and structure in place, the private sector will come together to provide this essential service. After all, electrifying sub-Saharan Africa is a $350 billion opportunity.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "With the right funding and structure in place, the private sector will come together to provide this essential service.",
+     "start": 0,
+     "end": 119,
+     "page": 6
+    },
+    {
+     "text": "After all, electrifying sub-Saharan Africa is a $350 billion opportunity.",
+     "start": 120,
+     "end": 193,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Today, Daniel Agok is steadily growing his business in South Sudan. His town of Wanyjok was electrified by a private company, providing clean, reliable, and affordable power to his business and his neighbors. Agok now operates his growing computer skills training business smoothly. His classes are no longer affected by the smell and the constant noise of the diesel generator, and he saves money with more affordable power. His students are developing hardware and software skills.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Today, Daniel Agok is steadily growing his business in South Sudan.",
+     "start": 0,
+     "end": 67,
+     "page": 6
+    },
+    {
+     "text": "His town of Wanyjok was electrified by a private company, providing clean, reliable, and affordable power to his business and his neighbors.",
+     "start": 68,
+     "end": 208,
+     "page": 6
+    },
+    {
+     "text": "Agok now operates his growing computer skills training business smoothly.",
+     "start": 209,
+     "end": 282,
+     "page": 6
+    },
+    {
+     "text": "His classes are no longer affected by the smell and the constant noise of the diesel generator, and he saves money with more affordable power.",
+     "start": 283,
+     "end": 425,
+     "page": 6
+    },
+    {
+     "text": "His students are developing hardware and software skills.",
+     "start": 426,
+     "end": 483,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 26,
+  "words": 448
+ }
+}

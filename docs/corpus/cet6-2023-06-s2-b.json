@@ -1,0 +1,505 @@
+{
+ "schema": 1,
+ "id": "cet6-2023-06-s2-b",
+ "label": "2023年6月 · 第2套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2023,
+  "month": 6,
+  "set": 2,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2023年6月英语六级真题(第2套).pdf",
+  "sha256": "7f2690572f05d9db6c0b30da8eb52a0261b73b9e594db291075659cac54abcdf",
+  "pages": [
+   5,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "We’re experiencing the rebirth of smallness. Farmers markets, tiny homes, and brew pubs all exemplify our love of smallness. So do charter schools, coffee shops, and local bookstores. Small is often (but not always) more affordable, healthier, and sustainable, but its finest characteristic, the one that turns charm into love, is that going small allows us to be more fully who we are.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "We’re experiencing the rebirth of smallness.",
+     "start": 0,
+     "end": 44,
+     "page": 5
+    },
+    {
+     "text": "Farmers markets, tiny homes, and brew pubs all exemplify our love of smallness.",
+     "start": 45,
+     "end": 124,
+     "page": 5
+    },
+    {
+     "text": "So do charter schools, coffee shops, and local bookstores.",
+     "start": 125,
+     "end": 183,
+     "page": 5
+    },
+    {
+     "text": "Small is often (but not always) more affordable, healthier, and sustainable, but its finest characteristic, the one that turns charm into love, is that going small allows us to be more fully who we are.",
+     "start": 184,
+     "end": 386,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "In higher education the trend is mostly in the opposite direction: Universities with 20,000 or 30,000 students are considered “mid-sized”. The nation’s largest university, Arizona State University, has 80,000 students on campus and aims to enroll another 100,000 students online. At the other end of the spectrum is a handful of colleges that have fewer than a hundred students on campus and no online courses: colleges such as Sterling College, Thomas More College of Liberal Arts, and Deep Springs College. These colleges are so small that they can only be called “tiny.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "In higher education the trend is mostly in the opposite direction: Universities with 20,000 or 30,000 students are considered “mid-sized”.",
+     "start": 0,
+     "end": 138,
+     "page": 5
+    },
+    {
+     "text": "The nation’s largest university, Arizona State University, has 80,000 students on campus and aims to enroll another 100,000 students online.",
+     "start": 139,
+     "end": 279,
+     "page": 5
+    },
+    {
+     "text": "At the other end of the spectrum is a handful of colleges that have fewer than a hundred students on campus and no online courses: colleges such as Sterling College, Thomas More College of Liberal Arts, and Deep Springs College.",
+     "start": 280,
+     "end": 508,
+     "page": 5
+    },
+    {
+     "text": "These colleges are so small that they can only be called “tiny.”",
+     "start": 509,
+     "end": 573,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "Tiny colleges focus not just on a young person’s intellect, but on the young person as a whole. Equally important, tiny colleges ask, “How can education contribute to human flourishing and the well-being of the world?” And they shape a college experience to address that question. They replace concerns about institutional growth with attention to the growth of students as fully developed participants in their communities.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Tiny colleges focus not just on a young person’s intellect, but on the young person as a whole.",
+     "start": 0,
+     "end": 95,
+     "page": 5
+    },
+    {
+     "text": "Equally important, tiny colleges ask, “How can education contribute to human flourishing and the well-being of the world?”",
+     "start": 96,
+     "end": 218,
+     "page": 5
+    },
+    {
+     "text": "And they shape a college experience to address that question.",
+     "start": 219,
+     "end": 280,
+     "page": 5
+    },
+    {
+     "text": "They replace concerns about institutional growth with attention to the growth of students as fully developed participants in their communities.",
+     "start": 281,
+     "end": 424,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "I’ve had the privilege of teaching at three different institutions of higher learning during my career — a small liberal arts college and two mid-sized public universities. I’ve also been profoundly disappointed in each of these institutions, and in many of my colleagues, especially when it comes to helping students and preparing them for the many responsibilities of adulthood. Administrators focus on the business of running a university, and most faculty focus on their scholarship and teaching their discipline. Little deliberate attention is given to how students mature as individuals and social beings.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "I’ve had the privilege of teaching at three different institutions of higher learning during my career — a small liberal arts college and two mid-sized public universities.",
+     "start": 0,
+     "end": 172,
+     "page": 5
+    },
+    {
+     "text": "I’ve also been profoundly disappointed in each of these institutions, and in many of my colleagues, especially when it comes to helping students and preparing them for the many responsibilities of adulthood.",
+     "start": 173,
+     "end": 380,
+     "page": 5
+    },
+    {
+     "text": "Administrators focus on the business of running a university, and most faculty focus on their scholarship and teaching their discipline.",
+     "start": 381,
+     "end": 517,
+     "page": 5
+    },
+    {
+     "text": "Little deliberate attention is given to how students mature as individuals and social beings.",
+     "start": 518,
+     "end": 611,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "Having just retired from teaching at a public university, I’m now returning to my hometown of Flagstaff, Arizona, to establish a tiny college — Flagstaff College. I’m convinced there’s a need for another type of education, one devoted to helping students come into their own and into this beautiful and troubled world. Young people need an education that will provide them with meaning, hope, courage, and passion, as well as information and skills. Large institutions, I believe, are particularly ill-suited to this type of education.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Having just retired from teaching at a public university, I’m now returning to my hometown of Flagstaff, Arizona, to establish a tiny college — Flagstaff College.",
+     "start": 0,
+     "end": 162,
+     "page": 5
+    },
+    {
+     "text": "I’m convinced there’s a need for another type of education, one devoted to helping students come into their own and into this beautiful and troubled world.",
+     "start": 163,
+     "end": 318,
+     "page": 5
+    },
+    {
+     "text": "Young people need an education that will provide them with meaning, hope, courage, and passion, as well as information and skills.",
+     "start": 319,
+     "end": 449,
+     "page": 5
+    },
+    {
+     "text": "Large institutions, I believe, are particularly ill-suited to this type of education.",
+     "start": 450,
+     "end": 535,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "There’s no “best of” list when it comes to tiny colleges, at least not yet. But around the country people are creating new colleges that provide an alternative to small liberal arts colleges, large public universities, and online education.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "There’s no “best of” list when it comes to tiny colleges, at least not yet.",
+     "start": 0,
+     "end": 75,
+     "page": 5
+    },
+    {
+     "text": "But around the country people are creating new colleges that provide an alternative to small liberal arts colleges, large public universities, and online education.",
+     "start": 76,
+     "end": 240,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "With only 26 students, Deep Springs is the smallest college in the country and, quite likely, the most atypical. Located on a working cattle ranch on the California-Nevada border, Deep Springs is a private, residential, two-year college for men, committed to educating students for “a life of service to humanity.” Founded by the electricity tycoon L. L. Nunn in 1917, Deep Springs’ “curriculum” revolves around academics, labor, and self-governance. In addition to their courses, students are charged with running the 155-acre ranch and overseeing the functioning of the college. Students chair both the admissions and the curriculum committees.",
+   "page_start": 5,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "With only 26 students, Deep Springs is the smallest college in the country and, quite likely, the most atypical.",
+     "start": 0,
+     "end": 112,
+     "page": 5
+    },
+    {
+     "text": "Located on a working cattle ranch on the California-Nevada border, Deep Springs is a private, residential, two-year college for men, committed to educating students for “a life of service to humanity.”",
+     "start": 113,
+     "end": 314,
+     "page": 5
+    },
+    {
+     "text": "Founded by the electricity tycoon L. L. Nunn in 1917, Deep Springs’ “curriculum” revolves around academics, labor, and self-governance.",
+     "start": 315,
+     "end": 450,
+     "page": 6
+    },
+    {
+     "text": "In addition to their courses, students are charged with running the 155-acre ranch and overseeing the functioning of the college.",
+     "start": 451,
+     "end": 580,
+     "page": 6
+    },
+    {
+     "text": "Students chair both the admissions and the curriculum committees.",
+     "start": 581,
+     "end": 646,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "“Living in close community with one’s teachers and fellow students, and being forced to take on adult responsibilities, makes for one’s growth as a person,” says William Hunt, who graduated last year. “To exist for very long in a community like that, you have to get over the question of whether you’re sufficiently talented or principled and get started worrying about how you can stretch yourself and your peers, how much you can manage to learn with them.”",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "“Living in close community with one’s teachers and fellow students, and being forced to take on adult responsibilities, makes for one’s growth as a person,” says William Hunt, who graduated last year.",
+     "start": 0,
+     "end": 200,
+     "page": 6
+    },
+    {
+     "text": "“To exist for very long in a community like that, you have to get over the question of whether you’re sufficiently talented or principled and get started worrying about how you can stretch yourself and your peers, how much you can manage to learn with them.”",
+     "start": 201,
+     "end": 459,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "Sterling College, in Craftsbury Common, Vermont, is also very small — fewer than 100 students. Unlike Deep Springs, Sterling focuses its curriculum on environmental and social justice issues, but like Deep Springs it places a high value on personal responsibility and manual labor. According to its catalog, a college education at Sterling combines “rigorous academics, roll-up-your-sleeves challenges, and good old hard work.”",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Sterling College, in Craftsbury Common, Vermont, is also very small — fewer than 100 students.",
+     "start": 0,
+     "end": 94,
+     "page": 6
+    },
+    {
+     "text": "Unlike Deep Springs, Sterling focuses its curriculum on environmental and social justice issues, but like Deep Springs it places a high value on personal responsibility and manual labor.",
+     "start": 95,
+     "end": 281,
+     "page": 6
+    },
+    {
+     "text": "According to its catalog, a college education at Sterling combines “rigorous academics, roll-up-your-sleeves challenges, and good old hard work.”",
+     "start": 282,
+     "end": 427,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "The average tuition at a small liberal-arts college is $30,000 to $40,000 a year, not including the cost of living on campus, as compared to $8,000 to $10,000 a year for tuition alone at a public university. Of the tiny colleges, only Deep Springs doesn’t charge tuition or room and board; students pay only for books and the cost of traveling to and from college. If tiny schools are to become a player on the higher education scene, they will need to find a way to be truly affordable.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The average tuition at a small liberal-arts college is $30,000 to $40,000 a year, not including the cost of living on campus, as compared to $8,000 to $10,000 a year for tuition alone at a public university.",
+     "start": 0,
+     "end": 207,
+     "page": 6
+    },
+    {
+     "text": "Of the tiny colleges, only Deep Springs doesn’t charge tuition or room and board; students pay only for books and the cost of traveling to and from college.",
+     "start": 208,
+     "end": 364,
+     "page": 6
+    },
+    {
+     "text": "If tiny schools are to become a player on the higher education scene, they will need to find a way to be truly affordable.",
+     "start": 365,
+     "end": 487,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "Doing so may not be that difficult so long as they do not pattern themselves too closely on existing norms. We’ve come to believe that a good college should have many academic programs and excellent facilities, posh dorms, an array of athletic programs, and a world-class student activity center. Imagine a good college without a climbing wall! We also have accepted the idea that college presidents, and their many vice-presidents, should be paid like their counterparts in the business world and that higher education requires an elaborate, up-to-date technology infrastructure. All of this drives up the cost of education.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Doing so may not be that difficult so long as they do not pattern themselves too closely on existing norms.",
+     "start": 0,
+     "end": 107,
+     "page": 6
+    },
+    {
+     "text": "We’ve come to believe that a good college should have many academic programs and excellent facilities, posh dorms, an array of athletic programs, and a world-class student activity center.",
+     "start": 108,
+     "end": 296,
+     "page": 6
+    },
+    {
+     "text": "Imagine a good college without a climbing wall!",
+     "start": 297,
+     "end": 344,
+     "page": 6
+    },
+    {
+     "text": "We also have accepted the idea that college presidents, and their many vice-presidents, should be paid like their counterparts in the business world and that higher education requires an elaborate, up-to-date technology infrastructure.",
+     "start": 345,
+     "end": 580,
+     "page": 6
+    },
+    {
+     "text": "All of this drives up the cost of education.",
+     "start": 581,
+     "end": 625,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "The “trick” to making tiny colleges affordable, if that’s the right word, is simplicity. At its core, education is a human-to-human interaction. Reflecting on his own college education, President Garfield once commented that an ideal college would consist of nothing more than the legendary teacher Mark Hopkins on one end of a log and a student on the other. The economics of a tiny college, in other words, might be similar to that of a tiny house. Because it is small, a tiny house costs less to build and less to furnish, insure, and maintain. But the economic benefits of a small house don’t end there. Tiny homes discourage homeowners from buying stuff that they really don’t need, because there’s no place to put it.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "The “trick” to making tiny colleges affordable, if that’s the right word, is simplicity.",
+     "start": 0,
+     "end": 88,
+     "page": 6
+    },
+    {
+     "text": "At its core, education is a human-to-human interaction.",
+     "start": 89,
+     "end": 144,
+     "page": 6
+    },
+    {
+     "text": "Reflecting on his own college education, President Garfield once commented that an ideal college would consist of nothing more than the legendary teacher Mark Hopkins on one end of a log and a student on the other.",
+     "start": 145,
+     "end": 359,
+     "page": 6
+    },
+    {
+     "text": "The economics of a tiny college, in other words, might be similar to that of a tiny house.",
+     "start": 360,
+     "end": 450,
+     "page": 6
+    },
+    {
+     "text": "Because it is small, a tiny house costs less to build and less to furnish, insure, and maintain.",
+     "start": 451,
+     "end": 547,
+     "page": 6
+    },
+    {
+     "text": "But the economic benefits of a small house don’t end there.",
+     "start": 548,
+     "end": 607,
+     "page": 6
+    },
+    {
+     "text": "Tiny homes discourage homeowners from buying stuff that they really don’t need, because there’s no place to put it.",
+     "start": 608,
+     "end": 723,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "I’m a late convert to the idea of tiny colleges, and I fully understand the need for many diverse types of educational institutions. Academic research and job training are important, but tiny colleges aren’t suited for either. The educational needs of a complex society are themselves complex, and no single model can meet all of these needs. But I’m now convinced there’s an educational need that’s now going almost completely unmet: namely, the need to help young people transition into adulthood. Tiny colleges can do this better than any other type of educational institution.",
+   "page_start": 6,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "I’m a late convert to the idea of tiny colleges, and I fully understand the need for many diverse types of educational institutions.",
+     "start": 0,
+     "end": 132,
+     "page": 6
+    },
+    {
+     "text": "Academic research and job training are important, but tiny colleges aren’t suited for either.",
+     "start": 133,
+     "end": 226,
+     "page": 6
+    },
+    {
+     "text": "The educational needs of a complex society are themselves complex, and no single model can meet all of these needs.",
+     "start": 227,
+     "end": 342,
+     "page": 6
+    },
+    {
+     "text": "But I’m now convinced there’s an educational need that’s now going almost completely unmet: namely, the need to help young people transition into adulthood.",
+     "start": 343,
+     "end": 499,
+     "page": 6
+    },
+    {
+     "text": "Tiny colleges can do this better than any other type of educational institution.",
+     "start": 500,
+     "end": 580,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "N",
+   "text": "The ultimate justification for a tiny college is the conviction that each of us comes into our full humanity by close interaction with those who know and care for us, and that one of the basic purposes of higher education is social. Although we give lip service to the idea that a college education will make us better people, when all’s said and done, we think of higher education primarily in economic terms. We’ve come to think of higher education as a means to make a living rather than make a life. We’ve also come to see higher education as a private good rather than a public one. Tiny colleges are not the answer to all of our educational requirements, but they’re an answer to one of our most basic educational necessities: the need to produce thoughtful, engaged, and compassionate human beings.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The ultimate justification for a tiny college is the conviction that each of us comes into our full humanity by close interaction with those who know and care for us, and that one of the basic purposes of higher education is social.",
+     "start": 0,
+     "end": 232,
+     "page": 7
+    },
+    {
+     "text": "Although we give lip service to the idea that a college education will make us better people, when all’s said and done, we think of higher education primarily in economic terms.",
+     "start": 233,
+     "end": 410,
+     "page": 7
+    },
+    {
+     "text": "We’ve come to think of higher education as a means to make a living rather than make a life.",
+     "start": 411,
+     "end": 503,
+     "page": 7
+    },
+    {
+     "text": "We’ve also come to see higher education as a private good rather than a public one.",
+     "start": 504,
+     "end": 587,
+     "page": 7
+    },
+    {
+     "text": "Tiny colleges are not the answer to all of our educational requirements, but they’re an answer to one of our most basic educational necessities: the need to produce thoughtful, engaged, and compassionate human beings.",
+     "start": 588,
+     "end": 805,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "atypical",
+   "gloss": "非典型的",
+   "start": 103,
+   "end": 111,
+   "paragraph": "G",
+   "sentence": 0
+  },
+  {
+   "surface": "tycoon",
+   "gloss": "大亨",
+   "start": 342,
+   "end": 348,
+   "paragraph": "G",
+   "sentence": 2
+  },
+  {
+   "surface": "posh",
+   "gloss": "豪华的",
+   "start": 211,
+   "end": 215,
+   "paragraph": "K",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 14,
+  "sentences": 57,
+  "words": 1225
+ }
+}

@@ -1,0 +1,204 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-06-s3-c1",
+ "label": "2025年6月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 6,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2025年6月英语六级真题(第3套).pdf",
+  "sha256": "1310d1f9e49ae67a9cd0faa6f0c9a1a02c24e28819a05dec18a8e4004a10ab49",
+  "pages": [
+   4,
+   4
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Why are we so worried about our careers? Partly it’s to do with money, but there’s a psychological aspect to our fears as well.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Why are we so worried about our careers?",
+     "start": 0,
+     "end": 40,
+     "page": 4
+    },
+    {
+     "text": "Partly it’s to do with money, but there’s a psychological aspect to our fears as well.",
+     "start": 41,
+     "end": 127,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "We worry because we suspect — not wrongly — that the world is full of a frightening sort of person ready to judge us ruthlessly and swiftly: a person we can call a snob.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "We worry because we suspect — not wrongly — that the world is full of a frightening sort of person ready to judge us ruthlessly and swiftly: a person we can call a snob.",
+     "start": 0,
+     "end": 169,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "A snob is anyone who takes a relatively small part of us and uses it to come to a rigid conclusion about how much of their attention we deserve. In the past, that might be your ancestry and royal connections. Nowadays, the snob cares about one thing only: what you do for a living.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "A snob is anyone who takes a relatively small part of us and uses it to come to a rigid conclusion about how much of their attention we deserve.",
+     "start": 0,
+     "end": 144,
+     "page": 4
+    },
+    {
+     "text": "In the past, that might be your ancestry and royal connections.",
+     "start": 145,
+     "end": 208,
+     "page": 4
+    },
+    {
+     "text": "Nowadays, the snob cares about one thing only: what you do for a living.",
+     "start": 209,
+     "end": 281,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "This explains why the first question we will be asked in any new social context is “What do you do?” and according to how we answer, snobs will either welcome us with broad smiles, or leave us in the cold.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "This explains why the first question we will be asked in any new social context is “What do you do?” and according to how we answer, snobs will either welcome us with broad smiles, or leave us in the cold.",
+     "start": 0,
+     "end": 205,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "And that is why we are fired up by such a desperate urge to achieve and impress.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "And that is why we are fired up by such a desperate urge to achieve and impress.",
+     "start": 0,
+     "end": 80,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Sometimes our behaviour is mistaken for greed and vanity, but it is more than this. A lot of our interest in fancy cars, jobs and houses has nothing to do with materialism. It has to do with a hunger for the respect and esteem that is only available in our societies through the acquisition of material goods. It isn’t the goods themselves we seek, it is the love we stand to gain through our possession of them. The next time we see someone driving a Ferrari, we shouldn’t condemn them for their greed, we should pity them for the intensity of their need for love from the world.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Sometimes our behaviour is mistaken for greed and vanity, but it is more than this.",
+     "start": 0,
+     "end": 83,
+     "page": 4
+    },
+    {
+     "text": "A lot of our interest in fancy cars, jobs and houses has nothing to do with materialism.",
+     "start": 84,
+     "end": 172,
+     "page": 4
+    },
+    {
+     "text": "It has to do with a hunger for the respect and esteem that is only available in our societies through the acquisition of material goods.",
+     "start": 173,
+     "end": 309,
+     "page": 4
+    },
+    {
+     "text": "It isn’t the goods themselves we seek, it is the love we stand to gain through our possession of them.",
+     "start": 310,
+     "end": 412,
+     "page": 4
+    },
+    {
+     "text": "The next time we see someone driving a Ferrari, we shouldn’t condemn them for their greed, we should pity them for the intensity of their need for love from the world.",
+     "start": 413,
+     "end": 580,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "At the root of snobbery is a lack of imagination and confidence about how to decide who in the world is valuable. The snobs are brutally misguided and slavish in their beliefs about how the superior individuals can be identified. For snobs, it is the already acclaimed and already successful who are the only ones worthy of respect. There is no room in their timid regimented minds to imagine that someone might be clever, kind or good — and yet somehow have been overlooked entirely by society, their qualities lying hidden beneath an unfamiliar veil and having as yet discovered no obvious outlet.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "At the root of snobbery is a lack of imagination and confidence about how to decide who in the world is valuable.",
+     "start": 0,
+     "end": 113,
+     "page": 4
+    },
+    {
+     "text": "The snobs are brutally misguided and slavish in their beliefs about how the superior individuals can be identified.",
+     "start": 114,
+     "end": 229,
+     "page": 4
+    },
+    {
+     "text": "For snobs, it is the already acclaimed and already successful who are the only ones worthy of respect.",
+     "start": 230,
+     "end": 332,
+     "page": 4
+    },
+    {
+     "text": "There is no room in their timid regimented minds to imagine that someone might be clever, kind or good — and yet somehow have been overlooked entirely by society, their qualities lying hidden beneath an unfamiliar veil and having as yet discovered no obvious outlet.",
+     "start": 333,
+     "end": 599,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "The true answer to snobbery is not to say that there is no such thing as a better or worse person, but to insist that better or worse exist in constantly unexpected places and carry none of the outward signs of distinction. And because we are such poor judges of the worth of others, our ultimate duty remains to be kind, good, curious and imaginative about pretty much everyone who ever crosses our path.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The true answer to snobbery is not to say that there is no such thing as a better or worse person, but to insist that better or worse exist in constantly unexpected places and carry none of the outward signs of distinction.",
+     "start": 0,
+     "end": 223,
+     "page": 4
+    },
+    {
+     "text": "And because we are such poor judges of the worth of others, our ultimate duty remains to be kind, good, curious and imaginative about pretty much everyone who ever crosses our path.",
+     "start": 224,
+     "end": 405,
+     "page": 4
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 19,
+  "words": 454
+ }
+}

@@ -1,0 +1,270 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-12-s1-c1",
+ "label": "2024年12月 · 第1套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 12,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年12月英语六级真题(第1套).pdf",
+  "sha256": "f57dccaa559f5bcff40b16c2d5c271bcc0abfeb9052aa9469751fdb37d7e60e6",
+  "pages": [
+   6,
+   7
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Imagine you’re an alien sent to Earth to document the behaviour of the mammals inhabiting the planet. You stumble into a movie theatre that’s showing the latest Hollywood horror film.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Imagine you’re an alien sent to Earth to document the behaviour of the mammals inhabiting the planet.",
+     "start": 0,
+     "end": 101,
+     "page": 6
+    },
+    {
+     "text": "You stumble into a movie theatre that’s showing the latest Hollywood horror film.",
+     "start": 102,
+     "end": 183,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Several dozen humans are gathered together in a dark, undecorated room. They’re all staring at a rectangular area on which patterns of light change rapidly.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Several dozen humans are gathered together in a dark, undecorated room.",
+     "start": 0,
+     "end": 71,
+     "page": 6
+    },
+    {
+     "text": "They’re all staring at a rectangular area on which patterns of light change rapidly.",
+     "start": 72,
+     "end": 156,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "They are clearly in a state of high arousal. Their heart rate is elevated, they occasionally glance around nervously, and they sometimes jump collectively in their seats, and emit high-pitched warning calls.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "They are clearly in a state of high arousal.",
+     "start": 0,
+     "end": 44,
+     "page": 6
+    },
+    {
+     "text": "Their heart rate is elevated, they occasionally glance around nervously, and they sometimes jump collectively in their seats, and emit high-pitched warning calls.",
+     "start": 45,
+     "end": 207,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "Eventually, the lights come up and the rectangular screen goes black. The humans stand up and leave the room, chatting and laughing, and showing signs of pleasure.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Eventually, the lights come up and the rectangular screen goes black.",
+     "start": 0,
+     "end": 69,
+     "page": 6
+    },
+    {
+     "text": "The humans stand up and leave the room, chatting and laughing, and showing signs of pleasure.",
+     "start": 70,
+     "end": 163,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Why do these humans voluntarily expose themselves to what appears to be a deeply unpleasant experience? And why do they react so strongly to those patterns of light on a screen?",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Why do these humans voluntarily expose themselves to what appears to be a deeply unpleasant experience?",
+     "start": 0,
+     "end": 103,
+     "page": 6
+    },
+    {
+     "text": "And why do they react so strongly to those patterns of light on a screen?",
+     "start": 104,
+     "end": 177,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "I am fascinated with the paradox of horror — the strange fact that many people seek out scary entertainment. I think the answer to the puzzle lies in human nature.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "I am fascinated with the paradox of horror — the strange fact that many people seek out scary entertainment.",
+     "start": 0,
+     "end": 108,
+     "page": 6
+    },
+    {
+     "text": "I think the answer to the puzzle lies in human nature.",
+     "start": 109,
+     "end": 163,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "My research suggests that we humans evolved to find pleasure in situations that allow us to experience negative emotions in a safe context. You can see these elements of horror in children’s games. Take hide-and-seek for example, which is a simulation of a predator-prey interaction. The kid hides and the adult pretends to be a predator, searching for the child while howling like a dangerous beast.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "My research suggests that we humans evolved to find pleasure in situations that allow us to experience negative emotions in a safe context.",
+     "start": 0,
+     "end": 139,
+     "page": 6
+    },
+    {
+     "text": "You can see these elements of horror in children’s games.",
+     "start": 140,
+     "end": 197,
+     "page": 6
+    },
+    {
+     "text": "Take hide-and-seek for example, which is a simulation of a predator-prey interaction.",
+     "start": 198,
+     "end": 283,
+     "page": 6
+    },
+    {
+     "text": "The kid hides and the adult pretends to be a predator, searching for the child while howling like a dangerous beast.",
+     "start": 284,
+     "end": 400,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "This simulation gives the child crucial information about how to avoid becoming prey, and children tend to find that kind of activity deeply satisfying, presumably because it gives them a safe experience of a potentially catastrophic scenario.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "This simulation gives the child crucial information about how to avoid becoming prey, and children tend to find that kind of activity deeply satisfying, presumably because it gives them a safe experience of a potentially catastrophic scenario.",
+     "start": 0,
+     "end": 243,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "They find it pleasurable, and pleasure is evolution’s way of motivating us toward adaptive behaviour. Horror is pleasurable to many people because it lets us play with negative emotions and develop coping strategies. We learn what it feels like to be truly afraid, and we learn how to handle negative emotion.",
+   "page_start": 6,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "They find it pleasurable, and pleasure is evolution’s way of motivating us toward adaptive behaviour.",
+     "start": 0,
+     "end": 101,
+     "page": 6
+    },
+    {
+     "text": "Horror is pleasurable to many people because it lets us play with negative emotions and develop coping strategies.",
+     "start": 102,
+     "end": 216,
+     "page": 7
+    },
+    {
+     "text": "We learn what it feels like to be truly afraid, and we learn how to handle negative emotion.",
+     "start": 217,
+     "end": 309,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "text": "How, then, does horror work? My research suggests that horror works by exploiting an ancient set of biological defence mechanisms — an evolved fear system, which we share with other animals. But humans are uniquely imaginative, and we use our evolved imagination to travel into virtual worlds that are full of danger.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "How, then, does horror work?",
+     "start": 0,
+     "end": 28,
+     "page": 7
+    },
+    {
+     "text": "My research suggests that horror works by exploiting an ancient set of biological defence mechanisms — an evolved fear system, which we share with other animals.",
+     "start": 29,
+     "end": 190,
+     "page": 7
+    },
+    {
+     "text": "But humans are uniquely imaginative, and we use our evolved imagination to travel into virtual worlds that are full of danger.",
+     "start": 191,
+     "end": 317,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "text": "There are good reasons for watching a horror film, even if you’re not a loyal horror fan. If you make it through the film in one piece, you’ll probably experience a strong sense of mastery, a sense that you were able to make it through an appalling experience. Anyway, watching a horror film makes you better at handling your own fear, and who knows when that will become critically relevant?",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "There are good reasons for watching a horror film, even if you’re not a loyal horror fan.",
+     "start": 0,
+     "end": 89,
+     "page": 7
+    },
+    {
+     "text": "If you make it through the film in one piece, you’ll probably experience a strong sense of mastery, a sense that you were able to make it through an appalling experience.",
+     "start": 90,
+     "end": 260,
+     "page": 7
+    },
+    {
+     "text": "Anyway, watching a horror film makes you better at handling your own fear, and who knows when that will become critically relevant?",
+     "start": 261,
+     "end": 392,
+     "page": 7
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 11,
+  "sentences": 26,
+  "words": 451
+ }
+}

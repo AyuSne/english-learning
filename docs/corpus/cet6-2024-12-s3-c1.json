@@ -1,0 +1,243 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-12-s3-c1",
+ "label": "2024年12月 · 第3套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 12,
+  "set": 3,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年12月英语六级真题(第3套).pdf",
+  "sha256": "7953f0d194687f5ab7397b0c21758e1c42e5c528f04ca1b56b918aea6685aa67",
+  "pages": [
+   4,
+   4
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "There are hundreds of personality quizzes online that assert they can ascertain whether the right or left half of your brain is dominant. Left-brained people are supposedly logical and excel at language and math while rightbrained people are more imaginative, emotionally intelligent and skilled with spatial reasoning. There’s just one problem: That’s not how brains work.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "There are hundreds of personality quizzes online that assert they can ascertain whether the right or left half of your brain is dominant.",
+     "start": 0,
+     "end": 137,
+     "page": 4
+    },
+    {
+     "text": "Left-brained people are supposedly logical and excel at language and math while rightbrained people are more imaginative, emotionally intelligent and skilled with spatial reasoning.",
+     "start": 138,
+     "end": 319,
+     "page": 4
+    },
+    {
+     "text": "There’s just one problem: That’s not how brains work.",
+     "start": 320,
+     "end": 373,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "Popular science enthusiasts sort of took this idea and ran with it, and it’s become woven in popular culture now, and it’s not going away.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Popular science enthusiasts sort of took this idea and ran with it, and it’s become woven in popular culture now, and it’s not going away.",
+     "start": 0,
+     "end": 138,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Despite this enduring belief, there’s no such thing as being “right-brained” or “left-brained”. Whether you’re someone who tends more towards creativity or logic has nothing to do with one hemisphere of your brain being dominant over the other. But the actual science of how the two halves of our brains work together is sometimes stranger than fiction.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Despite this enduring belief, there’s no such thing as being “right-brained” or “left-brained”.",
+     "start": 0,
+     "end": 95,
+     "page": 4
+    },
+    {
+     "text": "Whether you’re someone who tends more towards creativity or logic has nothing to do with one hemisphere of your brain being dominant over the other.",
+     "start": 96,
+     "end": 244,
+     "page": 4
+    },
+    {
+     "text": "But the actual science of how the two halves of our brains work together is sometimes stranger than fiction.",
+     "start": 245,
+     "end": 353,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "The human brain is divided into two hemispheres, the left and right. In all vertebrate animals，the right hemisphere controls the left side of the body and vice versa. And scientists have long known, thanks to the behaviors of patients who suffered brain injuries, that different areas of the brain do different things.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "The human brain is divided into two hemispheres, the left and right.",
+     "start": 0,
+     "end": 68,
+     "page": 4
+    },
+    {
+     "text": "In all vertebrate animals，the right hemisphere controls the left side of the body and vice versa.",
+     "start": 69,
+     "end": 166,
+     "page": 4
+    },
+    {
+     "text": "And scientists have long known, thanks to the behaviors of patients who suffered brain injuries, that different areas of the brain do different things.",
+     "start": 167,
+     "end": 318,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "But many scientists struggled with this idea, because the very suggestion that the left and right halves of the brain operate differently disrupted the idea that nature tends toward perfect symmetry.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "But many scientists struggled with this idea, because the very suggestion that the left and right halves of the brain operate differently disrupted the idea that nature tends toward perfect symmetry.",
+     "start": 0,
+     "end": 199,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Work by neuroscientists has revealed the importance of different hemispheres of the brain for different activities. However, their research quickly saw some misinterpretations in the general public: Some presumed creative people must be right-brained and logical people left-brained. It is proven that not only is personality unrelated to the different halves of the brain, but people aren’t really right-or left-brained to begin with. The idea that we have left-dominant people and right-dominant people, and that this is related to personality, is categorically false. That’s never been supported in the neuroscience community. Neuroscientists don’t believe that and never have.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Work by neuroscientists has revealed the importance of different hemispheres of the brain for different activities.",
+     "start": 0,
+     "end": 115,
+     "page": 4
+    },
+    {
+     "text": "However, their research quickly saw some misinterpretations in the general public: Some presumed creative people must be right-brained and logical people left-brained.",
+     "start": 116,
+     "end": 283,
+     "page": 4
+    },
+    {
+     "text": "It is proven that not only is personality unrelated to the different halves of the brain, but people aren’t really right-or left-brained to begin with.",
+     "start": 284,
+     "end": 435,
+     "page": 4
+    },
+    {
+     "text": "The idea that we have left-dominant people and right-dominant people, and that this is related to personality, is categorically false.",
+     "start": 436,
+     "end": 570,
+     "page": 4
+    },
+    {
+     "text": "That’s never been supported in the neuroscience community.",
+     "start": 571,
+     "end": 629,
+     "page": 4
+    },
+    {
+     "text": "Neuroscientists don’t believe that and never have.",
+     "start": 630,
+     "end": 680,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "What scientists learned is that there are really important differences between the left hemisphere and the right hemisphere. It’s just that they have nothing to do with personality or whether cognitive strategy is more logical or free spirited or creative. While researchers have shown the limitations of how the hemispheres of our brains influence our lives, it’s not difficult to understand the appeal of such ideas. People are endlessly fascinated by themselves and their friends, and the subtle differences in how people think about the world are really meaningful to them. When you come up with an online quiz that tells us something about ourselves, we’re drawn to that. It’s irresistible. But you have to take it with an enormous grain of salt.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "What scientists learned is that there are really important differences between the left hemisphere and the right hemisphere.",
+     "start": 0,
+     "end": 124,
+     "page": 4
+    },
+    {
+     "text": "It’s just that they have nothing to do with personality or whether cognitive strategy is more logical or free spirited or creative.",
+     "start": 125,
+     "end": 256,
+     "page": 4
+    },
+    {
+     "text": "While researchers have shown the limitations of how the hemispheres of our brains influence our lives, it’s not difficult to understand the appeal of such ideas.",
+     "start": 257,
+     "end": 418,
+     "page": 4
+    },
+    {
+     "text": "People are endlessly fascinated by themselves and their friends, and the subtle differences in how people think about the world are really meaningful to them.",
+     "start": 419,
+     "end": 577,
+     "page": 4
+    },
+    {
+     "text": "When you come up with an online quiz that tells us something about ourselves, we’re drawn to that.",
+     "start": 578,
+     "end": 676,
+     "page": 4
+    },
+    {
+     "text": "It’s irresistible.",
+     "start": 677,
+     "end": 695,
+     "page": 4
+    },
+    {
+     "text": "But you have to take it with an enormous grain of salt.",
+     "start": 696,
+     "end": 751,
+     "page": 4
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "vertebrate",
+   "gloss": "脊椎的",
+   "start": 76,
+   "end": 86,
+   "paragraph": "4",
+   "sentence": 1
+  },
+  {
+   "surface": "neuroscientists",
+   "gloss": "神经科学家",
+   "start": 8,
+   "end": 23,
+   "paragraph": "6",
+   "sentence": 0
+  }
+ ],
+ "stats": {
+  "paragraphs": 7,
+  "sentences": 24,
+  "words": 442
+ }
+}

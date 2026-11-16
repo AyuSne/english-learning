@@ -1,0 +1,248 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s2-c1",
+ "label": "2024年6月 · 第2套 · 仔细阅读 Passage One",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 2,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第2套).pdf",
+  "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7",
+  "pages": [
+   6,
+   6
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "It is irrefutable that employees know the difference between right and wrong. So why don’t more employees intervene when they see someone exhibiting at-risk behavior in the workplace?",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "It is irrefutable that employees know the difference between right and wrong.",
+     "start": 0,
+     "end": 77,
+     "page": 6
+    },
+    {
+     "text": "So why don’t more employees intervene when they see someone exhibiting at-risk behavior in the workplace?",
+     "start": 78,
+     "end": 183,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "There are a number of factors that influence whether people intervene. First, they need to be able to see a risky situation beginning to unfold. Second, the company’s culture needs to make them feel safe to speak up. And third, they need to have the communication skills to say something effectively.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "There are a number of factors that influence whether people intervene.",
+     "start": 0,
+     "end": 70,
+     "page": 6
+    },
+    {
+     "text": "First, they need to be able to see a risky situation beginning to unfold.",
+     "start": 71,
+     "end": 144,
+     "page": 6
+    },
+    {
+     "text": "Second, the company’s culture needs to make them feel safe to speak up.",
+     "start": 145,
+     "end": 216,
+     "page": 6
+    },
+    {
+     "text": "And third, they need to have the communication skills to say something effectively.",
+     "start": 217,
+     "end": 300,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "This is not strictly a workplace problem; it’s a growing problem off the job too. Every day people witness things on the street and choose to stand idly by. This is known as the bystander effect — the more people who witness an event, the less likely anyone in that group is to help the victim. The psychology behind this is called diffusion of responsibility. Basically, the larger the crowd, the more people assume that someone else will take care of it — meaning no one effectively intervenes or acts in a moment of need.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "This is not strictly a workplace problem; it’s a growing problem off the job too.",
+     "start": 0,
+     "end": 81,
+     "page": 6
+    },
+    {
+     "text": "Every day people witness things on the street and choose to stand idly by.",
+     "start": 82,
+     "end": 156,
+     "page": 6
+    },
+    {
+     "text": "This is known as the bystander effect — the more people who witness an event, the less likely anyone in that group is to help the victim.",
+     "start": 157,
+     "end": 294,
+     "page": 6
+    },
+    {
+     "text": "The psychology behind this is called diffusion of responsibility.",
+     "start": 295,
+     "end": 360,
+     "page": 6
+    },
+    {
+     "text": "Basically, the larger the crowd, the more people assume that someone else will take care of it — meaning no one effectively intervenes or acts in a moment of need.",
+     "start": 361,
+     "end": 524,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "This crowd mentality is strong enough for people to evade their known responsibilities. But it's not only frontline workers who don’t make safety interventions in the workplace. There are also instances where supervisors do not intervene either.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "This crowd mentality is strong enough for people to evade their known responsibilities.",
+     "start": 0,
+     "end": 87,
+     "page": 6
+    },
+    {
+     "text": "But it's not only frontline workers who don’t make safety interventions in the workplace.",
+     "start": 88,
+     "end": 177,
+     "page": 6
+    },
+    {
+     "text": "There are also instances where supervisors do not intervene either.",
+     "start": 178,
+     "end": 245,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "When a group of employees sees unsafe behavior not being addressed at a leadership level it creates the precedent that this is how these situations should be addressed, thus defining the safety culture for everyone.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "When a group of employees sees unsafe behavior not being addressed at a leadership level it creates the precedent that this is how these situations should be addressed, thus defining the safety culture for everyone.",
+     "start": 0,
+     "end": 215,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Despite the fact that workers are encouraged to intervene when they observe unsafe operations, this happens less than half of the time. Fear is the ultimate factor in not intervening. There is a fear of penalty, a fear that they’ll have to do more work if they intervene. Unsuccessful attempts in the past are another strong contributing factor to why people don’t intervene — they tend to prefer to defer that action to someone else for all future situations.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Despite the fact that workers are encouraged to intervene when they observe unsafe operations, this happens less than half of the time.",
+     "start": 0,
+     "end": 135,
+     "page": 6
+    },
+    {
+     "text": "Fear is the ultimate factor in not intervening.",
+     "start": 136,
+     "end": 183,
+     "page": 6
+    },
+    {
+     "text": "There is a fear of penalty, a fear that they’ll have to do more work if they intervene.",
+     "start": 184,
+     "end": 271,
+     "page": 6
+    },
+    {
+     "text": "Unsuccessful attempts in the past are another strong contributing factor to why people don’t intervene — they tend to prefer to defer that action to someone else for all future situations.",
+     "start": 272,
+     "end": 460,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "On many worksites, competent workers must be appointed. Part of their job is to intervene when workers perform a task without the proper equipment or if the conditions are unsafe. Competent workers are also required to stop work from continuing when there’s a danger.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "On many worksites, competent workers must be appointed.",
+     "start": 0,
+     "end": 55,
+     "page": 6
+    },
+    {
+     "text": "Part of their job is to intervene when workers perform a task without the proper equipment or if the conditions are unsafe.",
+     "start": 56,
+     "end": 179,
+     "page": 6
+    },
+    {
+     "text": "Competent workers are also required to stop work from continuing when there’s a danger.",
+     "start": 180,
+     "end": 267,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Supervisors also play a critical role. Even if a competent person isn’t required, supervisors need a broad set of skills to not only identify and alleviate workplace hazards but also build a safety climate within their team that supports intervening and open communication among them.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Supervisors also play a critical role.",
+     "start": 0,
+     "end": 38,
+     "page": 6
+    },
+    {
+     "text": "Even if a competent person isn’t required, supervisors need a broad set of skills to not only identify and alleviate workplace hazards but also build a safety climate within their team that supports intervening and open communication among them.",
+     "start": 39,
+     "end": 284,
+     "page": 6
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Beyond competent workers and supervisors, it’s important to educate everyone within the organization that they are obliged to intervene if they witness a possible unsafe act, whether you’re a designated competent person, a supervisor or a frontline worker.",
+   "page_start": 6,
+   "page_end": 6,
+   "sentences": [
+    {
+     "text": "Beyond competent workers and supervisors, it’s important to educate everyone within the organization that they are obliged to intervene if they witness a possible unsafe act, whether you’re a designated competent person, a supervisor or a frontline worker.",
+     "start": 0,
+     "end": 256,
+     "page": 6
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 9,
+  "sentences": 25,
+  "words": 452
+ }
+}

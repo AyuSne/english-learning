@@ -1,0 +1,279 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s1-c2",
+ "label": "2024年6月 · 第1套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第1套).pdf",
+  "sha256": "4a0f39536c2a6747a1e535d46a0aa7de069e2a1b4d893ebf4ffb1d177d8aafea",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "Variability is crucially important for learning new skills. Consider learning how to serve in tennis. Should you always practise serving from the exactly same location on the court, aiming at the same spot? Although practising in more variable conditions will be slower at first, it will likely make you a better tennis player in the end. This is because variability leads to better generalisation of what is learned.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Variability is crucially important for learning new skills.",
+     "start": 0,
+     "end": 59,
+     "page": 7
+    },
+    {
+     "text": "Consider learning how to serve in tennis.",
+     "start": 60,
+     "end": 101,
+     "page": 7
+    },
+    {
+     "text": "Should you always practise serving from the exactly same location on the court, aiming at the same spot?",
+     "start": 102,
+     "end": 206,
+     "page": 7
+    },
+    {
+     "text": "Although practising in more variable conditions will be slower at first, it will likely make you a better tennis player in the end.",
+     "start": 207,
+     "end": 338,
+     "page": 7
+    },
+    {
+     "text": "This is because variability leads to better generalisation of what is learned.",
+     "start": 339,
+     "end": 417,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "This principle is found in many domains, including speech perception and learning categories. For instance, infants will struggle to learn the category “dog” if they are only exposed to Chihuahuas, instead of many different kinds of dogs.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "This principle is found in many domains, including speech perception and learning categories.",
+     "start": 0,
+     "end": 93,
+     "page": 7
+    },
+    {
+     "text": "For instance, infants will struggle to learn the category “dog” if they are only exposed to Chihuahuas, instead of many different kinds of dogs.",
+     "start": 94,
+     "end": 238,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "“There are over ten different names for this basic principle,” says Limor Raviv, the senior investigator of a recent study. “Learning from less variable input is often fast, but may fail to generalise to new stimuli.”",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "“There are over ten different names for this basic principle,” says Limor Raviv, the senior investigator of a recent study.",
+     "start": 0,
+     "end": 123,
+     "page": 7
+    },
+    {
+     "text": "“Learning from less variable input is often fast, but may fail to generalise to new stimuli.”",
+     "start": 124,
+     "end": 217,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "To identify key patterns and understand the underlying principles of variability effects, Raviv and her colleagues reviewed over 150 studies on variability and generalisation across fields, including computer science, linguistics, categorisation, visual perception and formal education.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "To identify key patterns and understand the underlying principles of variability effects, Raviv and her colleagues reviewed over 150 studies on variability and generalisation across fields, including computer science, linguistics, categorisation, visual perception and formal education.",
+     "start": 0,
+     "end": 286,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "The researchers discovered that, across studies, the term variability can refer to at least four different kinds of variability, such as set size and scheduling. “These four kinds of variability have never been directly compared — which means that we currently don’t know which is most effective for learning,” says Raviv.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The researchers discovered that, across studies, the term variability can refer to at least four different kinds of variability, such as set size and scheduling.",
+     "start": 0,
+     "end": 161,
+     "page": 7
+    },
+    {
+     "text": "“These four kinds of variability have never been directly compared — which means that we currently don’t know which is most effective for learning,” says Raviv.",
+     "start": 162,
+     "end": 322,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "The impact of variability depends on whether it is relevant to the task or not. But according to the “Mr. Miyagi principle”, practising seemingly unrelated skills may actually benefit learning of other skills.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The impact of variability depends on whether it is relevant to the task or not.",
+     "start": 0,
+     "end": 79,
+     "page": 7
+    },
+    {
+     "text": "But according to the “Mr. Miyagi principle”, practising seemingly unrelated skills may actually benefit learning of other skills.",
+     "start": 80,
+     "end": 209,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "But why does variability impact learning and generalisation? One theory is that more variable input can highlight which aspects of a task are relevant and which are not.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "But why does variability impact learning and generalisation?",
+     "start": 0,
+     "end": 60,
+     "page": 7
+    },
+    {
+     "text": "One theory is that more variable input can highlight which aspects of a task are relevant and which are not.",
+     "start": 61,
+     "end": 169,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Another theory is that greater variability leads to broader generalisations. This is because variability will represent the real world better, including atypical examples.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Another theory is that greater variability leads to broader generalisations.",
+     "start": 0,
+     "end": 76,
+     "page": 7
+    },
+    {
+     "text": "This is because variability will represent the real world better, including atypical examples.",
+     "start": 77,
+     "end": 171,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "A third reason has to do with the way memory works: when training is variable, learners are forced to actively reconstruct their memories.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "A third reason has to do with the way memory works: when training is variable, learners are forced to actively reconstruct their memories.",
+     "start": 0,
+     "end": 138,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "text": "“Understanding the impact of variability is important for literally every aspect of our daily life. Beyond affecting the way we learn language, motor skills, and categories, it even has an impact on our social lives,” explains Raviv. “For example, face recognition is affected by whether people grew up in a small community or in a larger community. Exposure to fewer faces during childhood is associated with diminished face memory.”",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "“Understanding the impact of variability is important for literally every aspect of our daily life.",
+     "start": 0,
+     "end": 99,
+     "page": 8
+    },
+    {
+     "text": "Beyond affecting the way we learn language, motor skills, and categories, it even has an impact on our social lives,” explains Raviv.",
+     "start": 100,
+     "end": 233,
+     "page": 8
+    },
+    {
+     "text": "“For example, face recognition is affected by whether people grew up in a small community or in a larger community.",
+     "start": 234,
+     "end": 349,
+     "page": 8
+    },
+    {
+     "text": "Exposure to fewer faces during childhood is associated with diminished face memory.”",
+     "start": 350,
+     "end": 434,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "text": "“We hope this work will spark people’s curiosity and generate more work on the topic,” concludes Raviv. “Our paper raises a lot of open questions. Can we find similar effects of variability beyond the brain, for instance, in the immune system?”",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "“We hope this work will spark people’s curiosity and generate more work on the topic,” concludes Raviv.",
+     "start": 0,
+     "end": 103,
+     "page": 8
+    },
+    {
+     "text": "“Our paper raises a lot of open questions.",
+     "start": 104,
+     "end": 146,
+     "page": 8
+    },
+    {
+     "text": "Can we find similar effects of variability beyond the brain, for instance, in the immune system?”",
+     "start": 147,
+     "end": 244,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "atypical",
+   "gloss": "非典型的",
+   "start": 153,
+   "end": 161,
+   "paragraph": "8",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 11,
+  "sentences": 26,
+  "words": 445
+ }
+}

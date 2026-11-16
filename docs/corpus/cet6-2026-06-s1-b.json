@@ -1,0 +1,443 @@
+{
+ "schema": 1,
+ "id": "cet6-2026-06-s1-b",
+ "label": "2026年6月 · 第1套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2026,
+  "month": 6,
+  "set": 1,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2026年6月英语六级真题(第1套).pdf",
+  "sha256": "c8061fb997c10c4452776cc6cbc9295efc78255f60720b4d1f27de7665594b6f",
+  "pages": [
+   4,
+   5
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "For those “citizens of the world”, the office can be anything from a beach hut in Brisbane to a Starbucks in Seattle, thanks to the growing prevalence of remote-based work. But roaming the globe from café to café is not without its challenges.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "For those “citizens of the world”, the office can be anything from a beach hut in Brisbane to a Starbucks in Seattle, thanks to the growing prevalence of remote-based work.",
+     "start": 0,
+     "end": 172,
+     "page": 4
+    },
+    {
+     "text": "But roaming the globe from café to café is not without its challenges.",
+     "start": 173,
+     "end": 243,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "When the average traveller lands in a city like Bangkok, Berlin, or Buenos Aires, their first step might be to drop their bags at their hotel and to log on to TripAdvisor to find out the hours of a popular tourist attraction or the best rooftop bar for happy hour.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "When the average traveller lands in a city like Bangkok, Berlin, or Buenos Aires, their first step might be to drop their bags at their hotel and to log on to TripAdvisor to find out the hours of a popular tourist attraction or the best rooftop bar for happy hour.",
+     "start": 0,
+     "end": 264,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "But people like Pieter Levels are not your average traveller. A Dutch website developer, Levels has been living and working nomadically in places like Singapore, Hong Kong, Tokyo and Manila for two years. With just a carry-on backpack, he chooses his location at will, based on a variety of factors —Wi-Fi speed, average temperature, exotic food and cost of living — that have little bearing on the work he actually does.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "But people like Pieter Levels are not your average traveller.",
+     "start": 0,
+     "end": 61,
+     "page": 4
+    },
+    {
+     "text": "A Dutch website developer, Levels has been living and working nomadically in places like Singapore, Hong Kong, Tokyo and Manila for two years.",
+     "start": 62,
+     "end": 204,
+     "page": 4
+    },
+    {
+     "text": "With just a carry-on backpack, he chooses his location at will, based on a variety of factors —Wi-Fi speed, average temperature, exotic food and cost of living — that have little bearing on the work he actually does.",
+     "start": 205,
+     "end": 421,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "Somewhere in his nomadic journey, Levels noticed that there was a growing need to create an online infrastructure for people like himself. That’s when he created #nomads, a membership-based chat system which runs on the team communication platform known as Slack. The channel allows users to ask people in their current city the types of practical questions that a tourist would unlikely need to ask.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Somewhere in his nomadic journey, Levels noticed that there was a growing need to create an online infrastructure for people like himself.",
+     "start": 0,
+     "end": 138,
+     "page": 4
+    },
+    {
+     "text": "That’s when he created #nomads, a membership-based chat system which runs on the team communication platform known as Slack.",
+     "start": 139,
+     "end": 263,
+     "page": 4
+    },
+    {
+     "text": "The channel allows users to ask people in their current city the types of practical questions that a tourist would unlikely need to ask.",
+     "start": 264,
+     "end": 400,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "Members of the geographically dispersed subculture that Levels is a part of call themselves “digital nomads”. They are borderless, mostly self-employed remote workers who interact with cities in a way that’s entirely different from a tourist, but still doesn’t quite reach the status of resident. A relatively new phenomenon, there are no hard statistics on the prevalence of digital nomads or location independent workers. But thanks to the growing prevalence of freelance livelihoods, a global sharing economy and numerous digital tools, the number of people who are able to live this life is growing quickly. And in a rapidly urbanising world, where a major city in Asia increasingly offers the same comforts as one in Europe, many people are reaching the realisation they don’t need to stay in one place.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Members of the geographically dispersed subculture that Levels is a part of call themselves “digital nomads”.",
+     "start": 0,
+     "end": 109,
+     "page": 4
+    },
+    {
+     "text": "They are borderless, mostly self-employed remote workers who interact with cities in a way that’s entirely different from a tourist, but still doesn’t quite reach the status of resident.",
+     "start": 110,
+     "end": 296,
+     "page": 4
+    },
+    {
+     "text": "A relatively new phenomenon, there are no hard statistics on the prevalence of digital nomads or location independent workers.",
+     "start": 297,
+     "end": 423,
+     "page": 4
+    },
+    {
+     "text": "But thanks to the growing prevalence of freelance livelihoods, a global sharing economy and numerous digital tools, the number of people who are able to live this life is growing quickly.",
+     "start": 424,
+     "end": 611,
+     "page": 4
+    },
+    {
+     "text": "And in a rapidly urbanising world, where a major city in Asia increasingly offers the same comforts as one in Europe, many people are reaching the realisation they don’t need to stay in one place.",
+     "start": 612,
+     "end": 808,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "So how does a nomad differ from a tourist or resident? In many ways, Levels says, you can think of a digital nomad like a “short-term independent expat”. Unlike a resident expat, they don’t work for a large multinational company in an air conditioned office building and they generally enter a country on a tourist visa, simply renewing or moving on when it expires. But unlike a tourist, they don’t arrive in a foreign city without any responsibilities. Travel isn’t necessarily required for them to do their jobs, but neither is staying in one place.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "So how does a nomad differ from a tourist or resident?",
+     "start": 0,
+     "end": 54,
+     "page": 4
+    },
+    {
+     "text": "In many ways, Levels says, you can think of a digital nomad like a “short-term independent expat”.",
+     "start": 55,
+     "end": 153,
+     "page": 4
+    },
+    {
+     "text": "Unlike a resident expat, they don’t work for a large multinational company in an air conditioned office building and they generally enter a country on a tourist visa, simply renewing or moving on when it expires.",
+     "start": 154,
+     "end": 366,
+     "page": 4
+    },
+    {
+     "text": "But unlike a tourist, they don’t arrive in a foreign city without any responsibilities.",
+     "start": 367,
+     "end": 454,
+     "page": 4
+    },
+    {
+     "text": "Travel isn’t necessarily required for them to do their jobs, but neither is staying in one place.",
+     "start": 455,
+     "end": 552,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "Janet Brent is an independent ebook designer. She says many people she knows assume she travels for work, but in reality her international destinations are largely up to her, and driven by cost. “Contrary to what some people might think, I don’t get paid to travel — I simply choose the lifestyle. Rather than rent in one given city, I choose to travel and do short-term, temporary stays around the world, and my travel decisions are literally based on what makes the most sense financially for me,” Brent said. “It’s completely different from vacationing — you really sink into the city life and get your feet wet in the communities.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Janet Brent is an independent ebook designer.",
+     "start": 0,
+     "end": 45,
+     "page": 5
+    },
+    {
+     "text": "She says many people she knows assume she travels for work, but in reality her international destinations are largely up to her, and driven by cost.",
+     "start": 46,
+     "end": 194,
+     "page": 5
+    },
+    {
+     "text": "“Contrary to what some people might think, I don’t get paid to travel — I simply choose the lifestyle.",
+     "start": 195,
+     "end": 297,
+     "page": 5
+    },
+    {
+     "text": "Rather than rent in one given city, I choose to travel and do short-term, temporary stays around the world, and my travel decisions are literally based on what makes the most sense financially for me,” Brent said.",
+     "start": 298,
+     "end": 511,
+     "page": 5
+    },
+    {
+     "text": "“It’s completely different from vacationing — you really sink into the city life and get your feet wet in the communities.”",
+     "start": 512,
+     "end": 635,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "Bryce Adams is another such nomad. He works as a developer for a South African company WooThemes, which has a workforce that’s more than 80% remote-based. Though Adams frequently posts pictures on Instagram of his enviable cooking adventures from Seoul to Bangkok, he says nomad life in foreign cities has its downsides, including finding adequate Wi-Fi for the bandwidth-hungry work his livelihood depends on. Contrary to the perception that he works under a mango tree in a tropical haven, Adams says the reality of this life means that he often ends up staying in more Western style places in globalised cities — ones that are sure to have air conditioning and a decent connection — rather than exotic beachfront cafés.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Bryce Adams is another such nomad.",
+     "start": 0,
+     "end": 34,
+     "page": 5
+    },
+    {
+     "text": "He works as a developer for a South African company WooThemes, which has a workforce that’s more than 80% remote-based.",
+     "start": 35,
+     "end": 154,
+     "page": 5
+    },
+    {
+     "text": "Though Adams frequently posts pictures on Instagram of his enviable cooking adventures from Seoul to Bangkok, he says nomad life in foreign cities has its downsides, including finding adequate Wi-Fi for the bandwidth-hungry work his livelihood depends on.",
+     "start": 155,
+     "end": 410,
+     "page": 5
+    },
+    {
+     "text": "Contrary to the perception that he works under a mango tree in a tropical haven, Adams says the reality of this life means that he often ends up staying in more Western style places in globalised cities — ones that are sure to have air conditioning and a decent connection — rather than exotic beachfront cafés.",
+     "start": 411,
+     "end": 722,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "“A fellow nomad posted quite a funny but honest message on Twitter a few days ago that stuck with me: It’s funny that digital nomads spend 16 hours to fly to the other side of the world to sit in Starbucks, and it’s completely true,” Adams said. “When you’re a digital nomad, you don’t actually have as much freedom as most people think you do. We have deadlines, we all have people relying on us and a mouth (or two) that needs to be fed. It’s nice to be able to work anywhere in the world but it’s not without its challenges.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "“A fellow nomad posted quite a funny but honest message on Twitter a few days ago that stuck with me: It’s funny that digital nomads spend 16 hours to fly to the other side of the world to sit in Starbucks, and it’s completely true,” Adams said.",
+     "start": 0,
+     "end": 245,
+     "page": 5
+    },
+    {
+     "text": "“When you’re a digital nomad, you don’t actually have as much freedom as most people think you do.",
+     "start": 246,
+     "end": 344,
+     "page": 5
+    },
+    {
+     "text": "We have deadlines, we all have people relying on us and a mouth (or two) that needs to be fed.",
+     "start": 345,
+     "end": 439,
+     "page": 5
+    },
+    {
+     "text": "It’s nice to be able to work anywhere in the world but it’s not without its challenges.”",
+     "start": 440,
+     "end": 528,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "But these challenges can often provide an opportunity for nomads to see a side of a city they may not have if they were staying in a luxury hotel for a long weekend. However inconvenient, a trip to a local doctor, immigration office or laundry — or a conflict with a local Airbnb host (the accommodation style of choice for most nomads) — can be far more culturally instructive than a trip to the national museum. And because nomads often have to stay where the strongest Internet connection is, they tend to spend more time in developing cities compared to the average tourist, who often flees to more touristy destinations soon after landing at the airport.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "But these challenges can often provide an opportunity for nomads to see a side of a city they may not have if they were staying in a luxury hotel for a long weekend.",
+     "start": 0,
+     "end": 165,
+     "page": 5
+    },
+    {
+     "text": "However inconvenient, a trip to a local doctor, immigration office or laundry — or a conflict with a local Airbnb host (the accommodation style of choice for most nomads) — can be far more culturally instructive than a trip to the national museum.",
+     "start": 166,
+     "end": 413,
+     "page": 5
+    },
+    {
+     "text": "And because nomads often have to stay where the strongest Internet connection is, they tend to spend more time in developing cities compared to the average tourist, who often flees to more touristy destinations soon after landing at the airport.",
+     "start": 414,
+     "end": 659,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "The nomad life is, by all accounts, one built out of privilege. You not only need a relatively powerful passport that makes tourist visas easy to attain, but also a knowledge economy job and access to the technology and devices that make remote working possible. But nomads like Adams say that while they are aware of this privilege, they believe living this way elevates what they’re able to offer, by giving them a broader perspective on what they’re building, writing, or designing and expanding their world view.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "The nomad life is, by all accounts, one built out of privilege.",
+     "start": 0,
+     "end": 63,
+     "page": 5
+    },
+    {
+     "text": "You not only need a relatively powerful passport that makes tourist visas easy to attain, but also a knowledge economy job and access to the technology and devices that make remote working possible.",
+     "start": 64,
+     "end": 262,
+     "page": 5
+    },
+    {
+     "text": "But nomads like Adams say that while they are aware of this privilege, they believe living this way elevates what they’re able to offer, by giving them a broader perspective on what they’re building, writing, or designing and expanding their world view.",
+     "start": 263,
+     "end": 516,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "“Being able to travel and get around makes it easy to stay inspired,” he added. “I truly believe that it makes me a more sensible human being, as I tend to see and appreciate the creative solutions people come up with in other parts of the world, even though many tend to have far more constraints than we have at home.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "“Being able to travel and get around makes it easy to stay inspired,” he added.",
+     "start": 0,
+     "end": 79,
+     "page": 5
+    },
+    {
+     "text": "“I truly believe that it makes me a more sensible human being, as I tend to see and appreciate the creative solutions people come up with in other parts of the world, even though many tend to have far more constraints than we have at home.”",
+     "start": 80,
+     "end": 320,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "So when you’re constantly on the road and don’t own any property or have a fixed address, which city do you call home? It’s no surprise that many nomads are dual citizens or “third culture kids”, who have grown up with a notion of identity that’s not tied to nationalism or staying in one place. Levels says that the nomad life has not only changed his notions of citizenship, but the people he chooses to spend time with as well. “Saying you’re a ‘citizen of the world’ is a super cliché, right? But it’s becoming quite true,” Levels said. “This global awareness has been the reason I started Nomad List and it’s affected who my friends are. It’s normal to have dinner now and sit with a Korean girl, a British-Singaporean guy, a Mexican girl and a Nigerian guy. As much as that sounds like a politically correct TV advertisement, it’s great that that’s the time we’re in now.”",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "So when you’re constantly on the road and don’t own any property or have a fixed address, which city do you call home?",
+     "start": 0,
+     "end": 118,
+     "page": 5
+    },
+    {
+     "text": "It’s no surprise that many nomads are dual citizens or “third culture kids”, who have grown up with a notion of identity that’s not tied to nationalism or staying in one place.",
+     "start": 119,
+     "end": 295,
+     "page": 5
+    },
+    {
+     "text": "Levels says that the nomad life has not only changed his notions of citizenship, but the people he chooses to spend time with as well.",
+     "start": 296,
+     "end": 430,
+     "page": 5
+    },
+    {
+     "text": "“Saying you’re a ‘citizen of the world’ is a super cliché, right?",
+     "start": 431,
+     "end": 496,
+     "page": 5
+    },
+    {
+     "text": "But it’s becoming quite true,” Levels said.",
+     "start": 497,
+     "end": 540,
+     "page": 5
+    },
+    {
+     "text": "“This global awareness has been the reason I started Nomad List and it’s affected who my friends are.",
+     "start": 541,
+     "end": 642,
+     "page": 5
+    },
+    {
+     "text": "It’s normal to have dinner now and sit with a Korean girl, a British-Singaporean guy, a Mexican girl and a Nigerian guy.",
+     "start": 643,
+     "end": 763,
+     "page": 5
+    },
+    {
+     "text": "As much as that sounds like a politically correct TV advertisement, it’s great that that’s the time we’re in now.”",
+     "start": 764,
+     "end": 878,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "nomadically",
+   "gloss": "像游牧民那样",
+   "start": 124,
+   "end": 135,
+   "paragraph": "C",
+   "sentence": 1
+  },
+  {
+   "surface": "freelance",
+   "gloss": "自由职业的",
+   "start": 464,
+   "end": 473,
+   "paragraph": "E",
+   "sentence": 3
+  },
+  {
+   "surface": "expat",
+   "gloss": "移居国外的人",
+   "start": 146,
+   "end": 151,
+   "paragraph": "F",
+   "sentence": 1
+  }
+ ],
+ "stats": {
+  "paragraphs": 13,
+  "sentences": 48,
+  "words": 1209
+ }
+}

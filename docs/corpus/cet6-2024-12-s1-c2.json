@@ -1,0 +1,231 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-12-s1-c2",
+ "label": "2024年12月 · 第1套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 12,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2024年12月英语六级真题(第1套).pdf",
+  "sha256": "f57dccaa559f5bcff40b16c2d5c271bcc0abfeb9052aa9469751fdb37d7e60e6",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "An awakening has been taking place in the physical world against the beauty model that has been dictated to us for years. But in the digital arena, social media determines what is considered beautiful.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "An awakening has been taking place in the physical world against the beauty model that has been dictated to us for years.",
+     "start": 0,
+     "end": 121,
+     "page": 7
+    },
+    {
+     "text": "But in the digital arena, social media determines what is considered beautiful.",
+     "start": 122,
+     "end": 201,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "The two opposing struggles are taking place in parallel. In the physical world, the struggle goes against the underlying pressure exerted on women to conform to an unrealistic beauty ideal. As part of the struggle, various media outlets have presented women whose bodies don’t correspond to the so-called ideal. All those women who had previously been excluded from the covers of magazines, television series and the public agenda, have become “legitimate”. At the same time, a group of influencers have begun to upload to social media photos of themselves without makeup, and even photos in which they highlight supposed flaws.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "The two opposing struggles are taking place in parallel.",
+     "start": 0,
+     "end": 56,
+     "page": 7
+    },
+    {
+     "text": "In the physical world, the struggle goes against the underlying pressure exerted on women to conform to an unrealistic beauty ideal.",
+     "start": 57,
+     "end": 189,
+     "page": 7
+    },
+    {
+     "text": "As part of the struggle, various media outlets have presented women whose bodies don’t correspond to the so-called ideal.",
+     "start": 190,
+     "end": 311,
+     "page": 7
+    },
+    {
+     "text": "All those women who had previously been excluded from the covers of magazines, television series and the public agenda, have become “legitimate”.",
+     "start": 312,
+     "end": 457,
+     "page": 7
+    },
+    {
+     "text": "At the same time, a group of influencers have begun to upload to social media photos of themselves without makeup, and even photos in which they highlight supposed flaws.",
+     "start": 458,
+     "end": 628,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "Technology has reshaped our beauty ideal and is doing a great job communicating that message to the masses. One of the bizarre legacies of the past decade is the popularity of the “cyborg look”, which illustrates what Americans will look like in 2050.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Technology has reshaped our beauty ideal and is doing a great job communicating that message to the masses.",
+     "start": 0,
+     "end": 107,
+     "page": 7
+    },
+    {
+     "text": "One of the bizarre legacies of the past decade is the popularity of the “cyborg look”, which illustrates what Americans will look like in 2050.",
+     "start": 108,
+     "end": 251,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "The cyborg look spread rapidly. Today, however, the Instagram face has become the new beauty ideal. The internalization of accepted beauty norms is much more effective when there is active involvement in the learning process. The active involvement of users is reflected in the gamified interaction offered by the social media platforms — the ability to like, write a comment, compare, share.",
+   "page_start": 7,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "The cyborg look spread rapidly.",
+     "start": 0,
+     "end": 31,
+     "page": 7
+    },
+    {
+     "text": "Today, however, the Instagram face has become the new beauty ideal.",
+     "start": 32,
+     "end": 99,
+     "page": 7
+    },
+    {
+     "text": "The internalization of accepted beauty norms is much more effective when there is active involvement in the learning process.",
+     "start": 100,
+     "end": 225,
+     "page": 7
+    },
+    {
+     "text": "The active involvement of users is reflected in the gamified interaction offered by the social media platforms — the ability to like, write a comment, compare, share.",
+     "start": 226,
+     "end": 392,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Once the desired beauty ideal has been internalized, users are given tools or features to change their appearance to suit the accepted beauty ideal such as editing the image, choosing the ideal filter, the right background.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Once the desired beauty ideal has been internalized, users are given tools or features to change their appearance to suit the accepted beauty ideal such as editing the image, choosing the ideal filter, the right background.",
+     "start": 0,
+     "end": 223,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "A survey conducted in the United States revealed that more than 50% filter the images before posting them. And you will not be surprised to hear that the majority of them are women. One of the significant consequences of obsessive filtering is the emerging tendency to treat oneself as an object to be observed and valued, in the same way another person observes and judges from the side.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "A survey conducted in the United States revealed that more than 50% filter the images before posting them.",
+     "start": 0,
+     "end": 106,
+     "page": 8
+    },
+    {
+     "text": "And you will not be surprised to hear that the majority of them are women.",
+     "start": 107,
+     "end": 181,
+     "page": 8
+    },
+    {
+     "text": "One of the significant consequences of obsessive filtering is the emerging tendency to treat oneself as an object to be observed and valued, in the same way another person observes and judges from the side.",
+     "start": 182,
+     "end": 388,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "The effect of the filters is already far beyond amiable amusement. The filters and the entire game played on the networks affect the mental health of the users. According to a study, apps like Instagram, Snapchat and Face Tune allow users to achieve a level of perfection that was previously only observed in beauty magazines.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "The effect of the filters is already far beyond amiable amusement.",
+     "start": 0,
+     "end": 66,
+     "page": 8
+    },
+    {
+     "text": "The filters and the entire game played on the networks affect the mental health of the users.",
+     "start": 67,
+     "end": 160,
+     "page": 8
+    },
+    {
+     "text": "According to a study, apps like Instagram, Snapchat and Face Tune allow users to achieve a level of perfection that was previously only observed in beauty magazines.",
+     "start": 161,
+     "end": 326,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "Even though humanity has always cherished beauty, in the last decade our obsession with looks has reached an unprecedented peak. The time spent on social media creates an urge to achieve an impossible beauty ideal so powerful that the only thing that can fix it is not cosmetic intervention, but mental health care.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Even though humanity has always cherished beauty, in the last decade our obsession with looks has reached an unprecedented peak.",
+     "start": 0,
+     "end": 128,
+     "page": 8
+    },
+    {
+     "text": "The time spent on social media creates an urge to achieve an impossible beauty ideal so powerful that the only thing that can fix it is not cosmetic intervention, but mental health care.",
+     "start": 129,
+     "end": 315,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "gamified",
+   "gloss": "游戏化的",
+   "start": 278,
+   "end": 286,
+   "paragraph": "4",
+   "sentence": 3
+  }
+ ],
+ "stats": {
+  "paragraphs": 8,
+  "sentences": 22,
+  "words": 451
+ }
+}

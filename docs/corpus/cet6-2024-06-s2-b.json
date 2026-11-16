@@ -1,0 +1,407 @@
+{
+ "schema": 1,
+ "id": "cet6-2024-06-s2-b",
+ "label": "2024年6月 · 第2套 · 长篇匹配",
+ "source": {
+  "exam": "CET-6",
+  "year": 2024,
+  "month": 6,
+  "set": 2,
+  "kind": "long_match",
+  "pdf": "真题PDF/六级/2024年6月英语六级真题(第2套).pdf",
+  "sha256": "6421b2600cfc8ff3556583c6b78fa3a3e1ebd39ac553b55f75735a086e5233c7",
+  "pages": [
+   4,
+   5
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "A",
+   "text": "In the city of Athens, Georgia, there exists a rather curious local landmark — a large white oak that is almost universally stated to own itself. Because of this, it is considered one of the most famous trees in the world. So how did this tree come to own itself and the land around it?",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "In the city of Athens, Georgia, there exists a rather curious local landmark — a large white oak that is almost universally stated to own itself.",
+     "start": 0,
+     "end": 145,
+     "page": 4
+    },
+    {
+     "text": "Because of this, it is considered one of the most famous trees in the world.",
+     "start": 146,
+     "end": 222,
+     "page": 4
+    },
+    {
+     "text": "So how did this tree come to own itself and the land around it?",
+     "start": 223,
+     "end": 286,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "text": "Sometime in the 19th century a Georgian called Colonel William Jackson reportedly took a liking to the said tree and endeavored to protect it from any danger. As to why he loved it so, the earliest documented account of this story is an anonymously written front page article in the Athens Weekly Banner published on August 12, 1890. It states, “Col. Jackson had watched the tree grow from his childhood, and grew to love it almost as he would a human. Its luxuriant leaves and sturdy limbs had often protected him from the heavy rains, and out of its highest branches he had many a time gotten the eggs of the feathered singers. He watched its growth, and when reaching a ripe old age he saw the tree standing in its magnificent proportions, he was pained to think that after his death it would fall into the hands of those who might destroy it.”",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Sometime in the 19th century a Georgian called Colonel William Jackson reportedly took a liking to the said tree and endeavored to protect it from any danger.",
+     "start": 0,
+     "end": 158,
+     "page": 4
+    },
+    {
+     "text": "As to why he loved it so, the earliest documented account of this story is an anonymously written front page article in the Athens Weekly Banner published on August 12, 1890.",
+     "start": 159,
+     "end": 333,
+     "page": 4
+    },
+    {
+     "text": "It states, “Col.",
+     "start": 334,
+     "end": 350,
+     "page": 4
+    },
+    {
+     "text": "Jackson had watched the tree grow from his childhood, and grew to love it almost as he would a human.",
+     "start": 351,
+     "end": 452,
+     "page": 4
+    },
+    {
+     "text": "Its luxuriant leaves and sturdy limbs had often protected him from the heavy rains, and out of its highest branches he had many a time gotten the eggs of the feathered singers.",
+     "start": 453,
+     "end": 629,
+     "page": 4
+    },
+    {
+     "text": "He watched its growth, and when reaching a ripe old age he saw the tree standing in its magnificent proportions, he was pained to think that after his death it would fall into the hands of those who might destroy it.”",
+     "start": 630,
+     "end": 847,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "text": "Towards this end, Jackson transferred by means of a deed ownership of the tree and a little land around it to the tree itself. The deed read, “W. H. Jackson for and in consideration of the great affection which he bears the said tree, and his great desire to see it protected has conveyed unto the said oak tree entire possession of itself and of all land within eight feet of it on all sides.”",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "Towards this end, Jackson transferred by means of a deed ownership of the tree and a little land around it to the tree itself.",
+     "start": 0,
+     "end": 126,
+     "page": 4
+    },
+    {
+     "text": "The deed read, “W. H. Jackson for and in consideration of the great affection which he bears the said tree, and his great desire to see it protected has conveyed unto the said oak tree entire possession of itself and of all land within eight feet of it on all sides.”",
+     "start": 127,
+     "end": 394,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "text": "In time, the tree came to be something of a tourist attraction, known as The Tree That Owns Itself. However, in the early 20th century, the tree started showing signs of its slow death, with little that could be done about it. Father time comes for us all eventually, even our often long lived, tall and leafy fellow custodians of Earth. Finally, on October 9, 1942, the over 30 meter tall and 200 - 400 year old tree fell, rumor has it, as a result of a severe windstorm and/or via having previously died and its roots rotted.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "In time, the tree came to be something of a tourist attraction, known as The Tree That Owns Itself.",
+     "start": 0,
+     "end": 99,
+     "page": 4
+    },
+    {
+     "text": "However, in the early 20th century, the tree started showing signs of its slow death, with little that could be done about it.",
+     "start": 100,
+     "end": 226,
+     "page": 4
+    },
+    {
+     "text": "Father time comes for us all eventually, even our often long lived, tall and leafy fellow custodians of Earth.",
+     "start": 227,
+     "end": 337,
+     "page": 4
+    },
+    {
+     "text": "Finally, on October 9, 1942, the over 30 meter tall and 200 - 400 year old tree fell, rumor has it, as a result of a severe windstorm and/or via having previously died and its roots rotted.",
+     "start": 338,
+     "end": 527,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "text": "About four years later, members of the Junior Ladies Garden Club (who’d tended to the tree before its unfortunate death) tracked down a small tree grown from a nut taken from the original tree. And so it was that on October 9, 1946, under the direction of Professor Roy Bowden of the College of Agriculture at the University of Georgia, this little tree was transplanted to the location of its ancestor. A couple of months later, an official ceremony was held featuring none other than the Mayor of Athens, Robert L McWhorter, to commemorate the occasion.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "About four years later, members of the Junior Ladies Garden Club (who’d tended to the tree before its unfortunate death) tracked down a small tree grown from a nut taken from the original tree.",
+     "start": 0,
+     "end": 193,
+     "page": 4
+    },
+    {
+     "text": "And so it was that on October 9, 1946, under the direction of Professor Roy Bowden of the College of Agriculture at the University of Georgia, this little tree was transplanted to the location of its ancestor.",
+     "start": 194,
+     "end": 403,
+     "page": 4
+    },
+    {
+     "text": "A couple of months later, an official ceremony was held featuring none other than the Mayor of Athens, Robert L McWhorter, to commemorate the occasion.",
+     "start": 404,
+     "end": 555,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "text": "This new tree became known as The Son of the Tree That Owns Itself and it was assumed that, as the original tree’s heir, it naturally inherited the land it stood on. Of course, there are many dozens of other trees known to exist descending from the original, as people taking a nut from it to grow elsewhere was a certainty. That said, to date, none of the original tree’s other children have petitioned the courts for their share of the land, so it seems all good. In any event, The Son of the Tree That Owns Itself still stands today, though often referred to simply as The Tree That Owns Itself.",
+   "page_start": 4,
+   "page_end": 4,
+   "sentences": [
+    {
+     "text": "This new tree became known as The Son of the Tree That Owns Itself and it was assumed that, as the original tree’s heir, it naturally inherited the land it stood on.",
+     "start": 0,
+     "end": 165,
+     "page": 4
+    },
+    {
+     "text": "Of course, there are many dozens of other trees known to exist descending from the original, as people taking a nut from it to grow elsewhere was a certainty.",
+     "start": 166,
+     "end": 324,
+     "page": 4
+    },
+    {
+     "text": "That said, to date, none of the original tree’s other children have petitioned the courts for their share of the land, so it seems all good.",
+     "start": 325,
+     "end": 465,
+     "page": 4
+    },
+    {
+     "text": "In any event, The Son of the Tree That Owns Itself still stands today, though often referred to simply as The Tree That Owns Itself.",
+     "start": 466,
+     "end": 598,
+     "page": 4
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "text": "This all brings us around to whether Jackson ever actually gave legal ownership of the tree to itself in the first place and whether such a deed is legally binding.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "This all brings us around to whether Jackson ever actually gave legal ownership of the tree to itself in the first place and whether such a deed is legally binding.",
+     "start": 0,
+     "end": 164,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "text": "Well, to begin with, it turns out Jackson only spent about three years of his life in Athens, starting at the age of 43 from 1829 to 1832, sort of dismissing the idea that he loved the tree from spending time under it as a child and watching it grow, and then worrying about what would happen to it after he died. Further, an extensive search of land ownership records in Athens does not seem to indicate Jackson ever owned the land the tree sits on.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Well, to begin with, it turns out Jackson only spent about three years of his life in Athens, starting at the age of 43 from 1829 to 1832, sort of dismissing the idea that he loved the tree from spending time under it as a child and watching it grow, and then worrying about what would happen to it after he died.",
+     "start": 0,
+     "end": 313,
+     "page": 5
+    },
+    {
+     "text": "Further, an extensive search of land ownership records in Athens does not seem to indicate Jackson ever owned the land the tree sits on.",
+     "start": 314,
+     "end": 450,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "text": "He did live on a lot of land directly next to it for those three years, but whether he owned that land or not isn’t clear. Whatever the case, in 1832 a four acre parcel, which included the land the tree was on and the neighboring land Jackson lived on, among others, was sold to University professor Malthus A Ward. In the transaction, Ward was required to pay Jackson a sum of $1,200 (about $31,000 today), either for the property itself or simply in compensation for improvements Jackson had made on the lot. In the end, whether he ever owned the neighboring lot or was simply allowed to use it while he allegedly worked at the University, he definitely never owned the lot the tree grew on, which is the most important bit for the topic at hand.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "He did live on a lot of land directly next to it for those three years, but whether he owned that land or not isn’t clear.",
+     "start": 0,
+     "end": 122,
+     "page": 5
+    },
+    {
+     "text": "Whatever the case, in 1832 a four acre parcel, which included the land the tree was on and the neighboring land Jackson lived on, among others, was sold to University professor Malthus A Ward.",
+     "start": 123,
+     "end": 315,
+     "page": 5
+    },
+    {
+     "text": "In the transaction, Ward was required to pay Jackson a sum of $1,200 (about $31,000 today), either for the property itself or simply in compensation for improvements Jackson had made on the lot.",
+     "start": 316,
+     "end": 510,
+     "page": 5
+    },
+    {
+     "text": "In the end, whether he ever owned the neighboring lot or was simply allowed to use it while he allegedly worked at the University, he definitely never owned the lot the tree grew on, which is the most important bit for the topic at hand.",
+     "start": 511,
+     "end": 748,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "text": "After Professor Ward purchased the land, Jackson and his family purchased a 655 acre parcel a few miles away and moved there. Ten years later, in 1844, Jackson seemed to have come into financial difficulties and had his little plantation seized by the Clarke County Sheriff’s office and auctioned off to settle the mortgage. Thus, had he owned some land in Athens itself, including the land the tree sat on, presumably he would have sold it to raise funds or otherwise had it taken as well.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "After Professor Ward purchased the land, Jackson and his family purchased a 655 acre parcel a few miles away and moved there.",
+     "start": 0,
+     "end": 125,
+     "page": 5
+    },
+    {
+     "text": "Ten years later, in 1844, Jackson seemed to have come into financial difficulties and had his little plantation seized by the Clarke County Sheriff’s office and auctioned off to settle the mortgage.",
+     "start": 126,
+     "end": 324,
+     "page": 5
+    },
+    {
+     "text": "Thus, had he owned some land in Athens itself, including the land the tree sat on, presumably he would have sold it to raise funds or otherwise had it taken as well.",
+     "start": 325,
+     "end": 490,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "text": "And whatever the case there, Jackson would have known property taxes needed to be paid on the deeded land for the tree to be truly secure in its future. Yet no account or record indicates any trust or the like was set up to facilitate this.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "And whatever the case there, Jackson would have known property taxes needed to be paid on the deeded land for the tree to be truly secure in its future.",
+     "start": 0,
+     "end": 152,
+     "page": 5
+    },
+    {
+     "text": "Yet no account or record indicates any trust or the like was set up to facilitate this.",
+     "start": 153,
+     "end": 240,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "L",
+   "text": "On top of all this, there is no hard evidence such a deed ever existed, despite the fact that deed records in Athens go back many decades before Jackson’s death in 1876 and that it was supposed to have existed in 1890 in the archives according to the original anonymous news reporter who claims to have seen it.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "On top of all this, there is no hard evidence such a deed ever existed, despite the fact that deed records in Athens go back many decades before Jackson’s death in 1876 and that it was supposed to have existed in 1890 in the archives according to the original anonymous news reporter who claims to have seen it.",
+     "start": 0,
+     "end": 311,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "M",
+   "text": "As you might imagine from all of this, few give credit to this side of the story. So how did all of this come about then?",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "As you might imagine from all of this, few give credit to this side of the story.",
+     "start": 0,
+     "end": 81,
+     "page": 5
+    },
+    {
+     "text": "So how did all of this come about then?",
+     "start": 82,
+     "end": 121,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "N",
+   "text": "It is speculated to have been invented by the imagination of the said anonymous author at the Athens Weekly Banner in the aforementioned 1890 front page article titled “Deeded to Itself”, which by the way contained several elements that are much more easily proved to be false. As to why the author would do this, it’s speculated perhaps it was a 19th century version of a click-bait thought exercise on whether it would be legal for someone to deed such a non-conscious living thing to itself or not.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "It is speculated to have been invented by the imagination of the said anonymous author at the Athens Weekly Banner in the aforementioned 1890 front page article titled “Deeded to Itself”, which by the way contained several elements that are much more easily proved to be false.",
+     "start": 0,
+     "end": 277,
+     "page": 5
+    },
+    {
+     "text": "As to why the author would do this, it’s speculated perhaps it was a 19th century version of a click-bait thought exercise on whether it would be legal for someone to deed such a non-conscious living thing to itself or not.",
+     "start": 278,
+     "end": 501,
+     "page": 5
+    }
+   ]
+  },
+  {
+   "id": "O",
+   "text": "Whatever the case, the next known instance of the Tree That Owns Itself being mentioned wasn’t until 1901 in the Centennial Edition of that same paper, the Athens Weekly Banner. This featured another account very clearly just copying the original article published about a decade before, only slightly reworded. The next account was in 1906, again in the Athens Weekly Banner, again very clearly copying the original account, only slightly reworded, the 19th century equivalent of re-posts when the audience has forgotten about the original.",
+   "page_start": 5,
+   "page_end": 5,
+   "sentences": [
+    {
+     "text": "Whatever the case, the next known instance of the Tree That Owns Itself being mentioned wasn’t until 1901 in the Centennial Edition of that same paper, the Athens Weekly Banner.",
+     "start": 0,
+     "end": 177,
+     "page": 5
+    },
+    {
+     "text": "This featured another account very clearly just copying the original article published about a decade before, only slightly reworded.",
+     "start": 178,
+     "end": 311,
+     "page": 5
+    },
+    {
+     "text": "The next account was in 1906, again in the Athens Weekly Banner, again very clearly copying the original account, only slightly reworded, the 19th century equivalent of re-posts when the audience has forgotten about the original.",
+     "start": 312,
+     "end": 541,
+     "page": 5
+    }
+   ]
+  }
+ ],
+ "annotations": [
+  {
+   "surface": "custodians",
+   "gloss": "看管者",
+   "start": 317,
+   "end": 327,
+   "paragraph": "D",
+   "sentence": 2
+  }
+ ],
+ "stats": {
+  "paragraphs": 15,
+  "sentences": 42,
+  "words": 1233
+ }
+}

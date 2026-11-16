@@ -1,0 +1,6 @@
+﻿# 本地材料与临时文件
+真题PDF/
+*.pdf
+.tmp-*
+__pycache__/
+node_modules/

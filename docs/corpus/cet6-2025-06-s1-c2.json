@@ -1,0 +1,244 @@
+{
+ "schema": 1,
+ "id": "cet6-2025-06-s1-c2",
+ "label": "2025年6月 · 第1套 · 仔细阅读 Passage Two",
+ "source": {
+  "exam": "CET-6",
+  "year": 2025,
+  "month": 6,
+  "set": 1,
+  "kind": "careful_reading",
+  "pdf": "真题PDF/六级/2025年6月英语六级真题(第1套).pdf",
+  "sha256": "e9204d7d82b502a69898862bbcd794be019fe0977f28ab5d1ab4243d730cfc16",
+  "pages": [
+   7,
+   8
+  ]
+ },
+ "paragraphs": [
+  {
+   "id": "1",
+   "text": "After earning a bachelor’s degree, I was determined to do what I love. I headed straight to graduate school to investigate the social problems that fascinated me.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "After earning a bachelor’s degree, I was determined to do what I love.",
+     "start": 0,
+     "end": 70,
+     "page": 7
+    },
+    {
+     "text": "I headed straight to graduate school to investigate the social problems that fascinated me.",
+     "start": 71,
+     "end": 162,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "2",
+   "text": "For almost a decade, I told everyone I encountered that they should do the same. “Follow your passion,” I counseled. “You can figure out the employment stuff later.”",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "For almost a decade, I told everyone I encountered that they should do the same.",
+     "start": 0,
+     "end": 80,
+     "page": 7
+    },
+    {
+     "text": "“Follow your passion,” I counseled.",
+     "start": 81,
+     "end": 116,
+     "page": 7
+    },
+    {
+     "text": "“You can figure out the employment stuff later.”",
+     "start": 117,
+     "end": 165,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "text": "It wasn’t until I began to research this widely accepted career advice that I understood how problematic it really was.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "It wasn’t until I began to research this widely accepted career advice that I understood how problematic it really was.",
+     "start": 0,
+     "end": 119,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "text": "As a sociologist, I interviewed college students and professional workers to learn what it really meant to pursue their dreams, which I will refer to here as the passion principle. I was stunned by what I found out about this principle in the research for my new book.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "As a sociologist, I interviewed college students and professional workers to learn what it really meant to pursue their dreams, which I will refer to here as the passion principle.",
+     "start": 0,
+     "end": 180,
+     "page": 7
+    },
+    {
+     "text": "I was stunned by what I found out about this principle in the research for my new book.",
+     "start": 181,
+     "end": 268,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "text": "Surveys show the American public has long held the passion principle in high regard as a career decision-making priority. And its popularity is even stronger among those facing job instability.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Surveys show the American public has long held the passion principle in high regard as a career decision-making priority.",
+     "start": 0,
+     "end": 121,
+     "page": 7
+    },
+    {
+     "text": "And its popularity is even stronger among those facing job instability.",
+     "start": 122,
+     "end": 193,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "text": "Advocates of the passion principle found it compelling because they believed that following one’s passion can provide workers with both the motivation necessary to work hard and a place to find fulfillment.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Advocates of the passion principle found it compelling because they believed that following one’s passion can provide workers with both the motivation necessary to work hard and a place to find fulfillment.",
+     "start": 0,
+     "end": 206,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "text": "Yet, what I found is that following one’s passion does not necessarily lead to fulfillment, but is one of the most powerful cultural forces perpetuating overwork. I also found that promoting the pursuit of one’s passion helps perpetuate social inequalities due to the fact that not everyone has the same economic resources to allow them to pursue their passion with ease.",
+   "page_start": 7,
+   "page_end": 7,
+   "sentences": [
+    {
+     "text": "Yet, what I found is that following one’s passion does not necessarily lead to fulfillment, but is one of the most powerful cultural forces perpetuating overwork.",
+     "start": 0,
+     "end": 162,
+     "page": 7
+    },
+    {
+     "text": "I also found that promoting the pursuit of one’s passion helps perpetuate social inequalities due to the fact that not everyone has the same economic resources to allow them to pursue their passion with ease.",
+     "start": 163,
+     "end": 371,
+     "page": 7
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "text": "While the passion principle is broadly popular, not everyone has the necessary resources to turn their passion into a stable, good-paying job. Passion-seekers from wealthy families are better able to wait until a job they are passionate about comes along without worrying about student loans in the meantime. They are also better situated to take unpaid internships to get their foot in the door while their parents pay their rent. And they often have access to parents’ social networks to help them find jobs. Surveys revealed that working-class and first-generation college graduates, regardless of their career field, are more likely than their wealthier peers to end up in low-paying unskilled jobs when they pursue their passion.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "While the passion principle is broadly popular, not everyone has the necessary resources to turn their passion into a stable, good-paying job.",
+     "start": 0,
+     "end": 142,
+     "page": 8
+    },
+    {
+     "text": "Passion-seekers from wealthy families are better able to wait until a job they are passionate about comes along without worrying about student loans in the meantime.",
+     "start": 143,
+     "end": 308,
+     "page": 8
+    },
+    {
+     "text": "They are also better situated to take unpaid internships to get their foot in the door while their parents pay their rent.",
+     "start": 309,
+     "end": 431,
+     "page": 8
+    },
+    {
+     "text": "And they often have access to parents’ social networks to help them find jobs.",
+     "start": 432,
+     "end": 510,
+     "page": 8
+    },
+    {
+     "text": "Surveys revealed that working-class and first-generation college graduates, regardless of their career field, are more likely than their wealthier peers to end up in low-paying unskilled jobs when they pursue their passion.",
+     "start": 511,
+     "end": 734,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "text": "Colleges, workplaces and career counselors who promote the “follow your passion” path for everyone, without leveling the playing field, help perpetuate socioeconomic inequalities among career aspirants.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "Colleges, workplaces and career counselors who promote the “follow your passion” path for everyone, without leveling the playing field, help perpetuate socioeconomic inequalities among career aspirants.",
+     "start": 0,
+     "end": 202,
+     "page": 8
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "text": "It’s not just well-off passion-seekers who benefit from the passion principle. Employers of passionate workers do, too. Potential employers showed greater interest in passionate applicants in part because they believed the applicants would work hard at their jobs without expecting an increase in pay. They even sacrifice a good salary, job stability and leisure time to work in a job they love.",
+   "page_start": 8,
+   "page_end": 8,
+   "sentences": [
+    {
+     "text": "It’s not just well-off passion-seekers who benefit from the passion principle.",
+     "start": 0,
+     "end": 78,
+     "page": 8
+    },
+    {
+     "text": "Employers of passionate workers do, too.",
+     "start": 79,
+     "end": 119,
+     "page": 8
+    },
+    {
+     "text": "Potential employers showed greater interest in passionate applicants in part because they believed the applicants would work hard at their jobs without expecting an increase in pay.",
+     "start": 120,
+     "end": 301,
+     "page": 8
+    },
+    {
+     "text": "They even sacrifice a good salary, job stability and leisure time to work in a job they love.",
+     "start": 302,
+     "end": 395,
+     "page": 8
+    }
+   ]
+  }
+ ],
+ "annotations": [],
+ "stats": {
+  "paragraphs": 10,
+  "sentences": 23,
+  "words": 450
+ }
+}
