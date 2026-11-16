@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阅读界面视觉方向 · 原型</title>
+<!--
+  原型：回答“阅读界面应该长什么样”。
+  三个结构不同的方向，用 ?variant=A|B|C 切换，底部浮条或 ←/→ 键轮换。
+  只读原型：不读写真实数据，刷新即还原。用完即弃。
+  A 书页     — 无边框、居中单栏、段落字母在页边，工具按需出现
+  B 工作台   — 三栏：文章库 / 正文纸页 / 常驻检查器
+  C 夜读     — 深色、页边注、底部抽屉
+-->
+<style>
+  :root { --size: 19px; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, "Microsoft YaHei UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .bar-switch {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 2px; padding: 5px 6px;
+    background: #101114; color: #fff; border-radius: 999px;
+    box-shadow: 0 8px 26px rgba(0,0,0,.28); z-index: 90;
+    font-size: 12.5px; letter-spacing: .02em;
+  }
+  .bar-switch button { width: 30px; height: 28px; border-radius: 999px; color: #cfd2d8; }
+  .bar-switch button:hover { background: #24262c; color: #fff; }
+  .bar-switch .label { padding: 0 10px; white-space: nowrap; color: #f2f3f5; }
+  .bar-switch .label b { font-weight: 600; }
+  .badge {
+    position: fixed; left: 16px; bottom: 18px; z-index: 80;
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 4px;
+    background: rgba(0,0,0,.55); color: #fff;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 74px; transform: translateX(-50%);
+    background: #101114; color: #fff; font-size: 13px; padding: 8px 14px;
+    border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .18s;
+    z-index: 95;
+  }
+  .toast.on { opacity: 1; }
+
+  /* ---------------- A · 书页 ---------------- */
+  body[data-variant="A"] { --bg:#F6F2E9; --panel:#FBF8F1; --ink:#24211B; --muted:#7C7465; --rule:#E3DAC8; --accent:#3F6B53; --hl:#F3E2B0; --collected:#EDE4CB; background: var(--bg); color: var(--ink); }
+  body[data-variant="A"] .a-bar { display:flex; align-items:center; justify-content:space-between; padding: 18px 28px; }
+  body[data-variant="A"] .a-crumb { font-size: 12.5px; letter-spacing:.04em; color: var(--muted); }
+  body[data-variant="A"] .a-tools { display:flex; gap: 4px; }
+  body[data-variant="A"] .a-tools button { padding: 6px 10px; font-size: 12.5px; color: var(--muted); border-radius: 5px; }
+  body[data-variant="A"] .a-tools button:hover { background: rgba(0,0,0,.045); color: var(--ink); }
+  body[data-variant="A"] .a-page { max-width: 700px; margin: 0 auto; padding: 26px 24px 150px; }
+  body[data-variant="A"] .a-meta { font-size: 12.5px; color: var(--muted); margin-bottom: 26px; letter-spacing:.03em; }
+  body[data-variant="A"] .a-body p {
+    font-family: Georgia, "Sitka Text", "Source Serif 4", "Songti SC", serif;
+    font-size: var(--size); line-height: 1.86; margin: 0 0 1.05em; position: relative;
+    text-wrap: pretty;
+  }
+  body[data-variant="A"] .a-letter {
+    position:absolute; left:-2.6rem; top:.28em; font-family: "Segoe UI", sans-serif;
+    font-size: 11.5px; letter-spacing:.12em; color: var(--muted);
+  }
+  body[data-variant="A"] .a-foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--muted); }
+  body[data-variant="A"] .a-foot button { padding: 8px 14px; border:1px solid var(--rule); border-radius: 6px; color: var(--ink); }
+  body[data-variant="A"] .a-drawer {
+    position: fixed; top:0; right:0; bottom:0; width: min(430px, 92vw); background: var(--panel);
+    border-left:1px solid var(--rule); transform: translateX(102%); transition: transform .22s ease;
+    padding: 22px 24px 90px; overflow:auto; z-index: 70;
+  }
+  body[data-variant="A"] .a-drawer[data-open="true"] { transform: translateX(0); }
+  body[data-variant="A"] .gloss { font-size: .62em; color: var(--muted); vertical-align: .35em; margin-left:.15em; font-family:"Microsoft YaHei UI",sans-serif; }
+  body[data-variant="A"] .collected { background: linear-gradient(transparent 58%, var(--collected) 58%); cursor: pointer; }
+  body[data-variant="A"] .collected:hover { background: var(--collected); }
+  body[data-variant="A"] .selected { background: var(--hl); border-radius: 2px; }
+  body[data-variant="A"] .take { display:inline-block; margin-left:6px; vertical-align:.1em; font-family:"Segoe UI",sans-serif; font-size: 11px; letter-spacing:.02em; color: var(--accent); border:1px solid currentColor; border-radius: 4px; padding: 1px 5px; cursor:pointer; }
+
+  /* ---------------- B · 工作台 ---------------- */
+  body[data-variant="B"] { --bg:#EDEFF3; --panel:#FFFFFF; --ink:#1D2129; --muted:#6B7280; --rule:#E1E5EC; --accent:#2F6FEB; --hl:#DCE8FF; --collected:#EDF3FE; background: var(--bg); color: var(--ink); }
+  body[data-variant="B"] .b-shell { display:grid; grid-template-columns: 232px minmax(0,1fr) 372px; height: 100vh; }
+  body[data-variant="B"] .b-rail { border-right:1px solid var(--rule); background:#F7F8FA; padding:16px 12px; overflow:auto; }
+  body[data-variant="B"] .b-rail h3 { font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin: 6px 8px 10px; font-weight:600; }
+  body[data-variant="B"] .b-set { font-size:12px; color:var(--muted); margin: 14px 8px 6px; letter-spacing:.02em; }
+  body[data-variant="B"] .b-item { padding:8px 10px; border-radius:6px; display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; }
+  body[data-variant="B"] .b-item:hover { background:#EDF0F5; }
+  body[data-variant="B"] .b-item[data-current="true"] { background:#fff; box-shadow:0 0 0 1px var(--rule); }
+  body[data-variant="B"] .b-item .t { font-size:13px; }
+  body[data-variant="B"] .b-item .n { font-size:11px; color:var(--muted); }
+  body[data-variant="B"] .b-main { display:flex; flex-direction:column; min-width:0; }
+  body[data-variant="B"] .b-toolbar { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--rule); background:#fff; }
+  body[data-variant="B"] .b-toolbar .grp { display:flex; gap:6px; align-items:center; font-size:12px; color:var(--muted); }
+  body[data-variant="B"] .b-toolbar button { padding:5px 9px; border:1px solid var(--rule); border-radius:6px; background:#fff; font-size:12px; color:var(--ink); }
+  body[data-variant="B"] .b-toolbar button:hover { background:#F3F5F8; }
+  body[data-variant="B"] .b-canvas { overflow:auto; padding: 26px 30px 120px; }
+  body[data-variant="B"] .b-sheet { max-width: 660px; margin:0 auto; background:#fff; border:1px solid var(--rule); border-radius:10px; padding: 40px 46px 48px; }
+  body[data-variant="B"] .b-sheet .meta { font-size:12px; color:var(--muted); margin-bottom:22px; }
+  body[data-variant="B"] .b-sheet p { font-family: "Segoe UI", system-ui, "Microsoft YaHei UI", sans-serif; font-size: var(--size); line-height:1.72; margin:0 0 .85em; }
+  body[data-variant="B"] .b-letter { display:inline-block; width:1.7em; margin-left:-1.7em; font-size:11px; color:var(--muted); vertical-align:.2em; }
+  body[data-variant="B"] .b-inspector { border-left:1px solid var(--rule); background:#fff; display:flex; flex-direction:column; min-width:0; }
+  body[data-variant="B"] .b-tabs { display:flex; gap:2px; padding:10px 12px 0; border-bottom:1px solid var(--rule); }
+  body[data-variant="B"] .b-tabs button { padding:8px 12px; font-size:12.5px; color:var(--muted); border-bottom:2px solid transparent; }
+  body[data-variant="B"] .b-tabs button[aria-selected="true"] { color:var(--ink); border-color: var(--accent); }
+  body[data-variant="B"] .b-panel { padding:18px; overflow:auto; }
+  body[data-variant="B"] .gloss { font-size:.66em; color:var(--muted); vertical-align:.32em; margin-left:.15em; }
+  body[data-variant="B"] .collected { background: var(--collected); border-radius:3px; padding:0 1px; cursor:pointer; }
+  body[data-variant="B"] .collected:hover { box-shadow: inset 0 -1px 0 var(--accent); }
+  body[data-variant="B"] .selected { background: var(--hl); border-radius:3px; }
+  body[data-variant="B"] .take { font-size:11px; color:var(--accent); border:1px solid currentColor; border-radius:4px; padding:0 4px; margin-left:4px; cursor:pointer; }
+
+  /* ---------------- C · 夜读 ---------------- */
+  body[data-variant="C"] { --bg:#14151A; --panel:#1C1E25; --ink:#E9E4D8; --muted:#9A9488; --rule:#2A2C34; --accent:#D9A441; --hl:#3B3323; --collected:#26262E; background: var(--bg); color: var(--ink); }
+  body[data-variant="C"] .c-bar { display:flex; align-items:center; justify-content:space-between; padding: 20px 34px; border-bottom:1px solid var(--rule); }
+  body[data-variant="C"] .c-crumb { font-size:12px; color:var(--muted); letter-spacing:.04em; }
+  body[data-variant="C"] .c-tools { display:flex; gap:14px; font-size:12px; color:var(--muted); }
+  body[data-variant="C"] .c-tools button { color:var(--muted); }
+  body[data-variant="C"] .c-tools button:hover { color: var(--ink); }
+  body[data-variant="C"] .c-grid { display:grid; grid-template-columns: minmax(0, 620px) 260px; gap: 64px; justify-content:center; padding: 44px 32px 180px; }
+  body[data-variant="C"] .c-col p { font-family: Georgia, "Sitka Text", "Source Serif 4", serif; font-size: var(--size); line-height:1.92; margin:0 0 1.2em; position:relative; }
+  body[data-variant="C"] .c-col p.lead::first-letter { float:left; font-size:4.1em; line-height:.82; padding:.06em .1em 0 0; color: var(--accent); }
+  body[data-variant="C"] .c-letter { position:absolute; left:-2.6rem; top:.5em; font-family:"Segoe UI",sans-serif; font-size:10.5px; letter-spacing:.14em; color:var(--muted); }
+  body[data-variant="C"] .c-notes { padding-top: 4px; }
+  body[data-variant="C"] .c-note { font-size:12.5px; line-height:1.6; color:var(--muted); border-left:2px solid var(--rule); padding: 2px 0 2px 12px; margin-bottom: 26px; }
+  body[data-variant="C"] .c-note b { color: var(--ink); font-weight:600; }
+  body[data-variant="C"] .gloss { display:none; }
+  body[data-variant="C"] .collected { color: var(--accent); border-bottom:1px dashed rgba(217,164,65,.45); cursor:pointer; }
+  body[data-variant="C"] .selected { background: var(--hl); }
+  body[data-variant="C"] .take { color:var(--accent); font-size:11px; margin-left:6px; border-bottom:1px solid currentColor; cursor:pointer; }
+  body[data-variant="C"] .c-sheet {
+    position: fixed; left:50%; bottom:78px; transform: translateX(-50%);
+    width: min(780px, 94vw); background: var(--panel); border:1px solid var(--rule); border-bottom:0;
+    border-radius: 14px 14px 0 0; z-index: 60; box-shadow: 0 -18px 50px rgba(0,0,0,.35);
+    max-height: 54px; overflow: hidden; transition: max-height .22s ease;
+  }
+  body[data-variant="C"] .c-sheet[data-open="true"] { max-height: 64vh; border-radius: 14px; border-bottom: 1px solid var(--rule); }
+  body[data-variant="C"] .c-sheet-head { height:54px; display:flex; align-items:center; gap:8px; padding: 0 18px; border-bottom:1px solid var(--rule); }
+  body[data-variant="C"] .c-sheet-head button { font-size:12.5px; color:var(--muted); padding: 6px 10px; border-radius:6px; }
+  body[data-variant="C"] .c-sheet-head button[aria-selected="true"] { color:var(--ink); background: #262831; }
+  body[data-variant="C"] .c-sheet-head .grip { width:34px; height:4px; border-radius:2px; background:#3A3D47; margin-right:6px; }
+  body[data-variant="C"] .c-sheet-body { padding: 18px 20px 26px; max-height: 52vh; overflow:auto; }
+
+  /* ---------------- 共用内容块 ---------------- */
+  .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:4px; }
+  .card-head .w { font-size:26px; font-weight:600; letter-spacing:-.01em; }
+  .card-head .c { font-size:12px; color:var(--muted); }
+  .forms { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 18px; }
+  .forms span { font-size:11.5px; padding:2px 7px; border-radius:999px; border:1px solid currentColor; opacity:.55; }
+  .forms span.on { opacity:1; font-weight:600; }
+  .sec { font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin: 20px 0 8px; font-weight:600; }
+  .quote { border-left:2px solid currentColor; padding-left:12px; margin: 0 0 12px; font-size:13.5px; line-height:1.65; opacity:.92; }
+  .quote .src { display:block; font-size:11.5px; opacity:.55; margin-top:4px; }
+  .note-item { font-size:13px; line-height:1.65; padding:10px 12px; border:1px solid var(--rule); border-radius:8px; margin-bottom:8px; }
+  .ctx { display:flex; flex-wrap:wrap; gap:6px; margin: 10px 0 16px; }
+  .ctx span { font-size:11.5px; padding:3px 8px; border-radius:999px; border:1px solid var(--rule); }
+  .ctx span.on { border-color: currentColor; font-weight:600; }
+  .instr { width:100%; border:1px solid var(--rule); border-radius:8px; padding:10px 12px; font:inherit; font-size:13px; line-height:1.6; background:transparent; color:inherit; resize:vertical; min-height:64px; }
+  .result { font-size:13.5px; line-height:1.7; margin-top:14px; }
+  .ver { display:flex; gap:6px; margin: 10px 0 4px; }
+  .ver button { font-size:11.5px; padding:2px 8px; border:1px solid var(--rule); border-radius:999px; }
+  .ver button[aria-selected="true"] { border-color: currentColor; font-weight:600; }
+  .pdfmock { border:1px solid var(--rule); border-radius:6px; background:#fff; color:#333; padding:18px 16px; font-family: Georgia, serif; font-size:11px; line-height:1.55; }
+  .pdfmock .pg { font-size:10px; color:#888; margin-bottom:8px; }
+  .pdfmock mark { background:#FFE9A8; }
+  .kv { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); padding:6px 0; border-bottom:1px dashed var(--rule); }
+  .btn-row { display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+  .btn-row button { font-size:12.5px; padding:7px 12px; border-radius:6px; border:1px solid currentColor; }
+  .btn-row button.primary { background: currentColor; }
+  .btn-row button.primary span { mix-blend-mode: difference; color:#fff; }
+</style>
+</head>
+<body data-variant="A">
+<div id="app"></div>
+<div class="badge">原型 · 视觉方向</div>
+<div class="toast" id="toast"></div>
+<div class="bar-switch" id="switch">
+  <button id="prev" aria-label="上一个方向">◀</button>
+  <span class="label"><b id="vkey">A</b> · <span id="vname">书页</span></span>
+  <button id="next" aria-label="下一个方向">▶</button>
+</div>
+
+<script>
+const VARIANTS = [
+  { key: "A", name: "书页" },
+  { key: "B", name: "工作台" },
+  { key: "C", name: "夜读" },
+];
+
+const DATA = {
+  article: {
+    label: "2023 年 6 月 · 第 1 套 · 长篇匹配",
+    meta: "1,183 词 · 13 段 · 长篇匹配",
+    paragraphs: [
+      { id: "A", text: "Gratitude may be more beneficial than we commonly suppose. One recent study asked participants to write a note of thanks to someone and then estimate how surprised and happy the recipient would feel — an impact that they consistently underestimated. Another study assessed the health benefits of writing thank-you notes. The researchers found that writing as few as three weekly thank-you notes over the course of three weeks improved life satisfaction, increased happy feelings and reduced symptoms of depression." },
+      { id: "B", text: "While this research into gratitude is relatively new, the principles involved are anything but. Students of mine in a political philosophy course at Indiana University are reading Daniel Defoe’s 300-year-old Robinson Crusoe, often regarded as the first novel published in English. Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to lament. But instead of giving in to despair, he makes a list of things for which he is grateful, including the fact that he is the sole survivor from the shipwreck and has been able to salvage many useful items from the wreckage." },
+      { id: "C", text: "Defoe’s masterpiece, which is often ranked as one of the world’s greatest novels, provides a portrait of gratitude in action that is as timely and relevant today as it has ever been. It is also one with which contemporary psychology and medicine are just beginning to catch up. Simply put, for most of us, it is far more helpful to focus on the things in life for which we can express gratitude than those that incline us toward resentment and lamentation." },
+    ],
+  },
+  glosses: { lament: "悲叹", shipwreck: "海难" },
+  collected: ["gratitude", "lament", "shipwreck"],
+  selection: "write a note of thanks",
+  entries: {
+    lament: {
+      word: "lament",
+      forms: [["lament", true], ["laments", false], ["lamented", false], ["lamentation", false]],
+      counts: "2 句 · 1 篇",
+      quotes: [
+        { text: "Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to lament.", src: "2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B · 第 6 页" },
+        { text: "Simply put, for most of us, it is far more helpful to focus on the things in life for which we can express gratitude than those that incline us toward resentment and lamentation.", src: "2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 C · 第 6 页" },
+      ],
+      notes: [{ k: "释义", t: "对处境、损失感到悲叹、惋惜。文中鲁滨逊流落荒岛，本有理由悲叹，却选择列感恩清单。" }],
+    },
+    shipwreck: {
+      word: "shipwreck",
+      forms: [["shipwreck", true], ["shipwrecks", false], ["shipwrecked", false]],
+      counts: "1 句 · 1 篇",
+      quotes: [
+        { text: "But instead of giving in to despair, he makes a list of things for which he is grateful, including the fact that he is the sole survivor from the shipwreck and has been able to salvage many useful items from the wreckage.", src: "2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B · 第 6 页" },
+      ],
+      notes: [],
+    },
+    gratitude: {
+      word: "gratitude",
+      forms: [["gratitude", true], ["grateful", false]],
+      counts: "2 句 · 1 篇",
+      quotes: [
+        { text: "Gratitude may be more beneficial than we commonly suppose.", src: "2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 A · 第 5 页" },
+        { text: "While this research into gratitude is relatively new, the principles involved are anything but.", src: "2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B · 第 5 页" },
+      ],
+      notes: [],
+    },
+  },
+  rails: [
+    { set: "2023 年 6 月", items: [["第 1 套 · 长篇匹配", "读到 62%"], ["第 1 套 · 仔细阅读 1", "未开始"], ["第 1 套 · 仔细阅读 2", "未开始"]] },
+    { set: "2023 年 12 月", items: [["第 1 套 · 长篇匹配", "未开始"], ["第 2 套 · 长篇匹配", "未开始"]] },
+    { set: "2024 年 6 月", items: [["第 1 套 · 长篇匹配", "未开始"], ["第 2 套 · 仔细阅读 1", "未开始"]] },
+  ],
+};
+
+const $ = (sel) => document.querySelector(sel);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("on"), 1600);
+}
+
+function rangesFor(text) {
+  const out = [];
+  for (const [w, g] of Object.entries(DATA.glosses)) {
+    const i = text.indexOf(w);
+    if (i >= 0) out.push({ start: i, end: i + w.length, type: "gloss", word: w, gloss: g });
+  }
+  for (const w of DATA.collected) {
+    const re = new RegExp("\\b" + w + "\\b", "gi");
+    let m;
+    while ((m = re.exec(text))) out.push({ start: m.index, end: m.index + w.length, type: "collected", word: w });
+  }
+  const si = text.indexOf(DATA.selection);
+  if (si >= 0) out.push({ start: si, end: si + DATA.selection.length, type: "selected", word: DATA.selection });
+  out.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+  const merged = [];
+  let last = -1;
+  for (const r of out) {
+    if (r.start >= last) { merged.push(r); last = r.end; }
+  }
+  return merged;
+}
+
+function markup(text) {
+  const ranges = rangesFor(text);
+  let html = "", cur = 0;
+  for (const r of ranges) {
+    html += esc(text.slice(cur, r.start));
+    const inner = esc(text.slice(r.start, r.end));
+    if (r.type === "gloss") {
+      html += `<span class="collected" data-word="${r.word}">${inner}</span><span class="gloss">（${r.gloss}）</span>`;
+    } else if (r.type === "collected") {
+      html += `<span class="collected" data-word="${r.word}">${inner}</span>`;
+    } else {
+      html += `<span class="selected">${inner}</span><span class="take" data-take="1">收下</span>`;
+    }
+    cur = r.end;
+  }
+  html += esc(text.slice(cur));
+  return html;
+}
+
+function entryHTML(word) {
+  const e = DATA.entries[word] || DATA.entries.lament;
+  return `
+    <div class="card-head"><span class="w">${esc(e.word)}</span><span class="c">已收集 ${e.counts}</span></div>
+    <div class="forms">${e.forms.map(([f, on]) => `<span class="${on ? "on" : ""}">${f}</span>`).join("")}</div>
+    <div class="sec">原句 · 按文章分组</div>
+    ${e.quotes.map((q) => `<div class="quote">${esc(q.text)}<span class="src">${esc(q.src)}</span></div>`).join("")}
+    ${e.notes.length ? `<div class="sec">学习内容</div>${e.notes.map((n) => `<div class="note-item"><b>${n.k}</b> · ${esc(n.t)}</div>`).join("")}` : `<div class="sec">学习内容</div><div class="note-item" style="opacity:.6">还没有，去「学习」生成一条。</div>`}
+    <div class="btn-row"><button>回到原文</button><button>重新圈定</button><button>更多</button></div>
+  `;
+}
+
+function studyHTML() {
+  return `
+    <div class="sec">学习指令</div>
+    <textarea class="instr">解释这个词在这篇里的意思，给两个例句，再给一个容易混的近义词辨析。</textarea>
+    <div class="sec">这次带上</div>
+    <div class="ctx"><span class="on">lament</span><span class="on">原句 2</span><span>同篇其他原句</span><span>段落 A–C</span><span>笔记 0</span></div>
+    <div class="kv"><span>2 条原句 · 约 260 字</span><span>OpenAI 兼容 · deepseek-chat</span></div>
+    <div class="ver"><button aria-selected="true">v2</button><button>v1</button></div>
+    <div class="result">
+      <p><b>lament</b>（v.）悲叹、惋惜。文中鲁滨逊流落荒岛，"本有理由抱怨"，却把注意力放在还能感恩的事情上，lament 与 gratitude 正好构成对照。</p>
+      <p>例 1：She lamented the loss of a friend she had known for decades. 例 2：He lamented that no one had warned him in time.</p>
+      <p>近义辨析：lament 偏"为已发生的事悲叹"，常带遗憾；complain 只是"抱怨"，不一定有惋惜。</p>
+    </div>
+    <div class="btn-row"><button class="primary"><span>保存到词条</span></button><button>存为文章</button><button>重新生成</button><button>继续生成</button></div>
+  `;
+}
+
+function pdfHTML() {
+  return `
+    <div class="sec">原 PDF 对照</div>
+    <div class="pdfmock">
+      <div class="pg">2023 年 6 月 · 第 1 套 · 第 6 页</div>
+      While this research into gratitude is relatively new, the principles involved are anything but. Students of mine in a political philosophy course at Indiana University are reading Daniel Defoe’s 300-year-old Robinson Crusoe … Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to <mark>lament</mark>. But instead of giving in to despair, he makes a list of things for which he is grateful …
+    </div>
+    <div class="kv" style="margin-top:14px"><span>句级定位：命中</span><span>页码 6 / 10</span></div>
+    <div class="btn-row"><button>在页内重新搜索</button><button>打开整页</button></div>
+  `;
+}
+
+/* ---------------- A ---------------- */
+function renderA() {
+  const g = DATA.article.paragraphs.map((p) => `
+    <p><span class="a-letter">${p.id}</span>${markup(p.text)}</p>`).join("");
+  $("#app").innerHTML = `
+  <div class="a-bar">
+    <div class="a-crumb">${esc(DATA.article.label)}</div>
+    <div class="a-tools">
+      <button data-act="font-">A−</button><button data-act="font+">A+</button>
+      <button data-act="pdf">原文</button>
+      <button data-act="entry">词条</button>
+      <button data-act="study">学习</button>
+    </div>
+  </div>
+  <main class="a-page">
+    <div class="a-meta">${esc(DATA.article.meta)} · 已收 3 个表达</div>
+    <div class="a-body">${g}</div>
+    <div class="a-foot"><span>读到段 C · 62%</span><button>进入本篇选词</button></div>
+  </main>
+  <aside class="a-drawer" id="drawer" data-open="false">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button data-act="closedraw" style="font-size:12px;color:var(--muted)">收起</button></div>
+    <div id="drawer-body">${entryHTML("lament")}</div>
+  </aside>`;
+}
+
+/* ---------------- B ---------------- */
+function renderB() {
+  const rail = DATA.rails.map((r) => `
+    <div class="b-set">${r.set}</div>
+    ${r.items.map(([t, p], i) => `<div class="b-item" data-current="${r.set === "2023 年 6 月" && i === 0}"><span class="t">${t}</span><span class="n">${p}</span></div>`).join("")}
+  `).join("");
+  const g = DATA.article.paragraphs.map((p) => `<p>${markup(p.text)}</p>`).join("");
+  $("#app").innerHTML = `
+  <div class="b-shell">
+    <aside class="b-rail">
+      <h3>文章库</h3>
+      ${rail}
+    </aside>
+    <section class="b-main">
+      <div class="b-toolbar">
+        <div class="grp">${esc(DATA.article.label)}</div>
+        <div class="grp">
+          <button data-act="font-">A−</button><button data-act="font+">A+</button>
+          <button data-act="pdf">原文 PDF</button>
+        </div>
+      </div>
+      <div class="b-canvas">
+        <div class="b-sheet">
+          <div class="meta">${esc(DATA.article.meta)} · 已收 3 个表达 · 阅读进度 62%</div>
+          ${g}
+        </div>
+      </div>
+    </section>
+    <aside class="b-inspector">
+      <div class="b-tabs">
+        <button aria-selected="true" data-tab="entry">词条</button>
+        <button data-tab="study">学习</button>
+        <button data-tab="pdf">原文</button>
+      </div>
+      <div class="b-panel" id="b-panel">${entryHTML("lament")}</div>
+    </aside>
+  </div>`;
+}
+
+/* ---------------- C ---------------- */
+function renderC() {
+  const g = DATA.article.paragraphs.map((p, i) => `<p class="${i === 0 ? "lead" : ""}"><span class="c-letter">${p.id}</span>${markup(p.text)}</p>`).join("");
+  const notes = [
+    { w: "lament", t: "悲叹、惋惜。段 B 里鲁滨逊本有理由 lament，却转头列感恩清单。" },
+    { w: "shipwreck", t: "海难。船只失事后剩下的人和物。" },
+  ].map((n) => `<div class="c-note"><b>${n.w}</b><br>${n.t}</div>`).join("");
+  $("#app").innerHTML = `
+  <div class="c-bar">
+    <div class="c-crumb">${esc(DATA.article.label)}</div>
+    <div class="c-tools">
+      <button data-act="font-">A−</button><button data-act="font+">A+</button>
+      <button data-act="pdf">原文</button>
+      <button data-act="open" data-tab="study">学习</button>
+    </div>
+  </div>
+  <main class="c-grid">
+    <article class="c-col">${g}</article>
+    <aside class="c-notes">${notes}</aside>
+  </main>
+  <div class="c-sheet" id="sheet" data-open="false">
+    <div class="c-sheet-head">
+      <span class="grip"></span>
+      <button data-tab="entry" aria-selected="true">词条</button>
+      <button data-tab="study">学习</button>
+      <button data-tab="pdf">原文</button>
+      <span style="flex:1"></span>
+      <button data-act="togglesheet">展开</button>
+    </div>
+    <div class="c-sheet-body" id="c-body">${entryHTML("lament")}</div>
+  </div>`;
+}
+
+/* ---------------- 交互 ---------------- */
+function setSheet(open) {
+  const s = document.getElementById("sheet");
+  if (!s) return;
+  s.dataset.open = open ? "true" : "false";
+  const b = s.querySelector('[data-act="togglesheet"]');
+  if (b) b.textContent = open ? "收起" : "展开";
+}
+
+function openEntry(word, mode) {
+  if (mode === "A") {
+    $("#drawer-body").innerHTML = entryHTML(word);
+    $("#drawer").dataset.open = "true";
+  } else if (mode === "B") {
+    $("#b-panel").innerHTML = entryHTML(word);
+    document.querySelectorAll(".b-tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === "entry"));
+  } else if (mode === "C") {
+    $("#c-body").innerHTML = entryHTML(word);
+    setSheet(true);
+    document.querySelectorAll(".c-sheet-head button[data-tab]").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === "entry"));
+  }
+}
+
+function wire(variant) {
+  document.body.dataset.variant = variant;
+  document.querySelectorAll("[data-word]").forEach((el) => {
+    el.addEventListener("click", () => openEntry(el.dataset.word, variant));
+  });
+  document.querySelectorAll("[data-take]").forEach((el) => {
+    el.addEventListener("click", (e) => { e.stopPropagation(); toast("已收下这条原句（原型，不保存）"); });
+  });
+  document.querySelectorAll("[data-act]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const act = el.dataset.act;
+      if (act === "font+") setSize(1);
+      else if (act === "font-") setSize(-1);
+      else if (act === "pdf") showPdf(variant);
+      else if (act === "entry") openEntry("lament", variant);
+      else if (act === "study") showStudy(variant);
+      else if (act === "open") showTab(el.dataset.tab, variant);
+      else if (act === "togglesheet") setSheet(document.getElementById("sheet").dataset.open !== "true");
+      else if (act === "closedraw") { const d = $("#drawer"); if (d) d.dataset.open = "false"; }
+    });
+  });
+  document.querySelectorAll("[data-tab]").forEach((el) => {
+    el.addEventListener("click", () => showTab(el.dataset.tab, variant));
+  });
+}
+
+function showPdf(variant) {
+  if (variant === "A") { $("#drawer-body").innerHTML = pdfHTML(); $("#drawer").dataset.open = "true"; }
+  else if (variant === "B") { $("#b-panel").innerHTML = pdfHTML(); document.querySelectorAll(".b-tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === "pdf")); }
+  else { $("#c-body").innerHTML = pdfHTML(); setSheet(true); document.querySelectorAll(".c-sheet-head button[data-tab]").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === "pdf")); }
+}
+
+function showStudy(variant) {
+  if (variant === "A") { $("#drawer-body").innerHTML = studyHTML(); $("#drawer").dataset.open = "true"; }
+  else if (variant === "B") { $("#b-panel").innerHTML = studyHTML(); document.querySelectorAll(".b-tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === "study")); }
+  else { $("#c-body").innerHTML = studyHTML(); setSheet(true); document.querySelectorAll(".c-sheet-head button[data-tab]").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === "study")); }
+}
+
+function showTab(tab, variant) {
+  if (tab === "entry") openEntry("lament", variant);
+  else if (tab === "study") showStudy(variant);
+  else if (tab === "pdf") showPdf(variant);
+}
+
+let size = 19;
+function setSize(d) {
+  size = Math.min(23, Math.max(16, size + d));
+  document.documentElement.style.setProperty("--size", size + "px");
+}
+
+/* ---------------- 切换 ---------------- */
+function currentVariant() {
+  const q = new URLSearchParams(location.search).get("variant");
+  return VARIANTS.some((v) => v.key === q) ? q : "A";
+}
+function render() {
+  const key = currentVariant();
+  const v = VARIANTS.find((x) => x.key === key);
+  $("#vkey").textContent = v.key;
+  $("#vname").textContent = v.name;
+  if (key === "A") renderA();
+  if (key === "B") renderB();
+  if (key === "C") renderC();
+  wire(key);
+  document.title = `阅读界面 · ${v.key} ${v.name}`;
+}
+function go(dir) {
+  const i = VARIANTS.findIndex((v) => v.key === currentVariant());
+  const n = VARIANTS[(i + dir + VARIANTS.length) % VARIANTS.length];
+  const url = new URL(location.href);
+  url.searchParams.set("variant", n.key);
+  history.replaceState(null, "", url);
+  render();
+}
+$("#prev").addEventListener("click", () => go(-1));
+$("#next").addEventListener("click", () => go(1));
+document.addEventListener("keydown", (e) => {
+  const t = document.activeElement;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+  if (e.key === "ArrowLeft") go(-1);
+  if (e.key === "ArrowRight") go(1);
+});
+document.addEventListener("click", (e) => {
+  if (document.body.dataset.variant !== "A") return;
+  if (e.target.closest(".a-drawer, [data-act], [data-word], .bar-switch")) return;
+  const d = $("#drawer");
+  if (d) d.dataset.open = "false";
+});
+render();
+if (new URLSearchParams(location.search).get("open")) openEntry("lament", currentVariant());
+</script>
+</body>
+</html>
