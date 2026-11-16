@@ -6,10 +6,11 @@
 <title>LLM 学习界面 · 原型</title>
 <!--
   原型：回答“和 LLM 交流的界面长什么样”。
-  三个结构不同的方向，?variant=A|B|C 切换，底部浮条或 ←/→ 轮换。用完即弃。
+  四个结构不同的方向，?variant=A|B|C|D 切换，底部浮条或 ←/→ 轮换。用完即弃。
   A 抽屉   — 阅读页右侧滑出，最轻，不离开文章
   B 学习台 — 全屏三栏：上下文 / 指令与结果 / 版本与已保存
   C 浮层   — 贴着选中词浮出的小卡，边读边问
+  D 对话   — 学习对象锚定的对话线程：宽单栏、输入框钉底、上下文 chips、消息级版本与保存
   已定的结构：上下文面板在输入上方、版本式结果卡、继续生成、保存到词条或文章、错误分类。
 -->
 <style>
@@ -102,6 +103,53 @@
   .hist { border: 1px solid var(--rule); border-radius: 9px; padding: 12px; margin-bottom: 10px; font-size: 12.5px; line-height: 1.6; }
   .hist .h { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
 
+
+  /* ---------- D 对话 ---------- */
+  .d-shell { display: grid; grid-template-columns: 232px minmax(0,1fr); height: 100vh; }
+  .d-rail { border-right: 1px solid var(--rule); background: #F8F5EC; padding: 18px 12px; overflow: auto; }
+  .d-rail .t { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 4px 8px 10px; font-weight: 600; }
+  .d-thread { padding: 9px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; }
+  .d-thread:hover { background: #F1ECDD; }
+  .d-thread.on { background: var(--panel); box-shadow: 0 0 0 1px var(--rule); }
+  .d-thread b { display: block; font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 15px; font-weight: 600; }
+  .d-thread span { font-size: 11px; color: var(--muted); }
+  .d-new { width: 100%; margin-top: 12px; padding: 9px; border: 1px dashed #D8CFBB; border-radius: 8px; font-size: 12.5px; color: var(--muted); }
+  .d-main { display: flex; flex-direction: column; min-width: 0; }
+  .d-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 32px 16px; border-bottom: 1px solid var(--rule); }
+  .d-head h2 { font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 24px; margin: 0 0 3px; font-weight: 600; }
+  .d-sub { font-size: 12px; color: var(--muted); }
+  .d-scroll { flex: 1; overflow: auto; padding: 34px 32px 24px; }
+  .d-inner { max-width: 760px; margin: 0 auto; }
+  .d-msg.user { display: flex; justify-content: flex-end; margin-bottom: 26px; }
+  .d-msg.user .bubble { max-width: 78%; background: #F2ECDD; border: 1px solid #E6DECB; border-radius: 14px 14px 4px 14px; padding: 11px 15px; font-size: 14px; line-height: 1.7; }
+  .d-msg.bot { margin-bottom: 30px; }
+  .d-bot-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .d-bot-head .who { font-size: 11.5px; letter-spacing: .06em; color: var(--muted); }
+  .d-msg.bot .result { font-size: 15px; line-height: 1.8; max-width: 100%; }
+  .d-msg.bot .result p { margin: 0 0 .85em; }
+  .d-acts { display: flex; gap: 14px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+  .d-acts button { color: var(--muted); border-bottom: 1px solid transparent; }
+  .d-acts button:hover { color: var(--ink); border-color: #C9BFA9; }
+  .d-quote { border-left: 2px solid #D8CFBB; padding: 2px 0 2px 12px; margin: 14px 0 0; font-size: 13px; line-height: 1.7; color: #4A4438; }
+  .d-quote .src { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .d-composer-wrap { padding: 0 32px 62px; }
+  .d-composer-inner { max-width: 760px; margin: 0 auto; }
+  .d-ctxbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-bottom: 8px; }
+  .d-ctxbar .chip { background: var(--panel); }
+  .d-ctxbar .adj { margin-left: auto; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+  .d-composer { display: flex; align-items: flex-end; gap: 10px; border: 1px solid #DED5C1; border-radius: 16px; background: var(--panel); padding: 10px 12px 10px 14px; box-shadow: 0 6px 20px rgba(60,48,30,.05); }
+  .d-composer:focus-within { border-color: #C9BFA9; }
+  .d-composer textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; font-size: 14px; line-height: 1.6; color: var(--ink); min-height: 24px; max-height: 140px; outline: none; padding: 4px 0; }
+  .d-composer .plus { width: 30px; height: 30px; border-radius: 8px; color: var(--muted); font-size: 18px; line-height: 1; }
+  .d-composer .plus:hover { background: #F3EEE1; }
+  .d-composer .send { width: 34px; height: 34px; border-radius: 10px; background: var(--ink); color: var(--paper); font-size: 13px; }
+  .d-hint { font-size: 11px; color: #9A9384; margin-top: 7px; text-align: center; }
+  .d-empty { max-width: 560px; margin: 12vh auto 0; text-align: center; }
+  .d-empty h3 { font-family: "Source Serif 4", Sitka, Georgia, serif; font-size: 26px; font-weight: 600; margin: 0 0 8px; }
+  .d-empty p { font-size: 13.5px; color: var(--muted); margin: 0 0 22px; }
+  .d-empty .presets { justify-content: center; }
+  .d-empty .presets button { background: var(--panel); padding: 7px 13px; font-size: 12.5px; }
+
   /* ---------- C 浮层 ---------- */
   .c-wrap { position: relative; min-height: 100vh; }
   .c-pop { position: absolute; width: 430px; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
@@ -132,6 +180,7 @@ const VARIANTS = [
   { key: "A", name: "抽屉" },
   { key: "B", name: "学习台" },
   { key: "C", name: "浮层" },
+  { key: "D", name: "对话" },
 ];
 
 const INSTR = "解释这个词在这篇里的意思，给两个例句，再给一个容易混的近义词辨析。";
@@ -153,7 +202,7 @@ const ARTICLE = {
   ],
 };
 
-let state = { streaming: false, progress: 0, version: "v2", stopped: false, error: false, instr: INSTR };
+let state = { streaming: false, progress: V2.length, version: "v2", stopped: false, error: false, instr: INSTR };
 let timer = null;
 
 const $ = (s) => document.querySelector(s);
@@ -321,6 +370,52 @@ function renderC() {
   </div>`;
 }
 
+/* ---------- D 对话 ---------- */
+function renderD() {
+  const threads = [["lament", "2 句 · 1 篇", true], ["approach", "4 句 · 3 篇", false], ["reciprocate", "1 句 · 1 篇", false], ["sarcasm", "3 句 · 2 篇", false], ["gratitude", "5 句 · 3 篇", false]];
+  const rail = threads.map(([w, m, on]) => `<div class="d-thread ${on ? "on" : ""}"><b>${w}</b><span>${m}</span></div>`).join("");
+  $("#app").innerHTML = `<div class="d-shell">
+    <aside class="d-rail">
+      <div class="t">学习线程</div>
+      ${rail}
+      <button class="d-new" data-act="toast" data-msg="选择词或文章，开一条新的学习线程">＋ 新的学习</button>
+    </aside>
+    <main class="d-main">
+      <header class="d-head">
+        <div><h2>lament</h2><div class="d-sub">2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B</div></div>
+        <button class="btn" data-act="toast" data-msg="打开 lament 词条">在词条中打开</button>
+      </header>
+      <div class="d-scroll"><div class="d-inner">
+        <div class="d-msg user"><div class="bubble">${esc(state.instr)}</div></div>
+        <div class="d-msg bot">
+          <div class="d-bot-head"><span class="who">学习助手</span>
+            <div class="ver"><button data-act="ver" data-v="v2" aria-selected="${state.version === "v2"}">v2</button><button data-act="ver" data-v="v1" aria-selected="${state.version === "v1"}">v1</button></div>
+            ${state.stopped ? '<span class="saved-tag">已停止 · 未完成</span>' : ""}
+          </div>
+          ${resultHTML()}
+          <div class="d-acts">
+            <button data-act="save">保存到词条</button>
+            <button data-act="save-article">存为文章</button>
+            <button data-act="gen">重新生成</button>
+            <button data-act="gen">继续生成</button>
+          </div>
+          <div class="d-quote">“Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to lament.”<span class="src">2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B · 第 6 页</span></div>
+        </div>
+        ${state.error ? errHTML() : ""}
+      </div></div>
+      <div class="d-composer-wrap"><div class="d-composer-inner">
+        <div class="d-ctxbar">带上：<span class="chip on">lament</span><span class="chip on">原句 2</span><span class="chip">段落 B</span><span class="chip">笔记 0</span><button class="adj" data-act="toast" data-msg="展开上下文选择">调整</button></div>
+        <div class="d-composer">
+          <button class="plus" data-act="toast" data-msg="添加上下文">＋</button>
+          <textarea placeholder="问点什么… 例如：这两个例句里哪个更常用于书面语？"></textarea>
+          ${state.streaming ? '<button class="send" data-act="stop">■</button>' : '<button class="send" data-act="gen">↑</button>'}
+        </div>
+        <div class="d-hint">Enter 发送 · Shift+Enter 换行 · 结果可保存到词条或存为文章</div>
+      </div></div>
+    </main>
+  </div>`;
+}
+
 /* ---------- 行为 ---------- */
 function render() {
   const key = new URLSearchParams(location.search).get("variant") || "A";
@@ -330,13 +425,14 @@ function render() {
   if (v.key === "A") renderA();
   if (v.key === "B") renderB();
   if (v.key === "C") renderC();
+  if (v.key === "D") renderD();
   document.title = `LLM 学习界面 · ${v.key} ${v.name}`;
   document.querySelectorAll("[data-act]").forEach((el) => {
     el.addEventListener("click", () => {
       const act = el.dataset.act;
       if (act === "gen") generate();
       else if (act === "stop") stopGen();
-      else if (act === "ver") { state.version = el.dataset.v; state.progress = 0; state.stopped = false; repaint(); }
+      else if (act === "ver") { state.version = el.dataset.v; state.progress = state.version === "v2" ? V2.length : V1.length; state.stopped = false; repaint(); }
       else if (act === "preset") { state.instr = el.dataset.v; $("#instr").value = state.instr; }
       else if (act === "save") toast("已保存到 lament 的学习内容（原型，不落盘）");
       else if (act === "save-article") toast("已存为文章，标“AI 生成”（原型，不落盘）");
