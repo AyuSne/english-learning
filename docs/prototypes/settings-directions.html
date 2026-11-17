@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>设置页 · 原型</title>
+<!--
+  原型：回答 #22。用完即弃。
+  ?variant=A 左导航 / B 单页锚点 / C 卡片网格  ?state=normal|error|restore  ?theme=light|dark
+-->
+<style>
+  :root{
+    --paper:#FBFAF3;--panel:#FFFEF9;--sunken:#F8F5EC;
+    --ink:#1A1A17;--ink-2:#6E6A5E;--ink-3:#A9A399;
+    --amber:#8F5A1A;--amber-underline:#8A6A28;--blue:#2F5FA8;
+    --bed-select:#F2E4BE;--bed-pin:#FBF2DC;--line-pin:#E3D3AE;
+    --danger:#B4432A;--danger-bed:#FDF4EE;--rule:#E6E0D0;--hover:#F3EEE1;
+  }
+  [data-theme="dark"]{
+    --paper:#1A1A1E;--panel:#22221F;--sunken:#141416;
+    --ink:#E8E4DA;--ink-2:#A8A29A;--ink-3:#6E6A62;
+    --amber:#D9A441;--amber-underline:#C9A15A;--blue:#7FA7E8;
+    --bed-select:#4A3B1E;--bed-pin:#332A15;--line-pin:#5A4A2A;
+    --danger:#E08A72;--danger-bed:#2E1F1A;--rule:#33322D;--hover:#2A2A26;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Segoe UI Variable","Segoe UI","Microsoft YaHei UI",system-ui,sans-serif;font-size:14px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input,select{font:inherit;color:inherit}
+  .badge{position:fixed;left:16px;bottom:18px;z-index:80;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff}
+  .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#101114;color:#fff;font-size:13px;padding:9px 14px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .18s;z-index:95}
+  .toast.on{opacity:1}
+  .pbar-wrap{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:6px;z-index:90}
+  .pbar{display:flex;align-items:center;gap:2px;padding:5px 6px;background:#101114;color:#fff;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.28);font-size:12.5px}
+  .pbar button{height:26px;border-radius:999px;color:#cfd2d8;padding:0 9px}
+  .pbar .label{padding:0 9px;white-space:nowrap}
+  .pbar .label b{font-weight:600}
+
+  .top{display:flex;align-items:center;gap:12px;padding:16px 32px;border-bottom:1px solid var(--rule)}
+  .top h1{margin:0;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:22px;font-weight:600}
+  .top .sp{margin-left:auto;font-size:11.5px;color:var(--ink-2)}
+  .shell{display:grid;grid-template-rows:minmax(0,1fr);height:calc(100vh - 63px);grid-template-columns:216px minmax(0,1fr)}
+  .shell.C{grid-template-columns:minmax(0,1fr)}
+  .nav{border-right:1px solid var(--rule);background:var(--sunken);padding:12px 8px;overflow:auto}
+  .nav .item{padding:8px 10px;border-radius:8px;font-size:13px;color:var(--ink-2);cursor:pointer}
+  .nav .item:hover{background:var(--hover)}
+  .nav .item.on{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule);font-weight:600}
+  .main{overflow:auto;padding:26px 32px 60px}
+  .inner{max-width:640px;margin:0 auto}
+  .chips{display:flex;gap:6px;padding:12px 32px;border-bottom:1px solid var(--rule);overflow:auto}
+  .chip{font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);color:var(--ink-2);white-space:nowrap}
+  .chip.on{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+
+  .sec{margin-bottom:30px}
+  .sec h2{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:17px;margin:0 0 4px;font-weight:600}
+  .sec .desc{font-size:12px;color:var(--ink-2);margin:0 0 14px;line-height:1.7}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:5px}
+  .field input,.field select{width:100%;border:1px solid var(--rule);background:var(--panel);border-radius:8px;padding:8px 10px;font-size:13px}
+  .field input:focus,.field select:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:transparent}
+  .field .hint{font-size:11px;color:var(--ink-2);margin-top:5px;line-height:1.6}
+  .field.bad input{border-color:var(--danger)}
+  .field .err{font-size:11.5px;color:var(--danger);margin-top:5px;display:flex;gap:6px;align-items:center}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{border:1px solid var(--rule);background:var(--panel);border-radius:8px;padding:6px 12px;font-size:12.5px}
+  .btn:hover{border-color:#CFC5AF}
+  .btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.sm{padding:4px 9px;font-size:11.5px}
+  .btn.danger{color:var(--danger);border-color:var(--danger)}
+  .card{border:1px solid var(--rule);background:var(--panel);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+  .card.on{border-color:var(--line-pin);box-shadow:0 0 0 2px var(--bed-pin)}
+  .card .ch{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);margin-bottom:6px}
+  .card .ch b{font-size:13px;color:var(--ink);font-family:"Source Serif 4",Sitka,Georgia,serif}
+  .card .ch .to{margin-left:auto;display:flex;gap:8px}
+  .card .ch button{font-size:11px;color:var(--ink-2)}
+  .card .kv{font-size:11.5px;color:var(--ink-2);line-height:1.9}
+  .card .kv code{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--ink)}
+  .card .stat{display:inline-block;font-size:10.5px;border-radius:999px;padding:1px 7px;border:1px solid var(--rule);color:var(--ink-2)}
+  .card .stat.ok{color:var(--amber);border-color:var(--line-pin);background:var(--bed-pin)}
+  .seg{display:flex;gap:2px;background:var(--sunken);border-radius:8px;padding:2px;width:fit-content}
+  .seg button{font-size:12px;padding:4px 12px;border-radius:6px;color:var(--ink-2)}
+  .seg button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .switch{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 0}
+  .switch .track{width:34px;height:20px;border-radius:999px;background:var(--rule);position:relative;transition:background .15s}
+  .switch .track i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--panel);box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .15s}
+  .switch.on .track{background:var(--amber)}
+  .switch.on .track i{left:16px}
+  .switch .lab{color:var(--ink-2);font-size:11.5px;margin-left:auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+  .grid .card{margin:0;cursor:pointer}
+  .grid .card h3{margin:0 0 4px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px}
+  .grid .card p{margin:0;font-size:11.5px;color:var(--ink-2);line-height:1.7}
+  .drawer{position:fixed;right:0;top:0;bottom:0;width:420px;background:var(--paper);border-left:1px solid var(--rule);box-shadow:0 20px 50px rgba(40,32,20,.18);z-index:60;padding:20px 22px;overflow:auto}
+  .drawer h2{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:17px;margin:0 0 14px}
+  .mask{position:fixed;inset:0;background:rgba(26,26,23,.32);z-index:59}
+  .modal{position:fixed;left:50%;top:26%;transform:translateX(-50%);width:440px;background:var(--panel);border:1px solid var(--rule);border-radius:14px;box-shadow:0 20px 50px rgba(40,32,20,.28);z-index:70;padding:18px 20px}
+  .modal h3{margin:0 0 8px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:16px}
+  .modal p{margin:0 0 10px;font-size:12.5px;line-height:1.8;color:var(--ink-2)}
+  .modal .warn{background:var(--danger-bed);border:1px solid #E7CFC0;color:var(--danger);border-radius:8px;padding:9px 11px;font-size:12px;line-height:1.7;margin-bottom:14px}
+  .modal .row{justify-content:flex-end}
+  .foot{font-size:11px;color:var(--ink-2);line-height:1.8;border-top:1px solid var(--rule);padding-top:12px;margin-top:24px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="badge">原型 · 设置页</div>
+<div class="toast" id="toast"></div>
+<div class="pbar-wrap">
+  <div class="pbar"><button data-variant="A">左导航</button><button data-variant="B">单页</button><button data-variant="C">卡片</button></div>
+  <div class="pbar"><button data-state="normal">正常</button><button data-state="error">密钥错</button><button data-state="restore">恢复确认</button><button data-theme-toggle="1">深浅</button></div>
+</div>
+
+<script>
+const $=(s)=>document.querySelector(s);
+const qs=(k)=>new URLSearchParams(location.search).get(k);
+const variant=()=>qs("variant")||"A";
+const state=()=>qs("state")||"normal";
+const dark=()=>qs("theme")==="dark";
+function toast(m){const el=$("#toast");el.textContent=m;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800);}
+
+const SECTIONS=[
+  {id:"model",title:"模型服务",desc:"填写 OpenAI 兼容接口。可以保存多套，随时切换；切换只影响之后的调用。"},
+  {id:"reading",title:"阅读",desc:"字号与行距随每篇文章记忆；下面这两项是全局默认。"},
+  {id:"theme",title:"外观",desc:"主题跟着自己走，不影响阅读设置。"},
+  {id:"data",title:"数据",desc:"所有文章、词条、原句与学习内容都存在本机。密钥不进备份。"},
+];
+
+function modelCard(on){
+  return `<div class="card ${on?"on":""}">
+    <div class="ch"><b>DeepSeek 官方</b>${on?'<span class="stat ok">使用中</span>':""}<div class="to">${on?"":'<button data-act="toast" data-msg="已切换">切换</button>'}<button data-act="toast" data-msg="编辑这套配置">编辑</button><button data-act="toast" data-msg="删除前会确认">删除</button></div></div>
+    <div class="kv">接口地址 <code>https://api.deepseek.com</code><br>模型名 <code>deepseek-chat</code><br>密钥 <code>sk-·············a1b2</code> · 上次校验 11-17 09:12 通过</div>
+  </div>`;
+}
+function modelSection(){
+  return `<section class="sec">
+    <h2>模型服务</h2><p class="desc">填写 OpenAI 兼容接口。可以保存多套，随时切换；切换只影响之后的调用。</p>
+    ${modelCard(true)}
+    <div class="card">
+      <div class="ch"><b>本地 Ollama</b><div class="to"><button data-act="toast" data-msg="已切换">切换</button><button data-act="toast" data-msg="编辑这套配置">编辑</button><button data-act="toast" data-msg="删除前会确认">删除</button></div></div>
+      <div class="kv">接口地址 <code>http://127.0.0.1:11434/v1</code><br>模型名 <code>qwen2.5:7b</code><br>密钥 未填写 · 上次校验 从未</div>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn" data-act="toast" data-msg="新增一套配置">＋ 新增一套</button><button class="btn" data-act="toast" data-msg="正在测试连接…">测试当前连接</button></div>
+    <div class="field" style="margin-top:18px">
+      <label>当前配置的 API 密钥</label>
+      <input value="sk-·············a1b2" readonly>
+      <div class="hint">已保存的密钥只显示掩码；点「编辑」重新输入，提交前会先校验再保存。</div>
+      <div class="row" style="margin-top:8px"><button class="btn sm" data-act="toast" data-msg="已进入重输状态">编辑</button><button class="btn sm" data-act="toast" data-msg="已清空，请重新填写">清除</button></div>
+    </div>
+    <div class="field ${state()==="error"?"bad":""}" style="margin-top:14px">
+      <label>重新输入密钥</label>
+      <input value="${state()==="error"?"sk-wrong-key-0000":"sk-...................."}" type="${state()==="error"?"text":"password"}">
+      ${state()==="error"?`<div class="err">密钥无效或已被删除，请检查后重试。<button class="btn sm" data-act="toast" data-msg="打开服务商控制台">去获取</button></div>`:'<div class="hint">保存前会发一次最小请求验证；失败不会覆盖原密钥。</div>'}
+    </div>
+    <div class="row"><button class="btn pri" data-act="${state()==="error"?"toast":"toast"}" data-msg="${state()==="error"?"校验未通过，原密钥保留":"已保存并校验通过"}">${state()==="error"?"重新校验":"保存并校验"}</button></div>
+  </section>`;
+}
+function readingSection(){
+  return `<section class="sec">
+    <h2>阅读</h2><p class="desc">字号与行距随每篇文章记忆；下面这两项是全局默认。</p>
+    <div class="field"><label>正文字号</label><div class="seg"><button>16</button><button>18</button><button aria-selected="true">20</button><button>22</button></div></div>
+    <div class="field"><label>行距</label><div class="seg"><button>1.6</button><button aria-selected="true">1.8</button><button>2.0</button></div></div>
+    <div class="switch on" data-act="toggle"><span>原文注释默认显示</span><span class="lab">中文夹注以浅色小字挂原词后</span><span class="track"><i></i></span></div>
+    <div class="switch on" data-act="toggle"><span>已收集的词做弱高亮</span><span class="lab">重读时点一下能弹出词条卡</span><span class="track"><i></i></span></div>
+  </section>`;
+}
+function themeSection(){
+  return `<section class="sec">
+    <h2>外观</h2><p class="desc">主题跟着自己走，不影响阅读设置。</p>
+    <div class="seg"><button aria-selected="${!dark()}">浅色</button><button aria-selected="${dark()}">深色</button><button>跟随系统</button></div>
+    <div class="hint" style="margin-top:10px">深色用 #1A1A1E 不是纯黑；词状态三色在深色下换成 #D9A441 / #7FA7E8 / #4A3B1E。</div>
+  </section>`;
+}
+function dataSection(){
+  return `<section class="sec">
+    <h2>数据</h2><p class="desc">所有文章、词条、原句与学习内容都存在本机。密钥不进备份。</p>
+    <div class="card">
+      <div class="ch"><b>备份</b><div class="to"><button data-act="toast" data-msg="已生成快照：2026-11-17 21:40">立即备份</button><button data-act="toast" data-msg="打开数据目录">打开目录</button></div></div>
+      <div class="kv">上次备份 2026-11-16 21:02 · 约 48 MB<br>备份是数据库快照，含文章、词条、原句、学习内容与线程</div>
+    </div>
+    <div class="card">
+      <div class="ch"><b>恢复</b><div class="to"><button data-act="restore">从备份恢复…</button></div></div>
+      <div class="kv">恢复会整体替换当前数据；替换前自动留一份当前快照。</div>
+    </div>
+    <div class="card">
+      <div class="ch"><b>导出</b><div class="to"><button data-act="toast" data-msg="选择一条线程导出 JSONL">导出线程 JSONL</button></div></div>
+      <div class="kv">单条线程可导出成可读的 JSONL，用于归档或排障；导出物不是真源。</div>
+    </div>
+  </section>`;
+}
+function aboutSection(){
+  return `<section class="sec">
+    <h2>关于</h2>
+    <div class="kv" style="font-size:12px;color:var(--ink-2);line-height:1.9">版本 0.1.0 · Electron 45<br>词典数据来自 ECDICT（MIT License），版权归其作者所有。<br>桌面形态与本机数据边界见 ADR 0001；会话存储见 ADR 0003。</div>
+  </section>`;
+}
+function allSections(){
+  return modelSection()+readingSection()+themeSection()+dataSection()+aboutSection();
+}
+
+function render(){
+  document.documentElement.dataset.theme=dark()?"dark":"light";
+  const v=variant();
+  let body="";
+  if(v==="A"){
+    body=`<div class="top"><h1>设置</h1><span class="sp">设置随本机保存</span></div>
+      <div class="shell"><aside class="nav">
+        ${["模型服务","阅读","外观","数据","关于"].map((t,i)=>`<div class="item ${i===0?"on":""}">${t}</div>`).join("")}
+      </aside><div class="main"><div class="inner">${allSections()}</div></div></div>`;
+  }else if(v==="B"){
+    body=`<div class="top"><h1>设置</h1><span class="sp">设置随本机保存</span></div>
+      <div class="chips">${["模型服务","阅读","外观","数据","关于"].map((t,i)=>`<span class="chip ${i===0?"on":""}">${t}</span>`).join("")}</div>
+      <div class="shell C"><div class="main"><div class="inner">${allSections()}</div></div></div>`;
+  }else{
+    body=`<div class="top"><h1>设置</h1><span class="sp">设置随本机保存</span></div>
+      <div class="shell C"><div class="main"><div class="inner" style="max-width:820px">
+        <div class="grid">
+          <div class="card" data-open="model"><h3>模型服务</h3><p>DeepSeek 官方 · deepseek-chat<br>已校验 11-17 09:12</p></div>
+          <div class="card" data-open="reading"><h3>阅读</h3><p>字号 20 · 行距 1.8<br>注释显示 · 弱高亮开</p></div>
+          <div class="card" data-open="theme"><h3>外观</h3><p>${dark()?"深色":"浅色"}</p></div>
+          <div class="card" data-open="data"><h3>数据</h3><p>上次备份 11-16 21:02 · 48 MB<br>恢复与导出在这里</p></div>
+          <div class="card" data-open="about"><h3>关于</h3><p>0.1.0 · Electron 45<br>ECDICT 词典数据（MIT）</p></div>
+        </div>
+      </div></div></div>
+      ${state()==="restore"?"":""}`;
+  }
+  if(state()==="restore"){
+    body+=`<div class="mask"></div><div class="modal">
+      <h3>从备份恢复？</h3>
+      <p>选中的备份会整体替换当前数据：文章、词条、原句、学习内容、线程与钉住。</p>
+      <div class="warn">替换前会自动把当前数据另存一份快照，恢复后仍可回退。密钥不在备份里，恢复后需要重新填写。</div>
+      <div class="row"><button class="btn" data-act="toast" data-msg="已取消">取消</button><button class="btn danger" data-act="toast" data-msg="已恢复，当前数据已另存快照">继续恢复</button></div>
+    </div>`;
+  }
+  if(v==="C"&&state()==="error"){
+    body+=`<div class="mask"></div><div class="drawer"><h2>模型服务</h2>${modelSection()}</div>`;
+  }
+  $("#app").innerHTML=body;
+  bind();
+}
+function bind(){
+  document.querySelectorAll("[data-act]").forEach(el=>{
+    if(el._b)return;el._b=true;
+    el.addEventListener("click",()=>{
+      if(el.dataset.act==="toggle"){el.classList.toggle("on");return;}
+      if(el.dataset.act==="restore"){const u=new URL(location.href);u.searchParams.set("state","restore");location.href=u;return;}
+      toast(el.dataset.msg||"");
+    });
+  });
+  document.querySelectorAll("[data-open]").forEach(el=>el.addEventListener("click",()=>toast("打开「"+el.querySelector("h3").textContent+"」抽屉")));
+  document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected","false"));b.setAttribute("aria-selected","true");});
+}
+document.querySelectorAll("[data-variant]").forEach(b=>b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("variant",b.dataset.variant);location.href=u;});
+document.querySelectorAll("[data-state]").forEach(b=>b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("state",b.dataset.state);location.href=u;});
+document.querySelector("[data-theme-toggle]").onclick=()=>{const u=new URL(location.href);u.searchParams.set("theme",dark()?"light":"dark");location.href=u;};
+if(qs("chrome")==="0")document.querySelectorAll(".badge,.pbar-wrap").forEach(el=>el.style.display="none");
+render();
+</script>
+</body>
+</html>
