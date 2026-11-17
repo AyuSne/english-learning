@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>应用外壳与首页 · 原型</title>
+<!--
+  原型：回答 #24。用完即弃。
+  ?variant=A 左侧全局栏 / B 顶部标签 / C 首页即入口  ?state=full|empty  ?theme=light|dark
+-->
+<style>
+  :root{
+    --paper:#FBFAF3;--panel:#FFFEF9;--sunken:#F8F5EC;
+    --ink:#1A1A17;--ink-2:#6E6A5E;--ink-3:#A9A399;
+    --amber:#8F5A1A;--amber-underline:#8A6A28;--blue:#2F5FA8;
+    --bed-select:#F2E4BE;--bed-pin:#FBF2DC;--line-pin:#E3D3AE;
+    --danger:#B4432A;--rule:#E6E0D0;--hover:#F3EEE1;
+  }
+  [data-theme="dark"]{
+    --paper:#1A1A1E;--panel:#22221F;--sunken:#141416;
+    --ink:#E8E4DA;--ink-2:#A8A29A;--ink-3:#6E6A62;
+    --amber:#D9A441;--amber-underline:#C9A15A;--blue:#7FA7E8;
+    --bed-select:#4A3B1E;--bed-pin:#332A15;--line-pin:#5A4A2A;
+    --danger:#E08A72;--rule:#33322D;--hover:#2A2A26;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Segoe UI Variable","Segoe UI","Microsoft YaHei UI",system-ui,sans-serif;font-size:14px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  .serif{font-family:"Source Serif 4",Sitka,Georgia,"Songti SC",serif}
+  .badge{position:fixed;left:16px;bottom:18px;z-index:80;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff}
+  .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#101114;color:#fff;font-size:13px;padding:9px 14px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .18s;z-index:95}
+  .toast.on{opacity:1}
+  .pbar-wrap{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:6px;z-index:90}
+  .pbar{display:flex;align-items:center;gap:2px;padding:5px 6px;background:#101114;color:#fff;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.28);font-size:12.5px}
+  .pbar button{height:26px;border-radius:999px;color:#cfd2d8;padding:0 9px}
+  .pbar .label{padding:0 9px;white-space:nowrap}
+  .pbar .label b{font-weight:600}
+
+  .app{display:grid;grid-template-rows:minmax(0,1fr);height:100vh;grid-template-columns:238px minmax(0,1fr)}
+  .app.top{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .app.hub{grid-template-columns:minmax(0,1fr)}
+  .nav{border-right:1px solid var(--rule);background:var(--sunken);display:flex;flex-direction:column;padding:14px 10px;min-height:0}
+  .brand{display:flex;align-items:center;gap:8px;padding:2px 8px 14px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px;font-weight:600}
+  .brand span{width:18px;height:18px;border-radius:5px;background:var(--ink);color:var(--paper);font-size:11px;display:grid;place-items:center;font-family:"Segoe UI Variable",sans-serif}
+  .nitem{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--ink-2);cursor:pointer;margin-bottom:2px}
+  .nitem:hover{background:var(--hover)}
+  .nitem.on{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule);font-weight:600}
+  .nitem .k{margin-left:auto;font-size:10.5px;color:var(--ink-2);background:var(--sunken);border:1px solid var(--rule);border-radius:999px;padding:0 6px}
+  .nitem.on .k{background:var(--panel)}
+  .nav .foot{margin-top:auto;padding:8px 10px;font-size:11px;color:var(--ink-2);line-height:1.7}
+
+  .tabs{display:flex;align-items:center;gap:4px;padding:10px 20px;border-bottom:1px solid var(--rule);background:var(--sunken);overflow:auto}
+  .tabs .brand{padding:0 12px 0 2px}
+  .tab{font-size:13px;padding:6px 12px;border-radius:8px;color:var(--ink-2);white-space:nowrap}
+  .tab.on{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule);font-weight:600}
+  .tabs .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+  .main{overflow:auto;padding:30px 40px 60px;min-height:0}
+  .wrap{max-width:860px;margin:0 auto}
+  .greet{font-size:12px;color:var(--ink-2);letter-spacing:.04em;margin-bottom:8px}
+  .h1{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:30px;font-weight:600;margin:0 0 26px;line-height:1.2}
+  .block{margin-bottom:30px}
+  .bh{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+  .bh h2{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:600;margin:0}
+  .bh .c{font-size:11.5px;color:var(--ink-2)}
+  .bh .more{margin-left:auto;font-size:11.5px;color:var(--ink-2)}
+  .bh .more:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+
+  .cont{border:1px solid var(--rule);background:var(--panel);border-radius:14px;padding:20px 22px;display:flex;gap:20px;align-items:flex-start}
+  .cont .txt{flex:1;min-width:0}
+  .cont .crumb{font-size:11px;color:var(--ink-2);margin-bottom:5px}
+  .cont h3{margin:0 0 6px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:20px;font-weight:600;line-height:1.3}
+  .cont .meta{font-size:11.5px;color:var(--ink-2)}
+  .cont .go{align-self:center;background:var(--ink);color:var(--paper);border-radius:10px;padding:9px 16px;font-size:13px;white-space:nowrap}
+  .cont .quote{margin-top:12px;border-left:2px solid var(--rule);padding-left:12px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+
+  .words{display:flex;flex-wrap:wrap;gap:8px}
+  .wc{border:1px solid var(--rule);background:var(--panel);border-radius:10px;padding:9px 13px;min-width:132px;cursor:pointer}
+  .wc:hover{border-color:var(--line-pin);background:var(--bed-pin)}
+  .wc b{display:block;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px;font-weight:600;margin-bottom:2px}
+  .wc span{font-size:11px;color:var(--ink-2)}
+
+  .later{list-style:none;margin:0;padding:0}
+  .later li{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--rule);font-size:13px}
+  .later li:last-child{border-bottom:0}
+  .later .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none}
+  .later .src{font-size:11px;color:var(--ink-2);margin-left:auto;white-space:nowrap}
+  .later button{font-size:11.5px;color:var(--ink-2);border-bottom:1px solid transparent}
+  .later button:hover{color:var(--ink);border-color:var(--rule)}
+
+  .entryrow{display:flex;align-items:center;gap:12px;border:1px solid var(--rule);background:var(--panel);border-radius:12px;padding:14px 16px}
+  .entryrow .n{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:17px}
+  .entryrow .m{font-size:11.5px;color:var(--ink-2)}
+  .entryrow .go{margin-left:auto;font-size:12.5px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+
+  .emptybox{text-align:center;padding:54px 20px;color:var(--ink-2);font-size:13px;line-height:1.9;border:1px dashed var(--rule);border-radius:14px}
+  .emptybox b{display:block;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:19px;color:var(--ink);font-weight:600;margin-bottom:6px}
+  .emptybox .row{display:flex;gap:8px;justify-content:center;margin-top:16px}
+  .btn{border:1px solid var(--rule);background:var(--panel);border-radius:9px;padding:8px 14px;font-size:12.5px}
+  .btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  .hubcard{border:1px solid var(--rule);background:var(--panel);border-radius:14px;padding:18px;cursor:pointer;min-height:118px;display:flex;flex-direction:column}
+  .hubcard:hover{border-color:var(--line-pin)}
+  .hubcard h3{margin:0 0 6px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:17px;font-weight:600}
+  .hubcard p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.7}
+  .hubcard .n{margin-top:auto;font-size:11.5px;color:var(--ink-2);padding-top:10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="badge">原型 · 外壳与首页</div>
+<div class="toast" id="toast"></div>
+<div class="pbar-wrap">
+  <div class="pbar"><button data-variant="A">左栏</button><button data-variant="B">顶部</button><button data-variant="C">首页即入口</button></div>
+  <div class="pbar"><button data-state="full">有内容</button><button data-state="empty">首屏空</button><button data-theme-toggle="1">深浅</button></div>
+</div>
+
+<script>
+const $=(s)=>document.querySelector(s);
+const qs=(k)=>new URLSearchParams(location.search).get(k);
+const variant=()=>qs("variant")||"A";
+const st=()=>qs("state")||"full";
+const dark=()=>qs("theme")==="dark";
+function toast(m){const el=$("#toast");el.textContent=m;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800);}
+
+const NAV=[["首页",""],["阅读",""],["词条","7"],["对话",""],["文章库","65"],["设置",""]];
+const WORDS=[["approach","6 句 · 3 篇"],["reciprocate","2 句 · 1 篇"],["lament","2 句 · 1 篇"],["gratitude","5 句 · 3 篇"],["sarcasm","3 句 · 2 篇"]];
+const LATER=[["lament","Left alone on an unknown island…","11-16"],["trigger","What triggered the change…","11-15"]];
+
+function navRail(){
+  return `<aside class="nav">
+    <div class="brand"><span>A</span>素读</div>
+    ${NAV.map(([t,k],i)=>`<div class="nitem ${i===0?"on":""}"><span>${t}</span>${k?`<span class="k">${k}</span>`:""}</div>`).join("")}
+    <div class="foot">离线可用<br>模型调用按设置</div>
+  </aside>`;
+}
+function navTabs(){
+  return `<div class="tabs">
+    <div class="brand"><span>A</span>素读</div>
+    ${NAV.map(([t,k],i)=>`<div class="tab ${i===0?"on":""}">${t}${k?` <span style="color:var(--ink-2);font-size:10.5px">${k}</span>`:""}</div>`).join("")}
+    <div class="right"><button class="btn" data-act="toast" data-msg="搜索文章、词条与原句">搜索</button></div>
+  </div>`;
+}
+function homeFull(){
+  return `<div class="wrap">
+    <div class="greet">2026 年 11 月 17 日 · 周二</div>
+    <h1 class="h1">接着上次读。</h1>
+
+    <div class="block">
+      <div class="bh"><h2>继续阅读</h2><span class="c">读到 62%</span></div>
+      <div class="cont">
+        <div class="txt">
+          <div class="crumb">2023 年 6 月 · 第 1 套 · 长篇匹配</div>
+          <h3>Why Gratitude Is Worth the Effort</h3>
+          <div class="meta">742 词 · 段 C 第 4 句 · 昨天 21:40</div>
+          <div class="quote">“Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to lament.”</div>
+        </div>
+        <button class="go" data-act="toast" data-msg="打开阅读页，落到段 C 第 4 句">继续阅读</button>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="bh"><h2>最近收集</h2><span class="c">7 个词条 · 23 条原句</span><button class="more" data-act="toast" data-msg="打开词条列表">全部词条 →</button></div>
+      <div class="words">${WORDS.map(([w,m])=>`<div class="wc" data-act="toast" data-msg="打开词条 ${w}"><b>${w}</b><span>${m}</span></div>`).join("")}</div>
+    </div>
+
+    <div class="block">
+      <div class="bh"><h2>稍后看</h2><span class="c">2 条</span></div>
+      <ul class="later">${LATER.map(([w,q,d])=>`<li><span class="dot"></span><b style="font-weight:600">${w}</b><span style="color:var(--ink-2);font-size:12px">${q}</span><span class="src">${d}</span><button data-act="toast" data-msg="取消稍后看">移除</button></li>`).join("")}</ul>
+    </div>
+
+    <div class="block">
+      <div class="bh"><h2>文章库</h2><span class="c">63 篇真题 · 2 篇 AI 生成</span></div>
+      <div class="entryrow"><div><div class="n serif">63 篇真题，按 7 个场次</div><div class="m">另有 2 篇用词生成的阅读材料</div></div><button class="go" data-act="toast" data-msg="打开文章库">进入文章库 →</button></div>
+    </div>
+  </div>`;
+}
+function homeEmpty(){
+  return `<div class="wrap">
+    <div class="greet">第一次打开</div>
+    <h1 class="h1">先读一篇。</h1>
+    <div class="block">
+      <div class="emptybox">
+        <b>还没有在读的文章</b>
+        首批 63 篇六级真题已经整理好，按 7 个场次分组。挑一篇开始，选中的词会在这里出现。
+        <div class="row"><button class="btn pri" data-act="toast" data-msg="打开文章库">从文章库挑一篇</button><button class="btn" data-act="toast" data-msg="用一组词生成文章">用一组词生成</button></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="bh"><h2>最近收集</h2></div>
+      <div class="emptybox" style="padding:28px 20px">还没有词条。读的时候圈一个词，它就会出现在这里。</div>
+    </div>
+    <div class="block">
+      <div class="bh"><h2>稍后看</h2></div>
+      <div class="emptybox" style="padding:28px 20px">空着。看到不想现在查的词，标一下会收到这里。</div>
+    </div>
+  </div>`;
+}
+function hub(){
+  return `<div class="wrap">
+    <div class="greet">2026 年 11 月 17 日 · 周二</div>
+    <h1 class="h1">接着上次读。</h1>
+    <div class="cards">
+      <div class="hubcard" data-act="toast" data-msg="打开阅读页"><h3>继续阅读</h3><p>Why Gratitude Is Worth the Effort<br>段 C 第 4 句 · 读到 62%</p><div class="n">今天</div></div>
+      <div class="hubcard" data-act="toast" data-msg="打开对话"><h3>对话</h3><p>lament · 2 句 · 最近 19:05</p><div class="n">4 条线程</div></div>
+      <div class="hubcard" data-act="toast" data-msg="打开词条列表"><h3>词条</h3><p>approach、reciprocate、lament…</p><div class="n">7 个 · 23 条原句</div></div>
+      <div class="hubcard" data-act="toast" data-msg="打开文章库"><h3>文章库</h3><p>真题 63 篇 · AI 生成 2 篇</p><div class="n">7 个场次</div></div>
+      <div class="hubcard" data-act="toast" data-msg="打开钉板"><h3>钉板</h3><p>未归档 3 条</p><div class="n">待归位</div></div>
+      <div class="hubcard" data-act="toast" data-msg="打开设置"><h3>设置</h3><p>模型 deepseek-chat · 已校验</p><div class="n">浅色</div></div>
+    </div>
+  </div>`;
+}
+
+function render(){
+  document.documentElement.dataset.theme=dark()?"dark":"light";
+  const v=variant(),s=st();
+  let main = s==="empty"?homeEmpty():(v==="C"?hub():homeFull());
+  let shell;
+  if(v==="A") shell=`<div class="app">${navRail()}<main class="main">${main}</main></div>`;
+  else if(v==="B") shell=`<div class="app top">${navTabs()}<main class="main">${main}</main></div>`;
+  else shell=`<div class="app hub"><main class="main">${main}</main></div>`;
+  $("#app").innerHTML=shell;
+  bind();
+}
+function bind(){
+  document.querySelectorAll("[data-act]").forEach(el=>{if(el._b)return;el._b=true;el.addEventListener("click",()=>toast(el.dataset.msg||""));});
+}
+document.querySelectorAll("[data-variant]").forEach(b=>b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("variant",b.dataset.variant);location.href=u;});
+document.querySelectorAll("[data-state]").forEach(b=>b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("state",b.dataset.state);location.href=u;});
+document.querySelector("[data-theme-toggle]").onclick=()=>{const u=new URL(location.href);u.searchParams.set("theme",dark()?"light":"dark");location.href=u;};
+if(qs("chrome")==="0")document.querySelectorAll(".badge,.pbar-wrap").forEach(el=>el.style.display="none");
+render();
+</script>
+</body>
+</html>
