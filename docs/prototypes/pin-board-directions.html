@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>钉板与未归档 · 原型</title>
+<!--
+  原型：回答 #18。用完即弃。
+  三版放钉板：?variant=A 右抽屉 / B 底部托盘 / C 浮球浮层
+  状态：?state=feedback|board|inbox|source|empty
+-->
+<style>
+  :root{--paper:#FBFAF3;--panel:#FFFEF9;--ink:#1A1A17;--muted:#6E6A5E;--rule:#E6E0D0;
+        --accent:#8F5A1A;--blue:#2F5FA8;--hl:#F2E4BE;--rail:#F8F5EC}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,"Microsoft YaHei UI",sans-serif;font-size:14px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  .serif{font-family:"Source Serif 4",Sitka,Georgia,"Songti SC",serif}
+  .badge{position:fixed;left:16px;bottom:18px;z-index:80;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff}
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#101114;color:#fff;font-size:13px;padding:9px 14px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .18s;z-index:95;display:flex;gap:12px;align-items:center}
+  .toast.on{opacity:1}
+  .toast button{color:#F2C879;text-decoration:underline;text-underline-offset:3px}
+  .bar-state{position:fixed;left:50%;bottom:66px;transform:translateX(-50%);display:flex;gap:4px;padding:4px;background:rgba(16,17,20,.9);border-radius:999px;z-index:90}
+  .bar-state button{font-size:11.5px;color:#cfd2d8;padding:4px 9px;border-radius:999px}
+  .bar-state button.on{background:#fff;color:#101114}
+  .bar-switch{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:5px 6px;background:#101114;color:#fff;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.28);z-index:90;font-size:12.5px}
+  .bar-switch button{width:30px;height:28px;border-radius:999px;color:#cfd2d8}
+  .bar-switch .label{padding:0 10px;white-space:nowrap}
+  .bar-switch .label b{font-weight:600}
+
+  /* ---------- 聊天骨架 ---------- */
+  .shell{display:grid;grid-template-columns:236px minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100vh}
+  .shell.withdrawer{grid-template-columns:236px minmax(0,1fr) 336px}
+  .shell.withdrawer.collapsed{grid-template-columns:236px minmax(0,1fr) 44px}
+  .rail{border-right:1px solid var(--rule);background:var(--rail);padding:18px 12px;overflow:auto}
+  .rail .t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:4px 8px 10px;font-weight:600;display:flex;justify-content:space-between}
+  .rail .t em{font-style:normal;color:var(--accent)}
+  .th{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px}
+  .th:hover{background:#F1ECDD}
+  .th.on{background:var(--panel);box-shadow:0 0 0 1px var(--rule)}
+  .th b{display:block;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px}
+  .th span{font-size:11px;color:var(--muted)}
+  .main{display:flex;flex-direction:column;min-width:0;min-height:0;flex:1;overflow:hidden}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 28px 12px;border-bottom:1px solid var(--rule)}
+  .head h2{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:22px;margin:0 0 3px;font-weight:600}
+  .sub{font-size:12px;color:var(--muted)}
+  .head-act{display:flex;gap:8px;align-items:center}
+  .btn{border:1px solid var(--rule);background:var(--panel);border-radius:8px;padding:6px 11px;font-size:12.5px}
+  .btn:hover{border-color:#CFC5AF;background:#fff}
+  .btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.sm{padding:4px 8px;font-size:11.5px}
+  .btn.ghost{border-color:transparent;color:var(--muted)}
+  .scroll{flex:1;min-height:0;overflow:auto;padding:24px 28px 16px}
+  .inner{max-width:720px;margin:0 auto}
+  .u{display:flex;justify-content:flex-end;margin-bottom:22px}
+  .u .b{max-width:76%;background:#F2ECDD;border:1px solid #E6DECB;border-radius:14px 14px 4px 14px;padding:10px 14px;line-height:1.75}
+  .bot{margin-bottom:22px}
+  .bhead{display:flex;align-items:center;gap:10px;margin-bottom:6px;min-height:20px}
+  .who{font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .ver{display:flex;gap:2px;background:#F1ECDD;border-radius:6px;padding:2px}
+  .ver button{font-size:10.5px;padding:1px 6px;border-radius:4px;color:var(--muted)}
+  .ver button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .think{margin:0 0 8px}
+  .think .th{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+  .think .dot{width:6px;height:6px;border-radius:50%;background:#CFC5AF}
+  .body{line-height:1.85;font-size:15px}
+  .body p{margin:0 0 .75em}
+  .body p:last-child{margin-bottom:0}
+  .acts{display:flex;gap:14px;margin-top:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .acts button{border-bottom:1px solid transparent;color:var(--muted)}
+  .acts button:hover{color:var(--ink);border-color:#C9BFA9}
+  .pinned{position:relative}
+  .pinned::before{content:"";position:absolute;left:-14px;top:2px;bottom:2px;width:2px;background:#E3D3AE;border-radius:2px}
+  .pinbadge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:var(--accent);background:#FBF2DC;border:1px solid #E3D3AE;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+  .composer-wrap{position:relative;z-index:2;background:var(--paper);padding:4px 28px 18px}
+  .composer-in{max-width:720px;margin:0 auto}
+  .ctx{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-bottom:8px;min-height:20px}
+  .chip{background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:2px 9px}
+  .chip.on{background:#FBF2DC;border-color:#E3D3AE;color:var(--accent)}
+  .comp{display:flex;align-items:flex-end;gap:10px;border:1px solid #DED5C1;border-radius:16px;background:var(--panel);padding:10px 12px 10px 14px;box-shadow:0 6px 20px rgba(60,48,30,.05)}
+  .comp textarea{flex:1;border:0;background:transparent;resize:none;font:inherit;line-height:1.6;min-height:24px;max-height:110px;outline:none;padding:4px 0;color:var(--ink)}
+  .plus{width:30px;height:30px;border-radius:8px;color:var(--muted);font-size:18px}
+  .send{width:34px;height:34px;border-radius:10px;background:var(--ink);color:var(--paper);font-size:13px;display:grid;place-items:center}
+  .hint{font-size:11px;color:#9A9384;margin-top:7px;text-align:center}
+  .hint kbd{font:inherit;border:1px solid #E0D8C6;border-radius:4px;padding:0 4px;background:var(--panel)}
+
+  /* ---------- 钉住卡 ---------- */
+  .pincard{border:1px solid var(--rule);background:var(--panel);border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative}
+  .pincard.fresh{border-color:#E3D3AE;box-shadow:0 0 0 2px #FBF2DC}
+  .pincard .q{font-size:12.5px;line-height:1.7;color:#3A362C;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .pincard .prov{font-size:10.5px;color:var(--muted);margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .pincard .prov .dotsep{color:#C9BFA9}
+  .pincard .row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .pincard .row button{font-size:11px;border:1px solid var(--rule);border-radius:6px;padding:2px 8px;color:var(--muted);background:var(--paper)}
+  .pincard .row button:hover{border-color:#CFC5AF;color:var(--ink)}
+  .pincard .row button.warn:hover{border-color:#D9B49C;color:#7A3C1E}
+  .pincard .taget{font-size:10px;color:var(--blue);background:#EDF2FA;border:1px solid #CBD9EE;border-radius:999px;padding:1px 6px}
+  .pincard .dead{color:#9A9384;font-size:10.5px;margin-top:6px}
+  .emptybox{text-align:center;padding:38px 16px;color:var(--muted);font-size:12.5px;line-height:1.8}
+  .emptybox b{display:block;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px;color:var(--ink);font-weight:600;margin-bottom:6px}
+
+  /* ---------- A 右抽屉 ---------- */
+  .drawer{border-left:1px solid var(--rule);background:var(--rail);display:flex;flex-direction:column;min-width:0}
+  .drawer .dh{display:flex;align-items:center;gap:6px;padding:14px 12px 10px}
+  .drawer .dh .tabs{display:flex;gap:2px;background:#EFEADC;border-radius:8px;padding:2px}
+  .drawer .dh .tabs button{font-size:11.5px;padding:3px 9px;border-radius:6px;color:var(--muted)}
+  .drawer .dh .tabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .drawer .dh .fold{margin-left:auto;color:var(--muted);font-size:12px}
+  .drawer .db{flex:1;overflow:auto;padding:2px 12px 12px}
+  .drawer .df{border-top:1px solid var(--rule);padding:9px 12px;font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .drawer.handle{background:var(--rail);display:flex;flex-direction:column;align-items:center;padding-top:14px;gap:8px;cursor:pointer}
+  .drawer.handle .v{writing-mode:vertical-rl;font-size:11.5px;letter-spacing:.12em;color:var(--muted)}
+  .drawer.handle .n{font-size:11px;background:#FBF2DC;border:1px solid #E3D3AE;color:var(--accent);border-radius:999px;padding:1px 6px}
+
+  /* ---------- B 底部托盘 ---------- */
+  .tray{flex:none;border-top:1px solid var(--rule);background:var(--rail);padding:10px 28px 12px}
+  .tray .trow{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .tray .trow .tabs{display:flex;gap:2px;background:#EFEADC;border-radius:8px;padding:2px}
+  .tray .trow .tabs button{font-size:11.5px;padding:3px 9px;border-radius:6px;color:var(--muted)}
+  .tray .trow .tabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .tray .cards{max-width:720px;margin:0 auto;display:flex;gap:8px;overflow:auto;padding-bottom:2px}
+  .tray .pincard{min-width:260px;max-width:260px;margin:0}
+  .tray .emptybox{padding:12px}
+
+  /* ---------- C 浮球浮层 ---------- */
+  .pocketbtn{position:fixed;right:22px;bottom:88px;z-index:70;display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:8px 14px;font-size:12.5px;box-shadow:0 6px 20px rgba(60,48,30,.12)}
+  .pocketbtn b{color:var(--accent)}
+  .pocket{position:fixed;right:22px;bottom:88px;width:376px;max-height:70vh;z-index:75;background:var(--panel);border:1px solid var(--rule);border-radius:14px;box-shadow:0 20px 50px rgba(40,32,20,.18);display:flex;flex-direction:column;overflow:hidden}
+  .pocket .ph{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid var(--rule)}
+  .pocket .ph .tabs{display:flex;gap:2px;background:#EFEADC;border-radius:8px;padding:2px}
+  .pocket .ph .tabs button{font-size:11.5px;padding:3px 9px;border-radius:6px;color:var(--muted)}
+  .pocket .ph .tabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .pocket .pb{overflow:auto;padding:8px 12px 12px}
+  .pocket .pf{border-top:1px solid var(--rule);padding:8px 12px;font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between}
+
+  /* ---------- 来源回跳 ---------- */
+  .srcbanner{display:flex;align-items:center;gap:10px;margin:0 28px;padding:8px 12px;background:#FBF2DC;border:1px solid #E3D3AE;border-radius:9px;font-size:12px;color:#6B4A16}
+  .srcbanner button{color:inherit;text-decoration:underline;text-underline-offset:3px}
+  .srccard{border:1px solid var(--rule);background:var(--panel);border-radius:12px;padding:14px 16px;max-width:720px;margin:0 auto}
+  .srccard h4{margin:0 0 2px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:16px}
+  .srccard .meta{font-size:11px;color:var(--muted);margin-bottom:10px}
+  .srccard .ct{font-size:13.5px;line-height:1.8;color:#3A362C}
+  .srccard .src{margin-top:10px;font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .srccard .src button{color:var(--blue);border-bottom:1px solid #CBD9EE;text-underline-offset:2px}
+  .hit{background:linear-gradient(transparent 55%,#F6E7C3 0);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="badge">原型 · 钉板与未归档</div>
+<div class="toast" id="toast"></div>
+<div class="bar-state" id="barState">
+  <button data-state="feedback">钉住反馈</button>
+  <button data-state="board">钉板</button>
+  <button data-state="inbox">未归档</button>
+  <button data-state="source">来源回跳</button>
+  <button data-state="empty">空</button>
+</div>
+<div class="bar-switch">
+  <button id="prev">◀</button><span class="label"><b id="vkey">A</b> · <span id="vname">右抽屉</span></span><button id="next">▶</button>
+</div>
+
+<script>
+const VARIANTS=[{key:"A",name:"右抽屉"},{key:"B",name:"底部托盘"},{key:"C",name:"浮球浮层"}];
+const PINS=[
+  {id:"p1",text:"<b>lament</b>（v.）是“为已经发生、无法挽回的事悲叹”，语气里带惋惜；complain 只是“说不满”，事情还能不能补救它不管。",round:"第 2 轮",model:"deepseek-chat",time:"19:42",target:"词条 · lament",fresh:true},
+  {id:"p2",text:"书面例：Critics lamented the loss of the city’s last independent bookshop. 换成 complained 就只剩“抱怨书店倒了”，惋惜的分量没了。",round:"第 4 轮",model:"deepseek-chat",time:"19:44",target:"词条 · lament"},
+  {id:"p3",text:"lament = 事情已经定了，只剩惋惜；complain = 事情还没定，先说不满。",round:"第 4 轮",model:"deepseek-chat",time:"19:45",target:"文章 · 2023 年 6 月 第 1 套"},
+];
+const UNFILED=[
+  {id:"u1",text:"口语里 lament 常带一点自嘲：He’s always lamenting that nobody listens to him.",thread:"lament",round:"第 4 轮",time:"18:20"},
+  {id:"u2",text:"gratitude 与 lament 在原文里构成对照：一个是数还剩什么，一个是哀悼失去的东西。",thread:"gratitude",round:"第 2 轮",time:"17:05",dead:true},
+  {id:"u3",text:"reciprocate 的常见搭配：reciprocate a favor / reciprocate with a gesture。",thread:"reciprocate",round:"第 6 轮",time:"昨天"},
+];
+const S={tab:"current",drawerOpen:true,trayOpen:true,pocketOpen:true,selected:{},fresh:"p1"};
+
+const $=(s)=>document.querySelector(s);
+const esc=(s)=>String(s).replace(/[&<>"]/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const qs=(k)=>new URLSearchParams(location.search).get(k);
+const state=()=>qs("state")||"feedback";
+const variant=()=>qs("variant")||"A";
+function toast(msg,undo){
+  const el=$("#toast");el.innerHTML=esc(msg)+(undo?'<button data-act="undo">撤销</button>':"");
+  el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),3000);
+}
+
+/* ---------- 数据视图 ---------- */
+function card(p,opts={}){
+  return `<div class="pincard ${p.fresh?"fresh":""}" data-id="${p.id}">
+    <div class="q">${p.text}</div>
+    <div class="prov">${p.round}<span class="dotsep">·</span>${p.model||"deepseek-chat"}<span class="dotsep">·</span>${p.time}${p.target?`<span class="taget">${p.target}</span>`:""}</div>
+    ${p.dead?`<div class="dead">源对话已删除 · 内容按快照保留</div>`:""}
+    <div class="row">
+      ${opts.unfiled?`
+        <button data-act="file" data-id="${p.id}">归到词条</button>
+        <button data-act="file-article" data-id="${p.id}">归到文章</button>
+        <button class="warn" data-act="discard" data-id="${p.id}">丢弃</button>`
+      :`<button data-act="open" data-id="${p.id}">看原对话</button>
+        <button data-act="move" data-id="${p.id}">换落点</button>
+        <button class="warn" data-act="discard" data-id="${p.id}">删除</button>`}
+    </div>
+  </div>`;
+}
+function currentPins(){return PINS.map(p=>card(p));}
+function unfiledPins(){return UNFILED.length?UNFILED.map(p=>card(p,{unfiled:true})).join(""):`<div class="emptybox"><b>没有未归档</b>钉住的东西都会先落在这里，等你决定归到哪。</div>`;}
+
+/* ---------- 聊天 ---------- */
+function chat(){
+  const src=state()==="source";
+  return `<main class="main">
+    ${src?`<div class="srcbanner"><span>来自词条 lament · 学习内容</span><button data-act="toast" data-msg="回到词条 lament">回词条</button><span style="margin-left:auto;color:#8A6A2E">已定位到第 4 轮，高亮保留到点击别处</span></div>`:""}
+    <header class="head">
+      <div><h2>lament</h2><div class="sub">2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B</div></div>
+      <div class="head-act">
+        <button class="btn sm" data-act="toast" data-msg="打开 lament 词条">在词条中打开</button>
+        <button class="btn sm" data-act="toggle-panel">钉板 ${PINS.length}</button>
+      </div>
+    </header>
+    <div class="scroll"><div class="inner">
+      <div class="u"><div class="b">lament 在这句里是“惋惜”还是“抱怨”？和 gratitude 对照着讲。</div></div>
+      <div class="bot">
+        <div class="bhead"><span class="who">学习助手</span><div class="ver"><button aria-selected="true">v1</button><button>v2</button></div></div>
+        <div class="think"><span class="th"><span class="dot"></span>已思考 9 秒 ▸</span></div>
+        <div class="body"><p class="${S.fresh==="p1"?"pinned":""}" data-pin="p1"><b>lament</b>（v.）是“为已经发生、无法挽回的事悲叹”，语气里带惋惜；<b>complain</b> 只是“说不满”，事情还能不能补救它不管。原文里 Crusoe 不是抱怨处境，是在数自己还剩下的东西，所以用 lament 才接得上后面的感恩。${S.fresh==="p1"?'<span class="pinbadge">已钉 · 词条 lament</span>':""}</p></div>
+        <div class="acts"><button data-act="toast" data-msg="重新生成会新建版本">重新生成</button><button data-act="toast" data-msg="已复制">复制</button></div>
+      </div>
+      <div class="u"><div class="b">再给我两个例句，一个口语一个书面。</div></div>
+      <div class="bot">
+        <div class="bhead"><span class="who">学习助手</span><div class="ver"><button aria-selected="true">v1</button><button>v2</button></div></div>
+        <div class="think"><span class="th"><span class="dot"></span>已思考 27 秒 ▸</span></div>
+        <div class="body">
+          <p class="${src?"hit":""}">先说书面例：<i>Critics lamented the loss of the city’s last independent bookshop.</i> 这里换成 complained 就变成“抱怨书店倒了”，惋惜的分量没了。</p>
+          <p>口语例：<i>He’s always lamenting that nobody listens to him.</i> 口语里 lament 常带一点自嘲，不像 complain 那样中性。</p>
+        </div>
+        <div class="acts"><button data-act="toast" data-msg="重新生成会新建版本">重新生成</button><button data-act="toast" data-msg="已复制">复制</button></div>
+      </div>
+    </div></div>
+    <div class="composer-wrap"><div class="composer-in">
+      <div class="ctx">带上：<span class="chip on">lament</span><span class="chip on">原句 2</span><span class="chip">段落 B</span></div>
+      <div class="comp"><button class="plus" data-act="toast" data-msg="添加上下文">＋</button><textarea placeholder="接着问，或选中一段钉住"></textarea><button class="send" data-act="toast" data-msg="已发送（原型）">↑</button></div>
+      <div class="hint"><kbd>Enter</kbd> 发送 · 选中一段即可钉住 · 钉板随时可收</div>
+    </div></div>
+  </main>`;
+}
+function rail(){
+  const threads=[["lament","2 句 · 1 篇",true],["approach","4 句 · 3 篇",false],["reciprocate","1 句 · 1 篇",false],["sarcasm","3 句 · 2 篇",false],["gratitude","5 句 · 3 篇",false]];
+  return `<aside class="rail">
+    <div class="t"><span>学习线程</span><em>未归档 ${UNFILED.length}</em></div>
+    ${threads.map(([w,m,on])=>`<div class="th ${on?"on":""}"><b>${w}</b><span>${m}</span></div>`).join("")}
+    <button class="th" data-act="toast" data-msg="选择词或文章，开一条新的学习线程" style="border:1px dashed #D8CFBB;color:var(--muted);width:100%;margin-top:10px;font-size:12.5px">＋ 新的学习</button>
+  </aside>`;
+}
+
+/* ---------- A 右抽屉 ---------- */
+function drawerA(){
+  const collapsed=!S.drawerOpen;
+  if(collapsed){
+    return `<aside class="drawer handle" data-act="toggle-panel">
+      <span class="n">${PINS.length}</span><span class="v">钉板</span>
+    </aside>`;
+  }
+  const tab=S.tab;
+  return `<aside class="drawer">
+    <div class="dh">
+      <div class="tabs"><button data-act="tab" data-tab="current" aria-selected="${tab==="current"}">这条线程</button><button data-act="tab" data-tab="unfiled" aria-selected="${tab==="unfiled"}">未归档 ${UNFILED.length}</button></div>
+      <button class="fold" data-act="toggle-panel" title="收起">→</button>
+    </div>
+    <div class="db">${tab==="current"?currentPins():unfiledPins()}</div>
+    <div class="df"><span>${tab==="current"?"这条线程已钉 "+PINS.length+" 条":"未归档 "+UNFILED.length+" 条 · 不计入收集"}</span>${tab==="current"?`<button class="btn sm ghost" data-act="toast" data-msg="在词条 lament 中查看">在词条中查看</button>`:`<button class="btn sm ghost" data-act="toast" data-msg="全部归到 lament">全部归位</button>`}</div>
+  </aside>`;
+}
+/* ---------- B 底部托盘 ---------- */
+function trayB(){
+  if(!S.trayOpen)return "";
+  const tab=S.tab;
+  return `<div class="tray">
+    <div class="trow">
+      <div class="tabs"><button data-act="tab" data-tab="current" aria-selected="${tab==="current"}">这条线程 ${PINS.length}</button><button data-act="tab" data-tab="unfiled" aria-selected="${tab==="unfiled"}">未归档 ${UNFILED.length}</button></div>
+      <span style="margin-left:auto;font-size:11.5px;color:var(--muted)">${tab==="current"?"钉住不打断对话，进来才看":"归位后才算收集"}</span>
+      <button class="btn sm ghost" data-act="toggle-panel">收起</button>
+    </div>
+    <div class="cards">${tab==="current"?currentPins():unfiledPins()}</div>
+  </div>`;
+}
+/* ---------- C 浮球浮层 ---------- */
+function pocketC(){
+  if(!S.pocketOpen)return `<button class="pocketbtn" data-act="toggle-panel">钉板 <b>${PINS.length}</b></button>`;
+  const tab=S.tab;
+  return `<div class="pocket">
+    <div class="ph">
+      <div class="tabs"><button data-act="tab" data-tab="current" aria-selected="${tab==="current"}">这条线程</button><button data-act="tab" data-tab="unfiled" aria-selected="${tab==="unfiled"}">未归档 ${UNFILED.length}</button></div>
+      <button class="btn sm ghost" style="margin-left:auto" data-act="toggle-panel">收起</button>
+    </div>
+    <div class="pb">${tab==="current"?currentPins():unfiledPins()}</div>
+    <div class="pf"><span>${tab==="current"?"已钉 "+PINS.length+" 条":"未归档不算收集"}</span><button data-act="toast" data-msg="打开完整钉板页">打开全部 →</button></div>
+  </div>`;
+}
+/* ---------- 来源页 ---------- */
+function sourcePage(){
+  return `<div class="scroll"><div class="srccard">
+    <h4>lament</h4><div class="meta">词条 · 2 条原句 · 1 篇</div>
+    <div class="ct">lament 与 complain 的分界在“事情还能不能补救”：已发生、无法挽回才用 lament。<br>书面例比口语例更适合收进词条。</div>
+    <div class="src"><span>来源：lament 线程 · 第 4 轮 · deepseek-chat · 19:44</span><button data-act="toast" data-msg="回到那条对话并高亮">看原对话</button></div>
+  </div></div>`;
+}
+
+function render(){
+  const v=variant(),st=state();
+  $("#vkey").textContent=v;$("#vname").textContent=(VARIANTS.find(x=>x.key===v)||VARIANTS[0]).name;
+  document.querySelectorAll("#barState button").forEach(b=>b.classList.toggle("on",b.dataset.state===st));
+  if(st==="inbox")S.tab="unfiled";
+  if(st==="board")S.tab="current";
+  if(st==="empty"){S.tab="unfiled";UNFILED.length=0;}
+  if(st==="source"){
+    $("#app").innerHTML=`<div class="shell withdrawer">${rail()}${chat()}<aside class="drawer"><div class="dh"><span style="font-size:11.5px;color:var(--muted);letter-spacing:.08em">你从这儿来</span></div><div class="db">${sourceCard()}</div></aside></div>`;
+  }else{
+    const widthClass=v==="A"?"shell withdrawer"+(S.drawerOpen?"":" collapsed"):"shell";
+    $("#app").innerHTML=`<div class="${widthClass}">${rail()}
+      <div style="display:flex;flex-direction:column;min-height:0;min-width:0">
+        ${chat()}
+        ${v==="B"?trayB():""}
+      </div>
+      ${v==="A"?drawerA():""}
+    </div>`+(v==="C"?pocketC():"");
+  }
+  bind();
+  if(st==="feedback")toast("已钉到词条 lament",true);
+  if(qs("chrome")==="0")document.querySelectorAll(".badge,.bar-switch,.bar-state").forEach(el=>el.style.display="none");
+}
+function twoColSource(){
+  return `<div style="border-left:1px solid var(--rule);background:var(--rail);padding:16px 14px;font-size:12.5px;color:var(--muted)">学习内容从钉住而来，出处一行常驻。</div>`;
+}
+function sourceCard(){
+  return `<div class="srccard" style="margin:0">
+    <h4>lament</h4><div class="meta">词条 · 2 条原句 · 1 篇</div>
+    <div class="ct">lament 与 complain 的分界在“事情还能不能补救”：已发生、无法挽回才用 lament。<br>书面例比口语例更适合收进词条。</div>
+    <div class="src"><span>来源：第 4 轮 · deepseek-chat · 19:44</span></div>
+    <div class="row" style="display:flex;gap:6px;margin-top:10px">
+      <button class="btn sm" data-act="toast" data-msg="已置顶">置顶</button>
+      <button class="btn sm" data-act="toast" data-msg="就地编辑">编辑</button>
+    </div>
+  </div>`;
+}
+function bind(){
+  document.querySelectorAll("[data-act]").forEach(el=>{
+    if(el._b)return;el._b=true;
+    el.addEventListener("click",()=>{
+      const a=el.dataset.act;
+      if(a==="toast")toast(el.dataset.msg||"");
+      else if(a==="toggle-panel"){S.drawerOpen=!S.drawerOpen;S.trayOpen=!S.trayOpen;S.pocketOpen=!S.pocketOpen;render();}
+      else if(a==="tab"){S.tab=el.dataset.tab;render();}
+      else if(a==="undo")toast("已撤销钉住");
+      else if(a==="file"){toast("已归到词条 lament");}
+      else if(a==="file-article"){toast("已挂到这篇文章");}
+      else if(a==="discard"){toast("已丢弃，可撤销",true);}
+      else if(a==="open"){toast("定位到那条对话");}
+      else if(a==="move"){toast("换落点：词条 / 文章 / 未归档");}
+    });
+  });
+}
+$("#prev").onclick=()=>{const i=VARIANTS.findIndex(x=>x.key===variant());const v=VARIANTS[(i-1+3)%3];const u=new URL(location.href);u.searchParams.set("variant",v.key);location.href=u;};
+$("#next").onclick=()=>{const i=VARIANTS.findIndex(x=>x.key===variant());const v=VARIANTS[(i+1)%3];const u=new URL(location.href);u.searchParams.set("variant",v.key);location.href=u;};
+document.querySelectorAll("#barState button").forEach(b=>b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("state",b.dataset.state);location.href=u;});
+render();
+</script>
+</body>
+</html>
