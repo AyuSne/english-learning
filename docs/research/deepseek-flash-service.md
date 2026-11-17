@@ -72,5 +72,18 @@ HTTP 401
 - 429 / 402 / 5xx 的真实报文（本次没有构造出来）。
 - 流式中途取消后服务端行为（本地断开即可，未测计费截断）。
 - 图片输入的实际格式与可用性。
-- **pi-ai 1.5.2 是否把 `reasoning_content` 映射成 `thinking` 块**——这决定我们是直接用它的块模型，还是自己解析 SSE。到实现阶段必须先核实这一条。
+- **pi-ai 1.5.2 的映射已核实**，见 §8。
 - 这批密钥为临时测试用，未写进仓库；测试结束后应轮换。
+
+## 8. pi-ai 1.5.2 实测（2026-11-17 补）
+
+方式：`npm i @earendil-works/pi-ai@1.5.2`，用内置 provider `@earendil-works/pi-ai/providers/deepseek` 直连，真实调用 `deepseek-flash`。
+
+**结论一：会映射。** `reasoning_content` 被解析成 `thinking` 块，事件是 `thinking_start` / `thinking_delta` / `thinking_end`，正文是 `text_delta`；最终消息的 `content` 是 `[thinking, text]`，`usage.reasoning` 记录思维链 token 数。把带 `thinking` 的 assistant 消息整条放回上下文再请求也正常（`compat.requiresReasoningContentOnAssistantMessages: true`，会自动补 `reasoning_content`）。
+
+**结论二：默认不给你思维链。** 不传 `reasoningEffort` 时，pi-ai 对 DeepSeek 发的是 `thinking: { type: "disabled" }`，事件里完全没有 thinking，`usage.reasoning` 为 0。要开必须传 `reasoningEffort: "low" | "high" | "max"`（模型 `thinkingLevelMap` 只映射这三个，`minimal`/`medium` 为 `null`），服务端才收到 `thinking: { type: "enabled" }` + `reasoning_effort`。
+
+源码位置：`dist/api/openai-completions.js` 的 `thinkingFormat === "deepseek"` 分支（传 `reasoningEffort` 才 `enabled`，否则 `disabled`），以及 `dist/providers/data/deepseek.json` 里两个模型的 `thinkingLevelMap`。
+
+**对实现的含义**：聊天层必须显式传思考强度，否则界面上那块思维链永远不出现；这与"模型本身有思维链"是两件事。
+
