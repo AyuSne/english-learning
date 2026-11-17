@@ -18,13 +18,15 @@ const repositoryRoot = process.cwd()
  * 测试进程可能从宿主继承 ELECTRON_RUN_AS_NODE（比如从 Electron 应用里跑命令），
  * 那会让 electron.exe 变成纯 Node，窗口起不来。启动被测应用前把它与 NODE_OPTIONS 去掉。
  */
-function applicationEnvironment(): Record<string, string> {
+function applicationEnvironment(
+  overrides: Record<string, string> = {}
+): Record<string, string> {
   const environment: Record<string, string> = {}
   for (const [key, value] of Object.entries(process.env)) {
     if (key === 'ELECTRON_RUN_AS_NODE' || key === 'NODE_OPTIONS') continue
     if (value !== undefined) environment[key] = value
   }
-  return environment
+  return { ...environment, ...overrides }
 }
 
 export type AppHandle = {
@@ -36,6 +38,8 @@ export type AppHandle = {
 export type LaunchOptions = {
   packaged?: boolean
   userDataDirectory?: string
+  /** 覆盖被测应用的模型配置，指向本地 SSE stub。 */
+  env?: Record<string, string>
 }
 
 type Fixtures = {
@@ -47,11 +51,14 @@ type Fixtures = {
  * 开发产物：入口是仓库根，Playwright 用已安装的 Electron 直接拉起 `out/main/index.js`。
  * userData 指到临时目录，每次用例都是干净的一本库。
  */
-async function launchDevelopmentApp(userDataDirectory: string): Promise<AppHandle> {
+async function launchDevelopmentApp(
+  userDataDirectory: string,
+  environment: Record<string, string>
+): Promise<AppHandle> {
   const electronApp = await electron.launch({
     args: ['.', `--user-data-dir=${userDataDirectory}`],
     cwd: repositoryRoot,
-    env: applicationEnvironment()
+    env: environment
   })
   const page = await electronApp.firstWindow()
   await page.waitForLoadState('domcontentloaded')
@@ -116,14 +123,17 @@ async function stopProcess(child: ChildProcess): Promise<void> {
  * 打包产物不能用 Playwright 的 Electron 启动器（它只在用 npm 里那份 Electron 时才注入
  * 自己的主进程 loader），所以按远程调试端口连上去，渲染出来的 DOM 一样能断言。
  */
-async function launchPackagedApp(userDataDirectory: string): Promise<AppHandle> {
+async function launchPackagedApp(
+  userDataDirectory: string,
+  environment: Record<string, string>
+): Promise<AppHandle> {
   const executablePath = packagedExecutablePath()
   const port = await findFreePort()
   const endpoint = `http://127.0.0.1:${port}`
   const child = spawn(
     executablePath,
     [`--user-data-dir=${userDataDirectory}`, `--remote-debugging-port=${port}`],
-    { stdio: 'ignore', env: applicationEnvironment() }
+    { stdio: 'ignore', env: environment }
   )
 
   let browser: Browser
@@ -185,9 +195,10 @@ export const test = base.extend<Fixtures>({
     const launched: AppHandle[] = []
     await use(async (options: LaunchOptions = {}) => {
       const directory = options.userDataDirectory ?? userDataDirectory
+      const environment = applicationEnvironment(options.env)
       const handle = options.packaged
-        ? await launchPackagedApp(directory)
-        : await launchDevelopmentApp(directory)
+        ? await launchPackagedApp(directory, environment)
+        : await launchDevelopmentApp(directory, environment)
       launched.push(handle)
       return handle
     })

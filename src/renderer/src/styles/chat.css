@@ -1,0 +1,363 @@
+/* ---------- 对话页 ---------- */
+
+.main-chat {
+  overflow: hidden;
+  padding: 0;
+}
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-header {
+  flex: none;
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.chat-header-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.chat-title {
+  font-family: var(--font-serif);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.chat-subtitle {
+  margin-top: 4px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.chat-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 32px 8px;
+}
+
+.chat-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.chat-empty {
+  margin: auto;
+  max-width: 560px;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.chat-empty-title {
+  font-family: var(--font-serif);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.chat-empty-lede {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ---------- 消息 ---------- */
+
+.chat-message-user {
+  align-self: flex-end;
+  max-width: min(80%, 560px);
+  padding: 10px 14px;
+  border-radius: 14px;
+  /* token 表没有单列对话气泡色；沿用麦色底，保持与原型一致的观感。 */
+  background: var(--bed-select);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 27px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.assistant-message {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assistant-label {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.assistant-text {
+  font-size: 15px;
+  line-height: 27px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.waiting-dots {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.waiting-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ink-3);
+  animation: waiting-dot 1.2s ease-in-out infinite;
+}
+
+.waiting-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.waiting-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ---------- 思维链 ---------- */
+
+.thinking {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.thinking-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+}
+
+.thinking-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--amber);
+}
+
+.thinking-toggle[aria-expanded="true"] .thinking-dot {
+  animation: thinking-pulse 1.2s ease-in-out infinite;
+}
+
+.thinking-action {
+  color: var(--ink-2);
+}
+
+.thinking-body {
+  max-height: 160px;
+  overflow-y: auto;
+  padding: 4px 0 4px 12px;
+  border-left: 2px solid var(--rule);
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 状态与错误 ---------- */
+
+.status-chip {
+  align-self: flex-start;
+  padding: 0 8px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--sunken);
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.message-error {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--danger-bed);
+}
+
+.message-error-title {
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.message-error-detail {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.message-error-action {
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.message-error-request {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.message-error-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.button-small {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* ---------- 输入区 ---------- */
+
+.chat-composer {
+  flex: none;
+  padding: 16px 32px 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.composer-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.composer-box {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 10px 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--panel);
+  transition: border-color 150ms ease-out;
+}
+
+.composer-box:focus-within {
+  border-color: var(--ink-2);
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.composer-input {
+  flex: 1;
+  min-height: 48px;
+  max-height: 160px;
+  padding: 10px 0;
+  border: 0;
+  /* 焦点画在整只输入框上，见 .composer-box:focus-within。 */
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.composer-input::placeholder {
+  color: var(--ink-3);
+}
+
+.send-button {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 16px;
+  line-height: 1;
+  transition: background 150ms ease-out;
+}
+
+.send-button-stop {
+  background: var(--danger);
+}
+
+.stop-square {
+  width: 10px;
+  height: 10px;
+  border-radius: 4px;
+  background: var(--paper);
+}
+
+.composer-hint {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: right;
+}
+
+@keyframes waiting-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes thinking-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .chat-header,
+  .chat-scroll,
+  .chat-composer {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waiting-dots span,
+  .thinking-toggle[aria-expanded="true"] .thinking-dot {
+    animation: none;
+  }
+
+  .composer-box,
+  .send-button {
+    transition: none;
+  }
+}

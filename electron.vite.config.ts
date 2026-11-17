@@ -48,7 +48,16 @@ function contentSecurityPolicy(): Plugin {
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: {
+      rollupOptions: {
+        output: {
+          // pi-ai 只导出 ESM；主进程产物是 CJS，靠 import() 在运行时加载。
+          // 这个选项让 Rollup 原样保留 import()，不要改写成 require()。
+          dynamicImportInCjs: true
+        }
+      }
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()]

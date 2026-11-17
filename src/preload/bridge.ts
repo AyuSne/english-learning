@@ -1,12 +1,17 @@
 import {
   isIpcChannel,
+  isIpcEventChannel,
   type IpcBridge,
   type IpcChannel,
-  type IpcContract
+  type IpcContract,
+  type IpcEventChannel,
+  type IpcEventContract
 } from '../shared/ipc-contract'
 
 export interface IpcRendererLike {
   invoke(channel: string, payload?: unknown): Promise<unknown>
+  on(channel: string, listener: (event: unknown, payload: unknown) => void): void
+  removeListener(channel: string, listener: (event: unknown, payload: unknown) => void): void
 }
 
 /**
@@ -20,6 +25,20 @@ export function createBridge(ipc: IpcRendererLike): IpcBridge {
         throw new Error(`Unknown IPC channel: ${String(channel)}`)
       }
       return (await ipc.invoke(channel, payload)) as IpcContract[C]['result']
+    },
+
+    subscribe<E extends IpcEventChannel>(
+      event: E,
+      handler: (payload: IpcEventContract[E]) => void
+    ): () => void {
+      if (!isIpcEventChannel(event)) {
+        throw new Error(`Unknown IPC event channel: ${String(event)}`)
+      }
+      const listener = (_event: unknown, payload: unknown): void => {
+        handler(payload as IpcEventContract[E])
+      }
+      ipc.on(event, listener)
+      return () => ipc.removeListener(event, listener)
     }
   }
 }

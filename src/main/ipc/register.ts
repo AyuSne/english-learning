@@ -1,8 +1,27 @@
-import { IPC_CHANNELS, type IpcChannel } from '../../shared/ipc-contract'
+import type {
+  IpcChannel,
+  IpcContract,
+  IpcEventChannel,
+  IpcEventContract
+} from '../../shared/ipc-contract'
+import { IPC_CHANNELS } from '../../shared/ipc-contract'
 
-export type IpcHandler = (payload: unknown) => unknown | Promise<unknown>
+/**
+ * 主进程处理函数能拿到的调用方信息：对话流事件直接推回发起请求的那个窗口。
+ * `send` 的 channel 与载荷都从事件契约推导，避免在调用处硬编码字符串。
+ */
+export interface IpcInvokeEvent {
+  sender: {
+    send<C extends IpcEventChannel>(channel: C, payload: IpcEventContract[C]): void
+  }
+}
 
-export type IpcHandlers = { [Channel in IpcChannel]: IpcHandler }
+export type IpcHandler<C extends IpcChannel = IpcChannel> = (
+  payload: IpcContract[C]['payload'],
+  event: IpcInvokeEvent
+) => IpcContract[C]['result'] | Promise<IpcContract[C]['result']>
+
+export type IpcHandlers = { [C in IpcChannel]: IpcHandler<C> }
 
 export interface IpcMainLike {
   handle(
@@ -32,6 +51,12 @@ export function registerIpcHandlers(ipc: IpcMainLike, handlers: IpcHandlers): vo
   }
 
   for (const channel of IPC_CHANNELS) {
-    ipc.handle(channel, (_event, payload) => handlers[channel](payload))
+    ipc.handle(channel, (event, payload) => {
+      const handler = handlers[channel] as (
+        payload: unknown,
+        event: IpcInvokeEvent
+      ) => unknown
+      return handler(payload, event as IpcInvokeEvent)
+    })
   }
 }

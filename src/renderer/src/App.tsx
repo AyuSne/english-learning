@@ -3,6 +3,7 @@ import type { AppBootstrap } from '../../shared/types'
 import { loadBootstrap } from './api'
 import { GlobalNav } from './components/GlobalNav'
 import { routeLabel } from './navigation'
+import { ChatPage } from './pages/ChatPage'
 import { HomePage } from './pages/HomePage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { useRoute } from './use-route'
@@ -51,8 +52,14 @@ export function App() {
   return (
     <div className="app">
       <GlobalNav route={route} />
-      <main className="main">
-        {route === 'home' ? <HomePage /> : <PlaceholderPage title={currentLabel} />}
+      <main className={route === 'chat' ? 'main main-chat' : 'main'}>
+        {route === 'home' ? (
+          <HomePage />
+        ) : route === 'chat' ? (
+          <ChatPage />
+        ) : (
+          <PlaceholderPage title={currentLabel} />
+        )}
       </main>
     </div>
   )

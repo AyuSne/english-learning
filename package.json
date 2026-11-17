@@ -26,6 +26,7 @@
     "verify": "npm test && npm run test:e2e && npm run test:e2e:packaged"
   },
   "dependencies": {
+    "@earendil-works/pi-ai": "1.5.2",
     "better-sqlite3": "^13.2.0"
   },
   "devDependencies": {
