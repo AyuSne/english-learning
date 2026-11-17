@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>聊天页状态 · 原型</title>
+<!--
+  原型：回答 #17“聊天页的具体状态”。用完即弃。
+  三版：?variant=A|B|C —— A 消息工具条（左栏 + hover 出条）/ B 常驻右轨（每消息一条窄轨）/
+        C 划词浮卡（无线程栏，段落卡片，右下钉板）。
+  状态：?state=talk|empty|stream|error|pin|sel ；默认 talk，底部条可切。
+  共同前提（已定）：宽单栏、底部输入框、每段可钉、落点三态、未归档不计入收集。
+-->
+<style>
+  :root{--paper:#FBFAF3;--panel:#FFFEF9;--ink:#1A1A17;--muted:#6E6A5E;--rule:#E6E0D0;
+        --accent:#8F5A1A;--blue:#2F5FA8;--hl:#F2E4BE;--rail:#F8F5EC}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,"Microsoft YaHei UI",sans-serif;font-size:14px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  .serif{font-family:"Source Serif 4",Sitka,Georgia,"Songti SC",serif}
+  .badge{position:fixed;left:16px;bottom:18px;z-index:80;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff}
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#101114;color:#fff;font-size:13px;padding:9px 14px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .18s;z-index:95;display:flex;gap:12px;align-items:center}
+  .toast.on{opacity:1}
+  .toast button{color:#F2C879;text-decoration:underline;text-underline-offset:3px}
+  .bar-switch{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:5px 6px;background:#101114;color:#fff;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.28);z-index:90;font-size:12.5px}
+  .bar-switch button{width:30px;height:28px;border-radius:999px;color:#cfd2d8}
+  .bar-switch button:hover{background:#24262c;color:#fff}
+  .bar-switch .label{padding:0 10px;white-space:nowrap}
+  .bar-switch .label b{font-weight:600}
+  .bar-state{position:fixed;left:50%;bottom:66px;transform:translateX(-50%);display:flex;gap:4px;padding:4px;background:rgba(16,17,20,.9);border-radius:999px;z-index:90}
+  .bar-state button{font-size:11.5px;color:#cfd2d8;padding:4px 9px;border-radius:999px}
+  .bar-state button.on{background:#fff;color:#101114}
+
+  /* ---------- 共用 ---------- */
+  .shell{display:grid;grid-template-columns:236px minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100vh}
+  .rail{border-right:1px solid var(--rule);background:var(--rail);padding:18px 12px;overflow:auto}
+  .rail .t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:4px 8px 10px;font-weight:600;display:flex;justify-content:space-between}
+  .rail .t em{font-style:normal;color:var(--accent)}
+  .th{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px}
+  .th:hover{background:#F1ECDD}
+  .th.on{background:var(--panel);box-shadow:0 0 0 1px var(--rule)}
+  .th b{display:block;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px}
+  .th span{font-size:11px;color:var(--muted)}
+  .newth{width:100%;margin-top:12px;padding:9px;border:1px dashed #D8CFBB;border-radius:8px;font-size:12.5px;color:var(--muted)}
+  .main{display:flex;flex-direction:column;min-width:0;min-height:0;position:relative;overflow:hidden}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 32px 14px;border-bottom:1px solid var(--rule)}
+  .head h2{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:23px;margin:0 0 3px;font-weight:600}
+  .sub{font-size:12px;color:var(--muted)}
+  .head-act{display:flex;gap:8px;align-items:center}
+  .btn{border:1px solid var(--rule);background:var(--panel);border-radius:8px;padding:6px 11px;font-size:12.5px}
+  .btn:hover{border-color:#CFC5AF;background:#fff}
+  .btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.sm{padding:4px 8px;font-size:11.5px}
+  .scroll{flex:1;min-height:0;overflow:auto;padding:28px 32px 20px}
+  .inner{max-width:760px;margin:0 auto}
+  .u{display:flex;justify-content:flex-end;margin-bottom:24px}
+  .u .b{max-width:76%;background:#F2ECDD;border:1px solid #E6DECB;border-radius:14px 14px 4px 14px;padding:10px 14px;line-height:1.75}
+  .bot{margin-bottom:26px;position:relative}
+  .bhead{display:flex;align-items:center;gap:10px;margin-bottom:8px;min-height:20px}
+  .who{font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .ver{display:flex;gap:2px;background:#F1ECDD;border-radius:6px;padding:2px}
+  .ver button{font-size:10.5px;padding:1px 6px;border-radius:4px;color:var(--muted)}
+  .ver button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .tag{font-size:10.5px;padding:2px 7px;border-radius:999px;border:1px solid #E3D3AE;background:#FBF2DC;color:var(--accent)}
+  .tag.blue{background:#EDF2FA;border-color:#CBD9EE;color:var(--blue)}
+  .body{line-height:1.85;font-size:15px}
+  .body p{margin:0 0 .8em}
+  .body p:last-child{margin-bottom:0}
+  .body b{font-weight:600}
+  .quote{border-left:2px solid #D8CFBB;padding:2px 0 2px 12px;margin:12px 0 0;font-size:13px;line-height:1.75;color:#4A4438}
+  .quote .src{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+  .acts{display:flex;gap:14px;margin-top:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .acts button{color:var(--muted);border-bottom:1px solid transparent;padding:0}
+  .acts button:hover{color:var(--ink);border-color:#C9BFA9}
+  .acts .pinned{color:var(--accent);border-color:#E3D3AE}
+  .caret{display:inline-block;width:7px;height:15px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(2) infinite;margin-left:2px}
+  @keyframes blink{50%{opacity:0}}
+  .fold{border-top:1px dashed var(--rule);margin-top:12px;padding-top:10px;font-size:12.5px;color:var(--muted);display:flex;gap:12px;align-items:center}
+  .fold button{color:var(--accent)}
+  .err{border:1px solid #E7CFC0;background:#FDF4EE;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.7;color:#7A3C1E;margin-top:10px}
+  .err .row{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .err .row button{font-size:12px;color:#7A3C1E;border-bottom:1px solid #D9B49C}
+  .composer-wrap{position:relative;z-index:2;background:var(--paper);padding:6px 32px 20px}
+  .composer-in{max-width:760px;margin:0 auto}
+  .ctx{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-bottom:8px;min-height:22px}
+  .chip{background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:2px 9px}
+  .chip.on{background:#FBF2DC;border-color:#E3D3AE;color:var(--accent)}
+  .ctx .adj{margin-left:auto;color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+  .comp{display:flex;align-items:flex-end;gap:10px;border:1px solid #DED5C1;border-radius:16px;background:var(--panel);padding:10px 12px 10px 14px;box-shadow:0 6px 20px rgba(60,48,30,.05)}
+  .comp:focus-within{border-color:#C9BFA9}
+  .comp textarea{flex:1;border:0;background:transparent;resize:none;font:inherit;line-height:1.6;min-height:24px;max-height:120px;outline:none;padding:4px 0;color:var(--ink)}
+  .plus{width:30px;height:30px;border-radius:8px;color:var(--muted);font-size:18px}
+  .plus:hover{background:#F3EEE1}
+  .send{width:34px;height:34px;border-radius:10px;background:var(--ink);color:var(--paper);font-size:13px;display:grid;place-items:center}
+  .send.stop{background:#B4432A}
+  .hint{font-size:11px;color:#9A9384;margin-top:7px;text-align:center}
+  .hint kbd{font:inherit;border:1px solid #E0D8C6;border-radius:4px;padding:0 4px;background:var(--panel)}
+  .empty{max-width:600px;margin:12vh auto 0;text-align:center}
+  .empty h3{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:27px;font-weight:600;margin:0 0 8px}
+  .empty p{font-size:13.5px;color:var(--muted);margin:0 0 22px;line-height:1.75}
+  .starters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+  .starters button{background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:7px 13px;font-size:12.5px}
+  .starters button:hover{border-color:#CFC5AF}
+
+  /* ---------- A 消息工具条 ---------- */
+  .a .bot{padding-left:0}
+  .a .bar{position:absolute;top:-30px;right:0;display:flex;gap:4px;padding:3px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;box-shadow:0 4px 14px rgba(60,48,30,.08);opacity:0;transition:opacity .12s}
+  .a .bot:hover .bar,.a .bar.keep{opacity:1}
+  .a .bar button{font-size:11.5px;padding:4px 8px;border-radius:5px;color:var(--muted)}
+  .a .bar button:hover{background:#F3EEE1;color:var(--ink)}
+
+  /* ---------- B 常驻轨 ---------- */
+  .b .bot{position:relative;padding-right:112px}
+  .b .acts{display:none}
+  .b .mrail{position:absolute;right:0;top:0;bottom:0;width:92px;border-left:1px solid var(--rule);padding-left:12px;text-align:left;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+  .b .mrail .n{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:16px;color:#9A9384}
+  .b .mrail .st{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+  .b .mrail button{font-size:11px;color:var(--muted);border-bottom:1px solid transparent}
+  .b .mrail button:hover{color:var(--ink)}
+  .b .mrail .pin{corder:1px solid var(--rule);border:1px solid var(--rule);border-radius:6px;padding:2px 7px;background:var(--panel)}
+  .b .mrail .pin.has{background:#FBF2DC;border-color:#E3D3AE;color:var(--accent)}
+
+  /* ---------- C 划词浮卡 ---------- */
+  .shell.c{grid-template-columns:minmax(0,1fr);height:100vh}
+  .c .top{display:flex;align-items:center;gap:8px;padding:12px 28px;border-bottom:1px solid var(--rule);overflow:auto}
+  .c .top .tid{font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:16px;margin-right:8px}
+  .c .top .tchip{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);white-space:nowrap}
+  .c .top .tchip.on{background:var(--panel);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+  .c .scroll{padding-top:24px}
+  .card{border:1px solid var(--rule);background:var(--panel);border-radius:12px;padding:12px 14px 8px;margin-bottom:10px;position:relative}
+  .card .pinbtn{position:absolute;top:10px;right:10px;font-size:11px;color:var(--muted);border:1px solid var(--rule);border-radius:6px;padding:2px 7px;background:var(--paper)}
+  .c .card p:first-child{padding-right:66px}
+  .c .acts button[data-act="pin"]{display:none}
+  .card .pinbtn.has{background:#FBF2DC;border-color:#E3D3AE;color:var(--accent)}
+  .selbar{position:fixed;z-index:60;display:flex;gap:2px;padding:3px;background:#101114;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+  .selbar button{font-size:12px;color:#e8e5dc;padding:4px 9px;border-radius:5px}
+  .selbar button:hover{background:#24262c}
+  .boardbtn{position:fixed;right:22px;bottom:78px;z-index:70;display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:8px 14px;font-size:12.5px;box-shadow:0 6px 20px rgba(60,48,30,.12)}
+  .boardbtn b{color:var(--accent)}
+
+  /* ---------- 钉住弹层 ---------- */
+  .pop{position:fixed;z-index:100;width:360px;background:var(--panel);border:1px solid var(--rule);border-radius:12px;box-shadow:0 20px 50px rgba(40,32,20,.18);padding:14px 16px}
+  .pop h4{margin:0 0 3px;font-family:"Source Serif 4",Sitka,Georgia,serif;font-size:15px}
+  .pop .cap{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+  .pop .lb{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 0 5px}
+  .pop .opt{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:12.5px;cursor:pointer}
+  .pop .opt:hover{background:#F5F0E3}
+  .pop .opt[aria-selected="true"]{background:#FBF2DC;box-shadow:inset 0 0 0 1px #E3D3AE}
+  .pop .opt i{width:14px;height:14px;border-radius:50%;border:1px solid #CFC5AF;display:inline-block;flex:none}
+  .pop .opt[aria-selected="true"] i{border-color:var(--accent);background:radial-gradient(circle at center,var(--accent) 0 4px,transparent 5px)}
+  .pop .opt small{color:var(--muted);font-size:11px;margin-left:auto}
+  .pop .prov{border-top:1px dashed var(--rule);margin-top:12px;padding-top:9px;font-size:11px;color:var(--muted);line-height:1.7}
+  .pop .row{display:flex;gap:8px;margin-top:12px;align-items:center}
+  .pop .row .btn{border-radius:8px}
+  .pop .esc{margin-left:auto;font-size:11px;color:var(--muted)}
+
+  /* ---------- 钉住标记 ---------- */
+  .pinned-mark{background:linear-gradient(transparent 58%,#F6E7C3 0);border-radius:2px;padding:0 1px}
+  .pinned-bar{position:relative}
+  .pinned-bar::before{content:"";position:absolute;left:-14px;top:2px;bottom:2px;width:2px;background:#E3D3AE;border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="badge">原型 · 聊天页状态</div>
+<div class="toast" id="toast"></div>
+<div class="bar-state" id="barState">
+  <button data-state="talk">对话</button>
+  <button data-state="empty">空线程</button>
+  <button data-state="stream">流式</button>
+  <button data-state="error">出错</button>
+  <button data-state="pin">钉住弹层</button>
+</div>
+<div class="bar-switch">
+  <button id="prev" aria-label="上一版">◀</button>
+  <span class="label"><b id="vkey">A</b> · <span id="vname">消息工具条</span></span>
+  <button id="next" aria-label="下一版">▶</button>
+</div>
+
+<script>
+const VARIANTS=[
+  {key:"A",name:"消息工具条"},
+  {key:"B",name:"常驻右轨"},
+  {key:"C",name:"划词浮卡"},
+];
+const LONG=[
+  "先把两个词放到同一根轴上：<b>lament</b> 是“为已经发生、无法挽回的事悲叹”，带惋惜；<b>complain</b> 只是“说不满”，事情还有没有救它不管。",
+  "书面例：<i>Critics lamented the loss of the city’s last independent bookshop.</i> 这里换成 complained 就变成“抱怨书店倒了”，惋惜的分量没了。",
+  "口语例：<i>He’s always lamenting that nobody listens to him.</i> 口语里 lament 常带一点自嘲或夸张，不像 complain 那样中性。",
+  "再看搭配：lament 后面常接 the loss / the death / the decline / the fact that…；complain 常接 about / that…。",
+  "和原文那句对照：Crusoe 并非在抱怨处境，而是在数自己还剩下的东西——所以作者不用 complain，用 lament 才显得他是在“哀悼失去”，而后转向感恩。",
+  "一句话记法：lament = 事情已经定了，只剩惋惜；complain = 事情还没定，先说不满。",
+];
+const S={
+  left:false,
+  streaming:false,
+  stopped:[true],          // 第 5 条是已停止
+  longOpen:false,
+  err:false,
+  pinOpen:null,            // {kind:"bar",mi} | {kind:"sel",x,y,text}
+  pinTarget:"entry",
+  pinned:{},               // "mi:pi" -> target
+  selBar:null,             // {x,y,text}
+  ver:{1:"v2",3:"v2"},
+  board:3,
+  editBanner:false,
+};
+
+const $=(s)=>document.querySelector(s);
+const esc=(s)=>String(s).replace(/[&<>"]/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(msg,undo){
+  const el=$("#toast");
+  el.innerHTML=esc(msg)+(undo?'<button data-act="undo-pin">撤销</button>':"");
+  el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),2600);
+}
+function stateQS(){return new URLSearchParams(location.search).get("state")||"talk";}
+function variantKey(){return new URLSearchParams(location.search).get("variant")||"A";}
+
+/* ---------- 消息 ---------- */
+function userMsg(text,mi){
+  return `<div class="u"><div class="b">${esc(text)}</div></div>`;
+}
+function botHead(mi,opts={}){
+  return `<div class="bhead"><span class="who">学习助手</span>
+    ${opts.ver?`<div class="ver">${(opts.verList||["v1","v2"]).map(v=>`<button data-act="ver" data-mi="${mi}" data-v="${v}" aria-selected="${S.ver[mi]===v}">${v}</button>`).join("")}</div>`:""}
+    ${opts.stopped?'<span class="tag">已停止 · 未完成</span>':""}
+    ${opts.unsaved?'<span class="tag blue">未保存</span>':""}
+  </div>`;
+}
+function longBody(){
+  const shown=S.longOpen?LONG:LONG.slice(0,3);
+  return shown.map((t,i)=>`<p data-para="${i}" class="${S.pinned["3:"+i]?"pinned-bar":""}">${t}</p>`).join("")
+    + (S.longOpen?"":`<div class="fold">还有 3 段 · 全文约 620 字 <button data-act="long">展开全文</button></div>`)
+    + (S.longOpen?`<div class="fold"><button data-act="long">收起</button><span>已展开 6 段</span></div>`:"");
+}
+function botMsg(mi,bodyHTML,opts={}){
+  return `<div class="bot" data-mi="${mi}">
+    ${botHead(mi,opts)}
+    <div class="body">${bodyHTML}</div>
+    ${opts.quote||""}
+    <div class="acts">${opts.acts||""}</div>
+  </div>`;
+}
+const Q1=`<div class="quote">“Left alone on an unknown island with no apparent prospect of rescue or escape, Crusoe has much to <b>lament</b>.”<span class="src">2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B · 第 6 页</span></div>`;
+function acts(mi,opts={}){
+  const p=S.pinned[mi+":0"];
+  return `<button data-act="pin" data-mi="${mi}" class="${p?"pinned":""}">${p?"已钉住":"钉住"}</button>
+    <button data-act="regen" data-mi="${mi}">重新生成</button>
+    <button data-act="toast" data-msg="已复制">复制</button>
+    ${opts.extra||""}`;
+}
+
+/* ---------- 状态拼接 ---------- */
+function threadBody(v){
+  if(stateQS()==="empty"){
+    return `<div class="empty">
+      <h3>今天学点什么？</h3>
+      <p>这是一条还没有挂对象的线程：聊完把满意的段落钉住，再决定它归到哪个词条。</p>
+      <div class="starters">
+        <button data-act="toast" data-msg="选择要学的词">从一个词开始</button>
+        <button data-act="toast" data-msg="从最近读的文章开始">从一篇文章开始</button>
+        <button data-act="toast" data-msg="打开钉板">看看未归档的 3 条</button>
+      </div>
+    </div>`;
+  }
+  const m1=userMsg("lament 在这句里是“惋惜”还是“抱怨”？和 gratitude 对照着讲。",0);
+  const m2=botMsg(1,
+    `<p><b>lament</b>（v.）是“为已经发生、无法挽回的事悲叹”，语气里带惋惜；<b>complain</b> 只是“说不满”，事情还能不能补救它不管。原文里 Crusoe 不是抱怨处境，是在数自己还剩下的东西，所以用 lament 才接得上后面的感恩。</p>`,
+    {ver:true,quote:Q1,acts:acts(1)});
+  const m3=userMsg("再给我两个例句，一个口语一个书面。",2);
+  const m4=botMsg(3,longBody(),{ver:true,acts:acts(3,{extra:`<button data-act="toast" data-msg="继续生成">继续生成</button>`})});
+  const m5=S.stopped[0]?botMsg(4,
+    `<p>先看一句书面例：<i>Critics lamented the loss of the city’s last independent bookshop.</i></p>
+     <p>这里如果换成 complained，就只剩“抱怨书店倒了”，惋惜的分量没了。</p>`,
+    {ver:true,stopped:true,unsaved:true,acts:`<button data-act="pin" data-mi="4">钉住已输出的部分</button><button data-act="gen" data-mi="4">继续生成</button><button data-act="regen" data-mi="4">重新生成</button>`}):"";
+  const streamBlock=S.streaming?botMsg(9,
+    `<p>先从搭配说起：lament 后面常接 <i>the loss / the death / the decline</i>，语气比 complain 重，也更书面。</p>
+     <p>口语里它常带一点自嘲：<i>He’s always lamenting that nobody listens to him.</i><span class="caret"></span></p>`,
+    {acts:`<span style="color:var(--muted)">正在生成 · 约 1,240 字</span>`}):"";
+  const errBlock=S.err?`<div class="err">服务繁忙（503），这次生成中断了。已输出的 2 段保留在本条里，可标“未完成”后保存。
+      <div class="row"><button data-act="retry">重试</button><button data-act="toast" data-msg="换上更小的模型，或稍后再试">换模型</button><button data-act="toast" data-msg="打开设置 · 模型">查看设置</button></div></div>`:"";
+  return m1+m2+m3+m4+m5+streamBlock+errBlock;
+}
+function composer(placeholder){
+  const streaming=S.streaming;
+  const empty=stateQS()==="empty";
+  return `<div class="composer-wrap"><div class="composer-in">
+    <div class="ctx">${empty?'还没有带上上下文':'带上：<span class="chip on">lament</span><span class="chip on">原句 2</span><span class="chip">段落 B</span><span class="chip">笔记 0</span>'}
+      <button class="adj" data-act="toast" data-msg="展开上下文选择">调整</button></div>
+    ${S.editBanner?`<div class="ctx" style="color:var(--accent)">正在编辑第 1 条提问 · 发送后会新建分支，原来的回答保留 <button class="adj" style="color:inherit" data-act="cancel-edit">取消</button></div>`:""}
+    <div class="comp">
+      <button class="plus" data-act="toast" data-msg="添加上下文">＋</button>
+      <textarea id="ta" placeholder="${placeholder}"></textarea>
+      ${streaming?'<button class="send stop" data-act="stop">■</button>':'<button class="send" data-act="send">↑</button>'}
+    </div>
+    <div class="hint"><kbd>Enter</kbd> 发送 · <kbd>Shift</kbd>+<kbd>Enter</kbd> 换行 · <kbd>Esc</kbd> 停止 · 选中一段即可钉住</div>
+  </div></div>`;
+}
+
+/* ---------- A ---------- */
+function renderA(){
+  const rail=thRail();
+  $("#app").innerHTML=`<div class="shell a">
+    ${rail}
+    <main class="main">
+      ${head()}
+      <div class="scroll"><div class="inner">${threadBody("A")}</div></div>
+      ${composer("问点什么… 例如：这两个例句里哪个更常用于书面语？")}
+    </main>
+  </div>`;
+  // hover 工具条
+  document.querySelectorAll(".a .bot").forEach(bot=>{
+    const mi=bot.dataset.mi;
+    if(bot.querySelector(".bar"))return;
+    const bar=document.createElement("div");bar.className="bar";
+    bar.innerHTML=`<button data-act="pin" data-mi="${mi}">钉住</button><button data-act="copy" data-mi="${mi}">复制</button><button data-act="regen" data-mi="${mi}">重写</button>`;
+    bot.appendChild(bar);
+  });
+}
+/* ---------- B ---------- */
+function renderB(){
+  const rail=thRail();
+  $("#app").innerHTML=`<div class="shell b">
+    ${rail}
+    <main class="main">
+      ${head()}
+      <div class="scroll"><div class="inner">${threadBody("B")}</div></div>
+      ${composer("问点什么… 例如：这两个例句里哪个更常用于书面语？")}
+    </main>
+  </div>`;
+  document.querySelectorAll(".b .bot").forEach(bot=>{
+    const mi=bot.dataset.mi;
+    const n=bot.parentElement.querySelectorAll(".bot").length;
+    const rail=document.createElement("div");rail.className="mrail";
+    const has=S.pinned[mi+":0"];
+    rail.innerHTML=`<span class="n">${(+mi)+1}</span>
+      <span>${has?"已钉 · 词条":"未钉"}</span>
+      <div class="st">
+        <button class="pin ${has?"has":""}" data-act="pin" data-mi="${mi}">钉住</button>
+        <button data-act="regen" data-mi="${mi}">重写</button>
+        <button data-act="toast" data-msg="已复制">复制</button>
+      </div>`;
+    bot.appendChild(rail);
+  });
+}
+/* ---------- C ---------- */
+function renderC(){
+  $("#app").innerHTML=`<div class="shell c">
+    <main class="main">
+      <div class="top">
+        <span class="tid">${stateQS()==="empty"?"新的学习":"lament"}</span>
+        <span class="tchip on">${stateQS()==="empty"?"未挂对象":"当前"}</span><span class="tchip">approach</span><span class="tchip">sarcasm</span><span class="tchip">gratitude</span>
+        <span style="margin-left:auto;font-size:11.5px;color:var(--muted)">${stateQS()==="empty"?"":'2 句 · 1 篇 · '}未归档 3</span>
+      </div>
+      <div class="scroll"><div class="inner">${threadBody("C")}</div></div>
+      ${composer("选中一段或整条，点“钉住”收进词条 / 文章 / 未归档")}
+    </main>
+  </div>
+  <button class="boardbtn" data-act="toast" data-msg="打开钉板：3 条未归档">钉板 <b>${S.board}</b></button>`;
+  // 段落卡片化
+  document.querySelectorAll(".c .body").forEach(body=>{
+    const mi=body.closest(".bot").dataset.mi;
+    const paras=[...body.children].filter(el=>el.tagName==="P");
+    if(!paras.length)return;
+    const card=document.createElement("div");card.className="card";
+    paras.forEach((p,i)=>{
+      p.className=(S.pinned[mi+":"+i]?"pinned-bar":"");
+    });
+    body.parentElement.insertBefore(card,body);
+    card.appendChild(body);
+    const btn=document.createElement("button");
+    btn.className="pinbtn"+(S.pinned[mi+":0"]?" has":"");
+    btn.textContent=S.pinned[mi+":0"]?"已钉":"钉这条";
+    btn.dataset.act="pin";btn.dataset.mi=mi;
+    card.appendChild(btn);
+  });
+}
+function thRail(){
+  const empty=stateQS()==="empty";
+  const threads=[["lament","2 句 · 1 篇",true],["approach","4 句 · 3 篇",false],["reciprocate","1 句 · 1 篇",false],["sarcasm","3 句 · 2 篇",false],["gratitude","5 句 · 3 篇",false]];
+  return `<aside class="rail">
+    <div class="t"><span>学习线程</span><em>未归档 3</em></div>
+    ${threads.map(([w,m,on])=>`<div class="th ${on&&!empty?"on":""}"><b>${w}</b><span>${m}</span></div>`).join("")}
+    ${empty?`<div class="th on"><b>新的学习</b><span>未挂对象</span></div>`:""}
+    <button class="newth" data-act="toast" data-msg="选择词或文章，开一条新的学习线程">＋ 新的学习</button>
+  </aside>`;
+}
+function head(){
+  const empty=stateQS()==="empty";
+  return `<header class="head">
+    <div><h2>${empty?"新的学习":"lament"}</h2><div class="sub">${empty?"未挂任何对象 · 从词或文章开始":"2023 年 6 月 · 第 1 套 · 长篇匹配 · 段 B"}</div></div>
+    <div class="head-act">
+      ${empty?'<button class="btn sm" data-act="toast" data-msg="选一个词">选一个词</button>':'<button class="btn sm" data-act="toast" data-msg="打开 lament 词条">在词条中打开</button>'}
+      <button class="btn sm" data-act="toast" data-msg="钉板：3 条未归档">钉板 3</button>
+    </div>
+  </header>`;
+}
+
+/* ---------- 钉住弹层 ---------- */
+function popHTML(){
+  const p=S.pinOpen;
+  const cap=p.text?`“${esc(p.text.slice(0,46))}${p.text.length>46?"…":""}”`:"整条回答";
+  return `<div class="pop" id="pop" style="left:${Math.min(p.x,innerWidth-380)}px;top:${Math.min(p.y,innerHeight-330)}px">
+    <h4>钉到哪儿</h4>
+    <div class="cap">${cap}</div>
+    <div class="lb">落点</div>
+    <div class="opt" data-target="entry" aria-selected="${S.pinTarget==="entry"}"><i></i>词条 · lament<small>默认</small></div>
+    <div class="opt" data-target="article" aria-selected="${S.pinTarget==="article"}"><i></i>文章 · 2023 年 6 月 第 1 套 长篇匹配<small>挂这篇</small></div>
+    <div class="opt" data-target="unfiled" aria-selected="${S.pinTarget==="unfiled"}"><i></i>未归档<small>稍后归位</small></div>
+    <div class="prov">出处：第 4 轮 · deepseek-chat · 19:42<br>当时的原句 2 条 · 段 B 第 6 页</div>
+    <div class="row"><button class="btn pri" data-act="pinok">钉住</button><button class="btn" data-act="pincancel">取消</button><span class="esc">Enter 确认 · Esc 取消</span></div>
+  </div>`;
+}
+
+/* ---------- 渲染 ---------- */
+function render(){
+  const key=variantKey();
+  const v=VARIANTS.find(x=>x.key===key)||VARIANTS[0];
+  $("#vkey").textContent=v.key;$("#vname").textContent=v.name;
+  document.querySelectorAll("#barState button").forEach(b=>b.classList.toggle("on",b.dataset.state===stateQS()));
+  if(stateQS()==="stream")S.streaming=true;
+  if(stateQS()==="error")S.err=true;
+  if(v.key==="A")renderA();else if(v.key==="B")renderB();else renderC();
+  if(new URLSearchParams(location.search).get("debug")==="1"){
+    const sc=document.querySelector(".scroll"),mn=document.querySelector(".main"),cw=document.querySelector(".composer-wrap");
+    const m5=document.querySelector('[data-mi="4"]');
+    const d=document.createElement("div");
+    d.style.cssText="position:fixed;right:8px;bottom:8px;z-index:999;background:#000;color:#0f0;font:11px monospace;padding:6px;white-space:pre";
+    d.textContent=`win ${innerHeight}\nmain ${mn?mn.offsetHeight:"-"}\nscrollH ${sc?sc.clientHeight:"-"} top ${sc?Math.round(sc.getBoundingClientRect().top):"-"}\ncomposerTop ${cw?Math.round(cw.getBoundingClientRect().top):"-"}\nm5Top ${m5?Math.round(m5.getBoundingClientRect().top):"-"}`;
+    document.body.appendChild(d);
+  }
+  if(new URLSearchParams(location.search).get("chrome")==="0"){
+    document.querySelectorAll(".badge,.bar-switch,.bar-state").forEach(el=>el.style.display="none");
+  }
+  // 状态注入
+  if(stateQS()==="stream")S.streaming=true;
+  if(stateQS()==="pin"&&!S.pinOpen){S.pinOpen={kind:"auto",mi:"3",x:innerWidth/2-180,y:innerHeight/2-150,text:"Critics lamented the loss of the city’s last independent bookshop."};}
+  if(stateQS()==="error")S.err=true;
+  if(stateQS()==="pin"||S.pinOpen){
+    document.body.insertAdjacentHTML("beforeend",popHTML());
+    document.querySelectorAll(".pop .opt").forEach(o=>o.addEventListener("click",()=>{S.pinTarget=o.dataset.target;repaint();}));
+  }
+  if(S.selBar){document.body.insertAdjacentHTML("beforeend",`<div class="selbar" style="left:${S.selBar.x}px;top:${S.selBar.y}px"><button data-act="spin" data-text="${esc(S.selBar.text)}">钉住</button><button data-act="toast" data-msg="已复制">复制</button><button data-act="toast" data-msg="解释这句">解释</button></div>`);}
+  bind();
+  if(!S.autoScrolled&&["stream","error"].includes(stateQS())){
+    const sc=document.querySelector(".scroll");if(sc){sc.scrollTop=sc.scrollHeight;S.autoScrolled=true;}
+  }
+}
+function repaintComposer(){
+  const wrap=document.querySelector(".composer-in");
+  if(!wrap)return;
+  const streaming=S.streaming;
+  const sendBtn=wrap.querySelector(".send");
+  if(sendBtn){
+    sendBtn.className="send"+(streaming?" stop":"");
+    sendBtn.textContent=streaming?"■":"↑";
+    sendBtn.dataset.act=streaming?"stop":"send";
+  }
+}
+function repaintError(){
+  const inner=document.querySelector(".inner");
+  if(!inner||inner.querySelector(".err"))return;
+  inner.insertAdjacentHTML("beforeend",`<div class="err">服务繁忙（503），这次生成中断了。已输出的 2 段保留在本条里，可标“未完成”后保存。
+      <div class="row"><button data-act="retry">重试</button><button data-act="toast" data-msg="换上更小的模型，或稍后再试">换模型</button><button data-act="toast" data-msg="打开设置 · 模型">查看设置</button></div></div>`);
+}
+function bind(){
+  document.querySelectorAll("[data-act]").forEach(el=>{
+    if(el._b)return;el._b=true;
+    el.addEventListener("click",(e)=>{
+      const a=el.dataset.act;
+      if(a==="toast")toast(el.dataset.msg||"");
+      else if(a==="send"){toast("已发送（原型，不调模型）");}
+      else if(a==="stop"){S.streaming=false;repaintComposer();toast("已停止 · 保留已输出内容");}
+      else if(a==="retry"){S.err=false;toast("重试中…（原型）");render();}
+      else if(a==="gen"){toast("继续生成（原型）");}
+      else if(a==="long"){S.longOpen=!S.longOpen;render();}
+      else if(a==="regen"){toast("重新生成会产生新版本，旧钉住不受影响");}
+      else if(a==="ver"){S.ver[el.dataset.mi]=el.dataset.v;render();}
+      else if(a==="pin"){openPin(e,el.dataset.mi);}
+      else if(a==="spin"){openSelPin(el.dataset.text,e);}
+      else if(a==="pinok"){confirmPin();}
+      else if(a==="pincancel"){S.pinOpen=null;render();}
+      else if(a==="undo-pin"){toast("已撤销钉住");}
+      else if(a==="cancel-edit"){S.editBanner=false;render();}
+    });
+  });
+  const ta=document.querySelector("#ta");
+  if(ta){
+    ta.addEventListener("keydown",(e)=>{
+      if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();toast("已发送（原型，不调模型）");}
+      if(e.key==="Escape"&&S.streaming){S.streaming=false;repaintComposer();toast("已停止 · 保留已输出内容");}
+    });
+  }
+  document.addEventListener("keydown",(e)=>{
+    if(e.key==="Escape"&&S.pinOpen){S.pinOpen=null;render();}
+    if(e.key==="Enter"&&S.pinOpen&&!e.shiftKey){confirmPin();}
+  },{once:true});
+  // 划词
+  document.onmouseup=(e)=>{
+    if(document.querySelector(".pop"))return;
+    const sel=String(getSelection());
+    if(sel.trim().length>4&&!e.target.closest(".pop")){
+      const r=getSelection().getRangeAt(0).getBoundingClientRect();
+      S.selBar={x:r.left+r.width/2-70,y:r.top-38,text:sel.trim()};
+      render();
+    }else if(S.selBar){S.selBar=null;render();}
+  };
+}
+function openPin(e,mi){
+  const r=(e.target.closest("[data-mi]")||e.target).getBoundingClientRect();
+  S.pinOpen={kind:"bar",mi,x:r.left,y:r.bottom+8,text:""};
+  render();
+}
+function openSelPin(text,e){
+  S.selBar=null;
+  S.pinOpen={kind:"sel",mi:"3",x:innerWidth/2-180,y:innerHeight/2-150,text};
+  render();
+}
+function confirmPin(){
+  const p=S.pinOpen;if(!p)return;
+  const key=(p.mi||"3")+":0";
+  S.pinned[key]=S.pinTarget;
+  if(S.pinTarget==="unfiled")S.board++;
+  const label=S.pinTarget==="entry"?"已钉到词条 lament":S.pinTarget==="article"?"已挂到这篇文章":"已放进未归档";
+  S.pinOpen=null;S.pinTarget="entry";
+  toast(label,true);
+  render();
+}
+
+/* ---------- 切换 ---------- */
+function go(n){
+  const cur=variantKey();
+  const i=VARIANTS.findIndex(v=>v.key===cur);
+  const v=VARIANTS[(i+n+VARIANTS.length)%VARIANTS.length];
+  const u=new URL(location.href);u.searchParams.set("variant",v.key);location.href=u.toString();
+}
+$("#prev").onclick=()=>go(-1);
+$("#next").onclick=()=>go(1);
+document.querySelectorAll("#barState button").forEach(b=>{
+  b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("state",b.dataset.state);location.href=u.toString();};
+});
+document.addEventListener("keydown",(e)=>{
+  if(e.target.matches("input,textarea,[contenteditable]"))return;
+  if(e.key==="ArrowLeft")go(-1);
+  if(e.key==="ArrowRight")go(1);
+});
+render();
+</script>
+</body>
+</html>
