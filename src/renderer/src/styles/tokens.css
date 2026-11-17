@@ -1,0 +1,49 @@
+/**
+ * 界面 token。数值照抄 docs/ui-tokens.md，不要在组件里另写颜色或字号。
+ */
+:root {
+  --paper: #fbfaf3;
+  --panel: #fffef9;
+  --sunken: #f8f5ec;
+  --ink: #1a1a17;
+  --ink-2: #6e6a5e;
+  --ink-3: #a9a399;
+  --amber: #8f5a1a;
+  --amber-underline: #8a6a28;
+  --blue: #2f5fa8;
+  --bed-select: #f2e4be;
+  --bed-pin: #fbf2dc;
+  --line-pin: #e3d3ae;
+  --danger: #b4432a;
+  --danger-bed: #fdf4ee;
+  --rule: #e6e0d0;
+  --hover: #f3eee1;
+  /* 悬停时边框加深一档：浅色下即 token 表里的 #CFC5AF。 */
+  --rule-hover: color-mix(in srgb, var(--rule) 87%, var(--ink));
+
+  --font-ui: "Segoe UI Variable", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
+  --font-serif: "Source Serif 4", Sitka, Georgia, "Songti SC", serif;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: #1a1a1e;
+  --panel: #22221f;
+  --sunken: #141416;
+  --ink: #e8e4da;
+  --ink-2: #a8a29a;
+  --ink-3: #6e6a62;
+  --amber: #d9a441;
+  --amber-underline: #c9a15a;
+  --blue: #7fa7e8;
+  --bed-select: #4a3b1e;
+  --bed-pin: #332a15;
+  --line-pin: #5a4a2a;
+  --danger: #e08a72;
+  --danger-bed: #2e1f1a;
+  --rule: #33322d;
+  --hover: #2a2a26;
+
+  color-scheme: dark;
+}

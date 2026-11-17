@@ -1,0 +1,248 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* ---------- 启动态 ---------- */
+
+.boot {
+  height: 100%;
+  background: var(--paper);
+}
+
+.boot-error {
+  max-width: 720px;
+  padding: 48px 32px;
+}
+
+.boot-error h1 {
+  margin-bottom: 12px;
+  font-family: var(--font-serif);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.boot-error p {
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ---------- 外壳 ---------- */
+
+.app {
+  display: grid;
+  grid-template-columns: 238px minmax(0, 1fr);
+  height: 100%;
+}
+
+.globals {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 16px 8px;
+  background: var(--sunken);
+  border-right: 1px solid var(--rule);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 16px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: left;
+  transition:
+    background 150ms ease-out,
+    color 150ms ease-out;
+}
+
+.nav-item:hover {
+  background: var(--hover);
+}
+
+.nav-item[aria-current="page"] {
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+.nav-foot {
+  margin-top: auto;
+  padding: 8px 12px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.main {
+  min-height: 0;
+  overflow: auto;
+  padding: 32px 32px 48px;
+}
+
+/* ---------- 页面 ---------- */
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.home-title,
+.page-title {
+  font-family: var(--font-serif);
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.home-title {
+  margin-bottom: 12px;
+}
+
+.page-title {
+  margin-bottom: 12px;
+}
+
+.home-lede {
+  max-width: 520px;
+  margin-bottom: 24px;
+  color: var(--ink-2);
+}
+
+.home-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.button {
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 13px;
+  line-height: 18px;
+  transition:
+    background 150ms ease-out,
+    border-color 150ms ease-out;
+}
+
+.button:hover {
+  border-color: var(--rule-hover);
+  background: var(--hover);
+}
+
+.button-primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button-primary:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.home-section {
+  margin-bottom: 24px;
+}
+
+.section-label {
+  margin-bottom: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.empty-line {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-item,
+  .button {
+    transition: none;
+  }
+}

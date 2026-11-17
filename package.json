@@ -1,0 +1,47 @@
+{
+  "name": "english-learning",
+  "productName": "素读",
+  "version": "0.1.0",
+  "private": true,
+  "description": "六级语境学习桌面应用：读真题、选词、对话与钉住",
+  "main": "out/main/index.js",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web && npm run typecheck:e2e",
+    "typecheck:node": "tsc -p tsconfig.node.json --noEmit",
+    "typecheck:web": "tsc -p tsconfig.web.json --noEmit",
+    "typecheck:e2e": "tsc -p tsconfig.e2e.json --noEmit",
+    "test": "npm run typecheck && npm run test:unit",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "pretest:e2e": "npm run build",
+    "test:e2e": "playwright test --project=dev",
+    "package": "npm run build && node scripts/package.mjs",
+    "pretest:e2e:packaged": "npm run package",
+    "test:e2e:packaged": "playwright test --project=packaged",
+    "verify": "npm test && npm run test:e2e && npm run test:e2e:packaged"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.2.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "@playwright/test": "^1.65.1",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "electron": "^45.3.3",
+    "electron-vite": "^5.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.8",
+    "vitest": "^5.1.0"
+  }
+}
