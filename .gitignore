@@ -8,6 +8,7 @@ node_modules/
 # 构建与测试产物
 out/
 release/
+release-installer/
 test-results/
 playwright-report/
 *.db

@@ -1,0 +1,45 @@
+appId: com.ayusne.english-learning
+productName: 素读
+copyright: Copyright © 2026 AyuSne
+
+directories:
+  output: release-installer
+  buildResources: build
+
+# 复用 npm 里已经装好的 Electron，避免每次打包重新下载。
+electronDist: node_modules/electron/dist
+
+# better-sqlite3 已经在 node_modules 里按 Electron 45 编好，不再重编。
+npmRebuild: false
+asar: true
+asarUnpack:
+  - "**/*.node"
+
+files:
+  - out/**/*
+  - package.json
+
+# 词典是 SQLite，native 驱动读不了 asar 内的路径，放到 resources/dictionary。
+extraResources:
+  - from: assets/dictionary
+    to: dictionary
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
+  artifactName: sudu-${version}-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: 素读
+  uninstallDisplayName: 素读
