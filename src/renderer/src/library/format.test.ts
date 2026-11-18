@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { formatDay, progressText, readingPointText } from './format'
 
 describe('progressText', () => {

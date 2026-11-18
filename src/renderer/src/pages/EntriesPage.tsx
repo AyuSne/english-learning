@@ -46,15 +46,6 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
         if (sequence !== listRequest.current) return
         setListing(value)
         setListError(null)
-        setSelectedId((current) => {
-          if (value.entries.length === 0) {
-            return value.total === 0 ? null : current
-          }
-          if (current !== null && value.entries.some((entry) => entry.id === current)) {
-            return current
-          }
-          return value.entries[0]?.id ?? null
-        })
       },
       (error: unknown) => {
         if (sequence === listRequest.current) {
@@ -179,8 +170,6 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
     refresh()
   }
 
-  const otherEntries = (allEntries?.entries ?? []).filter((entry) => entry.id !== page?.entry.id)
-
   return (
     <div className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
       <EntryList
@@ -244,13 +233,10 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
                       <SentenceRow
                         key={sentence.id}
                         sentence={sentence}
-                        otherEntries={otherEntries}
                         busy={deleting}
                         onBack={() => openReading(sentence, false)}
                         onReselect={() => openReading(sentence, true)}
                         onRequestDelete={() => requestDelete(sentence)}
-                        onChanged={(message) => refresh(message)}
-                        onEntryGone={entryGone}
                       />
                     ))}
                   </ul>

@@ -1,4 +1,4 @@
-﻿import { existsSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { expect, test } from '../fixtures/app'
 import { callUnknownChannel, readBootstrap, readBridgeSurface } from '../fixtures/bridge'
 import { databasePath, readSchemaVersion, writeSetting } from '../fixtures/database'

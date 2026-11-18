@@ -292,13 +292,10 @@ describe('moveLearningNote', () => {
 })
 
 describe('列表里的学习内容', () => {
-  it('搜索命中学习内容正文，筛选按有/无学习内容分开', () => {
+  it('筛选按有/无学习内容分开，总数不受筛选影响', () => {
     const { approachId } = entryIds()
     createLearningNote(database, { entryId: approachId, body: '近义词辨析：method' })
 
-    expect(readEntryList(database, { query: '近义词' }).entries.map((e) => e.mainForm)).toEqual([
-      'approach'
-    ])
     expect(readEntryList(database, { filter: 'has-notes' }).entries.map((e) => e.mainForm)).toEqual([
       'approach'
     ])

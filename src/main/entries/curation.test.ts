@@ -277,10 +277,9 @@ describe('moveEntrySentence', () => {
     expect(result.from).toBeNull()
     expect(result.to).toMatchObject({ id: approachId, sentenceCount: 3 })
     expect(readEntryPage(database, contextId)).toBeNull()
-    expect(result.marks.find((mark) => mark.id === contextSentenceId)).toMatchObject({
-      entryId: approachId,
-      entryMainForm: 'approach'
-    })
+    expect(
+      readArticleCollections(database, article.id).find((mark) => mark.id === contextSentenceId)
+    ).toMatchObject({ entryId: approachId, entryMainForm: 'approach' })
   })
 
   it('拆到新词条会按原句的词形建一个', () => {

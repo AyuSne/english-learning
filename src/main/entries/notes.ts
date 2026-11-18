@@ -8,6 +8,7 @@ import type {
   UpdateLearningNoteRequest
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
+import { entryExists, hasPinnedNote } from './entry-state'
 
 /**
  * 学习内容：词条下的一段材料，只保留最终稿。
@@ -64,10 +65,6 @@ export function readLearningNotes(database: AppDatabase, entryId: string): Learn
     )
     .all(entryId) as NoteRow[]
   return rows.map(toLearningNote)
-}
-
-function entryExists(database: AppDatabase, entryId: string): boolean {
-  return database.prepare('SELECT 1 FROM word_entry WHERE id = ?').get(entryId) !== undefined
 }
 
 /** 写一条学习内容。正文两端空白去掉，全是空白就不保存。 */
@@ -179,10 +176,7 @@ export function moveLearningNote(
     return { status: 'rejected', reason: 'entry' }
   }
 
-  const pinnedTaken =
-    database
-      .prepare('SELECT 1 FROM learning_note WHERE entry_id = ? AND pinned = 1 AND id <> ?')
-      .get(request.entryId, existing.id) !== undefined
+  const pinnedTaken = hasPinnedNote(database, request.entryId)
   const pinned = existing.pinned === 1 && !pinnedTaken ? 1 : 0
   const now = options.now ?? new Date().toISOString()
 

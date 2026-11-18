@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   entryHeadlineText,
   entryListMetaText,
+  noteExcerpt,
   noteSourceText,
   sentenceSourceText
 } from './format'
@@ -45,6 +46,16 @@ describe('noteSourceText', () => {
 
   it('从对话钉进来的内容标「来自对话」', () => {
     expect(noteSourceText({ source: 'pin', createdAt })).toBe('来自对话 · 2026-11-18')
+  })
+})
+
+describe('noteExcerpt', () => {
+  it('压掉换行，短的照原样', () => {
+    expect(noteExcerpt('第一行\n第二行')).toBe('第一行 第二行')
+  })
+
+  it('超长就截断加省略号', () => {
+    expect(noteExcerpt('一'.repeat(30), 10)).toBe(`${'一'.repeat(10)}…`)
   })
 })
 

@@ -1,4 +1,4 @@
-﻿import { expect, test } from '../fixtures/app'
+import { expect, test } from '../fixtures/app'
 import { readBootstrap } from '../fixtures/bridge'
 import { databasePath, readSchemaVersion } from '../fixtures/database'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'

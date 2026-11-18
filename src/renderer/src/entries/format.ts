@@ -36,6 +36,12 @@ export function noteSourceText(note: Pick<LearningNote, 'source' | 'createdAt'>)
   return day === '' ? origin : `${origin} · ${day}`
 }
 
+/** 选学习内容移动时的一行摘要：压掉换行，太长就截断。 */
+export function noteExcerpt(body: string, limit = 28): string {
+  const text = body.replace(/\s+/g, ' ').trim()
+  return text.length <= limit ? text : `${text.slice(0, limit)}…`
+}
+
 /** 词条标题下的一行：「已收集 6 条原句 · 来自 3 篇 · 最近 2026-11-15」。 */
 export function entryHeadlineText(
   entry: Pick<EntrySummary, 'sentenceCount' | 'articleCount' | 'lastCollectedAt'>

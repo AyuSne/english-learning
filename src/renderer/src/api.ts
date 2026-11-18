@@ -108,19 +108,19 @@ export function loadEntrySentenceTarget(
 }
 
 /** 合并两个词条，源词条的原句与学习内容迁到目标。 */
-export function mergeWordEntries(request: MergeEntriesRequest): Promise<MergeEntriesResult> {
+export function mergeEntries(request: MergeEntriesRequest): Promise<MergeEntriesResult> {
   return window.api.invoke('entries:merge', request)
 }
 
 /** 换主词形，只能从已收集的词形里选。 */
-export function saveEntryMainForm(
+export function changeEntryMainForm(
   request: ChangeMainFormRequest
 ): Promise<ChangeMainFormResult> {
   return window.api.invoke('entries:main-form', request)
 }
 
 /** 把一条原句拆到别的词条或新词条。 */
-export function moveEntrySentenceTo(
+export function moveEntrySentence(
   request: MoveEntrySentenceRequest
 ): Promise<MoveEntrySentenceResult> {
   return window.api.invoke('entries:move-sentence', request)
@@ -133,26 +133,26 @@ export function reselectEntrySentence(
   return window.api.invoke('entries:reselect-sentence', request)
 }
 
-export function createEntryNote(
+export function createLearningNote(
   request: CreateLearningNoteRequest
 ): Promise<LearningNoteResult> {
   return window.api.invoke('entries:create-note', request)
 }
 
-export function updateEntryNote(
+export function updateLearningNote(
   request: UpdateLearningNoteRequest
 ): Promise<LearningNoteResult> {
   return window.api.invoke('entries:update-note', request)
 }
 
-export function pinEntryNote(request: PinLearningNoteRequest): Promise<LearningNoteResult> {
+export function pinLearningNote(request: PinLearningNoteRequest): Promise<LearningNoteResult> {
   return window.api.invoke('entries:pin-note', request)
 }
 
-export function deleteEntryNote(noteId: string): Promise<LearningNoteResult> {
+export function deleteLearningNote(noteId: string): Promise<LearningNoteResult> {
   return window.api.invoke('entries:delete-note', { noteId })
 }
 
-export function moveEntryNote(request: MoveLearningNoteRequest): Promise<LearningNoteResult> {
+export function moveLearningNote(request: MoveLearningNoteRequest): Promise<LearningNoteResult> {
   return window.api.invoke('entries:move-note', request)
 }

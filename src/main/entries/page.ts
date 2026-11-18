@@ -30,8 +30,8 @@ type EntryListRow = {
 }
 
 /**
- * 左栏列表。搜索同时匹配主词形、已收原句正文与学习内容；`total` 始终是库里的
- * 词条总数，搜索与筛选只改 `entries`。
+ * 左栏列表。搜索匹配主词形与已收原句正文；`total` 始终是库里的词条总数，
+ * 搜索与筛选只改 `entries`。
  */
 export function readEntryList(
   database: AppDatabase,
@@ -59,17 +59,13 @@ export function readEntryList(
                    AND s.ordinal = es.sentence_ordinal
                  WHERE es.entry_id = we.id AND instr(lower(s.text), ?) > 0
               )
-           OR EXISTS (
-                SELECT 1 FROM learning_note ln
-                 WHERE ln.entry_id = we.id AND instr(lower(ln.body), ?) > 0
-              )
         ORDER BY ${
           sort === 'alpha'
             ? 'lower(we.main_form) ASC, we.id ASC'
             : 'we.last_collected_at DESC, we.id DESC'
         }`
     )
-    .all(query, query, query, query) as EntryListRow[]
+    .all(query, query, query) as EntryListRow[]
 
   const total = (database.prepare('SELECT COUNT(*) AS count FROM word_entry').get() as {
     count: number

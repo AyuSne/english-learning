@@ -213,8 +213,6 @@ export type MoveEntrySentenceResult =
       /** 源词条；拆走最后一条原句时它连学习内容一起删掉，为 null。 */
       from: EntrySummary | null
       to: EntrySummary
-      articleId: string
-      marks: ReadingCollectionMark[]
     }
   | { status: 'missing' }
   | { status: 'rejected'; reason: 'same-entry' | 'duplicate' }

@@ -10,13 +10,14 @@ import type {
   ReselectEntrySentenceResult
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
-import { refreshLastCollected } from './entry-state'
+import { entryExists, hasPinnedNote, refreshLastCollected } from './entry-state'
 import {
   readArticleCollections,
   readEntrySentence,
   readEntrySummary,
   resolveEntryKey
 } from './queries'
+import { readEntrySelection } from './selection'
 
 /**
  * 词条页里会改动归属的动作：换主词形、合并词条、把原句拆到别处、重新圈定。
@@ -40,10 +41,6 @@ function readStoredSentence(database: AppDatabase, id: string): StoredSentenceRo
          FROM entry_sentence WHERE id = ?`
     )
     .get(id) as StoredSentenceRow | undefined
-}
-
-function entryExists(database: AppDatabase, entryId: string): boolean {
-  return database.prepare('SELECT 1 FROM word_entry WHERE id = ?').get(entryId) !== undefined
 }
 
 function findEntryIdByKey(database: AppDatabase, key: string): string | null {
@@ -149,10 +146,7 @@ export function mergeEntries(
     const notes = database
       .prepare('SELECT id, pinned FROM learning_note WHERE entry_id = ?')
       .all(source.id) as { id: string; pinned: number }[]
-    let pinnedTaken =
-      database
-        .prepare('SELECT 1 FROM learning_note WHERE entry_id = ? AND pinned = 1')
-        .get(target.id) !== undefined
+    let pinnedTaken = hasPinnedNote(database, target.id)
     for (const note of notes) {
       const pinned = note.pinned === 1 && !pinnedTaken ? 1 : 0
       if (pinned === 1) {
@@ -266,9 +260,7 @@ export function moveEntrySentence(
   return {
     status: 'moved',
     from: readEntrySummary(database, stored.entry_id),
-    to,
-    articleId: stored.article_id,
-    marks: readArticleCollections(database, stored.article_id)
+    to
   }
 }
 
@@ -297,35 +289,11 @@ export function reselectEntrySentence(
     return { status: 'missing' }
   }
 
-  if (!Number.isInteger(request.start) || !Number.isInteger(request.end)) {
-    return { status: 'rejected', reason: 'range' }
+  const read = readEntrySelection(paragraph.text, sentence, request.start, request.end)
+  if (read.status === 'rejected') {
+    return read
   }
-  if (request.start < sentence.char_start || request.start >= sentence.char_end) {
-    return { status: 'rejected', reason: 'range' }
-  }
-  if (request.end > sentence.char_end || request.end < request.start) {
-    return { status: 'rejected', reason: 'range' }
-  }
-  if (request.end === request.start) {
-    return { status: 'rejected', reason: 'empty' }
-  }
-
-  const text = paragraph.text
-  let start = request.start
-  let end = request.end
-  while (start < end && /\s/u.test(text[start] ?? '')) {
-    start += 1
-  }
-  while (end > start && /\s/u.test(text[end - 1] ?? '')) {
-    end -= 1
-  }
-  if (end <= start) {
-    return { status: 'rejected', reason: 'empty' }
-  }
-  const surface = text.slice(start, end)
-  if (!/[\p{L}\p{N}]/u.test(surface)) {
-    return { status: 'rejected', reason: 'empty' }
-  }
+  const { surface, start, end } = read
 
   database
     .prepare('UPDATE entry_sentence SET surface = ?, char_start = ?, char_end = ? WHERE id = ?')

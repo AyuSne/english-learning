@@ -240,6 +240,34 @@ button:focus-visible {
   line-height: 18px;
 }
 
+/* ---------- 底部提示条 ---------- */
+
+/* 阅读页与词条页共用：落在底部中间，几秒后自己消失。 */
+.toast,
+.reading-toast,
+.entries-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 50;
+  max-width: min(560px, calc(100vw - 48px));
+  padding: 8px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
+  font-size: 13px;
+  line-height: 18px;
+  transform: translateX(-50%);
+}
+
+[data-theme="dark"] .toast,
+[data-theme="dark"] .reading-toast,
+[data-theme="dark"] .entries-toast {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nav-item,
   .button {

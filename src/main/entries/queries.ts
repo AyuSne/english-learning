@@ -14,6 +14,7 @@ import type { AppDatabase } from '../db/database'
 import { paragraphLetter } from '../corpus/letter'
 import { refreshLastCollected } from './entry-state'
 import { resolveLemma, type LemmaLexicon } from './lemma'
+import { readEntrySelection } from './selection'
 
 /**
  * 选词的落点与词条卡。这一层只认本机库：选区由渲染层给“段 + 句 + 段内字符区间”，
@@ -113,10 +114,6 @@ function lemmaLexicon(database: AppDatabase): LemmaLexicon {
 /** 一个词形落到哪个词条键；选词与「拆到新词条」共用同一套归并。 */
 export function resolveEntryKey(database: AppDatabase, surface: string): string {
   return resolveLemma(surface, lemmaLexicon(database))
-}
-
-function isWhitespace(character: string | undefined): boolean {
-  return character !== undefined && /\s/u.test(character)
 }
 
 /** 原句连同出处与句内位置，词条卡、词条页与重新圈定都从这里读同一套列。 */
@@ -316,39 +313,11 @@ export function collectSelection(
     return { status: 'rejected', reason: 'sentence' }
   }
 
-  if (!Number.isInteger(request.start) || !Number.isInteger(request.end)) {
-    return { status: 'rejected', reason: 'range' }
+  const read = readEntrySelection(paragraph.text, sentence, request.start, request.end)
+  if (read.status === 'rejected') {
+    return read
   }
-  if (request.start < sentence.char_start || request.start >= sentence.char_end) {
-    return { status: 'rejected', reason: 'range' }
-  }
-  if (request.end > sentence.char_end) {
-    return { status: 'rejected', reason: 'range' }
-  }
-  if (request.end === request.start) {
-    return { status: 'rejected', reason: 'empty' }
-  }
-  if (request.end < request.start) {
-    return { status: 'rejected', reason: 'range' }
-  }
-
-  const text = paragraph.text
-  let start = request.start
-  let end = request.end
-  while (start < end && isWhitespace(text[start])) {
-    start += 1
-  }
-  while (end > start && isWhitespace(text[end - 1])) {
-    end -= 1
-  }
-  if (end <= start) {
-    return { status: 'rejected', reason: 'empty' }
-  }
-  const surface = text.slice(start, end)
-  // 只圈到标点或空白时不建词条：那不是学习者想收的词或短语。
-  if (!/[\p{L}\p{N}]/u.test(surface)) {
-    return { status: 'rejected', reason: 'empty' }
-  }
+  const { surface, start, end } = read
 
   const key = resolveEntryKey(database, surface)
   const now = options.now ?? new Date().toISOString()
