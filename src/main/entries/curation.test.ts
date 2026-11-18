@@ -31,7 +31,7 @@ const article = fixtureArticle({
   sentences: [
     ['Employers approach hiring differently.', 'Approaching a new desk takes patience.'],
     ['She approached the approachable clerk.', 'Context keeps the skill alive.'],
-    ['The counter stays open late.', 'Repeated words stick.', 'Context shapes how we read.']
+    ['The counter stays open late.', 'Repeated words stick.', 'Contexts shape how we read.']
   ]
 })
 
@@ -208,8 +208,8 @@ describe('mergeEntries', () => {
     expect(result.entry.mainForm).toBe('Context')
     expect(result.entry.lastCollectedAt).toBe(T2)
 
-    // 主词形换了，词条的键跟着走，下一句 Context 不会再建一个重复词条。
-    const later = collect(database, article, 2, 'Context', T4)
+    // 主词形换了，词条的键跟着走，换一个词形再收也不会建重复词条。
+    const later = collect(database, article, 2, 'Contexts', T4)
     expect(later.entry.id).toBe(approachId)
     expect(later.entry.sentenceCount).toBe(4)
   })

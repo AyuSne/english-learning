@@ -181,8 +181,9 @@ export function mergeEntries(
           WHERE id = ?`
       )
       .run(mainForm, source.lastCollectedAt, target.id)
-    adoptEntryKey(database, target.id, mainForm)
     database.prepare('DELETE FROM word_entry WHERE id = ?').run(source.id)
+    // 源词条删掉之后，主词形对应的键才可能空出来。
+    adoptEntryKey(database, target.id, mainForm)
 
     return {
       movedSentences,
