@@ -52,8 +52,11 @@ import type {
 } from '../../shared/reading'
 import type {
   ActivateModelProfileResult,
+  CreateBackupResult,
   DeleteModelProfileResult,
   OpenDataDirectoryResult,
+  PickRestoreResult,
+  RestoreBackupResult,
   SaveModelProfileRequest,
   SaveModelProfileResult,
   SaveThemeResult,
@@ -66,6 +69,7 @@ import type {
   CreateThreadRequest,
   CreateThreadResult,
   EditQuestionRequest,
+  ExportThreadResult,
   QuestionResult,
   SaveAnswerRequest,
   SaveAnswerResult,
@@ -269,6 +273,11 @@ export function switchThreadAnswer(request: SwitchAnswerRequest): Promise<Switch
   return window.api.invoke('chat:switch-answer', request)
 }
 
+/** 把一条线程导出成 JSONL；主进程弹保存对话框并写文件。 */
+export function exportThreadJsonl(threadId: string): Promise<ExportThreadResult> {
+  return window.api.invoke('chat:export-jsonl', { threadId })
+}
+
 /* ---------- 钉住与钉板 ---------- */
 
 /** 选中一段回答钉住；落点来自主对象推导或用户手动改过。 */
@@ -353,4 +362,19 @@ export function saveTheme(theme: ThemePreference): Promise<SaveThemeResult> {
 
 export function openDataDirectory(): Promise<OpenDataDirectoryResult> {
   return window.api.invoke('settings:open-data-directory')
+}
+
+/** 一键备份：主进程弹保存对话框，把整库副本写到选定位置。 */
+export function createBackup(): Promise<CreateBackupResult> {
+  return window.api.invoke('settings:backup-create')
+}
+
+/** 从备份恢复第一步：选文件，并看清版本与时间。 */
+export function pickRestoreFile(): Promise<PickRestoreResult> {
+  return window.api.invoke('settings:restore-pick')
+}
+
+/** 从备份恢复第二步：确认后整体替换，替换前自动留快照。 */
+export function restoreBackup(file: string): Promise<RestoreBackupResult> {
+  return window.api.invoke('settings:restore', { file })
 }

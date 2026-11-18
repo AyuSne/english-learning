@@ -38,6 +38,7 @@ import type { SettingsOverview } from '../../shared/settings'
 import type {
   ChatThreadView,
   CreateThreadResult,
+  ExportThreadResult,
   QuestionResult,
   SaveAnswerResult,
   SwitchThreadResult,
@@ -91,7 +92,8 @@ function chatHandlers() {
     'chat:context': (): UpdateThreadContextResult => ({ status: 'missing' }),
     'chat:candidates': (): ThreadContextCandidates => ({ items: [] }),
     'chat:switch-question': (): SwitchThreadResult => ({ status: 'missing' }),
-    'chat:switch-answer': (): SwitchThreadResult => ({ status: 'missing' })
+    'chat:switch-answer': (): SwitchThreadResult => ({ status: 'missing' }),
+    'chat:export-jsonl': (): ExportThreadResult => ({ status: 'missing' })
   }
 }
 
@@ -181,7 +183,11 @@ const settingsOverview: SettingsOverview = {
   theme: 'light',
   appVersion: '0.1.0',
   electronVersion: '45.0.0',
-  dataDirectory: 'C:/data'
+  dataDirectory: 'C:/data',
+  lastBackup: null,
+  lastSnapshot: null,
+  backupDirectory: 'C:/data/backups',
+  snapshotDirectory: 'C:/data/snapshots'
 }
 
 function settingsHandlers() {
@@ -209,6 +215,16 @@ function settingsHandlers() {
       preferences: settingsOverview.reading
     }),
     'settings:theme-save': () => ({ saved: true, theme: 'light' as const }),
+    'settings:backup-create': () => ({
+      status: 'cancelled' as const,
+      overview: settingsOverview
+    }),
+    'settings:restore-pick': () => ({ status: 'cancelled' as const }),
+    'settings:restore': () => ({
+      status: 'rejected' as const,
+      reason: 'missing' as const,
+      overview: settingsOverview
+    }),
     'settings:open-data-directory': () => ({ opened: true, path: 'C:/data' })
   }
 }

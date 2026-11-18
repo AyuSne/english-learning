@@ -1,10 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import type { ModelProfileSummary, SaveModelProfileResult } from '../../../shared/settings'
+import type {
+  BackupSummary,
+  ModelProfileSummary,
+  SaveModelProfileResult
+} from '../../../shared/settings'
 import {
+  backupSummaryText,
   checkText,
+  fileNameOf,
+  formatBytes,
   formatMoment,
   profileSaveErrorText,
   readingDefaultsText,
+  restoreRejectionText,
   themeText,
   verificationText,
   verifyResultText
@@ -188,5 +196,62 @@ describe('profileSaveErrorText', () => {
 
   it('保存成功没有错误文案', () => {
     expect(profileSaveErrorText(result({}))).toBeNull()
+  })
+})
+
+describe('formatBytes', () => {
+  it('按 1024 进位，KB 与 MB 留一位小数', () => {
+    expect(formatBytes(0)).toBe('0 B')
+    expect(formatBytes(512)).toBe('512 B')
+    expect(formatBytes(2048)).toBe('2.0 KB')
+    expect(formatBytes(3.5 * 1024 * 1024)).toBe('3.5 MB')
+  })
+})
+
+describe('backupSummaryText', () => {
+  const backupAt = new Date(2026, 10, 18, 19, 4).toISOString()
+
+  function summary(patch: Partial<BackupSummary> = {}): BackupSummary {
+    return {
+      at: backupAt,
+      file: 'C:/backups/backup.db',
+      bytes: 2048,
+      kind: 'manual',
+      exists: true,
+      ...patch
+    }
+  }
+
+  it('写清时间与体积', () => {
+    expect(backupSummaryText(summary())).toBe(
+      `${formatMoment(backupAt)} · 2.0 KB`
+    )
+  })
+
+  it('文件不在原处时直说，不报一个假的体积', () => {
+    expect(backupSummaryText(summary({ exists: false }))).toBe(
+      `${formatMoment(backupAt)} · 文件已不在原处`
+    )
+  })
+})
+
+describe('restoreRejectionText', () => {
+  it('每种拒绝都有能看懂的说法', () => {
+    expect(restoreRejectionText('missing')).toBe('这个备份文件已经不在了。')
+    expect(restoreRejectionText('not-a-database')).toBe('这不是一个数据库文件。')
+    expect(restoreRejectionText('not-a-library')).toBe('这不是本程序的资料库备份。')
+    expect(restoreRejectionText('too-new')).toBe('这份备份来自更新的版本，当前程序打不开。')
+    expect(restoreRejectionText('damaged')).toBe('这个备份文件已经损坏，没法恢复。')
+    expect(restoreRejectionText('same-file')).toBe('不能拿正在用的资料库当备份。')
+  })
+})
+
+describe('fileNameOf', () => {
+  it('Windows 与 POSIX 路径都只留文件名', () => {
+    expect(
+      fileNameOf('C:\\Users\\a\\backups\\english-learning-backup-20261118-1904.db')
+    ).toBe('english-learning-backup-20261118-1904.db')
+    expect(fileNameOf('/home/a/exports/thread-a.jsonl')).toBe('thread-a.jsonl')
+    expect(fileNameOf('thread-b.jsonl')).toBe('thread-b.jsonl')
   })
 })

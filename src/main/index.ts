@@ -3,6 +3,7 @@ import { mkdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { createBootstrap } from './app-bootstrap'
 import { readChatConfig, resolveChatConfig } from './chat/config'
+import { threadExportFileName, writeThreadJsonl } from './chat/export'
 import { createChatService } from './chat/service'
 import {
   askQuestion,
@@ -18,6 +19,8 @@ import {
   updateThreadContext
 } from './chat/threads'
 import { importCorpus } from './corpus/import'
+import { backupDirectoryOf, inspectBackupFile } from './data/backup'
+import { backupTo, restoreFrom } from './data/operations'
 import type { AppDatabase } from './db/database'
 import { openDatabase } from './db/database'
 import { migrate } from './db/migrations'
@@ -44,6 +47,7 @@ import {
   readWordEntryCard
 } from './entries/queries'
 import { registerIpcHandlers } from './ipc/register'
+import { fileStamp } from './file-stamp'
 import {
   readArticleDetail,
   readHomeSummary,
@@ -223,6 +227,24 @@ function start(): void {
     'chat:candidates': (payload) => readContextCandidates(opened, payload.threadId),
     'chat:switch-question': (payload) => switchQuestion(opened, payload),
     'chat:switch-answer': (payload) => switchAnswer(opened, payload),
+    'chat:export-jsonl': async (payload) => {
+      const thread = readThreadView(opened, payload.threadId)
+      if (thread === null) {
+        return { status: 'missing' as const }
+      }
+      const chosen = await dialog.showSaveDialog({
+        title: '导出线程为 JSONL',
+        defaultPath: join(
+          app.getPath('downloads'),
+          threadExportFileName(thread.title, new Date())
+        ),
+        filters: [{ name: 'JSONL', extensions: ['jsonl'] }]
+      })
+      if (chosen.canceled || !chosen.filePath) {
+        return { status: 'cancelled' as const }
+      }
+      return writeThreadJsonl(thread, { file: chosen.filePath })
+    },
     'pins:create': (payload) =>
       createPin(opened, payload, {
         model: resolveChatConfig(opened, secrets, process.env)?.model ?? ''
@@ -259,7 +281,50 @@ function start(): void {
     'settings:open-data-directory': async () => {
       const failure = await shell.openPath(userDataDirectory)
       return { opened: failure === '', path: userDataDirectory }
-    }
+    },
+    'settings:backup-create': async () => {
+      const options = settingsOptions()
+      const chosen = await dialog.showSaveDialog({
+        title: '备份本机资料库',
+        defaultPath: join(
+          backupDirectoryOf(userDataDirectory),
+          `english-learning-backup-${fileStamp(new Date())}.db`
+        ),
+        filters: [{ name: '本机资料库备份', extensions: ['db'] }]
+      })
+      if (chosen.canceled || !chosen.filePath) {
+        return {
+          status: 'cancelled' as const,
+          overview: readSettingsOverview(opened, options)
+        }
+      }
+      return backupTo(opened, chosen.filePath, options)
+    },
+    'settings:restore-pick': async () => {
+      const chosen = await dialog.showOpenDialog({
+        title: '选择要恢复的备份',
+        defaultPath: backupDirectoryOf(userDataDirectory),
+        properties: ['openFile'],
+        filters: [{ name: '本机资料库备份', extensions: ['db'] }]
+      })
+      const file = chosen.filePaths[0]
+      if (chosen.canceled || file === undefined) {
+        return { status: 'cancelled' as const }
+      }
+      // 先看清这份文件能不能用，确认弹层才不至于说错话。
+      const inspection = inspectBackupFile(file)
+      if (!inspection.ok) {
+        return { status: 'rejected' as const, reason: inspection.reason }
+      }
+      return {
+        status: 'picked' as const,
+        file: resolve(file),
+        schemaVersion: inspection.schemaVersion,
+        bytes: inspection.bytes,
+        createdAt: inspection.createdAt
+      }
+    },
+    'settings:restore': (payload) => restoreFrom(opened, payload.file, settingsOptions())
   })
 
   Menu.setApplicationMenu(null)

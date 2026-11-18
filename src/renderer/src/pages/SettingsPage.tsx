@@ -115,7 +115,11 @@ export function SettingsPage() {
               notify={setToast}
             />
           ) : section === 'data' ? (
-            <DataSection overview={overview} notify={setToast} />
+            <DataSection
+              overview={overview}
+              onChange={applyOverview}
+              notify={setToast}
+            />
           ) : (
             <AboutSection overview={overview} />
           )}

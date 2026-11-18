@@ -1,0 +1,206 @@
+import type { ElectronApplication, Page } from '@playwright/test'
+import Database from 'better-sqlite3'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import {
+  startSseStub,
+  type SseStub,
+  type StubScript
+} from '../../src/testing/sse-stub'
+import { expect, test } from '../fixtures/app'
+
+const stubs: SseStub[] = []
+let workspace: string
+
+test.beforeAll(async () => {
+  workspace = await mkdtemp(join(tmpdir(), 'english-learning-data-e2e-'))
+})
+
+test.afterAll(async () => {
+  await rm(workspace, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 })
+})
+
+test.afterEach(async () => {
+  await Promise.all(stubs.splice(0).map((stub) => stub.close()))
+})
+
+async function createStub(script: StubScript): Promise<SseStub> {
+  const stub = await startSseStub(script)
+  stubs.push(stub)
+  return stub
+}
+
+const noEnvironmentConfig = { DEEPSEEK_API_KEY: '' }
+
+function settingsNav(page: Page) {
+  return page.getByRole('complementary', { name: '设置分区' })
+}
+
+async function openSettings(page: Page): Promise<void> {
+  await page
+    .getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '设置' })
+    .click()
+  await expect(page.getByRole('heading', { name: '设置', level: 1 })).toBeVisible()
+}
+
+async function openData(page: Page): Promise<void> {
+  await openSettings(page)
+  await settingsNav(page).getByRole('button', { name: '数据' }).click()
+  await expect(page.getByRole('heading', { name: '数据' })).toBeVisible()
+}
+
+/** 系统对话框在 E2E 里没法点：把它换成直接返回用例给的路径。 */
+async function stubSaveDialog(app: ElectronApplication, file: string): Promise<void> {
+  await app.evaluate(({ dialog }, filePath) => {
+    dialog.showSaveDialog = (async () => ({
+      canceled: false,
+      filePath
+    })) as unknown as typeof dialog.showSaveDialog
+  }, file)
+}
+
+async function stubOpenDialog(app: ElectronApplication, file: string): Promise<void> {
+  await app.evaluate(({ dialog }, filePath) => {
+    dialog.showOpenDialog = (async () => ({
+      canceled: false,
+      filePaths: [filePath]
+    })) as unknown as typeof dialog.showOpenDialog
+  }, file)
+}
+
+function chatEnvironment(baseUrl: string): Record<string, string> {
+  return {
+    DEEPSEEK_BASE_URL: baseUrl,
+    DEEPSEEK_API_KEY: 'e2e-test-key',
+    DEEPSEEK_MODEL: 'deepseek-flash'
+  }
+}
+
+test.describe('备份、恢复与导出', () => {
+  test('一键备份落盘且不含密钥；恢复整体替换，替换前自动留快照', async ({ launch }) => {
+    const stub = await createStub({ kind: 'status', status: 200 })
+    const backupFile = join(workspace, 'chosen', 'english-learning-backup.db')
+    const handle = await launch({ env: noEnvironmentConfig })
+    const { page, electronApp } = handle
+    if (electronApp === null) throw new Error('开发态用例拿不到主进程句柄')
+
+    // 先存一套带密钥的配置，用来确认备份里没有密钥。
+    await openSettings(page)
+    await page.getByRole('button', { name: '新增一套' }).click()
+    await page.getByLabel('名称').fill('DeepSeek 官方')
+    await page.getByLabel('接口地址').fill(stub.baseUrl)
+    await page.getByLabel('模型名').fill('deepseek-flash')
+    await page.getByLabel('API 密钥').fill('sk-e2e-backup-0001')
+    await page.getByRole('button', { name: '保存并校验' }).click()
+    await expect(page.locator('.profile-card')).toContainText('已验证')
+
+    await openData(page)
+    await expect(page.locator('.data-line').first()).toContainText('上次备份：还没有备份')
+
+    await stubSaveDialog(electronApp, backupFile)
+    await page.getByRole('button', { name: '立即备份' }).click()
+
+    await expect(page.getByRole('status')).toContainText('已备份到 english-learning-backup.db')
+    await expect(page.locator('.data-line').first()).toContainText(
+      /上次备份：\d{4}-\d{2}-\d{2} \d{2}:\d{2} · \d+(?:\.\d)? (?:B|KB|MB)/
+    )
+    expect(existsSync(backupFile)).toBe(true)
+
+    const copy = new Database(backupFile, { readonly: true, fileMustExist: true })
+    try {
+      const row = copy
+        .prepare('SELECT api_key_secret, verification FROM model_profile')
+        .get() as { api_key_secret: string | null; verification: string }
+      expect(row.api_key_secret).toBeNull()
+      expect(row.verification).toBe('unverified')
+    } finally {
+      copy.close()
+    }
+
+    // 备份之后改成深色主题；恢复应当退回备份时的浅色。
+    await settingsNav(page).getByRole('button', { name: '外观' }).click()
+    await page.getByRole('group', { name: '主题' }).getByRole('button', { name: '深色' }).click()
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+
+    await openData(page)
+    await stubOpenDialog(electronApp, backupFile)
+    await page.getByRole('button', { name: '从备份恢复…' }).click()
+
+    const confirm = page.getByRole('alertdialog', { name: '确认恢复' })
+    await expect(confirm).toContainText('english-learning-backup.db')
+    await expect(confirm).toContainText('替换前会自动留一份当前快照')
+    await expect(confirm).toContainText('备份里没有密钥')
+
+    // 恢复成功后整库换过，界面重新载入；路由留在设置页。
+    const reloaded = page.waitForEvent('load')
+    await confirm.getByRole('button', { name: '恢复' }).click()
+    await reloaded
+    await expect(page.getByRole('heading', { name: '设置', level: 1 })).toBeVisible()
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+    const snapshots = readdirSync(join(handle.userDataDirectory, 'snapshots'))
+    expect(snapshots).toHaveLength(1)
+    expect(snapshots[0]?.endsWith('.db')).toBe(true)
+
+    // 恢复后配置还在，但密钥回到「未填写」。
+    await openSettings(page)
+    const card = page.locator('.profile-card').filter({ hasText: 'DeepSeek 官方' })
+    await expect(card).toContainText('未验证')
+    await expect(card).toContainText('未填写')
+
+    // 数据区也记得这次恢复留下的快照，以及刚用过的这份备份。
+    await openData(page)
+    await expect(page.locator('.data-line').first()).toContainText(
+      /上次备份：\d{4}-\d{2}-\d{2} \d{2}:\d{2} · \d+(?:\.\d)? (?:B|KB|MB)/
+    )
+    await expect(page.locator('.data-line').nth(1)).toContainText('恢复前快照：')
+    await expect(page.locator('.data-line').nth(1)).toContainText(/\d+(?:\.\d)? (?:B|KB|MB)/)
+  })
+
+  test('把一条线程导出为可读 JSONL', async ({ launch }) => {
+    const stub = await createStub({ kind: 'stream', text: ['答案来了。'] })
+    const exportFile = join(workspace, 'exports', 'thread.jsonl')
+    const { page, electronApp } = await launch({
+      env: { ...noEnvironmentConfig, ...chatEnvironment(stub.baseUrl) }
+    })
+    if (electronApp === null) throw new Error('开发态用例拿不到主进程句柄')
+
+    await page
+      .getByRole('navigation', { name: '全局导航' })
+      .getByRole('button', { name: '对话' })
+      .click()
+    await expect(page.getByRole('heading', { name: '新的学习' })).toBeVisible()
+    await page.getByRole('textbox', { name: '输入问题' }).fill('什么是 lament？')
+    await page.getByRole('button', { name: '发送' }).click()
+    await expect(page.getByText('答案来了。')).toBeVisible()
+
+    await openData(page)
+    await page.getByLabel('线程').selectOption({ index: 1 })
+    await stubSaveDialog(electronApp, exportFile)
+    await page.getByRole('button', { name: '导出为 JSONL' }).click()
+
+    await expect(page.getByText('已导出到')).toContainText(exportFile)
+    const content = readFileSync(exportFile, 'utf8')
+    const records = content
+      .trimEnd()
+      .split('\n')
+      .map((line) => JSON.parse(line) as Record<string, unknown>)
+
+    expect(records[0]).toMatchObject({
+      type: 'thread',
+      version: 1,
+      title: '什么是 lament？'
+    })
+    expect(records[1]).toMatchObject({ type: 'question', text: '什么是 lament？' })
+    expect(records[2]).toMatchObject({
+      type: 'answer',
+      text: '答案来了。',
+      model: 'deepseek-flash',
+      phase: 'done'
+    })
+    expect(content.startsWith('\uFEFF')).toBe(false)
+  })
+})

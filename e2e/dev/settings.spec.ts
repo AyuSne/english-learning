@@ -227,6 +227,18 @@ test.describe('设置与密钥', () => {
     ).toContainText('通过')
   })
 
+  test('关于页列出程序版本、Electron 版本与词典版权', async ({ launch }) => {
+    const { page } = await launch({ env: noEnvironmentConfig })
+    await openSettings(page)
+    await settingsNav(page).getByRole('button', { name: '关于' }).click()
+
+    const about = page.getByRole('region', { name: '关于' })
+    await expect(about).toContainText(/版本 0\.1\.0 · Electron 4\d/)
+    await expect(about).toContainText('ECDICT（MIT License）')
+    await expect(about).toContainText('ADR 0001')
+    await expect(about).toContainText('ADR 0003')
+  })
+
   test('主题浅色 / 深色 / 跟随系统立即生效，刷新后仍是选过的那档', async ({ launch }) => {
     const { page } = await launch({ env: noEnvironmentConfig })
     await openSettings(page)

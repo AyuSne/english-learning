@@ -3,6 +3,7 @@ import {
   chromium,
   test as base,
   type Browser,
+  type ElectronApplication,
   type Page
 } from '@playwright/test'
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process'
@@ -32,6 +33,11 @@ function applicationEnvironment(
 export type AppHandle = {
   readonly page: Page
   readonly userDataDirectory: string
+  /**
+   * 开发态才有：用例可以在主进程里替换系统对话框（备份 / 恢复 / 导出都靠它）。
+   * 打包产物是经由 CDP 连的，拿不到这一个句柄。
+   */
+  readonly electronApp: ElectronApplication | null
   close(): Promise<void>
 }
 
@@ -67,6 +73,7 @@ async function launchDevelopmentApp(
   return {
     page,
     userDataDirectory,
+    electronApp,
     async close() {
       if (closed) return
       closed = true
@@ -158,6 +165,7 @@ async function launchPackagedApp(
   return {
     page,
     userDataDirectory,
+    electronApp: null,
     async close() {
       if (closed) return
       closed = true

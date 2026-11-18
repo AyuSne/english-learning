@@ -312,7 +312,8 @@
   line-height: 16px;
 }
 
-.settings-field input {
+.settings-field input,
+.settings-field select {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--rule);
@@ -324,11 +325,13 @@
   line-height: 18px;
 }
 
-.settings-field input:hover {
+.settings-field input:hover,
+.settings-field select:hover {
   border-color: var(--rule-hover);
 }
 
-.settings-field input:focus-visible {
+.settings-field input:focus-visible,
+.settings-field select:focus-visible {
   outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
@@ -405,6 +408,10 @@
   background: var(--panel);
 }
 
+.data-card + .data-card {
+  margin-top: 12px;
+}
+
 .data-card-title {
   margin: 0 0 8px;
   font-family: var(--font-serif);
@@ -419,6 +426,33 @@
   border: 1px solid var(--rule);
   border-radius: 8px;
   background: var(--sunken);
+  overflow-wrap: anywhere;
+}
+
+.data-line {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+.data-inline-path {
+  overflow-wrap: anywhere;
+}
+
+.data-confirm {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--rule));
+  border-radius: 10px;
+  background: var(--danger-bed);
+}
+
+.data-confirm-title {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
 }
 
 /* ---------- 断点 ---------- */

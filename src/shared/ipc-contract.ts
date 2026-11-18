@@ -59,8 +59,11 @@ import type {
 } from './reading'
 import type {
   ActivateModelProfileResult,
+  CreateBackupResult,
   DeleteModelProfileResult,
   OpenDataDirectoryResult,
+  PickRestoreResult,
+  RestoreBackupResult,
   SaveModelProfileRequest,
   SaveModelProfileResult,
   SaveThemeRequest,
@@ -74,6 +77,7 @@ import type {
   CreateThreadRequest,
   CreateThreadResult,
   EditQuestionRequest,
+  ExportThreadResult,
   QuestionResult,
   SaveAnswerRequest,
   SaveAnswerResult,
@@ -154,6 +158,7 @@ export interface IpcContract {
   }
   'chat:switch-question': { payload: SwitchQuestionRequest; result: SwitchThreadResult }
   'chat:switch-answer': { payload: SwitchAnswerRequest; result: SwitchThreadResult }
+  'chat:export-jsonl': { payload: { threadId: string }; result: ExportThreadResult }
   'pins:create': { payload: CreatePinRequest; result: CreatePinResult }
   'pins:board': { payload: { threadId: string | null }; result: PinBoard }
   'pins:move': { payload: MovePinRequest; result: PinResult }
@@ -183,6 +188,9 @@ export interface IpcContract {
     result: ReadingPreferencesResult
   }
   'settings:theme-save': { payload: SaveThemeRequest; result: SaveThemeResult }
+  'settings:backup-create': { payload: undefined; result: CreateBackupResult }
+  'settings:restore-pick': { payload: undefined; result: PickRestoreResult }
+  'settings:restore': { payload: { file: string }; result: RestoreBackupResult }
   'settings:open-data-directory': {
     payload: undefined
     result: OpenDataDirectoryResult
@@ -238,6 +246,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'chat:candidates': true,
   'chat:switch-question': true,
   'chat:switch-answer': true,
+  'chat:export-jsonl': true,
   'pins:create': true,
   'pins:board': true,
   'pins:move': true,
@@ -252,6 +261,9 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'settings:profile-verify': true,
   'settings:reading-save': true,
   'settings:theme-save': true,
+  'settings:backup-create': true,
+  'settings:restore-pick': true,
+  'settings:restore': true,
   'settings:open-data-directory': true
 }
 

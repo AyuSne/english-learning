@@ -224,3 +224,10 @@ export type SwitchThreadResult =
   | { status: 'switched'; thread: ChatThreadView }
   | { status: 'missing' }
   | { status: 'rejected'; reason: 'question' | 'answer' }
+
+/** 把一条线程导出成 JSONL：文件不是真源，只求能读、能带走。 */
+export type ExportThreadResult =
+  | { status: 'saved'; file: string }
+  | { status: 'cancelled' }
+  | { status: 'missing' }
+  | { status: 'failed' }

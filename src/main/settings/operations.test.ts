@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { createBackup } from '../data/backup'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
 import { readSettingsOverview, activateProfile, deleteProfile, saveModelProfile, verifySavedModelProfile } from './operations'
@@ -441,5 +442,22 @@ describe('readSettingsOverview', () => {
       activeId: null,
       activeModel: 'deepseek-v4-pro'
     })
+  })
+
+  it('带上上次备份、恢复前快照与两个目录', async () => {
+    const file = join(directory, 'chosen', 'backup.db')
+    await createBackup(database, { file, now })
+
+    const overview = readSettingsOverview(database, overviewOptions())
+
+    expect(overview.lastBackup).toMatchObject({
+      file,
+      at: now,
+      kind: 'manual',
+      exists: true
+    })
+    expect(overview.lastSnapshot).toBeNull()
+    expect(overview.backupDirectory).toBe(join('C:/data', 'backups'))
+    expect(overview.snapshotDirectory).toBe(join('C:/data', 'snapshots'))
   })
 })
