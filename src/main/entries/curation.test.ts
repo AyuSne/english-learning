@@ -31,7 +31,7 @@ const article = fixtureArticle({
   sentences: [
     ['Employers approach hiring differently.', 'Approaching a new desk takes patience.'],
     ['She approached the approachable clerk.', 'Context keeps the skill alive.'],
-    ['The counter stays open late.', 'Repeated words stick.']
+    ['The counter stays open late.', 'Repeated words stick.', 'Context shapes how we read.']
   ]
 })
 
@@ -194,7 +194,7 @@ describe('mergeEntries', () => {
     ])
   })
 
-  it('合并后主词形按用户选的走，最近收集取两边较晚的', () => {
+  it('合并后主词形按用户选的走，之后收同一个词仍落回这一条', () => {
     const { approachId, contextId } = entries()
 
     const result = mergeEntries(database, {
@@ -207,6 +207,11 @@ describe('mergeEntries', () => {
     if (result.status !== 'merged') return
     expect(result.entry.mainForm).toBe('Context')
     expect(result.entry.lastCollectedAt).toBe(T2)
+
+    // 主词形换了，词条的键跟着走，下一句 Context 不会再建一个重复词条。
+    const later = collect(database, article, 2, 'Context', T4)
+    expect(later.entry.id).toBe(approachId)
+    expect(later.entry.sentenceCount).toBe(4)
   })
 
   it('两边都有同篇同句时并成一条，不新增关联', () => {
@@ -285,6 +290,13 @@ describe('moveEntrySentence', () => {
   it('拆到新词条会按原句的词形建一个', () => {
     const { approachId, approachableId, approachableSentenceId } = entries()
     mergeEntries(database, { sourceEntryId: approachableId, targetEntryId: approachId })
+
+    const mergedPage = readEntryPage(database, approachId)
+    expect(
+      mergedPage?.groups
+        .flatMap((group) => group.sentences)
+        .find((sentence) => sentence.id === approachableSentenceId)
+    ).toMatchObject({ canSplitToNew: true })
 
     const result = moveEntrySentence(database, {
       entrySentenceId: approachableSentenceId,
@@ -368,11 +380,16 @@ describe('reselectEntrySentence', () => {
       surfaceOffset: 'Employers '.length,
       sentenceText: 'Employers approach hiring differently.'
     })
-    expect(result.entry).toMatchObject({ sentenceCount: 1, mainForm: 'approach hiring' })
+    // 原来的主词形「approach hiring」已经不在收集里，跟着这次圈定的词走。
+    expect(result.entry).toMatchObject({ sentenceCount: 1, mainForm: 'approach', variants: [] })
     expect(result.marks).toEqual([
       expect.objectContaining({ surface: 'approach', start, end: start + 'approach'.length })
     ])
     expect(readArticleCollections(database, article.id)[0]?.surface).toBe('approach')
+
+    // 词条的键也换成 approach，再收同一个词仍归到这一条。
+    const later = collect(database, article, 0, 'Approaching', T1)
+    expect(later.entry.id).toBe(result.entry.id)
   })
 
   it('范围出句、空白、原句不存在都拒绝', () => {

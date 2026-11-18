@@ -82,7 +82,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
-  padding: 3px;
+  padding: 4px;
   border: 1px solid var(--rule);
   border-radius: 8px;
   background: var(--sunken);
@@ -126,7 +126,7 @@
 .entry-more-field select {
   flex: 1;
   min-width: 0;
-  padding: 6px 10px;
+  padding: 10px 12px;
   border: 1px solid var(--rule);
   border-radius: 8px;
   background: var(--panel);
@@ -154,9 +154,9 @@
 .entries-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 8px;
+  gap: 4px 8px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border: 1px solid transparent;
   border-radius: 10px;
   background: var(--panel);
@@ -288,7 +288,7 @@
 
 .entry-sentence {
   position: relative;
-  padding: 12px 0 10px;
+  padding: 12px 0;
   border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
 }
 
@@ -316,12 +316,34 @@
   line-height: 16px;
 }
 
+/* 同篇前后句：点开才展开，正文仍是衬线。 */
+.entry-neighbors {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--rule);
+  color: var(--ink-2);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.entry-neighbor-label {
+  margin-right: 8px;
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 16px;
+}
+
 /* 悬停与键盘聚焦都露出动作；窄窗口常驻。 */
 .entry-sentence-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 8px;
-  margin-top: 6px;
+  margin-top: 8px;
   opacity: 0;
   transition: opacity 150ms ease-out;
 }
@@ -333,7 +355,7 @@
 
 .entry-action {
   padding: 2px 4px;
-  border-radius: 4px;
+  border-radius: 8px;
   color: var(--ink-2);
   font-size: 12px;
   line-height: 16px;
@@ -379,12 +401,12 @@
   flex-direction: column;
   gap: 8px;
   margin-top: 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--line-pin);
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--rule));
   border-radius: 10px;
-  background: var(--bed-pin);
+  background: var(--danger-bed);
   font-size: 12px;
-  line-height: 18px;
+  line-height: 16px;
 }
 
 .entries-main-actions,
@@ -474,7 +496,7 @@
   place-items: center;
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: 8px;
   color: var(--ink-2);
   font-size: 16px;
   line-height: 1;
@@ -508,11 +530,11 @@
 .entry-forms {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .entry-form {
-  padding: 3px 8px;
+  padding: 4px 8px;
   border: 1px solid var(--rule);
   border-radius: 999px;
   background: var(--panel);
@@ -553,7 +575,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .entry-note-pin {
@@ -567,7 +589,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 2px 6px;
+  gap: 4px 8px;
 }
 
 .entry-note-body {
@@ -685,10 +707,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--line-pin);
+  padding: 12px;
+  border: 1px solid var(--rule);
   border-radius: 10px;
-  background: var(--bed-pin);
+  background: var(--sunken);
 }
 
 .entry-more-field {
@@ -709,12 +731,12 @@
   flex-direction: column;
   gap: 4px;
   margin: 0;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--rule);
   border-radius: 8px;
   background: var(--panel);
   font-size: 12px;
-  line-height: 18px;
+  line-height: 16px;
 }
 
 .entry-more-forms legend {
@@ -726,7 +748,7 @@
 .entry-more-forms label {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .entry-more-hint {

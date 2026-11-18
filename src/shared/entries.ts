@@ -56,6 +56,11 @@ export type EntrySentence = {
   surfaceOffset: number
   /** 原 PDF 页码；语料没给时为 null。 */
   page: number | null
+  /** 同一篇里的上一句 / 下一句，词条页展开前后句用；没有时为 null。 */
+  previousSentence: string | null
+  nextSentence: string | null
+  /** 这个词形能不能单独拆成新词条；已经属于本词条时为 false。 */
+  canSplitToNew: boolean
   collectedAt: string
 }
 

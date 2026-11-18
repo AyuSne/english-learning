@@ -206,6 +206,26 @@ describe('readEntryPage', () => {
     })
   })
 
+  it('给出同篇前后句，并标出哪些原句能拆到新词条', () => {
+    const approach = collect(database, firstArticle, 0, 'approach', T0)
+    collect(database, firstArticle, 0, 'Approaching', T1)
+
+    const page = readEntryPage(database, approach.entry.id)
+    const sentences = page?.groups[0]?.sentences ?? []
+    expect(sentences[0]).toMatchObject({
+      surface: 'approach',
+      previousSentence: null,
+      nextSentence: 'Approaching a new desk takes patience.',
+      canSplitToNew: false
+    })
+    expect(sentences[1]).toMatchObject({
+      surface: 'Approaching',
+      previousSentence: 'Employers approach hiring differently.',
+      nextSentence: 'She approached the counter quietly.',
+      canSplitToNew: false
+    })
+  })
+
   it('词条不存在时返回 null', () => {
     expect(readEntryPage(database, 'nope')).toBeNull()
   })

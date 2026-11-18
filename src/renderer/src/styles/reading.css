@@ -234,8 +234,8 @@
 
 .reading-sentence-focused {
   border-radius: 4px;
-  background: var(--bed-pin);
-  box-shadow: 0 0 0 4px var(--bed-pin);
+  background: var(--bed-select);
+  box-shadow: 0 0 0 4px var(--bed-select);
 }
 
 .reading-scroll {

@@ -137,7 +137,13 @@ export function EntryPanelView({
 
           {panel.confirmingDelete ? (
             <div className="reading-panel-confirm" role="alert">
-              <p>这是最后一条原句。删掉后「{panel.card.entry.mainForm}」词条也会一起删除。</p>
+              <p>
+                这是最后一条原句。删掉后「{panel.card.entry.mainForm}」词条
+                {panel.card.entry.noteCount > 0
+                  ? `与 ${panel.card.entry.noteCount} 条学习内容`
+                  : ''}
+                也会一起删除。
+              </p>
               <div className="reading-panel-actions">
                 <button type="button" className="button" onClick={onCancelConfirm}>
                   取消

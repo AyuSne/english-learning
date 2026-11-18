@@ -3,6 +3,7 @@ import type {
   EntryListRequest,
   EntryListResult,
   EntryPage,
+  EntrySentence,
   EntrySentenceGroup
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
@@ -11,6 +12,7 @@ import {
   ENTRY_SENTENCE_COLUMNS,
   ENTRY_SENTENCE_JOINS,
   readEntrySummary,
+  resolveEntryKey,
   toEntrySentence,
   type EntrySentenceRow
 } from './queries'
@@ -121,6 +123,35 @@ function groupSentences(rows: readonly EntrySentenceRow[]): EntrySentenceGroup[]
   return ordered
 }
 
+/** 补上同一篇里的上一句 / 下一句，词条页可以就地展开前后文。 */
+function withNeighbors(database: AppDatabase, sentences: EntrySentence[]): void {
+  if (sentences.length === 0) return
+  const articleIds = [...new Set(sentences.map((sentence) => sentence.articleId))]
+  for (const articleId of articleIds) {
+    const rows = database
+      .prepare(
+        `SELECT s.paragraph_id, s.ordinal, s.text
+           FROM sentence s
+           JOIN paragraph p ON p.article_id = s.article_id AND p.id = s.paragraph_id
+          WHERE s.article_id = ?
+          ORDER BY p.ordinal, s.ordinal`
+      )
+      .all(articleId) as { paragraph_id: string; ordinal: number; text: string }[]
+    const positions = new Map(
+      rows.map((row, position) => [`${row.paragraph_id}:${row.ordinal}`, position])
+    )
+    for (const sentence of sentences) {
+      if (sentence.articleId !== articleId) continue
+      const position = positions.get(
+        `${sentence.paragraphId}:${sentence.sentenceOrdinal}`
+      )
+      if (position === undefined) continue
+      sentence.previousSentence = rows[position - 1]?.text ?? null
+      sentence.nextSentence = rows[position + 1]?.text ?? null
+    }
+  }
+}
+
 /** 词条页的一整页；词条不存在时返回 null。 */
 export function readEntryPage(database: AppDatabase, entryId: string): EntryPage | null {
   const entry = readEntrySummary(database, entryId)
@@ -138,5 +169,18 @@ export function readEntryPage(database: AppDatabase, entryId: string): EntryPage
     )
     .all(entryId) as EntrySentenceRow[]
 
-  return { entry, groups: groupSentences(rows), notes: readLearningNotes(database, entryId) }
+  const groups = groupSentences(rows)
+  const sentences = groups.flatMap((group) => group.sentences)
+  withNeighbors(database, sentences)
+
+  // 已经属于本词条词形的原句不能再「拆到新词条」；换主词形后键没跟上的情况也不让拆。
+  const storedKey = database
+    .prepare('SELECT normalized_key FROM word_entry WHERE id = ?')
+    .get(entryId) as { normalized_key: string } | undefined
+  for (const sentence of sentences) {
+    sentence.canSplitToNew =
+      storedKey !== undefined && resolveEntryKey(database, sentence.surface) !== storedKey.normalized_key
+  }
+
+  return { entry, groups, notes: readLearningNotes(database, entryId) }
 }

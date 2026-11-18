@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import type { EntrySentence } from '../../../shared/entries'
 import { sentenceSourceText } from './format'
 
 /**
  * 一条原句：原句文字里把当时圈下的词形标出来，下面写清楚它出处的段、句、页。
- * 回到原文 / 重新圈定 / 删除 在悬停与键盘聚焦时出现，<900px 改成常驻小图标行。
+ * 回到原文 / 重新圈定 / 前后句 / 删除 在悬停与键盘聚焦时出现，<900px 改成常驻小图标行。
  * 拆分原句与换主词形在右栏「更多」里。
  */
 export function SentenceRow({
@@ -19,6 +20,9 @@ export function SentenceRow({
   onReselect: () => void
   onRequestDelete: () => void
 }) {
+  const [neighborsOpen, setNeighborsOpen] = useState(false)
+  const hasNeighbors = sentence.previousSentence !== null || sentence.nextSentence !== null
+
   return (
     <li className="entry-sentence" data-entry-sentence-id={sentence.id}>
       <blockquote className="entry-sentence-text">
@@ -41,6 +45,19 @@ export function SentenceRow({
         </button>
         <button
           type="button"
+          className="entry-action"
+          aria-label="前后句"
+          aria-expanded={neighborsOpen}
+          disabled={!hasNeighbors}
+          onClick={() => setNeighborsOpen((open) => !open)}
+        >
+          <span className="entry-action-icon" aria-hidden="true">
+            ⋯
+          </span>
+          <span className="entry-action-label">前后句</span>
+        </button>
+        <button
+          type="button"
           className="entry-action entry-action-danger"
           aria-label="删除"
           disabled={busy}
@@ -52,6 +69,23 @@ export function SentenceRow({
           <span className="entry-action-label">删除</span>
         </button>
       </div>
+
+      {neighborsOpen ? (
+        <div className="entry-neighbors" role="group" aria-label="同篇前后句">
+          {sentence.previousSentence === null ? null : (
+            <p className="entry-neighbor">
+              <span className="entry-neighbor-label">上一句</span>
+              {sentence.previousSentence}
+            </p>
+          )}
+          {sentence.nextSentence === null ? null : (
+            <p className="entry-neighbor">
+              <span className="entry-neighbor-label">下一句</span>
+              {sentence.nextSentence}
+            </p>
+          )}
+        </div>
+      ) : null}
     </li>
   )
 }

@@ -10,7 +10,7 @@ export type View = {
   route: Route
   /** 阅读页打开的文章；没有指定时为空，阅读页显示空态。 */
   articleId: string | null
-  /** 词条页打开的词条；没有指定时为空，词条页按最近收集选第一个。 */
+  /** 词条页打开的词条；没有指定时为空，词条页显示「在左边选一个词条」。 */
   entryId: string | null
   /** 阅读页要从词条跳到的原句。 */
   entrySentenceId: string | null

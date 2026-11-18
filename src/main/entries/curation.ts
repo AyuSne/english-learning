@@ -50,6 +50,22 @@ function findEntryIdByKey(database: AppDatabase, key: string): string | null {
   return row?.id ?? null
 }
 
+/**
+ * 换主词形后让词条的键跟着主词形走（键空着时），这样之后再收同一个词仍落回这一条，
+ * 而不是另建一个重复词条。键已经被别的词条占着就不动，宁可保持原键也不撞唯一约束。
+ */
+function adoptEntryKey(database: AppDatabase, entryId: string, mainForm: string): void {
+  const stored = database
+    .prepare('SELECT normalized_key FROM word_entry WHERE id = ?')
+    .get(entryId) as { normalized_key: string } | undefined
+  if (!stored) return
+  const key = resolveEntryKey(database, mainForm)
+  if (key === stored.normalized_key) return
+  const owner = findEntryIdByKey(database, key)
+  if (owner !== null && owner !== entryId) return
+  database.prepare('UPDATE word_entry SET normalized_key = ? WHERE id = ?').run(key, entryId)
+}
+
 /** 已收集到的词形。换主词形只能从这些里面挑。 */
 function collectedSurfaces(database: AppDatabase, entryIds: readonly string[]): string[] {
   const placeholders = entryIds.map(() => '?').join(', ')
@@ -77,6 +93,7 @@ export function changeEntryMainForm(
   database
     .prepare('UPDATE word_entry SET main_form = ? WHERE id = ?')
     .run(request.mainForm, request.entryId)
+  adoptEntryKey(database, request.entryId, request.mainForm)
 
   const entry = readEntrySummary(database, request.entryId)
   return entry ? { status: 'changed', entry } : { status: 'missing' }
@@ -164,6 +181,7 @@ export function mergeEntries(
           WHERE id = ?`
       )
       .run(mainForm, source.lastCollectedAt, target.id)
+    adoptEntryKey(database, target.id, mainForm)
     database.prepare('DELETE FROM word_entry WHERE id = ?').run(source.id)
 
     return {
@@ -298,6 +316,17 @@ export function reselectEntrySentence(
   database
     .prepare('UPDATE entry_sentence SET surface = ?, char_start = ?, char_end = ? WHERE id = ?')
     .run(surface, start, end, request.entrySentenceId)
+
+  // 主词形必须是已收集的词形；换掉范围后原来那个不在里面了，就跟着这次圈定的词走。
+  const storedEntry = database
+    .prepare('SELECT main_form FROM word_entry WHERE id = ?')
+    .get(stored.entry_id) as { main_form: string } | undefined
+  if (storedEntry && !collectedSurfaces(database, [stored.entry_id]).includes(storedEntry.main_form)) {
+    database
+      .prepare('UPDATE word_entry SET main_form = ? WHERE id = ?')
+      .run(surface, stored.entry_id)
+    adoptEntryKey(database, stored.entry_id, surface)
+  }
 
   const entry = readEntrySummary(database, stored.entry_id)
   const updated = readEntrySentence(database, request.entrySentenceId)

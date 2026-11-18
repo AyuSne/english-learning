@@ -140,6 +140,13 @@ test.describe('词条页', () => {
     const back = actions.getByRole('button', { name: '回到原文' })
     await back.focus()
     await expect(actions).toHaveCSS('opacity', '1')
+
+    // 同篇前后句能就地展开。
+    await sentence.hover()
+    await sentence.getByRole('button', { name: '前后句' }).click()
+    await expect(sentence.locator('.entry-neighbors')).toContainText(
+      'Approaching a new desk takes patience.'
+    )
   })
 
   test('学习内容可写、改、置顶、删，也能移到别的词条', async ({ launch, userDataDirectory }) => {
@@ -337,10 +344,11 @@ test.describe('词条页', () => {
     await selectText(page, 0, 'approach')
 
     await expect(page.getByText('已重新圈定为「approach」。')).toBeVisible()
-    await expect(page.locator('.reading-context-text')).toContainText('来自词条 approach hiring')
+    await expect(page.locator('.reading-context-text')).toContainText('来自词条 approach')
     await page.getByRole('button', { name: '回词条' }).click()
 
-    await entryRow(page, 'approach hiring').click()
+    // 主词形跟着修正后的单词走，列表里也不再是那句短语。
+    await entryRow(page, 'approach').click()
     await expect(
       page.getByRole('region', { name: '词条内容' }).locator('.entry-surface')
     ).toHaveText('approach')

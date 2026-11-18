@@ -184,6 +184,9 @@ export function toEntrySentence(row: EntrySentenceRow): EntrySentence {
     end: row.char_end,
     surfaceOffset: row.char_start - row.sentence_char_start,
     page: row.sentence_page,
+    previousSentence: null,
+    nextSentence: null,
+    canSplitToNew: false,
     collectedAt: row.collected_at
   }
 }
@@ -323,9 +326,19 @@ export function collectSelection(
   const now = options.now ?? new Date().toISOString()
 
   const stored = database.transaction((): { entryId: string; sentenceId: string; created: boolean } => {
-    const existingEntry = database
-      .prepare('SELECT id FROM word_entry WHERE normalized_key = ?')
-      .get(key) as EntryRow | undefined
+    // 先按词条键找；手工合并/换主词形后键可能没跟着变，再按已收过的同一个词形找，
+    // 免得同一个表达散成两条词条。
+    const existingEntry =
+      (database
+        .prepare('SELECT id FROM word_entry WHERE normalized_key = ?')
+        .get(key) as EntryRow | undefined) ??
+      (database
+        .prepare(
+          `SELECT entry_id AS id FROM entry_sentence
+            WHERE lower(surface) = lower(?)
+            ORDER BY collected_at DESC, id DESC LIMIT 1`
+        )
+        .get(surface) as EntryRow | undefined)
 
     let entryId: string
     if (existingEntry) {
@@ -393,8 +406,8 @@ export function collectSelection(
 }
 
 /**
- * 删掉一条原句关联。删的是最后一条时连词条一起删；界面在这之前先提示。
- * 学习内容随词条级联删除的约束等词条页落地时再接。
+ * 删掉一条原句关联。删的是最后一条时连词条一起删，学习内容随词条级联删掉；
+ * 界面在这之前先提示。
  */
 export function deleteEntrySentence(
   database: AppDatabase,

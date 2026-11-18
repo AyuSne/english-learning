@@ -52,13 +52,20 @@ export function MoreActions({
   const moveNote = page.notes.find((note) => note.id === moveNoteId) ?? null
   const dropsEntry = page.entry.sentenceCount <= 1
 
+  /** 已经属于本词条的词形不能再建新词条；默认挑一个能用的目标。 */
+  function defaultSplitTarget(choice: SentenceChoice | null): string {
+    if (choice === null) return ''
+    if (choice.sentence.canSplitToNew) return 'new'
+    return otherEntries[0]?.id ?? ''
+  }
+
   function open(next: MoreForm): void {
     setForm(next)
     setError(null)
     setMergeTargetId('')
     setMergeMainForm(page.entry.mainForm)
     setSplitSentenceId(sentences[0]?.sentence.id ?? '')
-    setSplitTarget('new')
+    setSplitTarget(defaultSplitTarget(sentences[0] ?? null))
     setMainForm(page.entry.mainForm)
     setMoveNoteId(page.notes[0]?.id ?? '')
     setMoveTarget('')
@@ -265,7 +272,13 @@ export function MoreActions({
             <select
               aria-label="要拆的原句"
               value={splitSentenceId}
-              onChange={(event) => setSplitSentenceId(event.target.value)}
+              onChange={(event) => {
+                const choice =
+                  sentences.find((candidate) => candidate.sentence.id === event.target.value) ??
+                  null
+                setSplitSentenceId(event.target.value)
+                setSplitTarget(defaultSplitTarget(choice))
+              }}
             >
               {sentences.map((choice) => (
                 <option key={choice.sentence.id} value={choice.sentence.id}>
@@ -282,7 +295,14 @@ export function MoreActions({
               value={splitTarget}
               onChange={(event) => setSplitTarget(event.target.value)}
             >
-              <option value="new">新词条</option>
+              <option value="" disabled>
+                选一个词条
+              </option>
+              <option value="new" disabled={splitChoice !== null && !splitChoice.sentence.canSplitToNew}>
+                {splitChoice !== null && !splitChoice.sentence.canSplitToNew
+                  ? '新词条（这个词形已属于本词条）'
+                  : '新词条'}
+              </option>
               {otherEntries.map((entry) => (
                 <option key={entry.id} value={entry.id}>
                   {entry.mainForm}
@@ -290,11 +310,16 @@ export function MoreActions({
               ))}
             </select>
           </label>
+          {splitChoice !== null &&
+          !splitChoice.sentence.canSplitToNew &&
+          otherEntries.length === 0 ? (
+            <p className="entry-more-hint">这个表达已经属于这个词条，现在没有别的词条可拆。</p>
+          ) : null}
           <div className="entries-rail-actions">
             <button
               type="button"
               className="button"
-              disabled={splitChoice === null || busy}
+              disabled={splitChoice === null || splitTarget === '' || busy}
               onClick={() => void submitSplit()}
             >
               {dropsEntry ? '拆走并删除词条' : '拆过去'}

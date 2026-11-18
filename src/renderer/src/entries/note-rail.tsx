@@ -163,7 +163,9 @@ export function NoteRail({
       <section className="entries-rail-section" aria-label="主词形">
         <p className="section-label">主词形</p>
         <div className="entry-forms">
-          <span className="entry-form entry-form-current">{page.entry.mainForm}</span>
+          <span className="entry-form entry-form-current" aria-current="true">
+            {page.entry.mainForm}
+          </span>
           {page.entry.variants.map((variant) => (
             <span className="entry-form" key={variant}>
               {variant}
