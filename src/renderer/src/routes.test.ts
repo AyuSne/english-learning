@@ -12,6 +12,8 @@ function view(route: Route, overrides: Partial<View> = {}): View {
     entrySentenceId: null,
     reselect: false,
     threadId: null,
+    pinId: null,
+    fromEntryId: null,
     ...overrides
   }
 }
@@ -75,6 +77,20 @@ describe('parseView', () => {
     expect(parseView('#/chat/a/b')).toEqual(view('home'))
   })
 
+  it('对话页可以带一条要回跳定位的钉住与来源词条', () => {
+    expect(parseView('#/chat/thread-1?pin=pin-1&from=entry-1')).toEqual(
+      view('chat', { threadId: 'thread-1', pinId: 'pin-1', fromEntryId: 'entry-1' })
+    )
+    expect(parseView('#/chat/thread-1?pin=pin%201')).toEqual(
+      view('chat', { threadId: 'thread-1', pinId: 'pin 1' })
+    )
+    // 编码坏了的参数当没有，线程照常打开。
+    expect(parseView('#/chat/thread-1?pin=%E0%A4%A&from=entry-1')).toEqual(
+      view('chat', { threadId: 'thread-1', fromEntryId: 'entry-1' })
+    )
+    expect(parseView('#/chat?pin=pin-1')).toEqual(view('chat'))
+  })
+
   it('id 按 URL 编码解回来', () => {
     expect(parseView('#/reading/a%20b')).toEqual(view('reading', { articleId: 'a b' }))
   })
@@ -114,5 +130,17 @@ describe('routeHash', () => {
   it('对话页把线程 id 编进 hash', () => {
     expect(routeHash('chat', { threadId: 'thread 1' })).toBe('#/chat/thread%201')
     expect(routeHash('chat')).toBe('#/chat')
+  })
+
+  it('对话页把要回跳的钉住与来源词条编进 hash', () => {
+    expect(routeHash('chat', { threadId: 'thread-1', pinId: 'pin 1', fromEntryId: 'entry 1' })).toBe(
+      '#/chat/thread-1?pin=pin%201&from=entry%201'
+    )
+    expect(routeHash('chat', { threadId: 'thread-1', pinId: 'pin-1' })).toBe(
+      '#/chat/thread-1?pin=pin-1'
+    )
+    expect(routeHash('chat', { threadId: 'thread-1', fromEntryId: 'entry-1' })).toBe(
+      '#/chat/thread-1'
+    )
   })
 })

@@ -202,6 +202,36 @@ export const migrations: readonly Migration[] = [
         CREATE INDEX thread_entry_parent ON thread_entry (parent_id, created_at);
       `)
     }
+  },
+  {
+    version: 7,
+    up: (database) => {
+      // 钉住是独立快照，故意不挂外键：删线程、切分支、删回答都不影响已钉住的内容。
+      // 出处里的线程名、轮次、模型、原句都是钉住那一刻抄下来的，之后对不上也不改。
+      // `start` / `end` 是片段在那一版回答正文里的字符区间，用来在对话里常驻描边。
+      database.exec(`
+        CREATE TABLE pin (
+          id                   TEXT PRIMARY KEY,
+          thread_id            TEXT NOT NULL,
+          thread_title         TEXT NOT NULL,
+          answer_id            TEXT NOT NULL,
+          turn_index           INTEGER NOT NULL,
+          model                TEXT NOT NULL,
+          captured_text        TEXT NOT NULL,
+          char_start           INTEGER NOT NULL,
+          char_end             INTEGER NOT NULL,
+          source_sentence_id   TEXT,
+          source_sentence_text TEXT,
+          target_kind          TEXT NOT NULL,
+          target_id            TEXT,
+          created_at           TEXT NOT NULL
+        );
+
+        CREATE INDEX pin_thread ON pin (thread_id, created_at DESC);
+        CREATE INDEX pin_target ON pin (target_kind, target_id, created_at DESC);
+        CREATE INDEX pin_unfiled ON pin (created_at DESC) WHERE target_kind = 'unfiled';
+      `)
+    }
   }
 ]
 

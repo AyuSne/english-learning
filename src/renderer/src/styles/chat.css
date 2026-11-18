@@ -7,7 +7,7 @@
 
 .chat-page {
   display: grid;
-  grid-template-columns: 236px minmax(0, 1fr);
+  grid-template-columns: 236px minmax(0, 1fr) auto;
   height: 100%;
 }
 

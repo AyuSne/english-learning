@@ -4,7 +4,8 @@ export type Route = (typeof ROUTES)[number]
 
 /**
  * 当前视图。阅读页要带上是哪一篇（可以再带一条要定位的原句），
- * 词条页要带上打开哪个词条。刷新或重启后靠 hash 回到同一处。
+ * 词条页要带上打开哪个词条，对话页可以带一条要从学习内容定位回来的钉住。
+ * 刷新或重启后靠 hash 回到同一处。
  */
 export type View = {
   route: Route
@@ -18,6 +19,10 @@ export type View = {
   entrySentenceId: string | null
   /** 阅读页要把这条原句的范围换掉（重新圈定）。 */
   reselect: boolean
+  /** 对话页要从学习内容回跳定位的那条钉住。 */
+  pinId: string | null
+  /** 回跳时「回词条」要回到的词条。 */
+  fromEntryId: string | null
 }
 
 export type RouteHashOptions = {
@@ -26,6 +31,8 @@ export type RouteHashOptions = {
   threadId?: string | null
   entrySentenceId?: string | null
   reselect?: boolean
+  pinId?: string | null
+  fromEntryId?: string | null
 }
 
 function routeOf(segment: string): Route | null {
@@ -52,7 +59,9 @@ function blankView(route: Route): View {
     entryId: null,
     threadId: null,
     entrySentenceId: null,
-    reselect: false
+    reselect: false,
+    pinId: null,
+    fromEntryId: null
   }
 }
 
@@ -92,7 +101,9 @@ export function parseView(hash: string): View {
       entryId: null,
       threadId: null,
       entrySentenceId,
-      reselect: entrySentenceId !== null && params.get('reselect') === '1'
+      reselect: entrySentenceId !== null && params.get('reselect') === '1',
+      pinId: null,
+      fromEntryId: null
     }
   }
 
@@ -116,9 +127,12 @@ export function parseView(hash: string): View {
     if (segments.length === 1) {
       return blankView('chat')
     }
+    const params = new URLSearchParams(query)
     return {
       ...blankView('chat'),
-      threadId: decodeSegment(segments[1] as string)
+      threadId: decodeSegment(segments[1] as string),
+      pinId: decodeSegment(params.get('pin') ?? ''),
+      fromEntryId: decodeSegment(params.get('from') ?? '')
     }
   }
 
@@ -140,7 +154,14 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
     return `#/entries/${encodeURIComponent(options.entryId)}`
   }
   if (route === 'chat' && options.threadId) {
-    return `#/chat/${encodeURIComponent(options.threadId)}`
+    let hash = `#/chat/${encodeURIComponent(options.threadId)}`
+    if (options.pinId) {
+      hash += `?pin=${encodeURIComponent(options.pinId)}`
+      if (options.fromEntryId) {
+        hash += `&from=${encodeURIComponent(options.fromEntryId)}`
+      }
+    }
+    return hash
   }
   return `#/${route}`
 }

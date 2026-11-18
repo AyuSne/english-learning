@@ -35,6 +35,19 @@ import type {
   LibrarySearchResults
 } from './library'
 import type {
+  CreatePinRequest,
+  CreatePinResult,
+  DeletePinResult,
+  FileAllUnfiledRequest,
+  FileAllUnfiledResult,
+  MovePinRequest,
+  PinBoard,
+  PinResult,
+  PinSourceResult,
+  RestorePinsRequest,
+  RestorePinsResult
+} from './pins'
+import type {
   ReadingProgressRequest,
   ReadingProgressResult,
   ReadingSettingsRequest,
@@ -126,6 +139,13 @@ export interface IpcContract {
   }
   'chat:switch-question': { payload: SwitchQuestionRequest; result: SwitchThreadResult }
   'chat:switch-answer': { payload: SwitchAnswerRequest; result: SwitchThreadResult }
+  'pins:create': { payload: CreatePinRequest; result: CreatePinResult }
+  'pins:board': { payload: { threadId: string | null }; result: PinBoard }
+  'pins:move': { payload: MovePinRequest; result: PinResult }
+  'pins:delete': { payload: { pinId: string }; result: DeletePinResult }
+  'pins:file-all': { payload: FileAllUnfiledRequest; result: FileAllUnfiledResult }
+  'pins:restore': { payload: RestorePinsRequest; result: RestorePinsResult }
+  'pins:source': { payload: { pinId: string }; result: PinSourceResult }
 }
 
 /**
@@ -175,7 +195,14 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'chat:context': true,
   'chat:candidates': true,
   'chat:switch-question': true,
-  'chat:switch-answer': true
+  'chat:switch-answer': true,
+  'pins:create': true,
+  'pins:board': true,
+  'pins:move': true,
+  'pins:delete': true,
+  'pins:file-all': true,
+  'pins:restore': true,
+  'pins:source': true
 }
 
 const EVENT_CHANNEL_TABLE: Record<IpcEventChannel, true> = {

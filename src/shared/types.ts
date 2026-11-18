@@ -10,6 +10,8 @@ export type AppBootstrap = {
   isPackaged: boolean
   schemaVersion: number
   theme: Theme
+  /** 当前配置的模型名；保存回答与钉住出处都记它。 */
+  chatModel: string
   /** 本次启动的语料导入结果；失败项要在文章库里提示出来。 */
   corpusImport: ImportReport
 }

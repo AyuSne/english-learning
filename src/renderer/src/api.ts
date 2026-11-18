@@ -28,6 +28,19 @@ import type {
   WordEntryCard
 } from '../../shared/entries'
 import type {
+  CreatePinRequest,
+  CreatePinResult,
+  DeletePinResult,
+  FileAllUnfiledRequest,
+  FileAllUnfiledResult,
+  MovePinRequest,
+  PinBoard,
+  PinResult,
+  PinSourceResult,
+  RestorePinsRequest,
+  RestorePinsResult
+} from '../../shared/pins'
+import type {
   ReadingProgressRequest,
   ReadingProgressResult,
   ReadingSettingsRequest,
@@ -236,4 +249,41 @@ export function switchThreadQuestion(
 /** 切到另一回答版本。 */
 export function switchThreadAnswer(request: SwitchAnswerRequest): Promise<SwitchThreadResult> {
   return window.api.invoke('chat:switch-answer', request)
+}
+
+/* ---------- 钉住与钉板 ---------- */
+
+/** 选中一段回答钉住；落点来自主对象推导或用户手动改过。 */
+export function createPin(request: CreatePinRequest): Promise<CreatePinResult> {
+  return window.api.invoke('pins:create', request)
+}
+
+/** 钉板：这条线程已归位的 + 全局未归档。 */
+export function loadPinBoard(threadId: string | null): Promise<PinBoard> {
+  return window.api.invoke('pins:board', { threadId })
+}
+
+/** 改一条钉住的落点（移动，不复制）。 */
+export function movePin(request: MovePinRequest): Promise<PinResult> {
+  return window.api.invoke('pins:move', request)
+}
+
+/** 真删一条钉住；落到词条时连学习内容一起删。 */
+export function deletePin(pinId: string): Promise<DeletePinResult> {
+  return window.api.invoke('pins:delete', { pinId })
+}
+
+/** 未归档全部归到一个落点。 */
+export function fileAllUnfiled(request: FileAllUnfiledRequest): Promise<FileAllUnfiledResult> {
+  return window.api.invoke('pins:file-all', request)
+}
+
+/** 撤销丢弃：按快照把钉住放回去。 */
+export function restorePins(request: RestorePinsRequest): Promise<RestorePinsResult> {
+  return window.api.invoke('pins:restore', request)
+}
+
+/** 从学习内容点「来源」：拿到线程与这条回答在不在当前分支。 */
+export function loadPinSource(pinId: string): Promise<PinSourceResult> {
+  return window.api.invoke('pins:source', { pinId })
 }

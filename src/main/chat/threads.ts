@@ -71,6 +71,8 @@ type AnswerPayload = {
   thinkingMs: number
   phase: AnswerPhase
   error: ChatError | null
+  /** 生成这一版时用的模型名；旧条目没有时为空串。 */
+  model: string
 }
 
 const CONTEXT_KINDS: readonly ThreadContextKind[] = [
@@ -624,6 +626,7 @@ function answerPayloadOf(row: ThreadEntryRow): AnswerPayload {
     thinking: typeof payload.thinking === 'string' ? payload.thinking : '',
     thinkingMs,
     phase,
+    model: typeof payload.model === 'string' ? payload.model : '',
     error:
       typeof error === 'object' && error !== null
         ? (error as ChatError)
@@ -665,6 +668,7 @@ function buildAnswer(
     thinkingMs: segments.reduce((total, segment) => total + segment.thinkingMs, 0),
     phase: last.phase,
     error: last.error,
+    model: segments[0]?.model ?? '',
     createdAt: root.created_at,
     continuationIds: continuations.map((row) => row.id)
   }
@@ -959,14 +963,16 @@ function answerPayloadOfRequest(
   thinking: string,
   thinkingMs: number | undefined,
   phase: AnswerPhase,
-  error: ChatError | null | undefined
+  error: ChatError | null | undefined,
+  model: string | undefined
 ): AnswerPayload {
   return {
     text,
     thinking,
     thinkingMs: thinkingMs === undefined ? 0 : Math.max(0, Math.round(thinkingMs)),
     phase,
-    error: error ?? null
+    error: error ?? null,
+    model: model?.trim() ?? ''
   }
 }
 
@@ -994,7 +1000,8 @@ export function saveAnswer(
       request.thinking,
       request.thinkingMs,
       request.phase,
-      request.error
+      request.error,
+      request.model
     ),
     now
   })
@@ -1066,7 +1073,8 @@ export function saveContinuation(
       request.thinking,
       request.thinkingMs,
       request.phase,
-      request.error
+      request.error,
+      request.model
     ),
     now
   })

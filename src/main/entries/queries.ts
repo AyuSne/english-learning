@@ -11,6 +11,7 @@ import type {
 } from '../../shared/entries'
 import type { ArticleKind } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
+import { reassignPinsFromEntry } from '../pins/pins'
 import { paragraphLetter } from '../corpus/letter'
 import { refreshLastCollected } from './entry-state'
 import { resolveLemma, type LemmaLexicon } from './lemma'
@@ -426,6 +427,8 @@ export function deleteEntrySentence(
       .prepare('SELECT COUNT(*) AS count FROM entry_sentence WHERE entry_id = ?')
       .get(stored.entry_id) as { count: number }
     if (count.count === 0) {
+      // 词条删掉后，钉在上面的学习内容也随级联没了；钉住本身退回未归档等重新落点。
+      reassignPinsFromEntry(database, stored.entry_id, null)
       database.prepare('DELETE FROM word_entry WHERE id = ?').run(stored.entry_id)
     } else {
       refreshLastCollected(database, stored.entry_id)

@@ -20,6 +20,15 @@ import type {
   LibrarySearchResults
 } from '../../shared/library'
 import type {
+  CreatePinResult,
+  DeletePinResult,
+  FileAllUnfiledResult,
+  PinBoard,
+  PinResult,
+  PinSourceResult,
+  RestorePinsResult
+} from '../../shared/pins'
+import type {
   ReadingProgressResult,
   ReadingSettingsResult,
   ReadingView
@@ -48,6 +57,7 @@ const bootstrap: AppBootstrap = {
   isPackaged: false,
   schemaVersion: 3,
   theme: 'light',
+  chatModel: 'deepseek-flash',
   corpusImport: { total: 0, imported: 0, updated: 0, skipped: 0, failed: [] }
 }
 
@@ -130,6 +140,23 @@ function entriesHandlers() {
   }
 }
 
+function pinsHandlers() {
+  return {
+    'pins:create': (): CreatePinResult => ({ status: 'rejected', reason: 'thread' }),
+    'pins:board': (): PinBoard => ({
+      threadId: null,
+      threadPins: [],
+      unfiledPins: [],
+      unfiledCount: 0
+    }),
+    'pins:move': (): PinResult => ({ status: 'missing' }),
+    'pins:delete': (): DeletePinResult => ({ status: 'missing' }),
+    'pins:file-all': (): FileAllUnfiledResult => ({ status: 'filed', filed: [] }),
+    'pins:restore': (): RestorePinsResult => ({ status: 'restored', pins: [] }),
+    'pins:source': (): PinSourceResult => null
+  }
+}
+
 describe('registerIpcHandlers', () => {
   it('按契约注册每个 channel，调用时转给对应处理函数并传入调用事件', () => {
     const { ipc, registered } = fakeIpcMain()
@@ -141,6 +168,7 @@ describe('registerIpcHandlers', () => {
       ...libraryHandlers(),
       ...readingHandlers(),
       ...entriesHandlers(),
+      ...pinsHandlers(),
       'app:bootstrap': (payload, event) => {
         received.push(payload)
         events.push(event)
@@ -172,6 +200,7 @@ describe('registerIpcHandlers', () => {
       ...libraryHandlers(),
       ...readingHandlers(),
       ...entriesHandlers(),
+      ...pinsHandlers(),
       'app:bootstrap': () => bootstrap,
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers

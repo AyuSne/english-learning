@@ -28,6 +28,7 @@ function answer(overrides: Partial<ThreadAnswer> = {}): ThreadAnswer {
     thinkingMs: 3000,
     phase: 'done',
     error: null,
+    model: 'deepseek-flash',
     createdAt: '2026-11-18T09:01:00.000Z',
     continuationIds: [],
     ...overrides

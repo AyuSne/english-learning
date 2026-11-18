@@ -1,4 +1,10 @@
-import type { EntryListItem, EntrySentence, EntrySummary, LearningNote } from '../../../shared/entries'
+import type {
+  EntryListItem,
+  EntrySentence,
+  EntrySummary,
+  LearningNote,
+  LearningNoteSourcePin
+} from '../../../shared/entries'
 import { formatDay } from '../library/format'
 
 /** 左栏一行：「2 句 · 1 篇」。 */
@@ -29,8 +35,24 @@ export function sentenceSourceText(
   return parts.join(' · ')
 }
 
-/** 学习内容的来源行：「词条内手写 · 2026-11-18」。 */
-export function noteSourceText(note: Pick<LearningNote, 'source' | 'createdAt'>): string {
+/** 学习内容的来源行；钉住带进来的写清线程、轮次、模型与日期。 */
+export function noteSourceText(
+  note: Pick<LearningNote, 'source' | 'createdAt'> & {
+    sourcePin?: LearningNoteSourcePin | null
+  }
+): string {
+  if (note.source === 'pin' && note.sourcePin) {
+    const pin = note.sourcePin
+    const parts = [`来自 ${pin.threadTitle}`, `第 ${pin.turnIndex} 轮`]
+    if (pin.model !== '') {
+      parts.push(pin.model)
+    }
+    const day = formatDay(pin.capturedAt)
+    if (day !== '') {
+      parts.push(day)
+    }
+    return parts.join(' · ')
+  }
   const origin = note.source === 'pin' ? '来自对话' : '词条内手写'
   const day = formatDay(note.createdAt)
   return day === '' ? origin : `${origin} · ${day}`

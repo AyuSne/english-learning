@@ -7,6 +7,7 @@ import {
   updateLearningNote
 } from '../api'
 import { messageOf } from '../errors'
+import { navigate } from '../navigate'
 import { entryHeadlineText, noteSourceText } from './format'
 import { LearningBody } from './learning-body'
 import { MoreActions } from './more-actions'
@@ -179,79 +180,110 @@ export function NoteRail({
           <p className="empty-line">还没有学习内容 · 从对话里钉一段进来</p>
         ) : (
           <div className="entry-notes">
-            {page.notes.map((note) => (
-              <article className="entry-note" data-note-id={note.id} key={note.id}>
-                <header className="entry-note-head">
-                  {note.pinned ? <span className="entry-note-pin">已置顶</span> : null}
-                  <div className="entry-note-actions">
-                    <button
-                      type="button"
-                      className="entry-action"
-                      disabled={busyNoteId === note.id}
-                      onClick={() => void togglePin(note)}
-                    >
-                      {note.pinned ? '取消置顶' : '置顶'}
-                    </button>
-                    <button
-                      type="button"
-                      className="entry-action"
-                      onClick={() => {
-                        setEditingId(note.id)
-                        setEditDraft(note.body)
-                        setEditError(null)
-                      }}
-                    >
-                      编辑
-                    </button>
-                    <button
-                      type="button"
-                      className="entry-action entry-action-danger"
-                      disabled={busyNoteId === note.id}
-                      onClick={() => void removeNote(note)}
-                    >
-                      删除
-                    </button>
-                  </div>
-                </header>
-
-                {editingId === note.id ? (
-                  <div className="entry-note-editor">
-                    <textarea
-                      aria-label="编辑学习内容"
-                      rows={4}
-                      value={editDraft}
-                      onChange={(event) => setEditDraft(event.target.value)}
-                    />
-                    <div className="entries-rail-actions">
+            {page.notes.map((note) => {
+              const sourcePin = note.sourcePin
+              return (
+                <article className="entry-note" data-note-id={note.id} key={note.id}>
+                  <header className="entry-note-head">
+                    {note.pinned ? <span className="entry-note-pin">已置顶</span> : null}
+                    <div className="entry-note-actions">
                       <button
                         type="button"
-                        className="button"
-                        disabled={savingEdit || editDraft.trim() === ''}
-                        onClick={() => void saveEdit(note)}
+                        className="entry-action"
+                        disabled={busyNoteId === note.id}
+                        onClick={() => void togglePin(note)}
                       >
-                        保存修改
+                        {note.pinned ? '取消置顶' : '置顶'}
                       </button>
                       <button
                         type="button"
-                        className="button"
-                        onClick={() => setEditingId(null)}
+                        className="entry-action"
+                        onClick={() => {
+                          setEditingId(note.id)
+                          setEditDraft(note.body)
+                          setEditError(null)
+                        }}
                       >
-                        取消
+                        编辑
+                      </button>
+                      <button
+                        type="button"
+                        className="entry-action entry-action-danger"
+                        disabled={busyNoteId === note.id}
+                        onClick={() => void removeNote(note)}
+                      >
+                        删除
                       </button>
                     </div>
-                    {editError === null ? null : (
-                      <p className="entry-error" role="alert">
-                        {editError}
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <LearningBody body={note.body} />
-                )}
+                  </header>
 
-                <p className="entry-note-source">{noteSourceText(note)}</p>
-              </article>
-            ))}
+                  {editingId === note.id ? (
+                    <div className="entry-note-editor">
+                      <textarea
+                        aria-label="编辑学习内容"
+                        rows={4}
+                        value={editDraft}
+                        onChange={(event) => setEditDraft(event.target.value)}
+                      />
+                      <div className="entries-rail-actions">
+                        <button
+                          type="button"
+                          className="button"
+                          disabled={savingEdit || editDraft.trim() === ''}
+                          onClick={() => void saveEdit(note)}
+                        >
+                          保存修改
+                        </button>
+                        <button
+                          type="button"
+                          className="button"
+                          onClick={() => setEditingId(null)}
+                        >
+                          取消
+                        </button>
+                      </div>
+                      {editError === null ? null : (
+                        <p className="entry-error" role="alert">
+                          {editError}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <LearningBody body={note.body} />
+                  )}
+
+                  <p className="entry-note-source">
+                    <span>{noteSourceText(note)}</span>
+                    {sourcePin === null ? null : sourcePin.threadAlive ? (
+                      <button
+                        type="button"
+                        className="entry-source-link"
+                        aria-label="看原对话（来源）"
+                        onClick={() =>
+                          navigate('chat', {
+                            threadId: sourcePin.threadId,
+                            pinId: sourcePin.id,
+                            fromEntryId: page.entry.id
+                          })
+                        }
+                      >
+                        来源
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="entry-source-link"
+                        aria-label="看原对话（来源）"
+                        title="源对话已删除，内容按快照保留"
+                        disabled
+                      >
+                        来源
+                      </button>
+                    )}
+                  </p>
+                </article>
+              )
+            })}
           </div>
         )}
 

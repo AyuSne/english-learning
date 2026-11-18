@@ -150,8 +150,23 @@ export type LearningNote = {
   source: 'manual' | 'pin'
   /** 钉住来源的 id；手写时为 null。 */
   sourcePinId: string | null
+  /** 钉住带进来的出处；手写内容与来源已失效时为 null。 */
+  sourcePin: LearningNoteSourcePin | null
   createdAt: string
   updatedAt: string
+}
+
+/** 学习内容卡底部那行出处：线程、轮次、模型、时间，以及线程还在不在。 */
+export type LearningNoteSourcePin = {
+  id: string
+  threadId: string
+  threadTitle: string
+  /** 第几轮，1 起。 */
+  turnIndex: number
+  model: string
+  capturedAt: string
+  /** 源对话被删后为 false，入口置灰。 */
+  threadAlive: boolean
 }
 
 /** 词条页里按文章分组的一组原句。 */

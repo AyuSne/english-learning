@@ -1,0 +1,522 @@
+/* ---------- 钉住、钉板与来源回跳 ---------- */
+
+.chat-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.chat-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-board-button {
+  flex: none;
+  margin-top: 4px;
+}
+
+.chat-rail-unfiled {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+  transition: background 150ms ease-out;
+}
+
+.chat-rail-unfiled:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+/* ---------- 钉住标记 ---------- */
+
+.assistant-paragraph {
+  position: relative;
+}
+
+.assistant-paragraph-text {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.assistant-paragraph:last-child .assistant-paragraph-text {
+  margin-bottom: 0;
+}
+
+.assistant-paragraph.is-pinned::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 9px;
+  left: -12px;
+  width: 2px;
+  border-radius: 4px;
+  background: var(--line-pin);
+}
+
+.assistant-paragraph.is-source-hit {
+  border-radius: 4px;
+  background: var(--bed-pin);
+}
+
+.pin-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 8px;
+  border: 1px solid var(--line-pin);
+  border-radius: 999px;
+  background: var(--bed-pin);
+  color: var(--amber);
+  font-size: 12px;
+  line-height: 16px;
+  user-select: none;
+}
+
+.pin-selection-card {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line-pin);
+  border-radius: 10px;
+  background: var(--panel);
+  box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
+  transform: translateX(-50%);
+}
+
+[data-theme="dark"] .pin-selection-card {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- 落点弹层 ---------- */
+
+.pin-dialog-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(26, 26, 23, 0.2);
+}
+
+[data-theme="dark"] .pin-dialog-scrim {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.pin-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(420px, 100%);
+  padding: 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 20px 50px rgba(40, 32, 20, 0.18);
+}
+
+[data-theme="dark"] .pin-dialog {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.pin-dialog-title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.pin-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pin-target {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pin-target[aria-pressed="true"] {
+  border-color: var(--line-pin);
+  background: var(--bed-pin);
+  color: var(--amber);
+}
+
+.pin-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.pin-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pin-dialog-esc {
+  margin-left: auto;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-dialog-hint {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* ---------- 来源横条 ---------- */
+
+.pin-source-banner {
+  display: flex;
+  flex: none;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 32px;
+  border-bottom: 1px solid var(--line-pin);
+  background: var(--bed-pin);
+  color: var(--amber);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-source-hint {
+  color: var(--ink-2);
+}
+
+.pin-source-back {
+  margin-left: auto;
+}
+
+.pin-source-close {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.pin-source-close:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+/* ---------- 钉板 ---------- */
+
+.pin-board {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--rule);
+  background: var(--sunken);
+}
+
+.pin-board-collapsed {
+  width: 44px;
+  padding: 12px 0;
+}
+
+.pin-board-handle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-board-count {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--bed-pin);
+  color: var(--amber);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pin-board-label {
+  writing-mode: vertical-rl;
+  letter-spacing: 0.06em;
+}
+
+.pin-board-open {
+  width: 336px;
+}
+
+.pin-board-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.pin-board-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.pin-board-tab {
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-board-tab[aria-selected="true"] {
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+.pin-board-fold {
+  margin-left: auto;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.pin-board-fold:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+.pin-board-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.pin-board-empty {
+  padding: 24px 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.pin-card {
+  padding: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.pin-card[data-fresh="true"] {
+  border-color: var(--line-pin);
+  box-shadow: 0 0 0 2px var(--bed-pin);
+}
+
+.pin-card-excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.pin-card-provenance {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-card-target {
+  padding: 0 8px;
+  border: 1px solid var(--line-pin);
+  border-radius: 999px;
+  background: var(--bed-pin);
+  color: var(--amber);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-card-dead {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-card-source {
+  margin-top: 8px;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pin-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pin-card-action {
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.pin-card-action:hover:not(:disabled) {
+  border-color: var(--rule-hover);
+  color: var(--ink);
+}
+
+.pin-card-action:disabled {
+  cursor: default;
+  color: var(--ink-3);
+}
+
+.pin-card-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.pin-board-foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--rule);
+}
+
+.pin-board-foot-text {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* ---------- 撤销提示 ---------- */
+
+.toast-undo {
+  margin-left: 12px;
+  color: var(--amber);
+  font-size: 12px;
+  line-height: 16px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- 学习内容来源行 ---------- */
+
+.entry-note-source {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.entry-source-link {
+  color: var(--blue);
+  font-size: 12px;
+  line-height: 16px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.entry-source-link:disabled {
+  color: var(--ink-3);
+  cursor: default;
+  text-decoration: none;
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .chat-page {
+    grid-template-columns: 236px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .pin-board {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
+  }
+
+  [data-theme="dark"] .pin-board {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  }
+}
+
+@media (max-width: 900px) {
+  .pin-source-banner {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-rail-unfiled {
+    transition: none;
+  }
+}

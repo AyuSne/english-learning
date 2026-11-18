@@ -10,6 +10,7 @@ import type {
   ReselectEntrySentenceResult
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
+import { reassignPinsFromEntry } from '../pins/pins'
 import { entryExists, hasPinnedNote, refreshLastCollected } from './entry-state'
 import {
   readArticleCollections,
@@ -181,6 +182,8 @@ export function mergeEntries(
           WHERE id = ?`
       )
       .run(mainForm, source.lastCollectedAt, target.id)
+    // 钉在这个词条上的学习内容跟着合并过去，落点不能留在一个马上要删的 id 上。
+    reassignPinsFromEntry(database, source.id, target.id)
     database.prepare('DELETE FROM word_entry WHERE id = ?').run(source.id)
     // 源词条删掉之后，主词形对应的键才可能空出来。
     adoptEntryKey(database, target.id, mainForm)
@@ -267,6 +270,8 @@ export function moveEntrySentence(
       .prepare('SELECT COUNT(*) AS count FROM entry_sentence WHERE entry_id = ?')
       .get(stored.entry_id) as { count: number }
     if (remaining.count === 0) {
+      // 词条没了，钉在上面的内容退回未归档，等用户重新决定落点。
+      reassignPinsFromEntry(database, stored.entry_id, null)
       database.prepare('DELETE FROM word_entry WHERE id = ?').run(stored.entry_id)
     }
     return receiving

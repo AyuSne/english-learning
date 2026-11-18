@@ -54,6 +54,15 @@ import {
   saveReadingPoint,
   saveReadingSettings
 } from './reading/queries'
+import {
+  createPin,
+  deletePin,
+  fileAllUnfiled,
+  movePin,
+  readPinBoard,
+  readPinSource,
+  restorePins
+} from './pins/pins'
 import { createMainWindow } from './window'
 
 const DATABASE_FILE = 'english-learning.db'
@@ -113,10 +122,13 @@ function start(): void {
     )
   }
 
-  const chat = createChatService({ config: readChatConfig(process.env) })
+  const chatConfig = readChatConfig(process.env)
+  const chat = createChatService({ config: chatConfig })
+  /** 当前配置的模型名：给启动值保存回答用，也给钉住出处兜底。 */
+  const configuredModel = chatConfig?.model ?? ''
 
   registerIpcHandlers(ipcMain, {
-    'app:bootstrap': () => createBootstrap(opened, corpusImport),
+    'app:bootstrap': () => createBootstrap(opened, corpusImport, configuredModel),
     'home:summary': () => readHomeSummary(opened),
     'library:list': () => readLibrary(opened),
     'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
@@ -152,7 +164,14 @@ function start(): void {
     'chat:context': (payload) => updateThreadContext(opened, payload),
     'chat:candidates': (payload) => readContextCandidates(opened, payload.threadId),
     'chat:switch-question': (payload) => switchQuestion(opened, payload),
-    'chat:switch-answer': (payload) => switchAnswer(opened, payload)
+    'chat:switch-answer': (payload) => switchAnswer(opened, payload),
+    'pins:create': (payload) => createPin(opened, payload, { model: configuredModel }),
+    'pins:board': (payload) => readPinBoard(opened, payload.threadId),
+    'pins:move': (payload) => movePin(opened, payload),
+    'pins:delete': (payload) => deletePin(opened, payload),
+    'pins:file-all': (payload) => fileAllUnfiled(opened, payload),
+    'pins:restore': (payload) => restorePins(opened, payload),
+    'pins:source': (payload) => readPinSource(opened, payload.pinId)
   })
 
   Menu.setApplicationMenu(null)

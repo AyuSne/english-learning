@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { AppBootstrap } from '../../shared/types'
 import { loadBootstrap } from './api'
+import { setChatModel } from './chat/store'
 import { GlobalNav } from './components/GlobalNav'
 import { routeLabel } from './navigation'
 import { ChatPage } from './pages/ChatPage'
@@ -20,7 +21,10 @@ export function App() {
     let active = true
     loadBootstrap().then(
       (value) => {
-        if (active) setBootstrap(value)
+        if (active) {
+          setChatModel(value.chatModel)
+          setBootstrap(value)
+        }
       },
       (error: unknown) => {
         if (active) setBootError(error instanceof Error ? error.message : String(error))
@@ -72,7 +76,11 @@ export function App() {
         ) : view.route === 'entries' ? (
           <EntriesPage entryId={view.entryId} />
         ) : view.route === 'chat' ? (
-          <ChatPage threadId={view.threadId} />
+          <ChatPage
+            threadId={view.threadId}
+            pinId={view.pinId}
+            fromEntryId={view.fromEntryId}
+          />
         ) : view.route === 'library' ? (
           <LibraryPage corpusImport={bootstrap.corpusImport} />
         ) : (

@@ -8,6 +8,7 @@ const bootstrap: AppBootstrap = {
   isPackaged: false,
   schemaVersion: 3,
   theme: 'light',
+  chatModel: 'deepseek-flash',
   corpusImport: { total: 0, imported: 0, updated: 0, skipped: 0, failed: [] }
 }
 

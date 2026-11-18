@@ -87,6 +87,8 @@ export type ThreadAnswer = {
   /** 最后一段的状态；继续生成中断时整条算未完成。 */
   phase: 'done' | 'stopped' | 'error'
   error: ChatError | null
+  /** 生成这一版时用的模型名；旧数据没有时为空串。 */
+  model: string
   createdAt: string
   /** 继续生成接出来的条目，按追加顺序。 */
   continuationIds: string[]
@@ -164,6 +166,8 @@ export type SaveAnswerRequest = {
   thinkingMs?: number
   phase: 'done' | 'stopped' | 'error'
   error?: ChatError | null
+  /** 生成这一版时用的模型名，钉住出处要用。 */
+  model?: string
 }
 
 export type SaveContinuationRequest = {
@@ -175,6 +179,7 @@ export type SaveContinuationRequest = {
   thinkingMs?: number
   phase: 'done' | 'stopped' | 'error'
   error?: ChatError | null
+  model?: string
 }
 
 export type SaveAnswerResult =

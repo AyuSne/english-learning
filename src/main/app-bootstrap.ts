@@ -9,12 +9,17 @@ import { readTheme } from './db/settings'
  * 渲染层启动时读到的那一份值：全部来自主进程与已迁移的本机资料库。
  * 语料导入结果一并带上，文章库据此提示哪几篇没导进来。
  */
-export function createBootstrap(database: AppDatabase, corpusImport: ImportReport): AppBootstrap {
+export function createBootstrap(
+  database: AppDatabase,
+  corpusImport: ImportReport,
+  chatModel: string
+): AppBootstrap {
   return {
     appVersion: app.getVersion(),
     isPackaged: app.isPackaged,
     schemaVersion: readSchemaVersion(database),
     theme: readTheme(database),
+    chatModel,
     corpusImport
   }
 }

@@ -62,6 +62,8 @@ let state: ChatStoreState = initialState
 const listeners = new Set<() => void>()
 let connected = false
 let persisting: string | null = null
+/** 当前配置的模型名；回答落库时记进条目，钉住出处才有据可查。 */
+let chatModel = ''
 /** 上下文改动连点时只认最后一次返回；界面先按本地算的摘要往前走。 */
 let contextSequence = 0
 
@@ -98,6 +100,11 @@ function dispatchSession(action: ChatSessionAction): void {
 
 export function useChatStore(): ChatStoreState {
   return useSyncExternalStore(subscribeChat, getChatStore, getChatStore)
+}
+
+/** 启动时把当前模型名交给对话层；之后每次保存回答都带上。 */
+export function setChatModel(model: string): void {
+  chatModel = model.trim()
 }
 
 /** 还有一条没落完库的回答时，不发新请求，也不切版本。 */
@@ -394,7 +401,8 @@ async function persistGeneration(generation: LiveGeneration): Promise<void> {
             thinking,
             thinkingMs,
             phase,
-            error: generation.error
+            error: generation.error,
+            model: chatModel
           })
         : await saveThreadAnswer({
             threadId: generation.threadId,
@@ -403,7 +411,8 @@ async function persistGeneration(generation: LiveGeneration): Promise<void> {
             thinking,
             thinkingMs,
             phase,
-            error: generation.error
+            error: generation.error,
+            model: chatModel
           })
 
     if (result.status === 'saved') {
