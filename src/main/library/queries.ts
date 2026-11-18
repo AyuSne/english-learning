@@ -259,10 +259,29 @@ export function openArticle(
   return { opened: true }
 }
 
-function readLastReadPoint(database: AppDatabase, row: ArticleRow): ReadingPoint | null {
-  if (row.last_paragraph_id === null || row.last_sentence_index === null) {
+/**
+ * 上次读到的位置。段与句都用 1 起，句中文字一并带上，首页据此显示「上次停在哪」。
+ * 位置指向的句子已经不在了（比如语料更新过）就当作没读过。
+ */
+export function readReadingPoint(
+  database: AppDatabase,
+  articleId: string
+): ReadingPoint | null {
+  const row = database
+    .prepare(
+      'SELECT last_paragraph_id, last_sentence_index FROM article WHERE id = ?'
+    )
+    .get(articleId) as
+    | { last_paragraph_id: string | null; last_sentence_index: number | null }
+    | undefined
+  if (
+    !row ||
+    row.last_paragraph_id === null ||
+    row.last_sentence_index === null
+  ) {
     return null
   }
+
   const found = database
     .prepare(
       `SELECT p.ordinal AS paragraph_ordinal, s.text AS sentence_text
@@ -271,7 +290,7 @@ function readLastReadPoint(database: AppDatabase, row: ArticleRow): ReadingPoint
            ON s.article_id = p.article_id AND s.paragraph_id = p.id AND s.ordinal = ?
         WHERE p.article_id = ? AND p.id = ?`
     )
-    .get(row.last_sentence_index, row.id, row.last_paragraph_id) as
+    .get(row.last_sentence_index, articleId, row.last_paragraph_id) as
     | { paragraph_ordinal: number; sentence_text: string }
     | undefined
   if (!found) {
@@ -307,7 +326,10 @@ export function readHomeSummary(database: AppDatabase): HomeSummary {
   return {
     library: { articleCount: totals.articles, sessionCount: totals.sessions },
     continueReading: recent
-      ? { article: toArticle(database, recent), lastReadPoint: readLastReadPoint(database, recent) }
+      ? {
+          article: toArticle(database, recent),
+          lastReadPoint: readReadingPoint(database, recent.id)
+        }
       : null
   }
 }

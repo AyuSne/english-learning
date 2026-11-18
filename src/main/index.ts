@@ -11,12 +11,16 @@ import { migrate } from './db/migrations'
 import { readTheme } from './db/settings'
 import { registerIpcHandlers } from './ipc/register'
 import {
-  openArticle,
   readArticleDetail,
   readHomeSummary,
   readLibrary,
   searchLibrary
 } from './library/queries'
+import {
+  openReadingView,
+  saveReadingPoint,
+  saveReadingSettings
+} from './reading/queries'
 import { createMainWindow } from './window'
 
 const DATABASE_FILE = 'english-learning.db'
@@ -84,7 +88,9 @@ function start(): void {
     'library:list': () => readLibrary(opened),
     'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
     'library:search': (payload) => searchLibrary(opened, payload.query),
-    'library:open': (payload) => openArticle(opened, payload.articleId),
+    'reading:open': (payload) => openReadingView(opened, payload.articleId),
+    'reading:progress': (payload) => saveReadingPoint(opened, payload),
+    'reading:settings': (payload) => saveReadingSettings(opened, payload),
     'chat:start': (payload, event) =>
       chat.start(payload, (update) => event.sender.send('chat:event', update)),
     'chat:stop': (payload) => chat.stop(payload.streamId)

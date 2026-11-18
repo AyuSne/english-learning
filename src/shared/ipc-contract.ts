@@ -11,6 +11,13 @@ import type {
   LibraryListing,
   LibrarySearchResults
 } from './library'
+import type {
+  ReadingProgressRequest,
+  ReadingProgressResult,
+  ReadingSettingsRequest,
+  ReadingSettingsResult,
+  ReadingView
+} from './reading'
 import type { AppBootstrap } from './types'
 
 /**
@@ -23,7 +30,9 @@ export interface IpcContract {
   'library:list': { payload: undefined; result: LibraryListing }
   'library:detail': { payload: { articleId: string }; result: ArticleDetail | null }
   'library:search': { payload: { query: string }; result: LibrarySearchResults }
-  'library:open': { payload: { articleId: string }; result: { opened: boolean } }
+  'reading:open': { payload: { articleId: string }; result: ReadingView | null }
+  'reading:progress': { payload: ReadingProgressRequest; result: ReadingProgressResult }
+  'reading:settings': { payload: ReadingSettingsRequest; result: ReadingSettingsResult | null }
   'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
 }
@@ -45,7 +54,9 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'library:list': true,
   'library:detail': true,
   'library:search': true,
-  'library:open': true,
+  'reading:open': true,
+  'reading:progress': true,
+  'reading:settings': true,
   'chat:start': true,
   'chat:stop': true
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { HomeSummary } from '../../../shared/library'
-import { loadHomeSummary, markArticleOpened } from '../api'
+import { loadHomeSummary } from '../api'
 import { messageOf } from '../errors'
 import { readingPointText, progressText } from '../library/format'
 import { navigate } from '../navigate'
@@ -28,18 +28,11 @@ export function HomePage() {
     }
   }, [])
 
-  function continueReading(articleId: string): void {
-    markArticleOpened(articleId).then(
-      (result) => {
-        if (result.opened) {
-          navigate('reading')
-        }
-      },
-      (reason: unknown) => setError(messageOf(reason))
-    )
-  }
-
   const current = summary?.continueReading ?? null
+
+  function continueReading(articleId: string): void {
+    navigate('reading', { articleId })
+  }
 
   return (
     <div className="page home">

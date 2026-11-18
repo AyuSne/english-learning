@@ -57,7 +57,7 @@ test.describe('语料导入与文章库', () => {
     await expect(page.locator('.library-session')).toHaveCount(7)
   })
 
-  test('详情显示篇幅与进度，继续阅读回到首页并记住位置', async ({ launch }) => {
+  test('详情显示篇幅与进度，继续阅读打开正文并退回', async ({ launch }) => {
     const { page } = await launch()
     await openLibrary(page)
 
@@ -71,7 +71,12 @@ test.describe('语料导入与文章库', () => {
     expect(title).toBeTruthy()
 
     await detail.getByRole('button', { name: '继续阅读' }).click()
-    await expect(page.getByRole('heading', { name: '阅读', level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: title ?? '', level: 1 })).toBeVisible()
+    await expect(page.getByRole('navigation', { name: '全局导航' })).toHaveCount(0)
+
+    // 阅读页收起全局栏，Esc 退回文章库。
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
 
     await page
       .getByRole('navigation', { name: '全局导航' })
@@ -90,7 +95,7 @@ test.describe('语料导入与文章库', () => {
       .getByRole('complementary', { name: '文章详情' })
       .getByRole('button', { name: '继续阅读' })
       .click()
-    await expect(first.page.getByRole('heading', { name: '阅读', level: 1 })).toBeVisible()
+    await expect(first.page.locator('[data-reading-page="true"]')).toBeVisible()
     await first.close()
 
     const second = await launch({ userDataDirectory })

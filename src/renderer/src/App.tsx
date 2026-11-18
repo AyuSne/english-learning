@@ -7,10 +7,11 @@ import { ChatPage } from './pages/ChatPage'
 import { HomePage } from './pages/HomePage'
 import { LibraryPage } from './pages/LibraryPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
-import { useRoute } from './use-route'
+import { ReadingPage } from './pages/ReadingPage'
+import { useView } from './use-view'
 
 export function App() {
-  const route = useRoute()
+  const view = useView()
   const [bootstrap, setBootstrap] = useState<AppBootstrap | null>(null)
   const [bootError, setBootError] = useState<string | null>(null)
 
@@ -48,17 +49,22 @@ export function App() {
     return <div className="boot" aria-busy="true" />
   }
 
-  const currentLabel = routeLabel(route)
+  // 阅读页收起全局栏，注意力只留在文章上。其余五页保留左栏。
+  if (view.route === 'reading') {
+    return <ReadingPage articleId={view.articleId} />
+  }
+
+  const currentLabel = routeLabel(view.route)
 
   return (
     <div className="app">
-      <GlobalNav route={route} />
-      <main className={route === 'chat' ? 'main main-chat' : 'main'}>
-        {route === 'home' ? (
+      <GlobalNav route={view.route} />
+      <main className={view.route === 'chat' ? 'main main-chat' : 'main'}>
+        {view.route === 'home' ? (
           <HomePage />
-        ) : route === 'chat' ? (
+        ) : view.route === 'chat' ? (
           <ChatPage />
-        ) : route === 'library' ? (
+        ) : view.route === 'library' ? (
           <LibraryPage corpusImport={bootstrap.corpusImport} />
         ) : (
           <PlaceholderPage title={currentLabel} />

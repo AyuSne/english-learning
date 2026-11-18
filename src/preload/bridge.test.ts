@@ -6,7 +6,7 @@ import { createBridge, type IpcRendererLike } from './bridge'
 const bootstrap: AppBootstrap = {
   appVersion: '0.1.0',
   isPackaged: false,
-  schemaVersion: 2,
+  schemaVersion: 3,
   theme: 'light',
   corpusImport: { total: 0, imported: 0, updated: 0, skipped: 0, failed: [] }
 }

@@ -8,7 +8,6 @@ import type {
 import {
   loadArticleDetail,
   loadLibrary,
-  markArticleOpened,
   searchLibrary
 } from '../api'
 import { messageOf } from '../errors'
@@ -17,7 +16,7 @@ import { navigate } from '../navigate'
 
 /**
  * 文章库：左边按场次分组的列表（搜索时换成命中结果），右边是选中一篇的详情。
- * 「继续阅读」先记下最近打开与所在位置，再交给阅读页；阅读页本体在下一张 ticket。
+ * 「继续阅读」把文章 id 交给阅读页，由阅读页记下最近打开并恢复上次位置。
  */
 export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
   const [listing, setListing] = useState<LibraryListing | null>(null)
@@ -26,7 +25,6 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
   const [found, setFound] = useState<LibrarySearchResults | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [detail, setDetail] = useState<ArticleDetail | null>(null)
-  const [openError, setOpenError] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
@@ -87,20 +85,10 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
 
   function select(articleId: string): void {
     setSelectedId(articleId)
-    setOpenError(null)
   }
 
   function open(articleId: string): void {
-    markArticleOpened(articleId).then(
-      (result) => {
-        if (result.opened) {
-          navigate('reading')
-        } else {
-          setOpenError('这篇文章已经不在库里了')
-        }
-      },
-      (error: unknown) => setOpenError(messageOf(error))
-    )
+    navigate('reading', { articleId })
   }
 
   const failureCount = corpusImport.failed.length
@@ -246,11 +234,6 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
               >
                 继续阅读
               </button>
-              {openError === null ? null : (
-                <p className="library-error" role="alert">
-                  {openError}
-                </p>
-              )}
             </>
           )}
         </aside>

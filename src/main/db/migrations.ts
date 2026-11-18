@@ -91,6 +91,22 @@ export const migrations: readonly Migration[] = [
         );
       `)
     }
+  },
+  {
+    version: 3,
+    up: (database) => {
+      // 阅读页的字号、行距与注释开关按篇记住；没有这一行时整份用全局默认。
+      // 行距存十分之一，避免 1.6 / 1.8 / 2.0 的浮点比较。
+      database.exec(`
+        CREATE TABLE article_reading_setting (
+          article_id          TEXT PRIMARY KEY REFERENCES article(id) ON DELETE CASCADE,
+          font_size           INTEGER NOT NULL,
+          line_height_tenths  INTEGER NOT NULL,
+          annotations_visible INTEGER NOT NULL,
+          updated_at          TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+      `)
+    }
   }
 ]
 

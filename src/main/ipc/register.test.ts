@@ -6,6 +6,11 @@ import type {
   LibraryListing,
   LibrarySearchResults
 } from '../../shared/library'
+import type {
+  ReadingProgressResult,
+  ReadingSettingsResult,
+  ReadingView
+} from '../../shared/reading'
 import type { AppBootstrap } from '../../shared/types'
 import { IPC_CHANNELS } from '../../shared/ipc-contract'
 import {
@@ -18,7 +23,7 @@ import {
 const bootstrap: AppBootstrap = {
   appVersion: '0.1.0',
   isPackaged: false,
-  schemaVersion: 2,
+  schemaVersion: 3,
   theme: 'light',
   corpusImport: { total: 0, imported: 0, updated: 0, skipped: 0, failed: [] }
 }
@@ -54,8 +59,15 @@ function libraryHandlers() {
     'library:search': (payload: { query: string }): LibrarySearchResults => ({
       query: payload.query,
       results: []
-    }),
-    'library:open': (): { opened: boolean } => ({ opened: false })
+    })
+  }
+}
+
+function readingHandlers() {
+  return {
+    'reading:open': (): ReadingView | null => null,
+    'reading:progress': (): ReadingProgressResult => ({ saved: false }),
+    'reading:settings': (): ReadingSettingsResult | null => null
   }
 }
 
@@ -68,6 +80,7 @@ describe('registerIpcHandlers', () => {
     registerIpcHandlers(ipc, {
       ...chatHandlers(),
       ...libraryHandlers(),
+      ...readingHandlers(),
       'app:bootstrap': (payload, event) => {
         received.push(payload)
         events.push(event)
@@ -97,6 +110,7 @@ describe('registerIpcHandlers', () => {
     const handlers = {
       ...chatHandlers(),
       ...libraryHandlers(),
+      ...readingHandlers(),
       'app:bootstrap': () => bootstrap,
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers
