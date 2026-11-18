@@ -79,24 +79,14 @@ function parseLineHeight(value: string | null): ReadingPreferences['lineHeight']
     : DEFAULT_READING_PREFERENCES.lineHeight
 }
 
-function parseAnnotationsVisible(value: string | null): boolean {
+function parseBooleanSetting(value: string | null, fallback: boolean): boolean {
   if (value === '1' || value === 'true') {
     return true
   }
   if (value === '0' || value === 'false') {
     return false
   }
-  return DEFAULT_READING_PREFERENCES.annotationsVisible
-}
-
-function parseWeakHighlight(value: string | null): boolean {
-  if (value === '1' || value === 'true') {
-    return true
-  }
-  if (value === '0' || value === 'false') {
-    return false
-  }
-  return DEFAULT_READING_PREFERENCES.weakHighlight
+  return fallback
 }
 
 /** 本机全局默认。没设置过或值不认识时逐项回落到产品说明里的默认值。 */
@@ -104,10 +94,14 @@ export function readReadingPreferences(database: AppDatabase): ReadingPreference
   return {
     fontSize: parseFontSize(readSetting(database, SETTING_KEYS.fontSize)),
     lineHeight: parseLineHeight(readSetting(database, SETTING_KEYS.lineHeight)),
-    annotationsVisible: parseAnnotationsVisible(
-      readSetting(database, SETTING_KEYS.annotationsVisible)
+    annotationsVisible: parseBooleanSetting(
+      readSetting(database, SETTING_KEYS.annotationsVisible),
+      DEFAULT_READING_PREFERENCES.annotationsVisible
     ),
-    weakHighlight: parseWeakHighlight(readSetting(database, SETTING_KEYS.weakHighlight))
+    weakHighlight: parseBooleanSetting(
+      readSetting(database, SETTING_KEYS.weakHighlight),
+      DEFAULT_READING_PREFERENCES.weakHighlight
+    )
   }
 }
 

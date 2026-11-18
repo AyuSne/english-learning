@@ -2,7 +2,7 @@
 
 面向六级备考的 Windows 桌面应用：读真题文章、圈出想学的词，把原句与出处收进词条，再用对话和钉住补充学习内容。
 
-当前进度是**应用骨架**（#26）、**对话骨架**（#27）与**语料导入与文章库**（#28）：左侧全局栏、首页首屏空态、首次启动建本机 SQLite 库并写 schema 版本、渲染层只经一份带白名单的 bridge 访问主进程；空白线程可发消息，思维链流式流出、正文抵达后折起，可随时停止，错误按类型给文案与动作；首次启动把首批 63 篇真题从随包语料导入本机库，文章库按 7 个场次分组、可按篇名与正文搜索、右侧看详情，首页「继续阅读」指向最近打开的一篇与上次位置。文章阅读、选词、词条与钉住在后续 ticket 里落地。
+当前进度是**应用骨架**（#26）、**对话骨架**（#27）、**语料导入与文章库**（#28）、**阅读页与阅读设置**（#29）与**选词与原句**（#30）：左侧全局栏、首页首屏空态、首次启动建本机 SQLite 库并写 schema 版本、渲染层只经一份带白名单的 bridge 访问主进程；空白线程可发消息，思维链流式流出、正文抵达后折起，可随时停止，错误按类型给文案与动作；首次启动把首批 63 篇真题从随包语料导入本机库，文章库按 7 个场次分组、可按篇名与正文搜索、右侧看详情，首页「继续阅读」指向最近打开的一篇与上次位置；阅读页按 620 列排版，字号行距、原文注释与已收集词的弱高亮按篇记住，滚动位置写回；圈一个词或短语当场高亮并收成词条下的一条原句，同篇同句只留一条，常见词形归到同一词条，点弱高亮的词能看词条卡并删原句。词条页、对话上下文与钉住在后续 ticket 里落地。
 
 ## 开发
 
@@ -13,7 +13,7 @@ npm install          # 安装依赖（会下载 Electron 二进制）
 npm run dev          # 开发模式启动（Vite + Electron）
 npm run build        # 构建到 out/
 npm run typecheck    # 主进程、渲染层、E2E 三套 tsconfig
-npm run test:unit    # Vitest：迁移、设置、IPC 注册、preload bridge、路由、语料导入、文章库查询、对话流与状态
+npm run test:unit    # Vitest：迁移、设置、IPC 注册、preload bridge、路由、语料导入、文章库与阅读查询、选词与词形归并、对话流与状态
 npm run test:e2e     # Playwright：构建后用临时 userData 启动开发产物
 npm run package      # 打包到 release/（@electron/packager）
 npm run test:e2e:packaged  # 打包后启动打包产物
@@ -56,13 +56,13 @@ E2E 用 `CORPUS_DIRECTORY` 指向临时构造的语料目录，验证部分导�
 
 ```text
 src/
-├── main/      主进程：窗口、SQLite 建库与迁移、语料导入、文章库查询、IPC 注册、对话流与模型适配、启动失败处理
+├── main/      主进程：窗口、SQLite 建库与迁移、语料导入、文章库与阅读查询、选词与词条查询、IPC 注册、对话流与模型适配、启动失败处理
 ├── preload/   contextBridge，唯一 bridge 与 channel 白名单
-├── renderer/  React 界面（全局栏、首页、文章库、对话页、其它视图的占位）
+├── renderer/  React 界面（全局栏、首页、文章库、阅读页、对话页、其它视图的占位）
 ├── shared/    IPC 契约与跨层类型
 └── testing/   测试用的语料构造器与 SSE stub
 e2e/           Playwright：dev 产物用 Electron 启动器，打包产物走 CDP；对话用本地 SSE stub
 docs/          产品范围、界面 token、ADR、语料
 ```
 
-本机资料库在 `app.getPath('userData')/english-learning.db`，schema 版本走 `PRAGMA user_version` 与显式迁移（见 `src/main/db/migrations.ts`）。渲染层不直接碰数据库与网络，只调用 `window.api.invoke(channel, payload)`；对话流事件通过 `window.api.subscribe('chat:event', handler)` 回到渲染层。未知 channel 在调用时由 preload 立即拒绝，主进程启动时也会校验处理函数与契约是否一一对应，缺一个或多一个都不开窗口。
+本机资料库在 `app.getPath('userData')/english-learning.db`，schema 版本走 `PRAGMA user_version` 与显式迁移（见 `src/main/db/migrations.ts`）。文章、句子、阅读位置、阅读设置、词条与原句都存在这一本库里；渲染层不直接碰数据库与网络，只调用 `window.api.invoke(channel, payload)`；对话流事件通过 `window.api.subscribe('chat:event', handler)` 回到渲染层。未知 channel 在调用时由 preload 立即拒绝，主进程启动时也会校验处理函数与契约是否一一对应，缺一个或多一个都不开窗口。

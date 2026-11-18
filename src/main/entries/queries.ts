@@ -310,6 +310,10 @@ export function collectSelection(
     return { status: 'rejected', reason: 'empty' }
   }
   const surface = text.slice(start, end)
+  // 只圈到标点或空白时不建词条：那不是学习者想收的词或短语。
+  if (!/[\p{L}\p{N}]/u.test(surface)) {
+    return { status: 'rejected', reason: 'empty' }
+  }
 
   const key = resolveLemma(surface, lemmaLexicon(database))
   const now = options.now ?? new Date().toISOString()
@@ -415,6 +419,7 @@ export function deleteEntrySentence(
     status: 'deleted',
     entryDeleted,
     entry: entryDeleted ? null : readEntrySummary(database, stored.entry_id),
+    articleId: stored.article_id,
     marks: readArticleCollections(database, stored.article_id)
   }
 }

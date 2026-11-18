@@ -1,0 +1,165 @@
+import type { RefObject } from 'react'
+import type { WordEntryCard } from '../../../shared/entries'
+
+/**
+ * 阅读页右侧的两张浮层：
+ * 刚收下时的选词结果，以及点开已收集词后的词条卡（含删原句与删最后一条的确认）。
+ */
+
+export type CollectedPanel = {
+  kind: 'collected'
+  entryId: string
+  entryMainForm: string
+  surface: string
+  sentenceText: string
+  sentenceCount: number
+  articleCount: number
+  duplicate: boolean
+}
+
+export type EntryPanel = {
+  kind: 'entry'
+  entryId: string
+  card: WordEntryCard | null
+  error: string | null
+  /** 删最后一条原句前先确认，会连词条一起删。 */
+  confirmingDelete: boolean
+  deleting: boolean
+}
+
+export type PanelState = CollectedPanel | EntryPanel
+
+export function CollectedPanelView({
+  panel,
+  panelRef,
+  onOpenEntry,
+  onClose
+}: {
+  panel: CollectedPanel
+  panelRef: RefObject<HTMLElement | null>
+  onOpenEntry: () => void
+  onClose: () => void
+}) {
+  return (
+    <aside className="reading-panel" aria-label="选词结果" ref={panelRef}>
+      <header className="reading-panel-head">
+        <p className="reading-panel-eyebrow">
+          {panel.duplicate ? '这条原句已经收过' : '已收下'}
+        </p>
+        <button type="button" className="reading-panel-close" aria-label="关闭" onClick={onClose}>
+          ×
+        </button>
+      </header>
+      <p className="reading-panel-word">{panel.surface}</p>
+      <p className="reading-panel-entry">词条 {panel.entryMainForm}</p>
+      <blockquote className="reading-panel-sentence">{panel.sentenceText}</blockquote>
+      <p className="reading-panel-meta">
+        已有 {panel.sentenceCount} 条原句 · 来自 {panel.articleCount} 篇文章
+      </p>
+      <div className="reading-panel-actions">
+        <button type="button" className="button" onClick={onOpenEntry}>
+          查看词条
+        </button>
+      </div>
+    </aside>
+  )
+}
+
+export function EntryPanelView({
+  panel,
+  panelRef,
+  onClose,
+  onDelete,
+  onConfirmDeleteLast,
+  onCancelConfirm
+}: {
+  panel: EntryPanel
+  panelRef: RefObject<HTMLElement | null>
+  onClose: () => void
+  onDelete: (entrySentenceId: string) => void
+  onConfirmDeleteLast: () => void
+  onCancelConfirm: () => void
+}) {
+  return (
+    <aside className="reading-panel" aria-label="词条" ref={panelRef}>
+      <header className="reading-panel-head">
+        <p className="reading-panel-eyebrow">词条</p>
+        <button type="button" className="reading-panel-close" aria-label="关闭" onClick={onClose}>
+          ×
+        </button>
+      </header>
+
+      {panel.card === null ? (
+        panel.error === null ? (
+          <p className="reading-panel-loading" aria-busy="true">
+            正在打开词条…
+          </p>
+        ) : (
+          <p className="reading-panel-error" role="alert">
+            {panel.error}
+          </p>
+        )
+      ) : (
+        <>
+          <h2 className="reading-panel-word">{panel.card.entry.mainForm}</h2>
+          <p className="reading-panel-meta">
+            已收集 {panel.card.entry.sentenceCount} 条原句 · 来自{' '}
+            {panel.card.entry.articleCount} 篇文章
+          </p>
+          {panel.card.entry.variants.length === 0 ? null : (
+            <p className="reading-panel-variants">
+              变体：{panel.card.entry.variants.join('、')}
+            </p>
+          )}
+
+          <ul className="reading-panel-sentences">
+            {panel.card.sentences.map((sentence) => (
+              <li className="reading-panel-sentence-row" key={sentence.id}>
+                <blockquote className="reading-panel-sentence">
+                  {sentence.sentenceText}
+                </blockquote>
+                <p className="reading-panel-source">
+                  {sentence.articleTitle} · 第 {sentence.paragraphOrdinal} 段 ·{' '}
+                  {sentence.surface}
+                </p>
+                <button
+                  type="button"
+                  className="reading-panel-delete"
+                  aria-label="删除这条原句"
+                  disabled={panel.deleting}
+                  onClick={() => onDelete(sentence.id)}
+                >
+                  删除
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          {panel.confirmingDelete ? (
+            <div className="reading-panel-confirm" role="alert">
+              <p>这是最后一条原句。删掉后「{panel.card.entry.mainForm}」词条也会一起删除。</p>
+              <div className="reading-panel-actions">
+                <button type="button" className="button" onClick={onCancelConfirm}>
+                  取消
+                </button>
+                <button
+                  type="button"
+                  className="button reading-button-danger"
+                  onClick={onConfirmDeleteLast}
+                >
+                  删除词条与原句
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {panel.error === null ? null : (
+            <p className="reading-panel-error" role="alert">
+              {panel.error}
+            </p>
+          )}
+        </>
+      )}
+    </aside>
+  )
+}

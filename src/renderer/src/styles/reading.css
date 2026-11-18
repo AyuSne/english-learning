@@ -347,19 +347,9 @@
 
 .reading-selected {
   border-bottom-color: transparent;
-  border-radius: 2px;
+  border-radius: 4px;
   background: var(--bed-select);
   color: var(--ink);
-}
-
-.reading[data-weak-highlight="off"] .reading-collected {
-  border-bottom-color: transparent;
-  color: inherit;
-  cursor: text;
-}
-
-.reading[data-weak-highlight="off"] .reading-collected:focus-visible {
-  outline: none;
 }
 
 /* 词条卡：阅读页右侧浮层，点已收集的词打开。 */
@@ -371,7 +361,7 @@
   z-index: 40;
   display: flex;
   flex-direction: column;
-  width: 336px;
+  width: clamp(240px, calc((100vw - 620px) / 2 - 48px), 336px);
   max-height: calc(100vh - 112px);
   overflow-y: auto;
   padding: 16px;
@@ -442,15 +432,15 @@
 }
 
 .reading-panel-sentence {
-  margin: 10px 0;
-  padding: 10px 12px;
+  margin: 8px 0;
+  padding: 12px;
   border-left: 2px solid var(--amber);
   border-radius: 0 8px 8px 0;
   background: var(--sunken);
   color: var(--ink);
   font-family: var(--font-serif);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .reading-panel-sentences {
@@ -460,7 +450,7 @@
 }
 
 .reading-panel-sentence-row {
-  padding: 10px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--rule);
 }
 
@@ -535,7 +525,7 @@
   bottom: 24px;
   z-index: 50;
   max-width: min(560px, calc(100vw - 48px));
-  padding: 8px 14px;
+  padding: 8px 16px;
   transform: translateX(-50%);
   border: 1px solid var(--rule);
   border-radius: 999px;
@@ -544,6 +534,10 @@
   box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
   font-size: 13px;
   line-height: 18px;
+}
+
+[data-theme="dark"] .reading-toast {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 .reading-toast-error {
@@ -561,11 +555,6 @@
 }
 
 .reading[data-annotations="hidden"] .reading-annotated.reading-selected {
-  border-bottom-color: transparent;
-}
-
-.reading[data-annotations="hidden"][data-weak-highlight="off"]
-  .reading-annotated.reading-collected {
   border-bottom-color: transparent;
 }
 

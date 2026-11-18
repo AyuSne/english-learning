@@ -39,8 +39,16 @@ describe('resolveLemma', () => {
   it('不规则变化按表归并', () => {
     expect(resolveLemma('children', lexicon())).toBe('child')
     expect(resolveLemma('went', lexicon())).toBe('go')
-    expect(resolveLemma('written', lexicon())).toBe('write')
+    expect(resolveLemma('written', lexicon('write'))).toBe('written')
     expect(resolveLemma('analyses', lexicon())).toBe('analysis')
+  })
+
+  it('有独立常用义的同形词不按不规则变化硬并', () => {
+    expect(resolveLemma('left', lexicon('leave'))).toBe('left')
+    expect(resolveLemma('saw', lexicon('see'))).toBe('saw')
+    expect(resolveLemma('found', lexicon('find'))).toBe('found')
+    expect(resolveLemma('rose', lexicon('rise'))).toBe('rose')
+    expect(resolveLemma('thought', lexicon('think'))).toBe('thought')
   })
 
   it('派生词独立成条，不按词缀硬拆', () => {

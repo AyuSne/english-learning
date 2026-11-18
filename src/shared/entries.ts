@@ -97,6 +97,8 @@ export type DeleteEntrySentenceResult =
       /** 删的是这个词条的最后一条原句，词条本身也没了。 */
       entryDeleted: boolean
       entry: EntrySummary | null
+      /** 被删原句所在的那一篇；`marks` 只属于这一篇。 */
+      articleId: string
       marks: ReadingCollectionMark[]
     }
   | {

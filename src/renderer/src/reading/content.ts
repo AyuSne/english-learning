@@ -8,7 +8,8 @@ import type { ReadingParagraph } from '../../../shared/reading'
 
 /** 一处已收集或本次选中的标记，落在段内字符区间上。 */
 export type ReadingHighlight = {
-  entryId: string
+  /** 已收集的词条 id；本次选中还没落库时为 null。 */
+  entryId: string | null
   /** 词条主词形，点击时用作无障碍标签。 */
   label: string
   start: number
@@ -19,7 +20,7 @@ export type ReadingHighlight = {
 
 /** 渲染到片段上的标记；同一片段只保留优先级最高的一个。 */
 export type ReadingMark = {
-  entryId: string
+  entryId: string | null
   label: string
   selected: boolean
 }

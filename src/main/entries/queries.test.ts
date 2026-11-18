@@ -301,6 +301,18 @@ describe('collectSelection', () => {
         end: 4
       })
     ).toEqual({ status: 'rejected', reason: 'range' })
+
+    // 只圈到标点不算一个词。
+    const period = firstParagraph.text.indexOf('.')
+    expect(
+      collectSelection(database, {
+        articleId: article.id,
+        paragraphId: firstParagraph.id,
+        sentenceOrdinal: 0,
+        start: period,
+        end: period + 1
+      })
+    ).toEqual({ status: 'rejected', reason: 'empty' })
   })
 
   it('只返回这一篇的已收集标记', () => {
@@ -359,8 +371,27 @@ describe('deleteEntrySentence', () => {
     expect(result).toMatchObject({ status: 'deleted', entryDeleted: false })
     if (result.status !== 'deleted') return
     expect(result.entry).toMatchObject({ sentenceCount: 1, articleCount: 1 })
+    expect(result.articleId).toBe(article.id)
     expect(result.marks).toEqual([expect.objectContaining({ id: first.sentence.id })])
     expect(readWordEntryCard(database, first.entry.id)?.entry.sentenceCount).toBe(1)
+  })
+
+  it('删另一篇文章里的原句时，返回的标记只属于那一篇', () => {
+    const first = collect(database, article, 0, 'approach')
+    const second = collect(database, otherArticle, 0, 'approaches')
+    expect(first.status).toBe('collected')
+    expect(second.status).toBe('collected')
+    if (first.status !== 'collected' || second.status !== 'collected') return
+
+    const result = deleteEntrySentence(database, second.sentence.id)
+
+    expect(result.status).toBe('deleted')
+    if (result.status !== 'deleted') return
+    expect(result.articleId).toBe(otherArticle.id)
+    expect(result.marks).toEqual([])
+    expect(result.entry).toMatchObject({ sentenceCount: 1, articleCount: 1 })
+    // 正在读的那一篇不受影响。
+    expect(readArticleCollections(database, article.id)).toHaveLength(1)
   })
 
   it('删掉最后一条原句时连词条一起删，标记清空', () => {
@@ -374,6 +405,7 @@ describe('deleteEntrySentence', () => {
       status: 'deleted',
       entryDeleted: true,
       entry: null,
+      articleId: article.id,
       marks: []
     })
     expect(readWordEntryCard(database, collected.entry.id)).toBeNull()

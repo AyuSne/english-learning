@@ -88,3 +88,42 @@ export function selectionOffsets(paragraph: HTMLElement): { start: number; end: 
   const start = prefix.toString().length
   return { start, end: start + range.toString().length }
 }
+
+export type ParagraphSelection = {
+  paragraph: ReadingParagraph
+  selection: ReadingSelection
+}
+
+/**
+ * 把浏览器里当前的选区落成「哪一段、哪一句、哪几个字符」。选区不存在、
+ * 跨段或落在句间空隙时返回 null；段落解析留在这里，阅读页只负责拿结果。
+ */
+export function readParagraphSelection(
+  paragraphs: readonly ReadingParagraph[]
+): ParagraphSelection | null {
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+    return null
+  }
+
+  const range = selection.getRangeAt(0)
+  const startElement =
+    range.startContainer.nodeType === Node.ELEMENT_NODE
+      ? (range.startContainer as Element)
+      : range.startContainer.parentElement
+  const paragraphElement = startElement?.closest<HTMLElement>('.reading-paragraph') ?? null
+  if (paragraphElement === null) {
+    return null
+  }
+  const paragraphId = paragraphElement.dataset.paragraphId
+  const paragraph = paragraphs.find((candidate) => candidate.id === paragraphId)
+  if (!paragraph) {
+    return null
+  }
+  const offsets = selectionOffsets(paragraphElement)
+  if (offsets === null) {
+    return null
+  }
+  const located = locateSelection(paragraph, offsets.start, offsets.end)
+  return located === null ? null : { paragraph, selection: located }
+}

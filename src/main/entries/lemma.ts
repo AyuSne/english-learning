@@ -1,7 +1,7 @@
 /**
  * 词条的归一键：同一个词或短语共用一个键，常见词形变化归到同一个词条。
  *
- * 产品说明把精确归并交给随包的 ECDICT（exchange 字段与 lemma）。词典接入前，
+ * 产品说明把精确归并交给随包的 ECDICT（exchange 字段与 lemma）。词典接入前（#34），
  * 这里先用规则 + 本机语料做一次保守归并：词库里真实出现过的候选原形优先，
  * 查不到时只接受有把握的拆法（-ed / -ing 的普通词干、复数 -ies→-y 等），
  * 拿不准就保留原样，宁可多一个词条，也不把两个不相干的词并在一起。
@@ -14,6 +14,11 @@ export type LemmaLexicon = {
 /**
  * 高频不规则变化。归并键与主词形分开：主词形仍是学习者圈下的那个词形。
  * 同时收录几组容易和普通词尾混淆的复数，避免把 theses 并给 these。
+ */
+/**
+ * 高频不规则变化。只收没有独立常用义的同形词：left（左边）、saw（锯）、
+ * found（建立）、felt（毛毡）、rose（玫瑰）、thought（想法）这类等内置词典
+ * 接入后交给 ECDICT 判断，这里宁可不并，也不把两个意思并错。
  */
 const IRREGULAR: Record<string, string> = {
   am: 'be',
@@ -39,24 +44,17 @@ const IRREGULAR: Record<string, string> = {
   taking: 'take',
   came: 'come',
   coming: 'come',
-  saw: 'see',
   seen: 'see',
   seeing: 'see',
   knew: 'know',
-  known: 'know',
   got: 'get',
   gotten: 'get',
   getting: 'get',
   gave: 'give',
-  given: 'give',
   giving: 'give',
-  thought: 'think',
-  found: 'find',
   told: 'tell',
   became: 'become',
   shown: 'show',
-  left: 'leave',
-  felt: 'feel',
   brought: 'bring',
   began: 'begin',
   begun: 'begin',
@@ -64,7 +62,6 @@ const IRREGULAR: Record<string, string> = {
   kept: 'keep',
   held: 'hold',
   wrote: 'write',
-  written: 'write',
   writing: 'write',
   stood: 'stand',
   heard: 'hear',
@@ -79,39 +76,27 @@ const IRREGULAR: Record<string, string> = {
   spoken: 'speak',
   led: 'lead',
   grew: 'grow',
-  grown: 'grow',
-  lost: 'lose',
   losing: 'lose',
   fell: 'fall',
-  fallen: 'fall',
   sent: 'send',
   built: 'build',
   understood: 'understand',
   drew: 'draw',
-  drawn: 'draw',
   broke: 'break',
-  broken: 'break',
-  spent: 'spend',
-  rose: 'rise',
   risen: 'rise',
   drove: 'drive',
-  driven: 'drive',
   bought: 'buy',
   wore: 'wear',
-  worn: 'wear',
   chose: 'choose',
-  chosen: 'choose',
   ate: 'eat',
   eaten: 'eat',
   taught: 'teach',
   caught: 'catch',
   fought: 'fight',
   threw: 'throw',
-  thrown: 'throw',
   slept: 'sleep',
   won: 'win',
   forgot: 'forget',
-  forgotten: 'forget',
   sought: 'seek',
   sold: 'sell',
   used: 'use',
