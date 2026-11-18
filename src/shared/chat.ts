@@ -48,6 +48,8 @@ export type ChatStreamUpdate = {
 export type ChatStartRequest = {
   streamId: string
   messages: ChatTurn[]
+  /** 这次带上的学习上下文；没有上下文时不传，请求里也就没有 system 消息。 */
+  systemPrompt?: string
 }
 
 export type ChatStartResult = {

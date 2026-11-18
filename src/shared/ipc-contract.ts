@@ -41,6 +41,24 @@ import type {
   ReadingSettingsResult,
   ReadingView
 } from './reading'
+import type {
+  AskThreadRequest,
+  ChatThreadView,
+  CreateThreadRequest,
+  CreateThreadResult,
+  EditQuestionRequest,
+  QuestionResult,
+  SaveAnswerRequest,
+  SaveAnswerResult,
+  SaveContinuationRequest,
+  SwitchAnswerRequest,
+  SwitchQuestionRequest,
+  SwitchThreadResult,
+  ThreadContextCandidates,
+  ThreadListResult,
+  UpdateThreadContextRequest,
+  UpdateThreadContextResult
+} from './threads'
 import type { AppBootstrap } from './types'
 
 /**
@@ -91,6 +109,23 @@ export interface IpcContract {
   'entries:move-note': { payload: MoveLearningNoteRequest; result: LearningNoteResult }
   'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
+  'chat:list': { payload: undefined; result: ThreadListResult }
+  'chat:thread': { payload: { threadId: string }; result: ChatThreadView | null }
+  'chat:create': { payload: CreateThreadRequest; result: CreateThreadResult }
+  'chat:ask': { payload: AskThreadRequest; result: QuestionResult }
+  'chat:edit-question': { payload: EditQuestionRequest; result: QuestionResult }
+  'chat:answer': { payload: SaveAnswerRequest; result: SaveAnswerResult }
+  'chat:continue': { payload: SaveContinuationRequest; result: SaveAnswerResult }
+  'chat:context': {
+    payload: UpdateThreadContextRequest
+    result: UpdateThreadContextResult
+  }
+  'chat:candidates': {
+    payload: { threadId: string }
+    result: ThreadContextCandidates
+  }
+  'chat:switch-question': { payload: SwitchQuestionRequest; result: SwitchThreadResult }
+  'chat:switch-answer': { payload: SwitchAnswerRequest; result: SwitchThreadResult }
 }
 
 /**
@@ -129,7 +164,18 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'entries:delete-note': true,
   'entries:move-note': true,
   'chat:start': true,
-  'chat:stop': true
+  'chat:stop': true,
+  'chat:list': true,
+  'chat:thread': true,
+  'chat:create': true,
+  'chat:ask': true,
+  'chat:edit-question': true,
+  'chat:answer': true,
+  'chat:continue': true,
+  'chat:context': true,
+  'chat:candidates': true,
+  'chat:switch-question': true,
+  'chat:switch-answer': true
 }
 
 const EVENT_CHANNEL_TABLE: Record<IpcEventChannel, true> = {

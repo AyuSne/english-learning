@@ -241,6 +241,12 @@
   width: 100%;
 }
 
+.library-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* ---------- 首页：继续阅读 ---------- */
 
 .home-continue {

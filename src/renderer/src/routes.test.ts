@@ -11,6 +11,7 @@ function view(route: Route, overrides: Partial<View> = {}): View {
     entryId: null,
     entrySentenceId: null,
     reselect: false,
+    threadId: null,
     ...overrides
   }
 }
@@ -64,6 +65,16 @@ describe('parseView', () => {
     expect(parseView('#/entries/a/b')).toEqual(view('home'))
   })
 
+  it('对话页带要打开的线程，空白线程不带', () => {
+    expect(parseView('#/chat')).toEqual(view('chat'))
+    expect(parseView('#/chat/')).toEqual(view('chat'))
+    expect(parseView('#/chat/thread-1')).toEqual(view('chat', { threadId: 'thread-1' }))
+    expect(parseView('#/chat/thread%201')).toEqual(view('chat', { threadId: 'thread 1' }))
+    // 编码坏了当没指定线程，多一段就回首页。
+    expect(parseView('#/chat/%E0%A4%A')).toEqual(view('chat'))
+    expect(parseView('#/chat/a/b')).toEqual(view('home'))
+  })
+
   it('id 按 URL 编码解回来', () => {
     expect(parseView('#/reading/a%20b')).toEqual(view('reading', { articleId: 'a b' }))
   })
@@ -98,5 +109,10 @@ describe('routeHash', () => {
   it('词条页把词条 id 编进 hash', () => {
     expect(routeHash('entries', { entryId: 'entry 1' })).toBe('#/entries/entry%201')
     expect(routeHash('entries')).toBe('#/entries')
+  })
+
+  it('对话页把线程 id 编进 hash', () => {
+    expect(routeHash('chat', { threadId: 'thread 1' })).toBe('#/chat/thread%201')
+    expect(routeHash('chat')).toBe('#/chat')
   })
 })

@@ -72,7 +72,7 @@ export function App() {
         ) : view.route === 'entries' ? (
           <EntriesPage entryId={view.entryId} />
         ) : view.route === 'chat' ? (
-          <ChatPage />
+          <ChatPage threadId={view.threadId} />
         ) : view.route === 'library' ? (
           <LibraryPage corpusImport={bootstrap.corpusImport} />
         ) : (

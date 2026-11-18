@@ -4,6 +4,19 @@ import { join, resolve } from 'node:path'
 import { createBootstrap } from './app-bootstrap'
 import { readChatConfig } from './chat/config'
 import { createChatService } from './chat/service'
+import {
+  askQuestion,
+  createThread,
+  editQuestion,
+  listThreads,
+  readContextCandidates,
+  readThreadView,
+  saveAnswer,
+  saveContinuation,
+  switchAnswer,
+  switchQuestion,
+  updateThreadContext
+} from './chat/threads'
 import { importCorpus } from './corpus/import'
 import type { AppDatabase } from './db/database'
 import { openDatabase } from './db/database'
@@ -128,7 +141,18 @@ function start(): void {
     'entries:move-note': (payload) => moveLearningNote(opened, payload),
     'chat:start': (payload, event) =>
       chat.start(payload, (update) => event.sender.send('chat:event', update)),
-    'chat:stop': (payload) => chat.stop(payload.streamId)
+    'chat:stop': (payload) => chat.stop(payload.streamId),
+    'chat:list': () => listThreads(opened),
+    'chat:thread': (payload) => readThreadView(opened, payload.threadId),
+    'chat:create': (payload) => createThread(opened, payload),
+    'chat:ask': (payload) => askQuestion(opened, payload),
+    'chat:edit-question': (payload) => editQuestion(opened, payload),
+    'chat:answer': (payload) => saveAnswer(opened, payload),
+    'chat:continue': (payload) => saveContinuation(opened, payload),
+    'chat:context': (payload) => updateThreadContext(opened, payload),
+    'chat:candidates': (payload) => readContextCandidates(opened, payload.threadId),
+    'chat:switch-question': (payload) => switchQuestion(opened, payload),
+    'chat:switch-answer': (payload) => switchAnswer(opened, payload)
   })
 
   Menu.setApplicationMenu(null)

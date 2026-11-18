@@ -11,6 +11,7 @@ import {
   searchLibrary
 } from '../api'
 import { messageOf } from '../errors'
+import { openThreadForMain } from '../chat/store'
 import { formatDay, progressText } from '../library/format'
 import { navigate } from '../navigate'
 
@@ -227,13 +228,24 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
                   </div>
                 )}
               </dl>
-              <button
-                type="button"
-                className="button button-primary"
-                onClick={() => open(detail.id)}
-              >
-                继续阅读
-              </button>
+              <div className="library-detail-actions">
+                <button
+                  type="button"
+                  className="button button-primary"
+                  onClick={() => open(detail.id)}
+                >
+                  继续阅读
+                </button>
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() =>
+                    void openThreadForMain({ kind: 'article', articleId: detail.id })
+                  }
+                >
+                  与这篇对话
+                </button>
+              </div>
             </>
           )}
         </aside>

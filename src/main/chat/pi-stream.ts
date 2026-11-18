@@ -7,6 +7,8 @@ export type StreamChatOptions = {
   apiKey: string
   model: string
   messages: readonly ChatTurn[]
+  /** 学习上下文以 system 消息打头；没有上下文时不传。 */
+  systemPrompt?: string
   /** 必填：漏传就发不出去，避免服务端静默关闭思考。 */
   reasoningEffort: ReasoningEffort
   signal: AbortSignal
@@ -63,7 +65,7 @@ export async function streamChatCompletion(options: StreamChatOptions): Promise<
     const models = pi.createModels()
     models.setProvider(provider)
 
-    const stream = models.stream(model, toContext(options.messages, options.model), {
+    const stream = models.stream(model, toContext(options.messages, options.model, options.systemPrompt), {
       apiKey: options.apiKey,
       reasoningEffort: options.reasoningEffort,
       signal: options.signal,
@@ -152,8 +154,13 @@ function loadPi(): Promise<PiModules> {
   return modules
 }
 
-function toContext(messages: readonly ChatTurn[], model: string): Context {
+function toContext(
+  messages: readonly ChatTurn[],
+  model: string,
+  systemPrompt: string | undefined
+): Context {
   return {
+    ...(systemPrompt ? { systemPrompt } : {}),
     messages: messages.map((turn) =>
       turn.role === 'user'
         ? { role: 'user', content: turn.content, timestamp: Date.now() }

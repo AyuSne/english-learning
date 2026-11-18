@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
 import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
+import { openThreadForMain } from '../chat/store'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
 import { entryHeadlineText } from '../entries/format'
 import { NoteRail } from '../entries/note-rail'
@@ -199,14 +200,25 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
                 <h2 className="entries-title">{page.entry.mainForm}</h2>
                 <p className="entries-meta">{entryHeadlineText(page.entry)}</p>
               </div>
-              <button
-                type="button"
-                className="button"
-                aria-expanded={railOpen}
-                onClick={() => setRailOpen(true)}
-              >
-                学习内容 {page.entry.noteCount}
-              </button>
+              <div className="entries-main-actions">
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() =>
+                    void openThreadForMain({ kind: 'entry', entryId: page.entry.id })
+                  }
+                >
+                  开始对话
+                </button>
+                <button
+                  type="button"
+                  className="button"
+                  aria-expanded={railOpen}
+                  onClick={() => setRailOpen(true)}
+                >
+                  学习内容 {page.entry.noteCount}
+                </button>
+              </div>
             </header>
 
             {actionError === null ? null : (
@@ -236,6 +248,12 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
                         busy={deleting}
                         onBack={() => openReading(sentence, false)}
                         onReselect={() => openReading(sentence, true)}
+                        onAsk={() =>
+                          void openThreadForMain({
+                            kind: 'sentence',
+                            entrySentenceId: sentence.id
+                          })
+                        }
                         onRequestDelete={() => requestDelete(sentence)}
                       />
                     ))}

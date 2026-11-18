@@ -1,0 +1,221 @@
+import type { ChatError } from './chat'
+
+/**
+ * 线程与它这一路的对话。线程挂一个主对象（词条 / 原句 / 文章 / 不挂），
+ * 主对象决定默认钉住落点与上下文预填；对话本身是不可变条目日志，
+ * 重新生成与改口都产生新条目，旧版本仍在库里。
+ */
+
+/** 继续生成时追加的一句要求；不落库，只进这一次请求。 */
+export const CONTINUE_INSTRUCTION =
+  '请接着上面最后一段继续写，不要重复已经写过的内容，也不要重新开头。'
+
+export type ThreadMainKind = 'none' | 'entry' | 'sentence' | 'article'
+
+/** 线程主对象。挂上之后，标题、上下文预填与默认落点都从它来。 */
+export type ThreadMain =
+  | { kind: 'none' }
+  | {
+      kind: 'entry'
+      entryId: string
+      mainForm: string
+      sentenceCount: number
+      articleCount: number
+    }
+  | {
+      kind: 'sentence'
+      entryId: string
+      entrySentenceId: string
+      mainForm: string
+      surface: string
+      sentenceText: string
+      articleId: string
+      articleTitle: string
+      paragraphId: string
+      paragraphOrdinal: number
+      paragraphLetter: string | null
+      sentenceOrdinal: number
+    }
+  | {
+      kind: 'article'
+      articleId: string
+      title: string
+      sessionLabel: string
+      setLabel: string
+      kindLabel: string
+      wordCount: number
+    }
+
+export type ThreadContextKind = 'word' | 'sentence' | 'paragraph' | 'note' | 'article'
+
+/**
+ * 一条学习上下文。`text` 是真正交给模型的正文，`source` 是给人看的出处；
+ * `label` 短到能放进取词块。同一线程内 `id` 唯一。
+ */
+export type ThreadContextItem = {
+  id: string
+  kind: ThreadContextKind
+  label: string
+  text: string
+  source: string
+}
+
+/** 输入框上方那行「N 条原句 · 约 M 字」；字数据正文的字数（码点）算。 */
+export type ThreadContextSummary = {
+  sentenceCount: number
+  charCount: number
+}
+
+/** 同一位置的候选版本：重新生成的回答、改口后的提问。 */
+export type ThreadVersion = {
+  id: string
+  selected: boolean
+}
+
+/** 一条回答及其「继续生成」接出来的后续。 */
+export type ThreadAnswer = {
+  /** 回答版本的根条目；重新生成产生的新版本与它是兄弟。 */
+  id: string
+  /** 这一问的全部回答版本，按生成时间排。 */
+  versions: ThreadVersion[]
+  /** 根回答加上所有继续生成的内容。 */
+  text: string
+  /** 各段思考拼在一起，按出现顺序。 */
+  thinking: string
+  /** 思考用了多久（毫秒）；没有思维链时为 0。 */
+  thinkingMs: number
+  /** 最后一段的状态；继续生成中断时整条算未完成。 */
+  phase: 'done' | 'stopped' | 'error'
+  error: ChatError | null
+  createdAt: string
+  /** 继续生成接出来的条目，按追加顺序。 */
+  continuationIds: string[]
+}
+
+export type ThreadTurn = {
+  question: {
+    id: string
+    text: string
+    createdAt: string
+    /** 这一问的全部提问版本（改口产生）；按提出时间排。 */
+    versions: ThreadVersion[]
+  }
+  /** 还没回答的提问为 null。 */
+  answer: ThreadAnswer | null
+}
+
+export type ChatThreadView = {
+  id: string
+  title: string
+  main: ThreadMain
+  /** 这一路对话当前带上的上下文，按加入顺序。 */
+  context: ThreadContextItem[]
+  contextSummary: ThreadContextSummary
+  turns: ThreadTurn[]
+  createdAt: string
+  updatedAt: string
+}
+
+export type ThreadListItem = {
+  id: string
+  title: string
+  mainKind: ThreadMainKind
+  /** 「词条 lament」「文章 …」「未挂对象」一类的副标题。 */
+  mainLabel: string
+  turnCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type ThreadListResult = {
+  threads: ThreadListItem[]
+}
+
+export type CreateThreadRequest = {
+  main:
+    | { kind: 'none' }
+    | { kind: 'entry'; entryId: string }
+    | { kind: 'sentence'; entrySentenceId: string }
+    | { kind: 'article'; articleId: string }
+}
+
+export type CreateThreadResult =
+  | { status: 'created'; thread: ChatThreadView }
+  | { status: 'rejected'; reason: 'missing-main' }
+
+export type AskThreadRequest = {
+  threadId: string
+  text: string
+  /** 这一次要带上的上下文；不传时沿用线程里保存的。 */
+  context?: ThreadContextItem[]
+}
+
+export type QuestionResult =
+  | { status: 'asked'; questionId: string; thread: ChatThreadView }
+  | { status: 'missing' }
+  | { status: 'rejected'; reason: 'empty' }
+
+export type SaveAnswerRequest = {
+  threadId: string
+  questionId: string
+  text: string
+  thinking: string
+  /** 这一段思考用了多久；没有思维链时不传。 */
+  thinkingMs?: number
+  phase: 'done' | 'stopped' | 'error'
+  error?: ChatError | null
+}
+
+export type SaveContinuationRequest = {
+  threadId: string
+  /** 回答版本的根条目；继续生成接在这一路的最后一段后面。 */
+  answerId: string
+  text: string
+  thinking: string
+  thinkingMs?: number
+  phase: 'done' | 'stopped' | 'error'
+  error?: ChatError | null
+}
+
+export type SaveAnswerResult =
+  | { status: 'saved'; thread: ChatThreadView }
+  | { status: 'missing' }
+  | { status: 'rejected'; reason: 'question' | 'answer' }
+
+export type UpdateThreadContextRequest = {
+  threadId: string
+  items: ThreadContextItem[]
+}
+
+export type UpdateThreadContextResult =
+  | { status: 'saved'; thread: ChatThreadView }
+  | { status: 'missing' }
+
+/** 还没进上下文、这次可以加进来的材料。 */
+export type ThreadContextCandidates = {
+  items: ThreadContextItem[]
+}
+
+export type EditQuestionRequest = {
+  threadId: string
+  /** 正在改的那一问；新提问会成为它的兄弟，原来的回答整支保留。 */
+  questionId: string
+  text: string
+  context?: ThreadContextItem[]
+}
+
+export type SwitchQuestionRequest = {
+  threadId: string
+  questionId: string
+}
+
+export type SwitchAnswerRequest = {
+  threadId: string
+  questionId: string
+  answerId: string
+}
+
+export type SwitchThreadResult =
+  | { status: 'switched'; thread: ChatThreadView }
+  | { status: 'missing' }
+  | { status: 'rejected'; reason: 'question' | 'answer' }

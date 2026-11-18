@@ -24,6 +24,16 @@ import type {
   ReadingSettingsResult,
   ReadingView
 } from '../../shared/reading'
+import type {
+  ChatThreadView,
+  CreateThreadResult,
+  QuestionResult,
+  SaveAnswerResult,
+  SwitchThreadResult,
+  ThreadContextCandidates,
+  ThreadListResult,
+  UpdateThreadContextResult
+} from '../../shared/threads'
 import type { AppBootstrap } from '../../shared/types'
 import { IPC_CHANNELS } from '../../shared/ipc-contract'
 import {
@@ -55,9 +65,21 @@ function fakeIpcMain(): {
 }
 
 function chatHandlers() {
+  const missingQuestion = (): QuestionResult => ({ status: 'missing' })
   return {
     'chat:start': (): ChatStartResult => ({ accepted: true }),
-    'chat:stop': (): ChatStopResult => ({ stopped: false })
+    'chat:stop': (): ChatStopResult => ({ stopped: false }),
+    'chat:list': (): ThreadListResult => ({ threads: [] }),
+    'chat:thread': (): ChatThreadView | null => null,
+    'chat:create': (): CreateThreadResult => ({ status: 'rejected', reason: 'missing-main' }),
+    'chat:ask': missingQuestion,
+    'chat:edit-question': missingQuestion,
+    'chat:answer': (): SaveAnswerResult => ({ status: 'missing' }),
+    'chat:continue': (): SaveAnswerResult => ({ status: 'missing' }),
+    'chat:context': (): UpdateThreadContextResult => ({ status: 'missing' }),
+    'chat:candidates': (): ThreadContextCandidates => ({ items: [] }),
+    'chat:switch-question': (): SwitchThreadResult => ({ status: 'missing' }),
+    'chat:switch-answer': (): SwitchThreadResult => ({ status: 'missing' })
   }
 }
 

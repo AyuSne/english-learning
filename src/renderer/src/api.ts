@@ -34,6 +34,24 @@ import type {
   ReadingSettingsResult,
   ReadingView
 } from '../../shared/reading'
+import type {
+  AskThreadRequest,
+  ChatThreadView,
+  CreateThreadRequest,
+  CreateThreadResult,
+  EditQuestionRequest,
+  QuestionResult,
+  SaveAnswerRequest,
+  SaveAnswerResult,
+  SaveContinuationRequest,
+  SwitchAnswerRequest,
+  SwitchQuestionRequest,
+  SwitchThreadResult,
+  ThreadContextCandidates,
+  ThreadListResult,
+  UpdateThreadContextRequest,
+  UpdateThreadContextResult
+} from '../../shared/threads'
 import type { AppBootstrap } from '../../shared/types'
 
 export function loadBootstrap(): Promise<AppBootstrap> {
@@ -155,4 +173,67 @@ export function deleteLearningNote(noteId: string): Promise<LearningNoteResult> 
 
 export function moveLearningNote(request: MoveLearningNoteRequest): Promise<LearningNoteResult> {
   return window.api.invoke('entries:move-note', request)
+}
+
+/** 左栏线程列表。 */
+export function loadThreads(): Promise<ThreadListResult> {
+  return window.api.invoke('chat:list')
+}
+
+/** 打开一条线程：主对象、上下文与这一路的对话。 */
+export function loadThread(threadId: string): Promise<ChatThreadView | null> {
+  return window.api.invoke('chat:thread', { threadId })
+}
+
+/** 按主对象开一条线程：词条 / 原句 / 文章 / 不挂。 */
+export function createThread(request: CreateThreadRequest): Promise<CreateThreadResult> {
+  return window.api.invoke('chat:create', request)
+}
+
+/** 提一个新问题，回答稍后由 chat:answer 落库。 */
+export function askThread(request: AskThreadRequest): Promise<QuestionResult> {
+  return window.api.invoke('chat:ask', request)
+}
+
+/** 改上一条提问：新提问走新分支，旧回答保留可切回。 */
+export function editThreadQuestion(request: EditQuestionRequest): Promise<QuestionResult> {
+  return window.api.invoke('chat:edit-question', request)
+}
+
+/** 一次生成结束时把回答写成新版本。 */
+export function saveThreadAnswer(request: SaveAnswerRequest): Promise<SaveAnswerResult> {
+  return window.api.invoke('chat:answer', request)
+}
+
+/** 继续生成接在当前回答这一路的最后一段后面。 */
+export function saveThreadContinuation(
+  request: SaveContinuationRequest
+): Promise<SaveAnswerResult> {
+  return window.api.invoke('chat:continue', request)
+}
+
+/** 整体替换这一路对话带上的学习上下文。 */
+export function updateThreadContext(
+  request: UpdateThreadContextRequest
+): Promise<UpdateThreadContextResult> {
+  return window.api.invoke('chat:context', request)
+}
+
+/** 这次还能往上下文里加什么。 */
+export function loadThreadContextCandidates(
+  threadId: string
+): Promise<ThreadContextCandidates> {
+  return window.api.invoke('chat:candidates', { threadId })
+}
+
+/** 切到另一提问版本，整支回答跟着换。 */
+export function switchThreadQuestion(
+  request: SwitchQuestionRequest
+): Promise<SwitchThreadResult> {
+  return window.api.invoke('chat:switch-question', request)
+}
+
+/** 切到另一回答版本。 */
+export function switchThreadAnswer(request: SwitchAnswerRequest): Promise<SwitchThreadResult> {
+  return window.api.invoke('chat:switch-answer', request)
 }

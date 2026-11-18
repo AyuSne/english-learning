@@ -87,6 +87,7 @@ async function runStream(
     baseUrl: config.baseUrl,
     model: config.model,
     messages: request.messages,
+    systemPrompt: request.systemPrompt,
     reasoningEffort: THINKING_EFFORT,
     signal: controller.signal,
     onEvent: (event) => send({ streamId: request.streamId, event })

@@ -170,6 +170,38 @@ export const migrations: readonly Migration[] = [
           ON learning_note (entry_id) WHERE pinned = 1;
       `)
     }
+  },
+  {
+    version: 6,
+    up: (database) => {
+      // 线程与它的条目日志：条目只追加，parent_id 构成树，线程只记一个 leaf_entry_id。
+      // 重新生成与改口都新增条目，旧回答一条不删；分支切换只改 leaf 一行。
+      database.exec(`
+        CREATE TABLE thread (
+          id            TEXT PRIMARY KEY,
+          title         TEXT NOT NULL,
+          main_kind     TEXT NOT NULL,
+          main_id       TEXT,
+          context_json  TEXT NOT NULL DEFAULT '[]',
+          leaf_entry_id TEXT,
+          created_at    TEXT NOT NULL,
+          updated_at    TEXT NOT NULL
+        );
+
+        CREATE TABLE thread_entry (
+          id         TEXT PRIMARY KEY,
+          thread_id  TEXT NOT NULL REFERENCES thread(id) ON DELETE CASCADE,
+          parent_id  TEXT REFERENCES thread_entry(id) ON DELETE CASCADE,
+          kind       TEXT NOT NULL,
+          payload    TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+
+        CREATE INDEX thread_updated ON thread (updated_at DESC);
+        CREATE INDEX thread_entry_thread ON thread_entry (thread_id, created_at);
+        CREATE INDEX thread_entry_parent ON thread_entry (parent_id, created_at);
+      `)
+    }
   }
 ]
 

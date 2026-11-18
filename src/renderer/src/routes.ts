@@ -12,6 +12,8 @@ export type View = {
   articleId: string | null
   /** 词条页打开的词条；没有指定时为空，词条页显示「在左边选一个词条」。 */
   entryId: string | null
+  /** 对话页打开的线程；没有指定时为空，对话页是一张新的空白线程。 */
+  threadId: string | null
   /** 阅读页要从词条跳到的原句。 */
   entrySentenceId: string | null
   /** 阅读页要把这条原句的范围换掉（重新圈定）。 */
@@ -21,6 +23,7 @@ export type View = {
 export type RouteHashOptions = {
   articleId?: string | null
   entryId?: string | null
+  threadId?: string | null
   entrySentenceId?: string | null
   reselect?: boolean
 }
@@ -47,6 +50,7 @@ function blankView(route: Route): View {
     route,
     articleId: null,
     entryId: null,
+    threadId: null,
     entrySentenceId: null,
     reselect: false
   }
@@ -86,6 +90,7 @@ export function parseView(hash: string): View {
       route,
       articleId,
       entryId: null,
+      threadId: null,
       entrySentenceId,
       reselect: entrySentenceId !== null && params.get('reselect') === '1'
     }
@@ -101,6 +106,19 @@ export function parseView(hash: string): View {
     return {
       ...blankView('entries'),
       entryId: decodeSegment(segments[1] as string)
+    }
+  }
+
+  if (route === 'chat') {
+    if (segments.length > 2) {
+      return blankView('home')
+    }
+    if (segments.length === 1) {
+      return blankView('chat')
+    }
+    return {
+      ...blankView('chat'),
+      threadId: decodeSegment(segments[1] as string)
     }
   }
 
@@ -120,6 +138,9 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
   }
   if (route === 'entries' && options.entryId) {
     return `#/entries/${encodeURIComponent(options.entryId)}`
+  }
+  if (route === 'chat' && options.threadId) {
+    return `#/chat/${encodeURIComponent(options.threadId)}`
   }
   return `#/${route}`
 }
