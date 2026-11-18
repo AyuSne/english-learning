@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import type { SettingsOverview } from '../../../shared/settings'
 import { loadSettingsOverview } from '../api'
 import { setChatModel } from '../chat/store'
-import { messageOf } from '../errors'
+import { ErrorBlock } from '../components/error-block'
+import { failureText } from '../errors'
 import { AboutSection } from '../settings/about-section'
 import { AppearanceSection } from '../settings/appearance-section'
 import { DataSection } from '../settings/data-section'
@@ -24,10 +25,12 @@ export function SettingsPage() {
   const [section, setSection] = useState<SectionId>('model')
   const [overview, setOverview] = useState<SettingsOverview | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
   const [toast, setToast] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
+    setLoadError(null)
     loadSettingsOverview().then(
       (value) => {
         if (active) {
@@ -36,13 +39,13 @@ export function SettingsPage() {
         }
       },
       (error: unknown) => {
-        if (active) setLoadError(messageOf(error))
+        if (active) setLoadError(failureText(error, '设置没有读出来。'))
       }
     )
     return () => {
       active = false
     }
-  }, [])
+  }, [reloadToken])
 
   useEffect(() => {
     if (toast === null) {
@@ -62,9 +65,10 @@ export function SettingsPage() {
       <div className="settings">
         <div className="settings-main">
           <div className="settings-inner">
-            <p className="field-error" role="alert">
-              {loadError}
-            </p>
+            <ErrorBlock
+              message={loadError}
+              onAction={() => setReloadToken((token) => token + 1)}
+            />
           </div>
         </div>
       </div>

@@ -240,6 +240,43 @@ button:focus-visible {
   line-height: 18px;
 }
 
+/* ---------- 错误块 ---------- */
+
+/*
+ * 页面级错误统一长这样：一句人话 + 一个下一步动作，不只是把报错抛给用户。
+ * 字段级小错仍用 .field-error 贴在字段下面。
+ */
+.error-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--rule));
+  border-radius: 10px;
+  background: var(--danger-bed);
+}
+
+.error-block-message {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.error-block .button {
+  flex: none;
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--rule));
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.error-block .button:hover {
+  border-color: var(--danger);
+  background: var(--panel);
+}
+
 /* ---------- 底部提示条 ---------- */
 
 /* 阅读页与词条页共用：落在底部中间，几秒后自己消失。 */

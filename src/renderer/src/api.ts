@@ -2,6 +2,7 @@ import type { DictionaryLookup } from '../../shared/dictionary'
 import type {
   ArticleDetail,
   HomeSummary,
+  ImportReport,
   LibraryListing,
   LibrarySearchResults
 } from '../../shared/library'
@@ -94,6 +95,11 @@ export function loadHomeSummary(): Promise<HomeSummary> {
 
 export function loadLibrary(): Promise<LibraryListing> {
   return window.api.invoke('library:list')
+}
+
+/** 再对一遍随包语料：失败的那几篇修好后不必重启应用。 */
+export function reimportCorpus(): Promise<ImportReport> {
+  return window.api.invoke('library:reimport')
 }
 
 export function loadArticleDetail(articleId: string): Promise<ArticleDetail | null> {

@@ -26,7 +26,8 @@ import {
   saveReadingSettings
 } from '../api'
 import { lookupDictionaryOrUnavailable } from '../dictionary/lookup'
-import { messageOf } from '../errors'
+import { ErrorBlock } from '../components/error-block'
+import { failureText } from '../errors'
 import { readingPointText } from '../library/format'
 import { goBack, navigate } from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
@@ -89,8 +90,10 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
   const [hint, setHint] = useState<string | null>(null)
   const [collectError, setCollectError] = useState<string | null>(null)
 
-  const { scrollRef, position, writeError } = useReadingPosition(view)
+  const { scrollRef, position, writeError, retryWrite } = useReadingPosition(view)
   const settingsRequest = useRef(0)
+  /** 保存失败时留住「本来想存的那一份」，重试存的还是它，不是回退后的旧值。 */
+  const failedPreferences = useRef<ReadingPreferences | null>(null)
   const settingsPanelRef = useRef<HTMLElement>(null)
   const settingsButtonRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLElement>(null)
@@ -127,7 +130,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
         setCollected(value.collected)
       },
       (error: unknown) => {
-        if (active) setLoadError(messageOf(error))
+        if (active) setLoadError(failureText(error, '这篇文章没有打开。'))
       }
     )
 
@@ -147,7 +150,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
           })
         },
         (error: unknown) => {
-          if (active) setHint(messageOf(error))
+          if (active) setHint(failureText(error, '这条原句没有读出来。'))
         }
       )
     }
@@ -285,26 +288,47 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
     }
     setSettings({ ...preferences, source: 'article' })
     setSettingsError(null)
+    failedPreferences.current = null
+    persistPreferences(view.article.id, preferences, previous)
+  }
 
+  /** 保存失败后再存一次：重发上一次没写进去的那份值。 */
+  function retryPreferences(): void {
+    const preferences = failedPreferences.current
+    if (!view || !settings || preferences === null) return
+    setSettingsError(null)
+    persistPreferences(view.article.id, preferences, settings)
+  }
+
+  function persistPreferences(
+    articleId: string,
+    preferences: ReadingPreferences,
+    previous: ReadingSettings
+  ): void {
     const request = settingsRequest.current + 1
     settingsRequest.current = request
-    saveReadingSettings({ articleId: view.article.id, preferences }).then(
+    saveReadingSettings({ articleId, preferences }).then(
       (result: ReadingSettingsResult | null) => {
         if (request !== settingsRequest.current) return
         if (result === null) {
           setSettings(previous)
+          failedPreferences.current = preferences
           setSettingsError('这篇的阅读设置没有记住。')
           return
         }
         setSettings(result.settings)
         if (!result.saved) {
+          failedPreferences.current = preferences
           setSettingsError('这次阅读设置没有写入本机资料库。')
+        } else {
+          failedPreferences.current = null
         }
       },
       (error: unknown) => {
         if (request === settingsRequest.current) {
           setSettings(previous)
-          setSettingsError(messageOf(error))
+          failedPreferences.current = preferences
+          setSettingsError(failureText(error, '这次阅读设置没有写入本机资料库。'))
         }
       }
     )
@@ -359,7 +383,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
       },
       (error: unknown) => {
         updateEntryPanel((current) =>
-          current.entryId === entryId ? { ...current, error: messageOf(error) } : current
+          current.entryId === entryId
+            ? { ...current, error: failureText(error, '这个词条没有读出来。') }
+            : current
         )
       }
     )
@@ -416,13 +442,15 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
             return
           }
           setCollectError(
-            result.reason === 'empty' ? '圈中的内容不算一个词。' : '圈中的范围不在原句里。'
+            result.reason === 'empty'
+              ? '圈中的内容不算一个词，再圈一次试试。'
+              : '圈中的范围不在原句里，再圈一次试试。'
           )
         },
         (error: unknown) => {
           if (request !== collectRequest.current) return
           collecting.current = false
-          setCollectError(messageOf(error))
+          setCollectError(`${failureText(error, '这次没有收进来')} 再圈一次试试。`)
         }
       )
       return
@@ -482,7 +510,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
         if (request !== collectRequest.current) return
         collecting.current = false
         setActiveSelection(null)
-        setCollectError(messageOf(error))
+        setCollectError(failureText(error, '这次没有收进来，再圈一次试试。'))
       }
     )
   }
@@ -537,7 +565,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
         updateEntryPanel((current) => ({
           ...current,
           deleting: false,
-          error: messageOf(error)
+          error: failureText(error, '这条原句没有删掉，再试一次。')
         }))
       }
     )
@@ -637,6 +665,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
                     settings={settings}
                     error={settingsError}
                     onChange={updatePreferences}
+                    onRetry={retryPreferences}
                     panelRef={settingsPanelRef}
                   />
                 ) : null}
@@ -707,9 +736,12 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
         <div className="reading-scroll" ref={scrollRef}>
           <div className="reading-sheet">
             {writeError === null ? null : (
-              <p className="reading-write-error" role="alert">
-                {writeError}
-              </p>
+              <ErrorBlock
+                className="reading-write-error"
+                message={writeError}
+                actionLabel="重试保存"
+                onAction={retryWrite}
+              />
             )}
             <div
               className={bodyClassName}

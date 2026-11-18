@@ -71,11 +71,18 @@
   font-family: var(--font-serif);
 }
 
-.library-error {
+.library-warning-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 12px;
-  color: var(--danger);
-  font-size: 13px;
-  line-height: 18px;
+}
+
+.library-warning-hint {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
 }
 
 .library-columns {

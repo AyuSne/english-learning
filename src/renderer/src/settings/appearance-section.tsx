@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { SettingsOverview } from '../../../shared/settings'
 import { THEME_PREFERENCES, type ThemePreference } from '../../../shared/types'
 import { saveTheme } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { setThemePreference } from '../theme'
 import { themeText } from './format'
 
@@ -33,7 +33,7 @@ export function AppearanceSection({
       onChange({ ...overview, theme: result.theme })
       notify(`已切换到${themeText(result.theme)}`)
     } catch (caught) {
-      notify(messageOf(caught))
+      notify(failureText(caught))
     } finally {
       setBusy(false)
     }

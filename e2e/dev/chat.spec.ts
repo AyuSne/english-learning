@@ -101,7 +101,27 @@ test.describe('空白线程的流式与思维链', () => {
   })
 
   const statusCases = [
-    { status: 401, title: '密钥无效（401）', retryable: false },
+    {
+      status: 401,
+      title: '密钥无效（401）',
+      retryable: false,
+      action: '下一步：到设置 → 模型服务里换一个有效的 API 密钥。',
+      settings: true
+    },
+    {
+      status: 402,
+      title: '余额不足（402）',
+      retryable: false,
+      action: '下一步：换一个有余额的密钥后再来。',
+      settings: true
+    },
+    {
+      status: 413,
+      title: '上下文过长（413）',
+      retryable: false,
+      action: '下一步：删减上下文后再发。',
+      settings: false
+    },
     { status: 429, title: '请求太频繁（429）', retryable: true },
     { status: 503, title: '服务繁忙（503）', retryable: true }
   ] as const
@@ -121,8 +141,16 @@ test.describe('空白线程的流式与思维链', () => {
         await expect(alert.getByRole('button', { name: '重试' })).toHaveCount(0)
       }
 
+      if ('action' in scenario) {
+        await expect(alert).toContainText(scenario.action)
+      }
+      if ('settings' in scenario && scenario.settings) {
+        await expect(alert.getByRole('button', { name: '去设置' })).toBeVisible()
+      } else {
+        await expect(alert.getByRole('button', { name: '去设置' })).toHaveCount(0)
+      }
+
       if (scenario.status === 401) {
-        await expect(alert).toContainText('下一步：到设置 → 模型服务里换一个有效的 API 密钥')
         await expect(alert).toContainText('请求 ID：stub-401')
       }
 

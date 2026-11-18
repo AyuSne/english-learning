@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChatError, ChatErrorCode } from '../../../shared/chat'
-import { describeChatError } from './errors'
+import { describeChatError, suggestsSettings } from './errors'
 
 describe('describeChatError', () => {
   it.each<{
@@ -97,5 +97,25 @@ describe('describeChatError', () => {
     const retryable = codes.filter((code) => describeChatError({ code }).retryable)
 
     expect(retryable.sort()).toEqual(['network', 'rate-limited', 'server-busy'])
+  })
+
+  it('换密钥、余额与未配置这三类给出去设置的快捷动作', () => {
+    const codes: ChatErrorCode[] = [
+      'invalid-key',
+      'insufficient-balance',
+      'context-too-long',
+      'rate-limited',
+      'server-busy',
+      'network',
+      'not-configured',
+      'unknown'
+    ]
+    const settingsCalls = codes.filter((code) => suggestsSettings({ code }))
+
+    expect(settingsCalls.sort()).toEqual([
+      'insufficient-balance',
+      'invalid-key',
+      'not-configured'
+    ])
   })
 })

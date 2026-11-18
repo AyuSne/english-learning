@@ -9,7 +9,7 @@ import {
   pickRestoreFile,
   restoreBackup
 } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import {
   backupSummaryText,
   fileNameOf,
@@ -66,7 +66,7 @@ export function DataSection({
       const result = await openDataDirectory()
       notify(result.opened ? '已打开数据目录' : '没能打开数据目录')
     } catch (caught) {
-      notify(messageOf(caught))
+      notify(failureText(caught))
     } finally {
       setBusy(null)
     }
@@ -89,7 +89,7 @@ export function DataSection({
         )
       }
     } catch (caught) {
-      setError(messageOf(caught))
+      setError(failureText(caught))
     } finally {
       setBusy(null)
     }
@@ -112,7 +112,7 @@ export function DataSection({
         setError(restoreRejectionText(result.reason))
       }
     } catch (caught) {
-      setError(messageOf(caught))
+      setError(failureText(caught))
     } finally {
       setBusy(null)
     }
@@ -150,7 +150,7 @@ export function DataSection({
           : `恢复没有完成，也没能自动退回；请从快照恢复：${result.snapshot.file}`
       )
     } catch (caught) {
-      setError(messageOf(caught))
+      setError(failureText(caught))
     } finally {
       setBusy(null)
     }
@@ -172,7 +172,7 @@ export function DataSection({
         setError('没能写入导出文件，看看目标位置还能不能写。')
       }
     } catch (caught) {
-      setError(messageOf(caught))
+      setError(failureText(caught))
     } finally {
       setBusy(null)
     }

@@ -3,7 +3,8 @@ import type { EntryListItem } from '../../../shared/entries'
 import type { LibraryArticle } from '../../../shared/library'
 import type { PinTargetKind, PinTargetView } from '../../../shared/pins'
 import { loadEntryList, loadLibrary } from '../api'
-import { messageOf } from '../errors'
+import { ErrorBlock } from '../components/error-block'
+import { failureText } from '../errors'
 
 /**
  * 钉住 / 归位时的落点选择。默认落点由线程主对象推导，弹层里可以改；
@@ -37,6 +38,7 @@ export function PinTargetDialog({
   const [entries, setEntries] = useState<EntryListItem[] | null>(null)
   const [articles, setArticles] = useState<LibraryArticle[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
 
   useEffect(() => {
     let active = true
@@ -45,7 +47,7 @@ export function PinTargetDialog({
         if (active) setEntries(listing.entries)
       },
       (reason: unknown) => {
-        if (active) setError(messageOf(reason))
+        if (active) setError(failureText(reason, '钉住的目标没有读出来。'))
       }
     )
     loadLibrary().then(
@@ -55,13 +57,13 @@ export function PinTargetDialog({
         }
       },
       (reason: unknown) => {
-        if (active) setError(messageOf(reason))
+        if (active) setError(failureText(reason, '钉住的目标没有读出来。'))
       }
     )
     return () => {
       active = false
     }
-  }, [])
+  }, [reloadToken])
 
   // 预选的词条 / 文章可能已经不在了：列表到位后落到第一个可用目标。
   useEffect(() => {
@@ -220,9 +222,14 @@ export function PinTargetDialog({
       </div>
 
       {error === null ? null : (
-        <p className="entry-error" role="alert">
-          {error}
-        </p>
+        <ErrorBlock
+          message={error}
+          actionLabel="重新读取"
+          onAction={() => {
+            setError(null)
+            setReloadToken((token) => token + 1)
+          }}
+        />
       )}
     </div>
   )

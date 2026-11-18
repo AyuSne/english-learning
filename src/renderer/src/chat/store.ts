@@ -18,7 +18,7 @@ import {
   switchThreadQuestion,
   updateThreadContext
 } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { navigate, replaceRoute } from '../navigate'
 import {
   chatSessionReducer,
@@ -45,6 +45,8 @@ export type ChatStoreState = {
   busy: boolean
   loading: boolean
   error: string | null
+  /** 这条错误有下一步可执行的动作；没有时界面不显示「再试一次」。 */
+  canRetry: boolean
 }
 
 const initialState: ChatStoreState = {
@@ -55,13 +57,16 @@ const initialState: ChatStoreState = {
   editing: null,
   busy: false,
   loading: false,
-  error: null
+  error: null,
+  canRetry: false
 }
 
 let state: ChatStoreState = initialState
 const listeners = new Set<() => void>()
 let connected = false
 let persisting: string | null = null
+/** 当前这条错误对应的重试动作；load 错误重读，操作错误重放那一次操作。 */
+let retryAction: (() => void) | null = null
 /** 当前配置的模型名；回答落库时记进条目，钉住出处才有据可查。 */
 let chatModel = ''
 /** 上下文改动连点时只认最后一次返回；界面先按本地算的摘要往前走。 */
@@ -96,6 +101,29 @@ function dispatchSession(action: ChatSessionAction): void {
   }
   state = { ...state, session }
   emit()
+}
+
+function clearError(): void {
+  retryAction = null
+  set({ error: null, canRetry: false })
+}
+
+/** 记下一条错误与它的重试动作；没有可重放的动作就不显示重试按钮。 */
+function fail(
+  error: unknown,
+  fallback: string,
+  retry: (() => void) | null
+): void {
+  retryAction = retry
+  set({ error: failureText(error, fallback), canRetry: retry !== null })
+}
+
+/** 页面级错误的「再试一次」：重放当时失败的那一步，而不是一律重读线程。 */
+export function retryChat(): void {
+  const action = retryAction
+  if (action === null) return
+  clearError()
+  action()
 }
 
 export function useChatStore(): ChatStoreState {
@@ -139,12 +167,14 @@ export function openChatThread(threadId: string | null): void {
     return
   }
 
+  retryAction = null
   state = {
     ...state,
     currentId: threadId,
     current: null,
     editing: null,
     error: null,
+    canRetry: false,
     loading: threadId !== null,
     session: { ...state.session, thinkingOpen: null }
   }
@@ -159,14 +189,16 @@ export function openChatThread(threadId: string | null): void {
     (view) => {
       if (state.currentId !== threadId) return
       if (view === null) {
-        set({ loading: false, error: '这条线程已经不在了。' })
+        set({ loading: false })
+        fail('这条线程已经不在了。', '这条线程已经不在了。', null)
         return
       }
       set({ current: view, loading: false })
     },
     (error: unknown) => {
       if (state.currentId !== threadId) return
-      set({ loading: false, error: messageOf(error) })
+      set({ loading: false })
+      fail(error, '这条线程没有读出来。', () => openChatThread(threadId))
     }
   )
 }
@@ -174,7 +206,10 @@ export function openChatThread(threadId: string | null): void {
 export function refreshThreads(): Promise<void> {
   return loadThreads().then(
     (listing) => set({ threads: listing.threads }),
-    (error: unknown) => set({ error: messageOf(error) })
+    (error: unknown) =>
+      fail(error, '对话没有读出来。', () => {
+        void refreshThreads()
+      })
   )
 }
 
@@ -185,22 +220,26 @@ export async function openThreadForMain(
   try {
     const result = await createThread({ main })
     if (result.status !== 'created') {
-      set({ error: '这个对象已经不在了，没能开线程。' })
+      fail('这个对象已经不在了，没能开线程。', '这个对象已经不在了，没能开线程。', null)
       return null
     }
+    retryAction = null
     state = {
       ...state,
       currentId: result.thread.id,
       current: result.thread,
       loading: false,
       error: null,
+      canRetry: false,
       session: { ...state.session, thinkingOpen: null }
     }
     emit()
     navigate('chat', { threadId: result.thread.id })
     return result.thread.id
   } catch (error) {
-    set({ error: messageOf(error) })
+    fail(error, '没能开线程，再试一次。', () => {
+      void openThreadForMain(main)
+    })
     return null
   }
 }
@@ -217,7 +256,8 @@ export function sendChatMessage(raw: string): boolean {
   ) {
     return false
   }
-  set({ busy: true, error: null })
+  set({ busy: true })
+  clearError()
   void submitQuestion(text)
   return true
 }
@@ -228,7 +268,11 @@ async function submitQuestion(text: string): Promise<void> {
     if (view === null) {
       const created = await createThread({ main: { kind: 'none' } })
       if (created.status !== 'created') {
-        set({ busy: false, error: '没能新建线程。' })
+        set({ busy: false })
+        fail('没能新建线程。', '没能新建线程，再试一次。', () => {
+          set({ busy: true })
+          void submitQuestion(text)
+        })
         return
       }
       view = created.thread
@@ -238,10 +282,17 @@ async function submitQuestion(text: string): Promise<void> {
 
     const asked = await askThread({ threadId: view.id, text, context: view.context })
     if (asked.status !== 'asked') {
-      set({
-        busy: false,
-        error: asked.status === 'rejected' ? '这条提问是空的。' : '这条线程已经不在了。'
-      })
+      set({ busy: false })
+      fail(
+        asked.status === 'rejected' ? '这条提问是空的。' : '这条线程已经不在了。',
+        '这条提问没有发出去。',
+        asked.status === 'rejected'
+          ? null
+          : () => {
+              set({ busy: true })
+              void submitQuestion(text)
+            }
+      )
       return
     }
     set({ current: asked.thread, busy: false })
@@ -255,7 +306,11 @@ async function submitQuestion(text: string): Promise<void> {
       baseThinkingMs: 0
     })
   } catch (error) {
-    set({ busy: false, error: messageOf(error) })
+    set({ busy: false })
+    fail(error, '这次提问没有发出去，再试一次。', () => {
+      set({ busy: true })
+      void submitQuestion(text)
+    })
   }
 }
 
@@ -421,10 +476,12 @@ async function persistGeneration(generation: LiveGeneration): Promise<void> {
       }
       void refreshThreads()
     } else {
-      set({ error: '这条回答没能保存。' })
+      fail('这条回答没能保存。', '这条回答没能保存，重新生成一次。', () =>
+        regenerateLastAnswer()
+      )
     }
   } catch (error) {
-    set({ error: messageOf(error) })
+    fail(error, '这条回答没能保存，重新生成一次。', () => regenerateLastAnswer())
   } finally {
     dispatchSession({ type: 'clear', streamId: generation.streamId })
   }
@@ -446,9 +503,13 @@ export function switchAnswerVersion(questionId: string, answerId: string): void 
     (result) => {
       if (result.status === 'switched' && state.currentId === view.id) {
         set({ current: result.thread })
+        clearError()
       }
     },
-    (error: unknown) => set({ error: messageOf(error) })
+    (error: unknown) =>
+      fail(error, '切换回答版本没有完成，再试一次。', () =>
+        switchAnswerVersion(questionId, answerId)
+      )
   )
 }
 
@@ -461,9 +522,13 @@ export function switchQuestionVersion(questionId: string): void {
     (result) => {
       if (result.status === 'switched' && state.currentId === view.id) {
         set({ current: result.thread })
+        clearError()
       }
     },
-    (error: unknown) => set({ error: messageOf(error) })
+    (error: unknown) =>
+      fail(error, '切换提问版本没有完成，再试一次。', () =>
+        switchQuestionVersion(questionId)
+      )
   )
 }
 
@@ -496,7 +561,8 @@ export function submitEdit(raw: string): boolean {
   ) {
     return false
   }
-  set({ busy: true, error: null })
+  set({ busy: true })
+  clearError()
   void (async () => {
     try {
       const result = await editThreadQuestion({
@@ -506,10 +572,12 @@ export function submitEdit(raw: string): boolean {
         context: view.context
       })
       if (result.status !== 'asked') {
-        set({
-          busy: false,
-          error: result.status === 'rejected' ? '这条提问是空的。' : '这条线程已经不在了。'
-        })
+        set({ busy: false })
+        fail(
+          result.status === 'rejected' ? '这条提问是空的。' : '这条线程已经不在了。',
+          '这次修改没有发出去。',
+          result.status === 'rejected' ? null : () => submitEdit(text)
+        )
         return
       }
       set({ current: result.thread, editing: null, busy: false })
@@ -523,7 +591,8 @@ export function submitEdit(raw: string): boolean {
         baseThinkingMs: 0
       })
     } catch (error) {
-      set({ busy: false, error: messageOf(error) })
+      set({ busy: false })
+      fail(error, '这次修改没有发出去，再试一次。', () => submitEdit(text))
     }
   })()
   return true
@@ -561,11 +630,14 @@ function changeContext(view: ChatThreadView, items: ThreadContextItem[]): void {
       }
       if (result.status === 'saved') {
         set({ current: result.thread })
+        clearError()
       }
     },
     (error: unknown) => {
       if (sequence === contextSequence) {
-        set({ error: messageOf(error) })
+        fail(error, '这次上下文没有存上，再试一次。', () =>
+          changeContext(view, items)
+        )
       }
     }
   )

@@ -24,7 +24,7 @@ import {
 } from '../api'
 import { readAnswerSelection, type AnswerSelection } from '../chat/answer-selection'
 import { AnswerText, type PinMarks } from '../chat/answer-text'
-import { describeChatError } from '../chat/errors'
+import { describeChatError, suggestsSettings } from '../chat/errors'
 import { ContextPanel } from '../chat/context-panel'
 import { PinBoardPanel, type PinTab } from '../chat/pin-board'
 import {
@@ -37,6 +37,7 @@ import { PinTargetDialog } from '../chat/pin-target-dialog'
 import { DictionaryView } from '../dictionary/dictionary-view'
 import { useDictionaryLookup } from '../dictionary/lookup'
 import { singleWordOf } from '../dictionary/presentation'
+import { ErrorBlock } from '../components/error-block'
 import {
   liveAnswerText,
   liveAnswerThinking,
@@ -55,6 +56,7 @@ import {
   openChatThread,
   regenerateLastAnswer,
   removeContextItem,
+  retryChat,
   sendChatMessage,
   setThinkingOpen,
   stopChat,
@@ -68,7 +70,7 @@ import {
   selectedVersionIndex,
   threadHeaderText
 } from '../chat/turns'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { navigate } from '../navigate'
 
 type PinSelection = AnswerSelection & { text: string }
@@ -181,7 +183,7 @@ export function ChatPage({
       },
       (error: unknown) => {
         if (sequence === boardRequest.current) {
-          setToast({ message: messageOf(error), undo: null })
+          setToast({ message: failureText(error), undo: null })
         }
       }
     )
@@ -268,7 +270,7 @@ export function ChatPage({
       },
       (error: unknown) => {
         if (active) {
-          setToast({ message: messageOf(error), undo: null })
+          setToast({ message: failureText(error), undo: null })
         }
       }
     )
@@ -601,7 +603,7 @@ export function ChatPage({
       })
       refreshBoard(boardThreadId)
     } catch (error) {
-      showToast(messageOf(error))
+      showToast(failureText(error))
     } finally {
       setDialogBusy(false)
     }
@@ -675,7 +677,7 @@ export function ChatPage({
       )
       refreshBoard(boardThreadId)
     } catch (error) {
-      showToast(messageOf(error))
+      showToast(failureText(error))
     } finally {
       setDialogBusy(false)
     }
@@ -706,7 +708,7 @@ export function ChatPage({
       }
       refreshBoard(store.current?.id ?? null)
     } catch (error) {
-      showToast(messageOf(error))
+      showToast(failureText(error))
     } finally {
       setBusyPinId(null)
     }
@@ -736,7 +738,7 @@ export function ChatPage({
         setSource(result)
         setBoardOpen(false)
       },
-      (error: unknown) => showToast(messageOf(error))
+      (error: unknown) => showToast(failureText(error))
     )
   }
 
@@ -777,6 +779,8 @@ export function ChatPage({
   const editing = store.editing
   const title = current === null ? '新的学习' : current.title
   const subtitle = current === null ? BLANK_THREAD_SUBTITLE : threadHeaderText(current)
+  /** 线程已经不在了：重试只会再失败，改成回到一条空白学习。 */
+  const threadGone = store.error === '这条线程已经不在了。'
   const canSend = draft.trim() !== '' && !store.busy && generation === null
   const threadEntryId =
     current === null
@@ -934,12 +938,6 @@ export function ChatPage({
           onKeyUp={captureAnswerSelection}
         >
           <div className="chat-column">
-            {store.error === null ? null : (
-              <p className="chat-error" role="alert">
-                {store.error}
-              </p>
-            )}
-
             {store.loading && current === null ? (
               <p className="empty-line">正在打开这条线程…</p>
             ) : current === null || current.turns.length === 0 ? (
@@ -1014,6 +1012,21 @@ export function ChatPage({
         </div>
 
         <div className="chat-composer">
+          {store.error === null ? null : (
+            <div className="composer-inner">
+              <ErrorBlock
+                message={store.error}
+                actionLabel={threadGone ? '回到空白学习' : '再试一次'}
+                onAction={
+                  threadGone
+                    ? () => navigate('chat')
+                    : store.canRetry
+                      ? retryChat
+                      : null
+                }
+              />
+            </div>
+          )}
           <div className="composer-inner">
             {current === null ? null : (
               <ContextPanel
@@ -1182,7 +1195,7 @@ export function ChatPage({
                 setToast(null)
                 if (undo !== null) {
                   Promise.resolve(undo()).catch((error: unknown) => {
-                    showToast(messageOf(error))
+                    showToast(failureText(error))
                   })
                 }
               }}
@@ -1434,15 +1447,26 @@ function AnswerCard({
           {presentation.action ? (
             <p className="message-error-action">下一步：{presentation.action}</p>
           ) : null}
-          {presentation.retryable ? (
-            <div className="message-error-actions">
-              <button type="button" className="button button-small" onClick={onRetry}>
-                重试
-              </button>
-            </div>
-          ) : null}
           {answer.error?.requestId ? (
             <p className="message-error-request">请求 ID：{answer.error.requestId}</p>
+          ) : null}
+          {presentation.retryable || (answer.error !== null && suggestsSettings(answer.error)) ? (
+            <div className="message-error-actions">
+              {presentation.retryable ? (
+                <button type="button" className="button button-small" onClick={onRetry}>
+                  重试
+                </button>
+              ) : null}
+              {answer.error !== null && suggestsSettings(answer.error) ? (
+                <button
+                  type="button"
+                  className="button button-small"
+                  onClick={() => navigate('settings')}
+                >
+                  去设置
+                </button>
+              ) : null}
+            </div>
           ) : null}
         </div>
       ) : null}

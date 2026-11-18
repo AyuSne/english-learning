@@ -73,3 +73,15 @@ export function describeChatError(error: ChatError): ChatErrorPresentation {
 function withStatus(title: string, error: ChatError): string {
   return error.status === undefined ? title : `${title}（${error.status}）`
 }
+
+/**
+ * 换密钥 / 余额 / 没配置这三类要去设置页动手；界面在错误块里给一个「去设置」，
+ * 不让「下一步」只停在文案。上下文过长要去删上下文，不在设置里。
+ */
+export function suggestsSettings(error: ChatError): boolean {
+  return (
+    error.code === 'invalid-key' ||
+    error.code === 'insufficient-balance' ||
+    error.code === 'not-configured'
+  )
+}

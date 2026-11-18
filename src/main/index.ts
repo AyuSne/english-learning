@@ -187,6 +187,8 @@ function start(): void {
     'app:bootstrap': () => createBootstrap(opened, corpusImport, configuredModel),
     'home:summary': () => readHomeSummary(opened),
     'library:list': () => readLibrary(opened),
+    // 语料随包分发；导入失败时让文章库能原地重试，而不是只能重启。
+    'library:reimport': () => importCorpus(opened, { directory: corpusDirectory() }),
     'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
     'library:search': (payload) => searchLibrary(opened, payload.query),
     'reading:open': (payload) => openReadingView(opened, payload.articleId),

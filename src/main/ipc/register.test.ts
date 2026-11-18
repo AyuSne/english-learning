@@ -17,6 +17,7 @@ import type {
 import type {
   ArticleDetail,
   HomeSummary,
+  ImportReport,
   LibraryListing,
   LibrarySearchResults
 } from '../../shared/library'
@@ -104,6 +105,13 @@ function libraryHandlers() {
       continueReading: null
     }),
     'library:list': (): LibraryListing => ({ articleCount: 0, sessionCount: 0, sessions: [] }),
+    'library:reimport': (): ImportReport => ({
+      total: 0,
+      imported: 0,
+      updated: 0,
+      skipped: 0,
+      failed: []
+    }),
     'library:detail': (): ArticleDetail | null => null,
     'library:search': (payload: { query: string }): LibrarySearchResults => ({
       query: payload.query,

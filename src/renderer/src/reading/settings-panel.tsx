@@ -11,11 +11,13 @@ export function ReadingSettingsPanel({
   settings,
   error,
   onChange,
+  onRetry,
   panelRef
 }: {
   settings: ReadingSettings
   error: string | null
   onChange: (patch: Partial<ReadingPreferences>) => void
+  onRetry: () => void
   panelRef: RefObject<HTMLElement | null>
 }) {
   return (
@@ -58,9 +60,12 @@ export function ReadingSettingsPanel({
         {settingsLabel(settings)} · {settingsSourceLabel(settings.source)}
       </p>
       {error === null ? null : (
-        <p className="reading-settings-error" role="alert">
-          {error}
-        </p>
+        <div className="reading-settings-error" role="alert">
+          <p className="reading-settings-error-text">{error}</p>
+          <button type="button" className="button button-small" onClick={onRetry}>
+            再存一次
+          </button>
+        </div>
       )}
     </section>
   )

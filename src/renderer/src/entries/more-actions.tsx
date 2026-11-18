@@ -6,7 +6,7 @@ import {
   moveEntrySentence,
   moveLearningNote
 } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { noteExcerpt, sentenceSourceText } from './format'
 
 type MoreForm = 'merge' | 'split' | 'main-form' | 'move-note'
@@ -98,7 +98,7 @@ export function MoreActions({
       }
       setError('要合并的词条已经不在了。')
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '这次没有提交成功，再点一次提交。'))
     } finally {
       setBusy(false)
     }
@@ -131,7 +131,7 @@ export function MoreActions({
           : '这条原句已经在这个词条里。'
       )
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '这次没有提交成功，再点一次提交。'))
     } finally {
       setBusy(false)
     }
@@ -154,7 +154,7 @@ export function MoreActions({
       }
       onEntryGone()
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '这次没有提交成功，再点一次提交。'))
     } finally {
       setBusy(false)
     }
@@ -178,7 +178,7 @@ export function MoreActions({
       }
       setError('这条学习内容已经不在了。')
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '这次没有提交成功，再点一次提交。'))
     } finally {
       setBusy(false)
     }

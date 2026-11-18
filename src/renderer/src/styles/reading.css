@@ -199,7 +199,18 @@
 }
 
 .reading-settings-error {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 8px;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.reading-settings-error-text {
+  margin: 0;
   color: var(--danger);
   font-size: 12px;
   line-height: 16px;
@@ -252,9 +263,6 @@
 .reading-write-error {
   max-width: 820px;
   margin: 0 auto 16px;
-  color: var(--danger);
-  font-size: 13px;
-  line-height: 18px;
 }
 
 /* 正文：默认只有 620 一列；有原文注释时右侧多出 200 的页边注栏。 */

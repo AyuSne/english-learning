@@ -9,7 +9,7 @@ import {
   saveModelProfile,
   verifyModelProfile
 } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import {
   checkText,
   profileSaveErrorText,
@@ -107,7 +107,7 @@ export function ModelSection({
       }
       setError({ field: result.field ?? null, message: failure })
     } catch (caught) {
-      setError({ field: null, message: messageOf(caught) })
+      setError({ field: null, message: failureText(caught) })
     } finally {
       setBusy(false)
     }
@@ -119,7 +119,7 @@ export function ModelSection({
       onChange(result.overview)
       notify(result.status === 'activated' ? '已切换，下一次调用起生效' : '这套配置已经不在了')
     } catch (caught) {
-      notify(messageOf(caught))
+      notify(failureText(caught))
     }
   }
 
@@ -130,7 +130,7 @@ export function ModelSection({
       onChange(result.overview)
       notify(result.status === 'deleted' ? '已删除' : '这套配置已经不在了')
     } catch (caught) {
-      notify(messageOf(caught))
+      notify(failureText(caught))
     }
   }
 
@@ -144,7 +144,7 @@ export function ModelSection({
       onChange(result.overview)
       notify(verifyResultText(result.status))
     } catch (caught) {
-      notify(messageOf(caught))
+      notify(failureText(caught))
     } finally {
       setTesting(false)
     }

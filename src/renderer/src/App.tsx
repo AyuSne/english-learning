@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { ImportReport } from '../../shared/library'
 import { resolveTheme, type AppBootstrap } from '../../shared/types'
 import { loadBootstrap } from './api'
 import { setChatModel } from './chat/store'
@@ -17,6 +18,7 @@ export function App() {
   const themePreference = useThemePreference()
   const systemPrefersDark = useSystemPrefersDark()
   const [bootstrap, setBootstrap] = useState<AppBootstrap | null>(null)
+  const [corpusImport, setCorpusImport] = useState<ImportReport | null>(null)
   const [bootError, setBootError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export function App() {
         if (active) {
           setChatModel(value.chatModel)
           setThemePreference(value.theme)
+          setCorpusImport(value.corpusImport)
           setBootstrap(value)
         }
       },
@@ -51,6 +54,9 @@ export function App() {
       <div className="boot boot-error" role="alert">
         <h1>启动失败</h1>
         <p>{bootError}</p>
+        <button type="button" className="button" onClick={() => window.location.reload()}>
+          再试一次
+        </button>
       </div>
     )
   }
@@ -92,7 +98,10 @@ export function App() {
             fromEntryId={view.fromEntryId}
           />
         ) : view.route === 'library' ? (
-          <LibraryPage corpusImport={bootstrap.corpusImport} />
+          <LibraryPage
+            corpusImport={corpusImport ?? bootstrap.corpusImport}
+            onReimport={setCorpusImport}
+          />
         ) : (
           <SettingsPage />
         )}

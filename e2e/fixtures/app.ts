@@ -38,6 +38,11 @@ export type AppHandle = {
    * 打包产物是经由 CDP 连的，拿不到这一个句柄。
    */
   readonly electronApp: ElectronApplication | null
+  /**
+   * 模拟断电 / 强杀：不经过 before-quit 与 SQLite close，直接结束整个进程树。
+   * 用来验证重启后数据仍一致。
+   */
+  kill(): Promise<void>
   close(): Promise<void>
 }
 
@@ -70,10 +75,16 @@ async function launchDevelopmentApp(
   await page.waitForLoadState('domcontentloaded')
 
   let closed = false
+  const child = electronApp.process()
   return {
     page,
     userDataDirectory,
     electronApp,
+    async kill() {
+      if (closed) return
+      closed = true
+      await forceStop(child)
+    },
     async close() {
       if (closed) return
       closed = true
@@ -126,6 +137,20 @@ async function stopProcess(child: ChildProcess): Promise<void> {
   }
 }
 
+/** 不给应用任何收尾机会：任务管理器「结束进程树」的效果。 */
+async function forceStop(child: ChildProcess): Promise<void> {
+  if (child.exitCode !== null) return
+  if (child.pid === undefined) {
+    throw new Error('拿不到被测应用的进程 id')
+  }
+  if (process.platform === 'win32') {
+    spawnSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' })
+  } else {
+    child.kill('SIGKILL')
+  }
+  await waitForExit(child, 10_000)
+}
+
 /**
  * 打包产物不能用 Playwright 的 Electron 启动器（它只在用 npm 里那份 Electron 时才注入
  * 自己的主进程 loader），所以按远程调试端口连上去，渲染出来的 DOM 一样能断言。
@@ -166,6 +191,12 @@ async function launchPackagedApp(
     page,
     userDataDirectory,
     electronApp: null,
+    async kill() {
+      if (closed) return
+      closed = true
+      await forceStop(child)
+      await browser.close().catch(() => undefined)
+    },
     async close() {
       if (closed) return
       closed = true

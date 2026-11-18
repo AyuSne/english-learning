@@ -522,11 +522,27 @@
   [data-theme="dark"] .pin-board {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
   }
+
+  /*
+   * 收起后的钉板是一条 44px 的固定窄条；不给正文让出这 44px，
+   * 顶栏的「钉板 N」与输入框的发送键会压在这条下面点不到（900 宽时最明显）。
+   */
+  .chat-header,
+  .chat-scroll,
+  .chat-composer {
+    padding-right: 76px;
+  }
 }
 
 @media (max-width: 900px) {
+  .chat-header,
+  .chat-scroll,
+  .chat-composer {
+    padding-right: 60px;
+  }
+
   .pin-source-banner {
-    padding-right: 16px;
+    padding-right: 60px;
     padding-left: 16px;
   }
 }

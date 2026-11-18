@@ -2,12 +2,13 @@ import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 're
 import type { ReadingPoint } from '../../../shared/library'
 import type { ReadingProgressRequest, ReadingView } from '../../../shared/reading'
 import { saveReadingPoint } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 
 /** 句子离滚动容器顶多远才算「读到」。 */
 const READING_TOP_OFFSET = 16
 /** 滚动停下多久后把位置写进本机库；不每滚一格都发 IPC。 */
 const READING_SAVE_DELAY = 400
+const WRITE_FAILURE = '阅读位置没有记住，本机资料库可能不可写。'
 
 export type ReadingPosition = {
   /** 挂到阅读正文的滚动容器上。 */
@@ -16,6 +17,8 @@ export type ReadingPosition = {
   position: ReadingPoint | null
   /** 写库失败时的提示；成功时清空。 */
   writeError: string | null
+  /** 写库失败后的「重试保存」：按当前读到的那一句再写一次。 */
+  retryWrite: () => void
 }
 
 function keyOf(paragraphId: string, sentenceOrdinal: number): string {
@@ -78,6 +81,20 @@ export function useReadingPosition(view: ReadingView | null): ReadingPosition {
     container.scrollTop = Math.max(0, container.scrollTop + offset)
   }, [view])
 
+  /** 写库；成功清掉错误，失败留下可重试的提示。 */
+  function persistPoint(request: ReadingProgressRequest): void {
+    saveReadingPoint(request).then(
+      (result) => {
+        if (result.saved) {
+          setWriteError(null)
+        } else {
+          setWriteError(WRITE_FAILURE)
+        }
+      },
+      (error: unknown) => setWriteError(failureText(error, WRITE_FAILURE))
+    )
+  }
+
   useEffect(() => {
     const container = scrollRef.current
     if (!view || !container) {
@@ -101,15 +118,9 @@ export function useReadingPosition(view: ReadingView | null): ReadingPosition {
       }
       const request = latest
       latest = null
-      if (!request) return
-      saveReadingPoint(request).then(
-        (result) => {
-          if (!result.saved) {
-            setWriteError('阅读位置没有记住，本机资料库可能不可写。')
-          }
-        },
-        (error: unknown) => setWriteError(messageOf(error))
-      )
+      if (request) {
+        persistPoint(request)
+      }
     }
 
     const readCurrent = (): void => {
@@ -176,5 +187,18 @@ export function useReadingPosition(view: ReadingView | null): ReadingPosition {
     }
   }, [view])
 
-  return { scrollRef, position, writeError }
+  /**
+   * 写库失败后按当前读到的那一句再写一次。位置是 1 起的，请求里要换回 0 起。
+   */
+  function retryWrite(): void {
+    if (view === null || position === null) return
+    setWriteError(null)
+    persistPoint({
+      articleId: view.article.id,
+      paragraphId: position.paragraphId,
+      sentenceOrdinal: position.sentenceOrdinal - 1
+    })
+  }
+
+  return { scrollRef, position, writeError, retryWrite }
 }

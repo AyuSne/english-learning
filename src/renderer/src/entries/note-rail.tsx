@@ -10,7 +10,7 @@ import {
 import { DictionaryView } from '../dictionary/dictionary-view'
 import { useDictionaryLookup } from '../dictionary/lookup'
 import { draftFromSense } from '../dictionary/presentation'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { navigate } from '../navigate'
 import { entryHeadlineText, noteSourceText } from './format'
 import { LearningBody } from './learning-body'
@@ -105,7 +105,7 @@ export function NoteRail({
       }
       setError('学习内容没有保存成功，再试一次。')
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '学习内容没有保存成功，再点一次保存。'))
     } finally {
       setSavingDraft(false)
     }
@@ -129,7 +129,7 @@ export function NoteRail({
       }
       setEditError('这条学习内容已经不在了。')
     } catch (reason) {
-      setEditError(messageOf(reason))
+      setEditError(failureText(reason, '没有保存成功，再点一次保存。'))
     } finally {
       setSavingEdit(false)
     }
@@ -146,7 +146,7 @@ export function NoteRail({
       }
       setError('这条学习内容已经不在了。')
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '没有置顶成功，再点一次。'))
     } finally {
       setBusyNoteId(null)
     }
@@ -163,7 +163,7 @@ export function NoteRail({
       }
       setError('这条学习内容已经不在了。')
     } catch (reason) {
-      setError(messageOf(reason))
+      setError(failureText(reason, '没有删除成功，再点一次。'))
     } finally {
       setBusyNoteId(null)
     }

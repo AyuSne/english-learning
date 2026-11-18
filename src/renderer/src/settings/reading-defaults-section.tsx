@@ -3,7 +3,7 @@ import type { ReadingPreferences } from '../../../shared/reading'
 import { READING_FONT_SIZES, READING_LINE_HEIGHTS } from '../../../shared/reading'
 import type { SettingsOverview } from '../../../shared/settings'
 import { saveReadingPreferences } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { readingDefaultsText } from './format'
 
 /**
@@ -33,7 +33,7 @@ export function ReadingDefaultsSection({
       onChange({ ...overview, reading: result.preferences })
       notify(result.saved ? '已保存为全局默认' : '这次没有保存，值不合法')
     } catch (caught) {
-      notify(messageOf(caught))
+      notify(failureText(caught))
     } finally {
       setBusy(false)
     }

@@ -8,9 +8,11 @@ import type {
 import {
   loadArticleDetail,
   loadLibrary,
+  reimportCorpus,
   searchLibrary
 } from '../api'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
+import { ErrorBlock } from '../components/error-block'
 import { openThreadForMain } from '../chat/store'
 import { formatDay, progressText } from '../library/format'
 import { navigate } from '../navigate'
@@ -19,16 +21,26 @@ import { navigate } from '../navigate'
  * 文章库：左边按场次分组的列表（搜索时换成命中结果），右边是选中一篇的详情。
  * 「继续阅读」把文章 id 交给阅读页，由阅读页记下最近打开并恢复上次位置。
  */
-export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
+export function LibraryPage({
+  corpusImport,
+  onReimport
+}: {
+  corpusImport: ImportReport
+  onReimport: (report: ImportReport) => void
+}) {
   const [listing, setListing] = useState<LibraryListing | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
   const [query, setQuery] = useState('')
   const [found, setFound] = useState<LibrarySearchResults | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [detail, setDetail] = useState<ArticleDetail | null>(null)
+  const [reimporting, setReimporting] = useState(false)
+  const [importMessage, setImportMessage] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
+    setLoadError(null)
     loadLibrary().then(
       (value) => {
         if (!active) return
@@ -36,13 +48,13 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
         setSelectedId((current) => current ?? value.sessions[0]?.articles[0]?.id ?? null)
       },
       (error: unknown) => {
-        if (active) setLoadError(messageOf(error))
+        if (active) setLoadError(failureText(error, '文章库没有读出来。'))
       }
     )
     return () => {
       active = false
     }
-  }, [])
+  }, [reloadToken])
 
   useEffect(() => {
     if (selectedId === null) {
@@ -55,13 +67,13 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
         if (active) setDetail(value)
       },
       (error: unknown) => {
-        if (active) setLoadError(messageOf(error))
+        if (active) setLoadError(failureText(error, '文章库没有读出来。'))
       }
     )
     return () => {
       active = false
     }
-  }, [selectedId])
+  }, [selectedId, reloadToken])
 
   const trimmedQuery = query.trim()
 
@@ -76,13 +88,19 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
         if (active) setFound(value)
       },
       (error: unknown) => {
-        if (active) setLoadError(messageOf(error))
+        if (active) setLoadError(failureText(error, '文章库没有读出来。'))
       }
     )
     return () => {
       active = false
     }
-  }, [trimmedQuery])
+  }, [trimmedQuery, reloadToken])
+
+  useEffect(() => {
+    if (importMessage === null) return
+    const timer = window.setTimeout(() => setImportMessage(null), 5000)
+    return () => window.clearTimeout(timer)
+  }, [importMessage])
 
   function select(articleId: string): void {
     setSelectedId(articleId)
@@ -90,6 +108,33 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
 
   function open(articleId: string): void {
     navigate('reading', { articleId })
+  }
+
+  function retryLoad(): void {
+    setLoadError(null)
+    setReloadToken((token) => token + 1)
+  }
+
+  /** 修好随包语料后原地再导一遍，不必重启应用。 */
+  async function retryImport(): Promise<void> {
+    if (reimporting) return
+    setReimporting(true)
+    setImportMessage(null)
+    setLoadError(null)
+    try {
+      const report = await reimportCorpus()
+      onReimport(report)
+      setReloadToken((token) => token + 1)
+      setImportMessage(
+        report.failed.length === 0
+          ? `重新导入完成：${report.total} 篇都在库里了。`
+          : `重新导入完成：还有 ${report.failed.length} 篇没导进来。`
+      )
+    } catch (error) {
+      setLoadError(failureText(error, '重新导入没有完成，再试一次。'))
+    } finally {
+      setReimporting(false)
+    }
   }
 
   const failureCount = corpusImport.failed.length
@@ -133,13 +178,24 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
               </li>
             ))}
           </ul>
+          <div className="library-warning-actions">
+            <button
+              type="button"
+              className="button button-small"
+              disabled={reimporting}
+              onClick={() => void retryImport()}
+            >
+              {reimporting ? '正在重新导入…' : '重新导入'}
+            </button>
+            <span className="library-warning-hint">
+              再试一次；一直失败说明随包语料损坏，需要重新安装。
+            </span>
+          </div>
         </section>
       ) : null}
 
       {loadError !== null ? (
-        <p className="library-error" role="alert">
-          {loadError}
-        </p>
+        <ErrorBlock message={loadError} onAction={retryLoad} />
       ) : null}
 
       <div className="library-columns">
@@ -250,6 +306,12 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
           )}
         </aside>
       </div>
+
+      {importMessage === null ? null : (
+        <p className="toast" role="status">
+          {importMessage}
+        </p>
+      )}
     </div>
   )
 }

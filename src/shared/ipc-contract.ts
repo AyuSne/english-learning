@@ -32,6 +32,7 @@ import type {
 import type {
   ArticleDetail,
   HomeSummary,
+  ImportReport,
   LibraryListing,
   LibrarySearchResults
 } from './library'
@@ -100,6 +101,7 @@ export interface IpcContract {
   'app:bootstrap': { payload: undefined; result: AppBootstrap }
   'home:summary': { payload: undefined; result: HomeSummary }
   'library:list': { payload: undefined; result: LibraryListing }
+  'library:reimport': { payload: undefined; result: ImportReport }
   'library:detail': { payload: { articleId: string }; result: ArticleDetail | null }
   'library:search': { payload: { query: string }; result: LibrarySearchResults }
   'reading:open': { payload: { articleId: string }; result: ReadingView | null }
@@ -212,6 +214,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'app:bootstrap': true,
   'home:summary': true,
   'library:list': true,
+  'library:reimport': true,
   'library:detail': true,
   'library:search': true,
   'reading:open': true,

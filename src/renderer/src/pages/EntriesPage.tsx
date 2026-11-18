@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
 import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
 import { openThreadForMain } from '../chat/store'
+import { ErrorBlock } from '../components/error-block'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
 import { entryHeadlineText } from '../entries/format'
 import { NoteRail } from '../entries/note-rail'
 import { SentenceRow } from '../entries/sentence-row'
-import { messageOf } from '../errors'
+import { failureText } from '../errors'
 import { navigate, replaceRoute } from '../navigate'
 
 /**
@@ -42,6 +43,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
   useEffect(() => {
     const sequence = listRequest.current + 1
     listRequest.current = sequence
+    setListError(null)
     loadEntryList({ query, sort, filter }).then(
       (value) => {
         if (sequence !== listRequest.current) return
@@ -50,7 +52,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
       },
       (error: unknown) => {
         if (sequence === listRequest.current) {
-          setListError(messageOf(error))
+          setListError(failureText(error, '词条列表没有读出来。'))
         }
       }
     )
@@ -94,7 +96,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
       (error: unknown) => {
         if (sequence === pageRequest.current) {
           setPage(null)
-          setPageError(messageOf(error))
+          setPageError(failureText(error, '这个词条没有读出来。'))
         }
       }
     )
@@ -107,6 +109,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
   }, [hint])
 
   function refresh(message?: string): void {
+    setActionError(null)
     setReloadToken((token) => token + 1)
     if (message !== undefined) {
       setHint(message)
@@ -150,7 +153,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
       }
       refresh('原句已删除。')
     } catch (error) {
-      setActionError(messageOf(error))
+      setActionError(failureText(error))
     } finally {
       setDeleting(false)
     }
@@ -187,9 +190,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
 
       <section className="entries-main" aria-label="词条内容">
         {listError === null ? null : (
-          <p className="entry-error" role="alert">
-            {listError}
-          </p>
+          <ErrorBlock message={listError} onAction={() => refresh()} />
         )}
 
         {page !== null ? (
@@ -222,9 +223,11 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
             </header>
 
             {actionError === null ? null : (
-              <p className="entry-error" role="alert">
-                {actionError}
-              </p>
+              <ErrorBlock
+                message={actionError}
+                actionLabel="刷新列表"
+                onAction={() => refresh()}
+              />
             )}
 
             {page.groups.length === 0 ? (
@@ -290,9 +293,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
             )}
           </>
         ) : pageError !== null ? (
-          <p className="entry-error" role="alert">
-            {pageError}
-          </p>
+          <ErrorBlock message={pageError} onAction={() => refresh()} />
         ) : listing !== null && listing.total === 0 ? (
           <div className="entries-main-empty">
             <p className="eyebrow">还没有词条</p>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { HomeSummary } from '../../../shared/library'
 import { loadHomeSummary } from '../api'
-import { messageOf } from '../errors'
+import { ErrorBlock } from '../components/error-block'
+import { failureText } from '../errors'
 import { readingPointText, progressText } from '../library/format'
 import { navigate } from '../navigate'
 
@@ -12,21 +13,23 @@ import { navigate } from '../navigate'
 export function HomePage() {
   const [summary, setSummary] = useState<HomeSummary | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
 
   useEffect(() => {
     let active = true
+    setError(null)
     loadHomeSummary().then(
       (value) => {
         if (active) setSummary(value)
       },
       (reason: unknown) => {
-        if (active) setError(messageOf(reason))
+        if (active) setError(failureText(reason, '首页没有读出来。'))
       }
     )
     return () => {
       active = false
     }
-  }, [])
+  }, [reloadToken])
 
   const current = summary?.continueReading ?? null
 
@@ -83,9 +86,10 @@ export function HomePage() {
       )}
 
       {error === null ? null : (
-        <p className="library-error" role="alert">
-          {error}
-        </p>
+        <ErrorBlock
+          message={error}
+          onAction={() => setReloadToken((token) => token + 1)}
+        />
       )}
 
       <section className="home-section">

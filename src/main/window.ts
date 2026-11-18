@@ -23,7 +23,8 @@ export function createMainWindow(themePreference: ThemePreference): BrowserWindo
   const window = new BrowserWindow({
     width: 1280,
     height: 860,
-    minWidth: 960,
+    // 900 是界面最后一个断点：再小就不再收栏，而是开始压正文列。
+    minWidth: 900,
     minHeight: 640,
     show: false,
     title: '素读',
