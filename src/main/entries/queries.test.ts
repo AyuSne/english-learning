@@ -3,10 +3,16 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { CollectSelectionRequest } from '../../shared/entries'
-import { fixtureArticle, writeCorpusDirectory, type FixtureEntry } from '../../testing/corpus-fixture'
+import {
+  fixtureArticle,
+  writeCorpusDirectory,
+  type FixtureEntry
+} from '../../testing/corpus-fixture'
+import { writeDictionaryFixture } from '../../testing/dictionary-fixture'
 import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
+import { openDictionary } from '../dictionary/dictionary'
 import {
   collectSelection,
   deleteEntrySentence,
@@ -29,7 +35,8 @@ const article = fixtureArticle({
     ['She approached the counter quietly.', 'The approachable clerk smiled.'],
     ['Language learners benefit from context.', 'Repeated words stick.'],
     ['Practice keeps the skill alive.', 'Language learners read every day.'],
-    ['The team approaches every problem slowly.']
+    ['The team approaches every problem slowly.'],
+    ['He drank the water slowly.', 'They drink tea every morning.']
   ]
 })
 
@@ -205,6 +212,45 @@ describe('collectSelection', () => {
     if (base.status !== 'collected' || derived.status !== 'collected') return
     expect(derived.entry.id).not.toBe(base.entry.id)
     expect(derived.entry.mainForm).toBe('approachable')
+  })
+
+  it('装了词典时按 ECDICT 的 lemma 归并，规则猜不出的不规则变化也并得上', () => {
+    const file = join(directory, 'ecdict.db')
+    writeDictionaryFixture(file, {
+      entries: [
+        {
+          word: 'drink',
+          phonetic: 'drɪŋk',
+          translation: 'v. 喝\\nn. 饮料',
+          exchange: 'p:drank/d:drunk/i:drinking/3:drinks'
+        }
+      ],
+      lemmas: [{ form: 'drank', lemma: 'drink' }]
+    })
+    const dictionary = openDictionary(file)
+    if (dictionary === null) throw new Error('fixture 词典打不开')
+    try {
+      const first = collectSelection(database, selection(article, 5, 'drank'), {
+        now: T0,
+        dictionary
+      })
+      const second = collectSelection(database, selection(article, 5, 'drink', { from: 30 }), {
+        now: T1,
+        dictionary
+      })
+
+      expect(first.status).toBe('collected')
+      expect(second.status).toBe('collected')
+      if (first.status !== 'collected' || second.status !== 'collected') return
+      expect(second.entry.id).toBe(first.entry.id)
+      expect(second.entry).toMatchObject({
+        mainForm: 'drank',
+        variants: ['drink'],
+        sentenceCount: 2
+      })
+    } finally {
+      dictionary.close()
+    }
   })
 
   it('短语按整条收，来自不同句子时累加原句', () => {

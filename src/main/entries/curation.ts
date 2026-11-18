@@ -10,14 +10,11 @@ import type {
   ReselectEntrySentenceResult
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
+import type { Dictionary } from '../dictionary/dictionary'
 import { reassignPinsFromEntry } from '../pins/pins'
 import { entryExists, hasPinnedNote, refreshLastCollected } from './entry-state'
-import {
-  readArticleCollections,
-  readEntrySentence,
-  readEntrySummary,
-  resolveEntryKey
-} from './queries'
+import { resolveEntryKey } from './key'
+import { readArticleCollections, readEntrySentence, readEntrySummary } from './queries'
 import { readEntrySelection } from './selection'
 
 /**
@@ -55,12 +52,17 @@ function findEntryIdByKey(database: AppDatabase, key: string): string | null {
  * 换主词形后让词条的键跟着主词形走（键空着时），这样之后再收同一个词仍落回这一条，
  * 而不是另建一个重复词条。键已经被别的词条占着就不动，宁可保持原键也不撞唯一约束。
  */
-function adoptEntryKey(database: AppDatabase, entryId: string, mainForm: string): void {
+function adoptEntryKey(
+  database: AppDatabase,
+  entryId: string,
+  mainForm: string,
+  dictionary?: Dictionary
+): void {
   const stored = database
     .prepare('SELECT normalized_key FROM word_entry WHERE id = ?')
     .get(entryId) as { normalized_key: string } | undefined
   if (!stored) return
-  const key = resolveEntryKey(database, mainForm)
+  const key = resolveEntryKey(database, mainForm, dictionary)
   if (key === stored.normalized_key) return
   const owner = findEntryIdByKey(database, key)
   if (owner !== null && owner !== entryId) return
@@ -81,7 +83,8 @@ function collectedSurfaces(database: AppDatabase, entryIds: readonly string[]): 
 /** 换主词形：只能从已收集的词形里选，词条键不变。 */
 export function changeEntryMainForm(
   database: AppDatabase,
-  request: ChangeMainFormRequest
+  request: ChangeMainFormRequest,
+  options: { dictionary?: Dictionary } = {}
 ): ChangeMainFormResult {
   if (!entryExists(database, request.entryId)) {
     return { status: 'missing' }
@@ -94,7 +97,7 @@ export function changeEntryMainForm(
   database
     .prepare('UPDATE word_entry SET main_form = ? WHERE id = ?')
     .run(request.mainForm, request.entryId)
-  adoptEntryKey(database, request.entryId, request.mainForm)
+  adoptEntryKey(database, request.entryId, request.mainForm, options.dictionary)
 
   const entry = readEntrySummary(database, request.entryId)
   return entry ? { status: 'changed', entry } : { status: 'missing' }
@@ -206,7 +209,7 @@ export function mergeEntries(
 export function moveEntrySentence(
   database: AppDatabase,
   request: MoveEntrySentenceRequest,
-  options: { now?: string } = {}
+  options: { now?: string; dictionary?: Dictionary } = {}
 ): MoveEntrySentenceResult {
   const stored = readStoredSentence(database, request.entrySentenceId)
   if (!stored) {
@@ -219,7 +222,7 @@ export function moveEntrySentence(
       ? request.target.entryId
       : null
   } else {
-    const key = resolveEntryKey(database, stored.surface)
+    const key = resolveEntryKey(database, stored.surface, options.dictionary)
     targetId = findEntryIdByKey(database, key)
   }
   if (targetId === null && request.target.kind === 'entry') {
@@ -254,7 +257,7 @@ export function moveEntrySentence(
         .run(
           receiving,
           stored.surface,
-          resolveEntryKey(database, stored.surface),
+          resolveEntryKey(database, stored.surface, options.dictionary),
           now,
           stored.collected_at
         )
@@ -291,7 +294,8 @@ export function moveEntrySentence(
 /** 重新圈定：只在原句所在的那一句里换范围，原句文字与原文逐字一致。 */
 export function reselectEntrySentence(
   database: AppDatabase,
-  request: ReselectEntrySentenceRequest
+  request: ReselectEntrySentenceRequest,
+  options: { dictionary?: Dictionary } = {}
 ): ReselectEntrySentenceResult {
   const stored = readStoredSentence(database, request.entrySentenceId)
   if (!stored) {
@@ -331,7 +335,7 @@ export function reselectEntrySentence(
     database
       .prepare('UPDATE word_entry SET main_form = ? WHERE id = ?')
       .run(surface, stored.entry_id)
-    adoptEntryKey(database, stored.entry_id, surface)
+    adoptEntryKey(database, stored.entry_id, surface, options.dictionary)
   }
 
   const entry = readEntrySummary(database, stored.entry_id)

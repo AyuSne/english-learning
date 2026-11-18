@@ -5,6 +5,7 @@ import type {
   ChatStopResult,
   ChatStreamUpdate
 } from './chat'
+import type { DictionaryLookup, DictionaryLookupRequest } from './dictionary'
 import type {
   ChangeMainFormRequest,
   ChangeMainFormResult,
@@ -88,6 +89,7 @@ export interface IpcContract {
   'reading:progress': { payload: ReadingProgressRequest; result: ReadingProgressResult }
   'reading:settings': { payload: ReadingSettingsRequest; result: ReadingSettingsResult | null }
   'reading:collect': { payload: CollectSelectionRequest; result: CollectSelectionResult }
+  'dictionary:lookup': { payload: DictionaryLookupRequest; result: DictionaryLookup }
   'entries:card': { payload: { entryId: string }; result: WordEntryCard | null }
   'entries:delete-sentence': {
     payload: { entrySentenceId: string }
@@ -169,6 +171,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'reading:progress': true,
   'reading:settings': true,
   'reading:collect': true,
+  'dictionary:lookup': true,
   'entries:card': true,
   'entries:delete-sentence': true,
   'entries:list': true,

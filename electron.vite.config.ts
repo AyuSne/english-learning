@@ -68,9 +68,27 @@ function corpusAssets(): Plugin {
   }
 }
 
+/**
+ * 内置词典同样是数据文件：构建时把 assets/dictionary 的库与版权声明复制到
+ * out/main/dictionary，打包只带 out/，所以放在这里。
+ */
+function dictionaryAssets(): Plugin {
+  return {
+    name: 'app-dictionary-assets',
+    writeBundle() {
+      const source = resolve(process.cwd(), 'assets/dictionary')
+      const target = resolve(process.cwd(), 'out/main/dictionary')
+      mkdirSync(target, { recursive: true })
+      for (const file of readdirSync(source)) {
+        cpSync(join(source, file), join(target, file))
+      }
+    }
+  }
+}
+
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin(), corpusAssets()],
+    plugins: [externalizeDepsPlugin(), corpusAssets(), dictionaryAssets()],
     build: {
       rollupOptions: {
         output: {

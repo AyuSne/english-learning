@@ -7,12 +7,13 @@ import type {
   EntrySentenceGroup
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
+import type { Dictionary } from '../dictionary/dictionary'
+import { resolveEntryKey } from './key'
 import { readLearningNotes } from './notes'
 import {
   ENTRY_SENTENCE_COLUMNS,
   ENTRY_SENTENCE_JOINS,
   readEntrySummary,
-  resolveEntryKey,
   toEntrySentence,
   type EntrySentenceRow
 } from './queries'
@@ -153,7 +154,11 @@ function withNeighbors(database: AppDatabase, sentences: EntrySentence[]): void 
 }
 
 /** 词条页的一整页；词条不存在时返回 null。 */
-export function readEntryPage(database: AppDatabase, entryId: string): EntryPage | null {
+export function readEntryPage(
+  database: AppDatabase,
+  entryId: string,
+  options: { dictionary?: Dictionary } = {}
+): EntryPage | null {
   const entry = readEntrySummary(database, entryId)
   if (!entry) {
     return null
@@ -179,7 +184,9 @@ export function readEntryPage(database: AppDatabase, entryId: string): EntryPage
     .get(entryId) as { normalized_key: string } | undefined
   for (const sentence of sentences) {
     sentence.canSplitToNew =
-      storedKey !== undefined && resolveEntryKey(database, sentence.surface) !== storedKey.normalized_key
+      storedKey !== undefined &&
+      resolveEntryKey(database, sentence.surface, options.dictionary) !==
+        storedKey.normalized_key
   }
 
   return { entry, groups, notes: readLearningNotes(database, entryId) }

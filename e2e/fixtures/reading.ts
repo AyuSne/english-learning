@@ -29,6 +29,8 @@ export async function selectText(
   paragraphIndex: number,
   text: string
 ): Promise<void> {
+  // 正文可能还在从主进程读回来，先等这一段真的挂上再落选区。
+  await expect(page.locator('.reading-paragraph').nth(paragraphIndex)).toBeAttached()
   await page.evaluate(
     ({ paragraphIndex: index, text: target }) => {
       const paragraph = document.querySelectorAll('.reading-paragraph')[index]

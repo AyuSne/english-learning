@@ -2,7 +2,7 @@
 
 面向六级备考的 Windows 桌面应用：读真题文章、圈出想学的词，把原句与出处收进词条，再用对话和钉住补充学习内容。
 
-当前进度是**应用骨架**（#26）、**对话骨架**（#27）、**语料导入与文章库**（#28）、**阅读页与阅读设置**（#29）与**选词与原句**（#30）：左侧全局栏、首页首屏空态、首次启动建本机 SQLite 库并写 schema 版本、渲染层只经一份带白名单的 bridge 访问主进程；空白线程可发消息，思维链流式流出、正文抵达后折起，可随时停止，错误按类型给文案与动作；首次启动把首批 63 篇真题从随包语料导入本机库，文章库按 7 个场次分组、可按篇名与正文搜索、右侧看详情，首页「继续阅读」指向最近打开的一篇与上次位置；阅读页按 620 列排版，字号行距、原文注释与已收集词的弱高亮按篇记住，滚动位置写回；圈一个词或短语当场高亮并收成词条下的一条原句，同篇同句只留一条，常见词形归到同一词条，点弱高亮的词能看词条卡并删原句。词条页、对话上下文与钉住在后续 ticket 里落地。
+当前进度是**应用骨架**（#26）、**对话骨架**（#27）、**语料导入与文章库**（#28）、**阅读页与阅读设置**（#29）与**选词与原句**（#30）：左侧全局栏、首页首屏空态、首次启动建本机 SQLite 库并写 schema 版本、渲染层只经一份带白名单的 bridge 访问主进程；空白线程可发消息，思维链流式流出、正文抵达后折起，可随时停止，错误按类型给文案与动作；首次启动把首批 63 篇真题从随包语料导入本机库，文章库按 7 个场次分组、可按篇名与正文搜索、右侧看详情，首页「继续阅读」指向最近打开的一篇与上次位置；阅读页按 620 列排版，字号行距、原文注释与已收集词的弱高亮按篇记住，滚动位置写回；圈一个词或短语当场高亮并收成词条下的一条原句，同篇同句只留一条，常见词形归到同一词条，点弱高亮的词能看词条卡并删原句；随包一份裁剪后的 ECDICT 离线词典（#34），阅读划词卡、词条右栏与对话浮卡都能查音标与按词性分条的中文释义，查不到时明说「没收录」，一条释义可起草进学习内容编辑框但不自动保存。词条页与学习内容、对话上下文与回答版本、钉住与钉板（#31–#33）也已经在分支上落地。
 
 ## 开发
 
@@ -13,7 +13,7 @@ npm install          # 安装依赖（会下载 Electron 二进制）
 npm run dev          # 开发模式启动（Vite + Electron）
 npm run build        # 构建到 out/
 npm run typecheck    # 主进程、渲染层、E2E 三套 tsconfig
-npm run test:unit    # Vitest：迁移、设置、IPC 注册、preload bridge、路由、语料导入、文章库与阅读查询、选词与词形归并、对话流与状态
+npm run test:unit    # Vitest：迁移、设置、IPC 注册、preload bridge、路由、语料导入、文章库与阅读查询、选词与词形归并、内置词典、对话流与状态
 npm run test:e2e     # Playwright：构建后用临时 userData 启动开发产物
 npm run package      # 打包到 release/（@electron/packager）
 npm run test:e2e:packaged  # 打包后启动打包产物
@@ -52,15 +52,21 @@ npm install
 
 E2E 用 `CORPUS_DIRECTORY` 指向临时构造的语料目录，验证部分导入与提示，不碰真实语料。
 
+## 词典
+
+内置词典是从 [ECDICT](https://github.com/skywind3000/ECDICT)（MIT）裁出的只读 SQLite，放在 `assets/dictionary/`：两万核心词、四六级标签词与 63 篇语料里出现的词，另加一份词形变化到原形的 lemma 表（约 2.4 万条词头、2.3 万条映射，3.6 MB）。查询先按词形精确匹配，再按 lemma 回退到原形（approached → approach），都没有就是「没收录」；不联网，也不调用模型。
+
+构建时复制到 `out/main/dictionary/`；打包时整个目录放进 `resources/dictionary/`（SQLite 文件不能被 native 驱动从 asar 里读，所以留在 asar 外）。E2E 用 `DICTIONARY_DIRECTORY` 指向 fixture 词典。裁剪脚本、收录范围与重新生成步骤见 [`assets/dictionary/README.md`](./assets/dictionary/README.md)，分发物带着 ECDICT 的版权声明。
+
 ## 结构
 
 ```text
 src/
-├── main/      主进程：窗口、SQLite 建库与迁移、语料导入、文章库与阅读查询、选词与词条查询、IPC 注册、对话流与模型适配、启动失败处理
+├── main/      主进程：窗口、SQLite 建库与迁移、语料导入、文章库与阅读查询、选词与词条查询、内置词典、IPC 注册、对话流与模型适配、启动失败处理
 ├── preload/   contextBridge，唯一 bridge 与 channel 白名单
-├── renderer/  React 界面（全局栏、首页、文章库、阅读页、对话页、其它视图的占位）
-├── shared/    IPC 契约与跨层类型
-└── testing/   测试用的语料构造器与 SSE stub
+├── renderer/  React 界面（全局栏、首页、文章库、阅读页、词条页、对话页、其它视图的占位）
+├── shared/    IPC 契约、词典查询结果与跨层类型
+└── testing/   测试用的语料构造器、词典 fixture 与 SSE stub
 e2e/           Playwright：dev 产物用 Electron 启动器，打包产物走 CDP；对话用本地 SSE stub
 docs/          产品范围、界面 token、ADR、语料
 ```

@@ -8,6 +8,7 @@ import {
   type MouseEvent as ReactMouseEvent
 } from 'react'
 import type { EntrySentence, ReadingCollectionMark } from '../../../shared/entries'
+import type { DictionaryLookup } from '../../../shared/dictionary'
 import type {
   ReadingPreferences,
   ReadingSettings,
@@ -24,6 +25,7 @@ import {
   reselectEntrySentence,
   saveReadingSettings
 } from '../api'
+import { lookupDictionaryOrUnavailable } from '../dictionary/lookup'
 import { messageOf } from '../errors'
 import { readingPointText } from '../library/format'
 import { goBack, navigate } from '../navigate'
@@ -314,6 +316,28 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
     )
   }
 
+  /** 选词卡上的词典只认这一次圈下的词形，换词或关面板后到的结果直接丢掉。 */
+  function updateCollectedDictionary(
+    entryId: string,
+    surface: string,
+    dictionary: DictionaryLookup
+  ): void {
+    setPanel((current) =>
+      current !== null &&
+      current.kind === 'collected' &&
+      current.entryId === entryId &&
+      current.surface === surface
+        ? { ...current, dictionary: { lookup: dictionary, loading: false } }
+        : current
+    )
+  }
+
+  function lookupCollectedWord(entryId: string, surface: string): void {
+    lookupDictionaryOrUnavailable(surface).then((dictionary) =>
+      updateCollectedDictionary(entryId, surface, dictionary)
+    )
+  }
+
   function openEntryCard(entryId: string): void {
     setActiveSelection(null)
     setHint(null)
@@ -449,8 +473,10 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
           sentenceText: result.sentence.sentenceText,
           sentenceCount: result.entry.sentenceCount,
           articleCount: result.entry.articleCount,
-          duplicate: result.status === 'duplicate'
+          duplicate: result.status === 'duplicate',
+          dictionary: { lookup: null, loading: true }
         })
+        lookupCollectedWord(result.entry.id, result.sentence.surface)
       },
       (error: unknown) => {
         if (request !== collectRequest.current) return

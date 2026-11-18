@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import type { DictionarySense } from '../../../shared/dictionary'
 import type { EntryListItem, EntryPage, LearningNote } from '../../../shared/entries'
 import {
   createLearningNote,
@@ -6,6 +7,9 @@ import {
   pinLearningNote,
   updateLearningNote
 } from '../api'
+import { DictionaryView } from '../dictionary/dictionary-view'
+import { useDictionaryLookup } from '../dictionary/lookup'
+import { draftFromSense } from '../dictionary/presentation'
 import { messageOf } from '../errors'
 import { navigate } from '../navigate'
 import { entryHeadlineText, noteSourceText } from './format'
@@ -13,8 +17,9 @@ import { LearningBody } from './learning-body'
 import { MoreActions } from './more-actions'
 
 /**
- * 词条页右栏。收窄时只留一条竖着的「学习内容」入口；点开才是主词形、学习内容与「更多」。
- * 学习内容只保留最终稿：编辑直接覆盖，不存历史版本；置顶一条，其余按写下的时间排。
+ * 词条页右栏。收窄时只留一条竖着的「学习内容」入口；点开才是主词形、词典、
+ * 学习内容与「更多」。学习内容只保留最终稿：编辑直接覆盖，不存历史版本；
+ * 置顶一条，其余按写下的时间排。
  */
 export function NoteRail({
   page,
@@ -40,6 +45,26 @@ export function NoteRail({
   const [busyNoteId, setBusyNoteId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [editError, setEditError] = useState<string | null>(null)
+  const draftRef = useRef<HTMLTextAreaElement>(null)
+
+  // 右栏的词典只读：按主词形查一次；查不到就明说，不影响下面写学习内容。
+  const { lookup: dictionaryLookup, loading: dictionaryLoading } = useDictionaryLookup(
+    page.entry.mainForm
+  )
+
+  /** 「用这条起草」只把词形、音标与那条释义填进编辑框，保存仍由学习者点。 */
+  function draftFromDictionary(sense: DictionarySense): void {
+    if (dictionaryLookup === null || dictionaryLookup.status !== 'found') return
+    setDraft(
+      draftFromSense({
+        word: page.entry.mainForm,
+        phonetic: dictionaryLookup.entry.phonetic,
+        sense
+      })
+    )
+    setError(null)
+    draftRef.current?.focus()
+  }
 
   if (!open) {
     return (
@@ -175,6 +200,15 @@ export function NoteRail({
         </div>
       </section>
 
+      <section className="entries-rail-section" aria-label="词典">
+        <p className="section-label">词典</p>
+        <DictionaryView
+          lookup={dictionaryLookup}
+          loading={dictionaryLoading}
+          onDraft={draftFromDictionary}
+        />
+      </section>
+
       <section className="entries-rail-section" aria-label="学习内容">
         {page.notes.length === 0 ? (
           <p className="empty-line">还没有学习内容 · 从对话里钉一段进来</p>
@@ -295,6 +329,7 @@ export function NoteRail({
           }}
         >
           <textarea
+            ref={draftRef}
             aria-label="写学习内容"
             placeholder="写释义、例句、辨析、助记…"
             rows={3}

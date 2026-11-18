@@ -1,0 +1,106 @@
+/**
+ * 内置词典的只读释义块。阅读划词卡、词条页右栏与对话浮卡共用，
+ * 颜色与字号只取 token，不在这里另起一套。
+ */
+
+.dictionary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.dictionary-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.dictionary-word {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.dictionary-phonetic {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.dictionary-lemma,
+.dictionary-forms {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.dictionary-senses {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dictionary-sense {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.dictionary-pos {
+  flex: none;
+  min-width: 32px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.dictionary-sense-text {
+  flex: 1 1 auto;
+}
+
+.dictionary-draft {
+  flex: none;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--blue);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.dictionary-draft:hover {
+  background: var(--hover);
+  text-decoration: underline;
+}
+
+.dictionary-toggle {
+  align-self: flex-start;
+  color: var(--blue);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.dictionary-toggle:hover {
+  text-decoration: underline;
+}
+
+.dictionary-loading,
+.dictionary-status {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* 阅读选词卡里紧跟在词条行后面，不用再隔一层。 */
+.reading-panel .dictionary {
+  margin-top: 8px;
+}

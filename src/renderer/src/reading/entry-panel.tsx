@@ -1,9 +1,12 @@
 import type { RefObject } from 'react'
 import type { WordEntryCard } from '../../../shared/entries'
+import { DictionaryView } from '../dictionary/dictionary-view'
+import type { DictionaryLookupState } from '../dictionary/lookup'
 
 /**
  * 阅读页右侧的两张浮层：
- * 刚收下时的选词结果，以及点开已收集词后的词条卡（含删原句与删最后一条的确认）。
+ * 刚收下时的选词结果（带内置词典的音标与释义），以及点开已收集词后的词条卡
+ * （含删原句与删最后一条的确认）。
  */
 
 export type CollectedPanel = {
@@ -15,6 +18,8 @@ export type CollectedPanel = {
   sentenceCount: number
   articleCount: number
   duplicate: boolean
+  /** 内置词典对圈下这个词形的查询状态。 */
+  dictionary: DictionaryLookupState
 }
 
 export type EntryPanel = {
@@ -52,6 +57,10 @@ export function CollectedPanelView({
       </header>
       <p className="reading-panel-word">{panel.surface}</p>
       <p className="reading-panel-entry">词条 {panel.entryMainForm}</p>
+      <DictionaryView
+        lookup={panel.dictionary.lookup}
+        loading={panel.dictionary.loading}
+      />
       <blockquote className="reading-panel-sentence">{panel.sentenceText}</blockquote>
       <p className="reading-panel-meta">
         已有 {panel.sentenceCount} 条原句 · 来自 {panel.articleCount} 篇文章

@@ -34,6 +34,9 @@ import {
   targetLabel
 } from '../chat/pin-text'
 import { PinTargetDialog } from '../chat/pin-target-dialog'
+import { DictionaryView } from '../dictionary/dictionary-view'
+import { useDictionaryLookup } from '../dictionary/lookup'
+import { singleWordOf } from '../dictionary/presentation'
 import {
   liveAnswerText,
   liveAnswerThinking,
@@ -143,6 +146,9 @@ export function ChatPage({
   const [freshPinIds, setFreshPinIds] = useState<readonly string[]>([])
   const [toast, setToast] = useState<ToastState | null>(null)
   const [selection, setSelection] = useState<PinSelection | null>(null)
+  const [dictionaryWord, setDictionaryWord] = useState<string | null>(null)
+  const { lookup: selectionLookup, loading: selectionLookupLoading } =
+    useDictionaryLookup(dictionaryWord)
   const [pinDialog, setPinDialog] = useState<PinDialogState | null>(null)
   const [dialogBusy, setDialogBusy] = useState(false)
   const [busyPinId, setBusyPinId] = useState<string | null>(null)
@@ -238,6 +244,7 @@ export function ChatPage({
         return
       }
       setSelection(null)
+      setDictionaryWord(null)
     }
     document.addEventListener('mousedown', onMouseDown)
     return () => document.removeEventListener('mousedown', onMouseDown)
@@ -484,6 +491,7 @@ export function ChatPage({
       const view = store.current
       if (read === null || view === null) {
         setSelection(null)
+        setDictionaryWord(null)
         return
       }
       const answer = view.turns
@@ -491,10 +499,24 @@ export function ChatPage({
         .find((candidate) => candidate.id === read.answerId)
       if (!answer) {
         setSelection(null)
+        setDictionaryWord(null)
         return
       }
+      // 换了一段选区，上一条词的释义不再跟着。
+      setDictionaryWord(null)
       setSelection({ ...read, text: answer.text.slice(read.start, read.end) })
     }, 0)
+  }
+
+  /** 划词浮卡里的「释义」：只查单词，查的是离线词典，不发模型请求。 */
+  const lookUpSelection = (): void => {
+    if (selection === null) {
+      return
+    }
+    const word = singleWordOf(selection.text)
+    if (word !== null) {
+      setDictionaryWord(word)
+    }
   }
 
   const openCreateDialog = (value: {
@@ -1088,27 +1110,42 @@ export function ChatPage({
             top: selection.rect.bottom + 8
           }}
         >
-          <button
-            type="button"
-            className="button button-small button-primary"
-            onClick={() =>
-              openCreateDialog({
-                answerId: selection.answerId,
-                start: selection.start,
-                end: selection.end,
-                text: selection.text
-              })
-            }
-          >
-            钉住
-          </button>
-          <button
-            type="button"
-            className="button button-small"
-            onClick={() => copySelection(selection.text)}
-          >
-            复制
-          </button>
+          <div className="pin-selection-actions">
+            <button
+              type="button"
+              className="button button-small button-primary"
+              onClick={() =>
+                openCreateDialog({
+                  answerId: selection.answerId,
+                  start: selection.start,
+                  end: selection.end,
+                  text: selection.text
+                })
+              }
+            >
+              钉住
+            </button>
+            <button
+              type="button"
+              className="button button-small"
+              onClick={() => copySelection(selection.text)}
+            >
+              复制
+            </button>
+            {singleWordOf(selection.text) === null ? null : (
+              <button type="button" className="button button-small" onClick={lookUpSelection}>
+                释义
+              </button>
+            )}
+          </div>
+          {dictionaryWord === null ? null : (
+            <div className="pin-selection-dictionary">
+              <DictionaryView
+                lookup={selectionLookup}
+                loading={selectionLookupLoading}
+              />
+            </div>
+          )}
         </div>
       )}
 

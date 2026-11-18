@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChatStartResult, ChatStopResult } from '../../shared/chat'
+import type { DictionaryLookup } from '../../shared/dictionary'
 import type {
   ChangeMainFormResult,
   CollectSelectionResult,
@@ -140,6 +141,15 @@ function entriesHandlers() {
   }
 }
 
+function dictionaryHandlers() {
+  return {
+    'dictionary:lookup': (payload: { word: string }): DictionaryLookup => ({
+      status: 'missing',
+      query: payload.word.toLowerCase()
+    })
+  }
+}
+
 function pinsHandlers() {
   return {
     'pins:create': (): CreatePinResult => ({ status: 'rejected', reason: 'thread' }),
@@ -169,6 +179,7 @@ describe('registerIpcHandlers', () => {
       ...readingHandlers(),
       ...entriesHandlers(),
       ...pinsHandlers(),
+      ...dictionaryHandlers(),
       'app:bootstrap': (payload, event) => {
         received.push(payload)
         events.push(event)
@@ -201,6 +212,7 @@ describe('registerIpcHandlers', () => {
       ...readingHandlers(),
       ...entriesHandlers(),
       ...pinsHandlers(),
+      ...dictionaryHandlers(),
       'app:bootstrap': () => bootstrap,
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers

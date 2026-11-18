@@ -1,3 +1,4 @@
+import type { DictionaryLookup } from '../../shared/dictionary'
 import type {
   ArticleDetail,
   HomeSummary,
@@ -109,6 +110,11 @@ export function collectSelection(
   request: CollectSelectionRequest
 ): Promise<CollectSelectionResult> {
   return window.api.invoke('reading:collect', request)
+}
+
+/** 查内置离线词典：不联网、不调用模型。 */
+export function lookupDictionary(word: string): Promise<DictionaryLookup> {
+  return window.api.invoke('dictionary:lookup', { word })
 }
 
 /** 点开一个已收集的词，读它的词条卡与原句。 */

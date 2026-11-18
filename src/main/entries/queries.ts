@@ -11,15 +11,16 @@ import type {
 } from '../../shared/entries'
 import type { ArticleKind } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
+import type { Dictionary } from '../dictionary/dictionary'
 import { reassignPinsFromEntry } from '../pins/pins'
 import { paragraphLetter } from '../corpus/letter'
 import { refreshLastCollected } from './entry-state'
-import { resolveLemma, type LemmaLexicon } from './lemma'
+import { resolveEntryKey } from './key'
 import { readEntrySelection } from './selection'
 
 /**
  * 选词的落点与词条卡。这一层只认本机库：选区由渲染层给“段 + 句 + 段内字符区间”，
- * 词形归并交给 resolveLemma，重复圈选按“词条 + 篇 + 段 + 句”去重。
+ * 词形归并交给 key.ts（装了词典就用 ECDICT 的 lemma），重复圈选按“词条 + 篇 + 段 + 句”去重。
  */
 
 type ArticleRow = { id: string }
@@ -54,67 +55,6 @@ export type EntrySentenceRow = {
   char_end: number
   sentence_page: number | null
   collected_at: string
-}
-
-/** 语料全量词形的缓存：文章内容没变就不重复分词。 */
-const corpusCache = new WeakMap<AppDatabase, { signature: string; words: Set<string> }>()
-
-function tokenize(text: string): string[] {
-  // 词与词之间只按字母数字断；连字符与撇号留在词里（learner's、long-term）。
-  return Array.from(
-    text.matchAll(/[\p{L}\p{N}]+(?:['’\u2011-][\p{L}\p{N}]+)*/gu),
-    (match) => match[0].toLowerCase().replace(/[’‘]/g, "'")
-  )
-}
-
-/**
- * 本机语料里出现过的全部词形。阅读时圈下的表达一定来自语料，所以这份集合可以
- * 充当“候选原形是否存在”的词库；词典接入后这层仍然有用（语料优先）。
- */
-function corpusWords(database: AppDatabase): Set<string> {
-  const stats = database
-    .prepare(
-      `SELECT COUNT(*) AS count,
-              COALESCE(LENGTH(GROUP_CONCAT(source_sha256, '')), 0) AS hash_length,
-              COALESCE(GROUP_CONCAT(source_sha256, ''), '') AS signature
-       FROM article`
-    )
-    .get() as { count: number; hash_length: number; signature: string }
-  const signature = `${stats.count}:${stats.hash_length}:${stats.signature}`
-
-  const cached = corpusCache.get(database)
-  if (cached?.signature === signature) {
-    return cached.words
-  }
-
-  const rows = database.prepare('SELECT body_text FROM article').all() as {
-    body_text: string
-  }[]
-  const words = new Set<string>()
-  for (const row of rows) {
-    for (const word of tokenize(row.body_text)) {
-      words.add(word)
-    }
-  }
-  corpusCache.set(database, { signature, words })
-  return words
-}
-
-/** 归并用的词库：本机语料 + 已有词条的键。 */
-function lemmaLexicon(database: AppDatabase): LemmaLexicon {
-  const words = new Set(corpusWords(database))
-  const keys = database
-    .prepare('SELECT normalized_key FROM word_entry')
-    .all() as { normalized_key: string }[]
-  for (const key of keys) {
-    words.add(key.normalized_key)
-  }
-  return { has: (word) => words.has(word) }
-}
-
-/** 一个词形落到哪个词条键；选词与「拆到新词条」共用同一套归并。 */
-export function resolveEntryKey(database: AppDatabase, surface: string): string {
-  return resolveLemma(surface, lemmaLexicon(database))
 }
 
 /** 原句连同出处与句内位置，词条卡、词条页与重新圈定都从这里读同一套列。 */
@@ -289,7 +229,7 @@ export function readWordEntryCard(
 export function collectSelection(
   database: AppDatabase,
   request: CollectSelectionRequest,
-  options: { now?: string } = {}
+  options: { now?: string; dictionary?: Dictionary } = {}
 ): CollectSelectionResult {
   const article = database
     .prepare('SELECT id FROM article WHERE id = ?')
@@ -323,7 +263,7 @@ export function collectSelection(
   }
   const { surface, start, end } = read
 
-  const key = resolveEntryKey(database, surface)
+  const key = resolveEntryKey(database, surface, options.dictionary)
   const now = options.now ?? new Date().toISOString()
 
   const stored = database.transaction((): { entryId: string; sentenceId: string; created: boolean } => {

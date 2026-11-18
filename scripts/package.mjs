@@ -13,9 +13,12 @@ const electronVersion = JSON.parse(
 // packager 交给 ignore 的是相对仓库根、带前导斜杠、分隔符统一成 / 的路径，
 // 所以这里一律按这个形状写；`out` 是打包输入，不能忽略。
 const ignore = [
-  /^\/(?:src|e2e|docs|tools|scripts|\.agents|\.git|\.vscode|\.tmp-[^/]*|test-results|playwright-report|release|真题PDF)(?:\/|$)/,
+  /^\/(?:src|e2e|docs|tools|scripts|assets|out\/main\/dictionary|\.agents|\.git|\.vscode|\.tmp-[^/]*|test-results|playwright-report|release|真题PDF)(?:\/|$)/,
   /^\/(?:\.env[^/]*|\.gitignore|\.tmp-[^/]*|[^/]+\.md|[^/]+\.pdf|package-lock\.json|skills-lock\.json|playwright\.config\.ts|vitest\.config\.ts|electron\.vite\.config\.ts|tsconfig[^/]*\.json)$/
 ]
+
+// 词典是 SQLite 文件，native 驱动读不了 asar 内的路径，放进 resources/dictionary。
+const extraResource = [join(root, 'assets', 'dictionary')]
 
 const packagedPaths = await packager({
   dir: root,
@@ -26,6 +29,7 @@ const packagedPaths = await packager({
   electronVersion,
   overwrite: true,
   asar: { unpack: '**/*.node' },
+  extraResource,
   ignore
 })
 
