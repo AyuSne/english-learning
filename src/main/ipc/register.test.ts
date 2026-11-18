@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { ChatStartResult, ChatStopResult } from '../../shared/chat'
+import type {
+  ArticleDetail,
+  HomeSummary,
+  LibraryListing,
+  LibrarySearchResults
+} from '../../shared/library'
 import type { AppBootstrap } from '../../shared/types'
 import { IPC_CHANNELS } from '../../shared/ipc-contract'
 import {
@@ -12,8 +18,9 @@ import {
 const bootstrap: AppBootstrap = {
   appVersion: '0.1.0',
   isPackaged: false,
-  schemaVersion: 1,
-  theme: 'light'
+  schemaVersion: 2,
+  theme: 'light',
+  corpusImport: { total: 0, imported: 0, updated: 0, skipped: 0, failed: [] }
 }
 
 function fakeIpcMain(): {
@@ -36,6 +43,22 @@ function chatHandlers() {
   }
 }
 
+function libraryHandlers() {
+  return {
+    'home:summary': (): HomeSummary => ({
+      library: { articleCount: 0, sessionCount: 0 },
+      continueReading: null
+    }),
+    'library:list': (): LibraryListing => ({ articleCount: 0, sessionCount: 0, sessions: [] }),
+    'library:detail': (): ArticleDetail | null => null,
+    'library:search': (payload: { query: string }): LibrarySearchResults => ({
+      query: payload.query,
+      results: []
+    }),
+    'library:open': (): { opened: boolean } => ({ opened: false })
+  }
+}
+
 describe('registerIpcHandlers', () => {
   it('按契约注册每个 channel，调用时转给对应处理函数并传入调用事件', () => {
     const { ipc, registered } = fakeIpcMain()
@@ -44,6 +67,7 @@ describe('registerIpcHandlers', () => {
 
     registerIpcHandlers(ipc, {
       ...chatHandlers(),
+      ...libraryHandlers(),
       'app:bootstrap': (payload, event) => {
         received.push(payload)
         events.push(event)
@@ -72,6 +96,7 @@ describe('registerIpcHandlers', () => {
     const { ipc } = fakeIpcMain()
     const handlers = {
       ...chatHandlers(),
+      ...libraryHandlers(),
       'app:bootstrap': () => bootstrap,
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers

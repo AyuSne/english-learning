@@ -4,6 +4,7 @@ import { App } from './App'
 import './styles/tokens.css'
 import './styles/app.css'
 import './styles/chat.css'
+import './styles/library.css'
 
 const container = document.getElementById('root')
 if (!container) {

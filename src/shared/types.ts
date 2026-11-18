@@ -1,3 +1,5 @@
+import type { ImportReport } from './library'
+
 export type Theme = 'light' | 'dark'
 
 /**
@@ -8,4 +10,6 @@ export type AppBootstrap = {
   isPackaged: boolean
   schemaVersion: number
   theme: Theme
+  /** 本次启动的语料导入结果；失败项要在文章库里提示出来。 */
+  corpusImport: ImportReport
 }

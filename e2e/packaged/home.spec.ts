@@ -15,7 +15,13 @@ test('打包产物能启动并显示首页', async ({ launch }) => {
 
   const bootstrap = await readBootstrap(page)
   expect(bootstrap.isPackaged).toBe(true)
-  expect(bootstrap.schemaVersion).toBe(1)
+  expect(bootstrap.schemaVersion).toBe(2)
+  expect(bootstrap.corpusImport).toMatchObject({ total: 63, imported: 63, failed: [] })
+
+  // 语料随包分发：打包产物里也能看到全部 63 篇。
+  await navigation.getByRole('button', { name: '文章库' }).click()
+  await expect(page.getByText('63 篇 · 7 个场次')).toBeVisible()
+  await expect(page.locator('.library-session')).toHaveCount(7)
 
   const contentSecurityPolicy = await page
     .locator('meta[http-equiv="Content-Security-Policy"]')
@@ -23,7 +29,7 @@ test('打包产物能启动并显示首页', async ({ launch }) => {
   expect(contentSecurityPolicy ?? '').toContain("script-src 'self';")
 
   await close()
-  expect(readSchemaVersion(databasePath(userDataDirectory))).toBe(1)
+  expect(readSchemaVersion(databasePath(userDataDirectory))).toBe(2)
 })
 
 test('打包产物能经 pi-ai 走通一次流式对话', async ({ launch }) => {

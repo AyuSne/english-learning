@@ -1,6 +1,8 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 import type { Plugin } from 'vite'
+import { cpSync, mkdirSync, readdirSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 
 // 渲染层不加载任何远程内容：脚本、样式、图片都取自应用包内。开发态由 Vite 注入
 // 内联的 React Refresh 预置脚本与 HMR WebSocket，因此单独放宽这两项。
@@ -46,9 +48,29 @@ function contentSecurityPolicy(): Plugin {
   }
 }
 
+/**
+ * 语料是数据文件，不进主进程的 JS 产物：构建时把 docs/corpus 的 JSON 复制到
+ * out/main/corpus，主进程按 `__dirname/corpus` 读。打包只带 out/，所以放在这里。
+ */
+function corpusAssets(): Plugin {
+  return {
+    name: 'app-corpus-assets',
+    // 用 writeBundle 而不是 closeBundle：开发态 watch 每次重建都要重新放一份。
+    writeBundle() {
+      const source = resolve(process.cwd(), 'docs/corpus')
+      const target = resolve(process.cwd(), 'out/main/corpus')
+      mkdirSync(target, { recursive: true })
+      for (const file of readdirSync(source)) {
+        if (!file.endsWith('.json')) continue
+        cpSync(join(source, file), join(target, file))
+      }
+    }
+  }
+}
+
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin(), corpusAssets()],
     build: {
       rollupOptions: {
         output: {

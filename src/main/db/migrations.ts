@@ -20,6 +20,77 @@ export const migrations: readonly Migration[] = [
         )
       `)
     }
+  },
+  {
+    version: 2,
+    up: (database) => {
+      // 文章、段落、句子与原文注释是阅读、选词与出处的共同底座：
+      // 句子持久化段内字符区间，原文注释按词挂在段落内的字符区间上。
+      database.exec(`
+        CREATE TABLE article (
+          id                TEXT PRIMARY KEY,
+          title             TEXT NOT NULL,
+          kind              TEXT NOT NULL,
+          kind_label        TEXT NOT NULL,
+          session_key       TEXT NOT NULL,
+          session_label     TEXT NOT NULL,
+          set_label         TEXT NOT NULL,
+          exam_year         INTEGER NOT NULL,
+          exam_month        INTEGER NOT NULL,
+          exam_set          INTEGER NOT NULL,
+          word_count        INTEGER NOT NULL,
+          body_text         TEXT NOT NULL,
+          source_pdf        TEXT NOT NULL,
+          source_sha256     TEXT NOT NULL,
+          page_start        INTEGER,
+          page_end          INTEGER,
+          ordinal           INTEGER NOT NULL,
+          last_opened_at    TEXT,
+          last_paragraph_id TEXT,
+          last_sentence_index INTEGER,
+          created_at        TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX article_session ON article (session_key, ordinal);
+
+        CREATE TABLE paragraph (
+          article_id TEXT NOT NULL REFERENCES article(id) ON DELETE CASCADE,
+          id         TEXT NOT NULL,
+          ordinal    INTEGER NOT NULL,
+          text       TEXT NOT NULL,
+          page_start INTEGER,
+          page_end   INTEGER,
+          PRIMARY KEY (article_id, id)
+        );
+
+        CREATE TABLE sentence (
+          article_id   TEXT NOT NULL,
+          paragraph_id TEXT NOT NULL,
+          ordinal      INTEGER NOT NULL,
+          text         TEXT NOT NULL,
+          char_start   INTEGER NOT NULL,
+          char_end     INTEGER NOT NULL,
+          page         INTEGER,
+          PRIMARY KEY (article_id, paragraph_id, ordinal),
+          FOREIGN KEY (article_id, paragraph_id)
+            REFERENCES paragraph(article_id, id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE annotation (
+          article_id       TEXT NOT NULL,
+          paragraph_id     TEXT NOT NULL,
+          sentence_ordinal INTEGER NOT NULL,
+          ordinal          INTEGER NOT NULL,
+          surface          TEXT NOT NULL,
+          gloss            TEXT NOT NULL,
+          char_start       INTEGER NOT NULL,
+          char_end         INTEGER NOT NULL,
+          PRIMARY KEY (article_id, paragraph_id, char_start),
+          FOREIGN KEY (article_id, paragraph_id)
+            REFERENCES paragraph(article_id, id) ON DELETE CASCADE
+        );
+      `)
+    }
   }
 ]
 

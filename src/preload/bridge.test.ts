@@ -6,8 +6,9 @@ import { createBridge, type IpcRendererLike } from './bridge'
 const bootstrap: AppBootstrap = {
   appVersion: '0.1.0',
   isPackaged: false,
-  schemaVersion: 1,
-  theme: 'light'
+  schemaVersion: 2,
+  theme: 'light',
+  corpusImport: { total: 0, imported: 0, updated: 0, skipped: 0, failed: [] }
 }
 
 function fakeRenderer(): {

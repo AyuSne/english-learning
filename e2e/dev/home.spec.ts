@@ -36,10 +36,11 @@ test.describe('应用骨架', () => {
     })
 
     const bootstrap = await readBootstrap(page)
-    expect(bootstrap.schemaVersion).toBe(1)
+    expect(bootstrap.schemaVersion).toBe(2)
     expect(bootstrap.isPackaged).toBe(false)
     expect(bootstrap.theme).toBe('light')
     expect(bootstrap.appVersion).not.toBe('')
+    expect(bootstrap.corpusImport).toMatchObject({ total: 63, imported: 63, failed: [] })
 
     expect(await callUnknownChannel(page)).toContain('Unknown IPC channel')
   })
@@ -51,7 +52,7 @@ test.describe('应用骨架', () => {
 
     const file = databasePath(userDataDirectory)
     expect(existsSync(file)).toBe(true)
-    expect(readSchemaVersion(file)).toBe(1)
+    expect(readSchemaVersion(file)).toBe(2)
 
     // 在两次启动之间改掉主题：若第二次启动重建或重跑迁移，这个值会消失。
     writeSetting(file, 'theme', 'dark')
@@ -62,9 +63,9 @@ test.describe('应用骨架', () => {
 
     const bootstrap = await readBootstrap(second.page)
     expect(bootstrap.theme).toBe('dark')
-    expect(bootstrap.schemaVersion).toBe(1)
+    expect(bootstrap.schemaVersion).toBe(2)
 
     await second.close()
-    expect(readSchemaVersion(file)).toBe(1)
+    expect(readSchemaVersion(file)).toBe(2)
   })
 })

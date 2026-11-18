@@ -5,6 +5,7 @@ import { GlobalNav } from './components/GlobalNav'
 import { routeLabel } from './navigation'
 import { ChatPage } from './pages/ChatPage'
 import { HomePage } from './pages/HomePage'
+import { LibraryPage } from './pages/LibraryPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { useRoute } from './use-route'
 
@@ -57,6 +58,8 @@ export function App() {
           <HomePage />
         ) : route === 'chat' ? (
           <ChatPage />
+        ) : route === 'library' ? (
+          <LibraryPage corpusImport={bootstrap.corpusImport} />
         ) : (
           <PlaceholderPage title={currentLabel} />
         )}

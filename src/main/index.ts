@@ -1,17 +1,27 @@
 import { app, dialog, ipcMain, Menu } from 'electron'
 import { mkdirSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { createBootstrap } from './app-bootstrap'
 import { readChatConfig } from './chat/config'
 import { createChatService } from './chat/service'
+import { importCorpus } from './corpus/import'
 import type { AppDatabase } from './db/database'
 import { openDatabase } from './db/database'
 import { migrate } from './db/migrations'
 import { readTheme } from './db/settings'
 import { registerIpcHandlers } from './ipc/register'
+import {
+  openArticle,
+  readArticleDetail,
+  readHomeSummary,
+  readLibrary,
+  searchLibrary
+} from './library/queries'
 import { createMainWindow } from './window'
 
 const DATABASE_FILE = 'english-learning.db'
+/** 构建时把 docs/corpus 的 JSON 复制到主进程产物旁边。 */
+const CORPUS_DIRECTORY_NAME = 'corpus'
 
 let database: AppDatabase | null = null
 
@@ -30,6 +40,14 @@ function loadLocalEnvironment(): void {
   }
 }
 
+/**
+ * 语料随包分发在主进程产物旁边的 `corpus/`；E2E 或调试可以用环境变量指到别处。
+ */
+function corpusDirectory(): string {
+  const override = process.env.CORPUS_DIRECTORY?.trim()
+  return override ? resolve(override) : join(__dirname, CORPUS_DIRECTORY_NAME)
+}
+
 function start(): void {
   loadLocalEnvironment()
 
@@ -44,10 +62,29 @@ function start(): void {
     console.log(`[db] schema ${outcome.from} → ${outcome.to}`)
   }
 
+  // 每次启动都与清单对一遍：内容没变就跳过，坏了的那篇单独报出来，不静默丢。
+  const corpusImport = importCorpus(opened, { directory: corpusDirectory() })
+  if (corpusImport.failed.length > 0) {
+    console.warn(
+      `[corpus] ${corpusImport.failed.length} 篇没导进来：${corpusImport.failed
+        .map((failure) => `${failure.id}（${failure.reason}）`)
+        .join('、')}`
+    )
+  } else {
+    console.log(
+      `[corpus] 新导入 ${corpusImport.imported} 篇，更新 ${corpusImport.updated} 篇，跳过 ${corpusImport.skipped} 篇`
+    )
+  }
+
   const chat = createChatService({ config: readChatConfig(process.env) })
 
   registerIpcHandlers(ipcMain, {
-    'app:bootstrap': () => createBootstrap(opened),
+    'app:bootstrap': () => createBootstrap(opened, corpusImport),
+    'home:summary': () => readHomeSummary(opened),
+    'library:list': () => readLibrary(opened),
+    'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
+    'library:search': (payload) => searchLibrary(opened, payload.query),
+    'library:open': (payload) => openArticle(opened, payload.articleId),
     'chat:start': (payload, event) =>
       chat.start(payload, (update) => event.sender.send('chat:event', update)),
     'chat:stop': (payload) => chat.stop(payload.streamId)

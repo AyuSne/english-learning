@@ -5,6 +5,12 @@ import type {
   ChatStopResult,
   ChatStreamUpdate
 } from './chat'
+import type {
+  ArticleDetail,
+  HomeSummary,
+  LibraryListing,
+  LibrarySearchResults
+} from './library'
 import type { AppBootstrap } from './types'
 
 /**
@@ -13,6 +19,11 @@ import type { AppBootstrap } from './types'
  */
 export interface IpcContract {
   'app:bootstrap': { payload: undefined; result: AppBootstrap }
+  'home:summary': { payload: undefined; result: HomeSummary }
+  'library:list': { payload: undefined; result: LibraryListing }
+  'library:detail': { payload: { articleId: string }; result: ArticleDetail | null }
+  'library:search': { payload: { query: string }; result: LibrarySearchResults }
+  'library:open': { payload: { articleId: string }; result: { opened: boolean } }
   'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
 }
@@ -30,6 +41,11 @@ export type IpcEventChannel = keyof IpcEventContract
 // 用 Record 而不是数组列 channel：契约里加了 channel 却忘了登记，这里会编译失败。
 const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'app:bootstrap': true,
+  'home:summary': true,
+  'library:list': true,
+  'library:detail': true,
+  'library:search': true,
+  'library:open': true,
   'chat:start': true,
   'chat:stop': true
 }
