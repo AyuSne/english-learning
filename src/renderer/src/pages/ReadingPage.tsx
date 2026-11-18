@@ -7,7 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent
 } from 'react'
-import type { ReadingCollectionMark } from '../../../shared/entries'
+import type { EntrySentence, ReadingCollectionMark } from '../../../shared/entries'
 import type {
   ReadingPreferences,
   ReadingSettings,
@@ -18,8 +18,10 @@ import { DEFAULT_READING_PREFERENCES } from '../../../shared/reading'
 import {
   collectSelection,
   deleteEntrySentence,
+  loadEntrySentenceTarget,
   loadWordEntryCard,
   openReadingView,
+  reselectEntrySentence,
   saveReadingSettings
 } from '../api'
 import { messageOf } from '../errors'
@@ -39,12 +41,24 @@ import { useReadingPosition } from '../reading/use-reading-position'
 
 type ReadingPageProps = {
   articleId: string | null
+  /** 从词条页跳过来时要定位的那条原句。 */
+  entrySentenceId: string | null
+  /** 定位的同时就把这条原句的范围换掉。 */
+  reselect: boolean
 }
 
 /** 本次圈下的表达：先画麦色底，收下后再补上词条 id，点它可以打开词条卡。 */
 type ActiveSelection = ReadingSelection & {
   entryId: string | null
   entryMainForm: string
+}
+
+/** 从词条页跳过来时的目标：把这一句滚到眼前、底色高亮，或就地换范围。 */
+type FocusTarget = {
+  entryId: string
+  entryMainForm: string
+  sentence: EntrySentence
+  mode: 'highlight' | 'reselect'
 }
 
 /** 从点击目标找到已收集标记的词条 id；普通正文返回 null。 */
@@ -60,7 +74,7 @@ function entryIdOf(target: EventTarget | null): string | null {
  * 圈选一个词或短语就完成选词：当场麦色高亮，落成词条下的一条原句；
  * 已收集的表达在重读时弱高亮，点一下打开词条卡，可从卡里删原句。
  */
-export function ReadingPage({ articleId }: ReadingPageProps) {
+export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPageProps) {
   const [view, setView] = useState<ReadingView | null>(null)
   const [settings, setSettings] = useState<ReadingSettings | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -69,6 +83,7 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
   const [collected, setCollected] = useState<ReadingCollectionMark[]>([])
   const [activeSelection, setActiveSelection] = useState<ActiveSelection | null>(null)
   const [panel, setPanel] = useState<PanelState | null>(null)
+  const [focus, setFocus] = useState<FocusTarget | null>(null)
   const [hint, setHint] = useState<string | null>(null)
   const [collectError, setCollectError] = useState<string | null>(null)
 
@@ -84,6 +99,7 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
     if (articleId === null) {
       setView(null)
       setLoadError(null)
+      setFocus(null)
       return
     }
 
@@ -94,6 +110,7 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
     setCollected([])
     setActiveSelection(null)
     setPanel(null)
+    setFocus(null)
     setHint(null)
     setCollectError(null)
     openReadingView(articleId).then(
@@ -111,15 +128,61 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
         if (active) setLoadError(messageOf(error))
       }
     )
+
+    if (entrySentenceId !== null) {
+      loadEntrySentenceTarget(entrySentenceId).then(
+        (target) => {
+          if (!active) return
+          if (target === null) {
+            setHint('这条原句已经不在了。')
+            return
+          }
+          setFocus({
+            entryId: target.entry.id,
+            entryMainForm: target.entry.mainForm,
+            sentence: target.sentence,
+            mode: reselect ? 'reselect' : 'highlight'
+          })
+        },
+        (error: unknown) => {
+          if (active) setHint(messageOf(error))
+        }
+      )
+    }
+
     return () => {
       active = false
     }
-  }, [articleId])
+  }, [articleId, entrySentenceId, reselect])
 
-  // Esc 先关词条卡，再关设置，最后退回上一页。
+  // 从词条跳过来：把那一句滚到眼前。位置恢复了之后再做，免得被「上次读到」盖住。
+  useEffect(() => {
+    if (view === null || focus === null) return
+    const container = scrollRef.current
+    if (!container) return
+    const target = Array.from(
+      container.querySelectorAll<HTMLElement>('.reading-sentence')
+    ).find(
+      (element) =>
+        element.dataset.paragraphId === focus.sentence.paragraphId &&
+        element.dataset.sentenceOrdinal === String(focus.sentence.sentenceOrdinal)
+    )
+    if (!target) return
+    const offset =
+      target.getBoundingClientRect().top -
+      container.getBoundingClientRect().top -
+      container.clientHeight / 3
+    container.scrollTop = Math.max(0, container.scrollTop + offset)
+  }, [view, focus, scrollRef])
+
+  // Esc 先取消词条定位，再关词条卡，再关设置，最后退回上一页。
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key !== 'Escape' || event.isComposing) return
+      if (focus !== null) {
+        setFocus(null)
+        return
+      }
       if (panel !== null) {
         setPanel(null)
         setActiveSelection(null)
@@ -133,7 +196,7 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [panel, settingsOpen])
+  }, [focus, panel, settingsOpen])
 
   useEffect(() => {
     if (!settingsOpen) return
@@ -148,7 +211,8 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
     return () => document.removeEventListener('pointerdown', onPointerDown)
   }, [settingsOpen])
 
-  // 点正文别处、栏位按钮或空白都收起词条卡与这次的选中态；点已收集的词不算。
+  // 点正文别处、栏位按钮或空白都收起词条卡与这次的选中态；点已收集的词、定位条或
+  // 被定位的那一句不算，底色留着方便对照。
   useEffect(() => {
     const onPointerDown = (event: PointerEvent): void => {
       const target = event.target as Element | null
@@ -156,11 +220,14 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
       if (panelRef.current?.contains(target)) return
       if (target.closest('.reading-settings') !== null) return
       if (settingsButtonRef.current?.contains(target)) return
+      if (target.closest('.reading-context') !== null) return
+      if (target.closest('.reading-sentence-focused') !== null) return
       if (entryIdOf(target) !== null) return
       setActiveSelection(null)
       setPanel(null)
       setHint(null)
       setCollectError(null)
+      setFocus(null)
     }
     document.addEventListener('pointerdown', onPointerDown)
     return () => document.removeEventListener('pointerdown', onPointerDown)
@@ -285,6 +352,58 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
     }
 
     const { paragraph, selection } = read
+
+    if (focus !== null && focus.mode === 'reselect') {
+      if (
+        paragraph.id !== focus.sentence.paragraphId ||
+        selection.sentenceOrdinal !== focus.sentence.sentenceOrdinal
+      ) {
+        setHint('重新圈定只在原句所在的这一句里换范围。')
+        return
+      }
+      window.getSelection()?.removeAllRanges()
+      collecting.current = true
+      setHint(null)
+      setCollectError(null)
+
+      const request = collectRequest.current + 1
+      collectRequest.current = request
+      reselectEntrySentence({
+        entrySentenceId: focus.sentence.id,
+        start: selection.start,
+        end: selection.end
+      }).then(
+        (result) => {
+          if (request !== collectRequest.current) return
+          collecting.current = false
+          if (result.status === 'resaved') {
+            setCollected(result.marks)
+            setFocus({
+              entryId: result.entry.id,
+              entryMainForm: result.entry.mainForm,
+              sentence: result.sentence,
+              mode: 'highlight'
+            })
+            setHint(`已重新圈定为「${result.sentence.surface}」。`)
+            return
+          }
+          if (result.status === 'missing') {
+            setCollectError('这条原句已经不在了。')
+            return
+          }
+          setCollectError(
+            result.reason === 'empty' ? '圈中的内容不算一个词。' : '圈中的范围不在原句里。'
+          )
+        },
+        (error: unknown) => {
+          if (request !== collectRequest.current) return
+          collecting.current = false
+          setCollectError(messageOf(error))
+        }
+      )
+      return
+    }
+
     window.getSelection()?.removeAllRanges()
     collecting.current = true
     setHint(null)
@@ -501,6 +620,34 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
         </div>
       </header>
 
+      {focus === null ? null : (
+        <div className="reading-context" role="status">
+          <p className="reading-context-text">
+            {focus.mode === 'reselect'
+              ? `重新圈定「${focus.entryMainForm}」· 在这一句里圈出正确范围`
+              : `来自词条 ${focus.entryMainForm}`}
+          </p>
+          <div className="reading-context-actions">
+            {focus.mode === 'reselect' ? (
+              <button
+                type="button"
+                className="reading-tool"
+                onClick={() => setFocus({ ...focus, mode: 'highlight' })}
+              >
+                取消重新圈定
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="reading-tool"
+              onClick={() => navigate('entries', { entryId: focus.entryId })}
+            >
+              回词条
+            </button>
+          </div>
+        </div>
+      )}
+
       {articleId === null ? (
         <div className="reading-empty">
           <p className="eyebrow">还没有打开文章</p>
@@ -552,6 +699,11 @@ export function ReadingPage({ articleId }: ReadingPageProps) {
                   key={paragraph.id}
                   paragraph={paragraph}
                   blocks={paragraphBlocks}
+                  focusedSentenceOrdinal={
+                    focus !== null && focus.sentence.paragraphId === paragraph.id
+                      ? focus.sentence.sentenceOrdinal
+                      : null
+                  }
                 />
               ))}
               <footer className="reading-foot">

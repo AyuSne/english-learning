@@ -1,4 +1,4 @@
-import { expect, test } from '../fixtures/app'
+﻿import { expect, test } from '../fixtures/app'
 import { readBootstrap } from '../fixtures/bridge'
 import { databasePath, readSchemaVersion } from '../fixtures/database'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
@@ -15,7 +15,7 @@ test('打包产物能启动并显示首页', async ({ launch }) => {
 
   const bootstrap = await readBootstrap(page)
   expect(bootstrap.isPackaged).toBe(true)
-  expect(bootstrap.schemaVersion).toBe(4)
+  expect(bootstrap.schemaVersion).toBe(5)
   expect(bootstrap.corpusImport).toMatchObject({ total: 63, imported: 63, failed: [] })
 
   // 语料随包分发：打包产物里也能看到全部 63 篇。
@@ -29,7 +29,7 @@ test('打包产物能启动并显示首页', async ({ launch }) => {
   expect(contentSecurityPolicy ?? '').toContain("script-src 'self';")
 
   await close()
-  expect(readSchemaVersion(databasePath(userDataDirectory))).toBe(4)
+  expect(readSchemaVersion(databasePath(userDataDirectory))).toBe(5)
 })
 
 test('打包产物能经 pi-ai 走通一次流式对话', async ({ launch }) => {

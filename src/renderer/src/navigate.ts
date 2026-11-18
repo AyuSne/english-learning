@@ -1,12 +1,16 @@
-import { routeHash, type Route } from './routes'
+import { routeHash, type Route, type RouteHashOptions } from './routes'
 
-export type NavigateOptions = {
-  /** 阅读页要打开的文章。 */
-  articleId?: string
-}
+export type NavigateOptions = RouteHashOptions
 
 export function navigate(route: Route, options: NavigateOptions = {}): void {
   window.location.hash = routeHash(route, options)
+}
+
+/**
+ * 不新增浏览历史的视图切换：词条页换选中项时用，免得「后退」在词条之间打转。
+ */
+export function replaceRoute(route: Route, options: NavigateOptions = {}): void {
+  window.history.replaceState(null, '', routeHash(route, options))
 }
 
 /**

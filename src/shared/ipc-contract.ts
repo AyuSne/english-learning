@@ -6,9 +6,26 @@ import type {
   ChatStreamUpdate
 } from './chat'
 import type {
+  ChangeMainFormRequest,
+  ChangeMainFormResult,
   CollectSelectionRequest,
   CollectSelectionResult,
+  CreateLearningNoteRequest,
   DeleteEntrySentenceResult,
+  EntryListRequest,
+  EntryListResult,
+  EntryPage,
+  EntrySentenceTarget,
+  LearningNoteResult,
+  MergeEntriesRequest,
+  MergeEntriesResult,
+  MoveEntrySentenceRequest,
+  MoveEntrySentenceResult,
+  MoveLearningNoteRequest,
+  PinLearningNoteRequest,
+  ReselectEntrySentenceRequest,
+  ReselectEntrySentenceResult,
+  UpdateLearningNoteRequest,
   WordEntryCard
 } from './entries'
 import type {
@@ -45,6 +62,33 @@ export interface IpcContract {
     payload: { entrySentenceId: string }
     result: DeleteEntrySentenceResult
   }
+  'entries:list': { payload: EntryListRequest; result: EntryListResult }
+  'entries:page': { payload: { entryId: string }; result: EntryPage | null }
+  'entries:sentence': {
+    payload: { entrySentenceId: string }
+    result: EntrySentenceTarget | null
+  }
+  'entries:merge': { payload: MergeEntriesRequest; result: MergeEntriesResult }
+  'entries:main-form': { payload: ChangeMainFormRequest; result: ChangeMainFormResult }
+  'entries:move-sentence': {
+    payload: MoveEntrySentenceRequest
+    result: MoveEntrySentenceResult
+  }
+  'entries:reselect-sentence': {
+    payload: ReselectEntrySentenceRequest
+    result: ReselectEntrySentenceResult
+  }
+  'entries:create-note': {
+    payload: CreateLearningNoteRequest
+    result: LearningNoteResult
+  }
+  'entries:update-note': {
+    payload: UpdateLearningNoteRequest
+    result: LearningNoteResult
+  }
+  'entries:pin-note': { payload: PinLearningNoteRequest; result: LearningNoteResult }
+  'entries:delete-note': { payload: { noteId: string }; result: LearningNoteResult }
+  'entries:move-note': { payload: MoveLearningNoteRequest; result: LearningNoteResult }
   'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
 }
@@ -72,6 +116,18 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'reading:collect': true,
   'entries:card': true,
   'entries:delete-sentence': true,
+  'entries:list': true,
+  'entries:page': true,
+  'entries:sentence': true,
+  'entries:merge': true,
+  'entries:main-form': true,
+  'entries:move-sentence': true,
+  'entries:reselect-sentence': true,
+  'entries:create-note': true,
+  'entries:update-note': true,
+  'entries:pin-note': true,
+  'entries:delete-note': true,
+  'entries:move-note': true,
   'chat:start': true,
   'chat:stop': true
 }

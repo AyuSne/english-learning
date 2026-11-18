@@ -1,0 +1,195 @@
+import { randomUUID } from 'node:crypto'
+import type {
+  CreateLearningNoteRequest,
+  LearningNote,
+  LearningNoteResult,
+  MoveLearningNoteRequest,
+  PinLearningNoteRequest,
+  UpdateLearningNoteRequest
+} from '../../shared/entries'
+import type { AppDatabase } from '../db/database'
+
+/**
+ * 学习内容：词条下的一段材料，只保留最终稿。
+ * 来源留给钉住（`source_kind = 'pin'`），手写的都是 `manual`；置顶在同一个词条里只有一条，
+ * 由部分唯一索引兜住。
+ */
+
+type NoteRow = {
+  id: string
+  entry_id: string
+  body: string
+  pinned: number
+  source_kind: string
+  source_pin_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+function toLearningNote(row: NoteRow): LearningNote {
+  return {
+    id: row.id,
+    entryId: row.entry_id,
+    body: row.body,
+    pinned: row.pinned === 1,
+    source: row.source_kind === 'pin' ? 'pin' : 'manual',
+    sourcePinId: row.source_pin_id,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  }
+}
+
+function readNoteRow(database: AppDatabase, noteId: string): NoteRow | undefined {
+  return database
+    .prepare(
+      `SELECT id, entry_id, body, pinned, source_kind, source_pin_id, created_at, updated_at
+         FROM learning_note WHERE id = ?`
+    )
+    .get(noteId) as NoteRow | undefined
+}
+
+function readNote(database: AppDatabase, noteId: string): LearningNote | null {
+  const row = readNoteRow(database, noteId)
+  return row ? toLearningNote(row) : null
+}
+
+/** 词条下的学习内容：置顶的在最前，其余按写下的时间倒序。 */
+export function readLearningNotes(database: AppDatabase, entryId: string): LearningNote[] {
+  const rows = database
+    .prepare(
+      `SELECT id, entry_id, body, pinned, source_kind, source_pin_id, created_at, updated_at
+         FROM learning_note
+        WHERE entry_id = ?
+        ORDER BY pinned DESC, created_at DESC, id DESC`
+    )
+    .all(entryId) as NoteRow[]
+  return rows.map(toLearningNote)
+}
+
+function entryExists(database: AppDatabase, entryId: string): boolean {
+  return database.prepare('SELECT 1 FROM word_entry WHERE id = ?').get(entryId) !== undefined
+}
+
+/** 写一条学习内容。正文两端空白去掉，全是空白就不保存。 */
+export function createLearningNote(
+  database: AppDatabase,
+  request: CreateLearningNoteRequest,
+  options: { now?: string } = {}
+): LearningNoteResult {
+  const body = request.body.trim()
+  if (body === '') {
+    return { status: 'rejected', reason: 'empty' }
+  }
+  if (!entryExists(database, request.entryId)) {
+    return { status: 'rejected', reason: 'entry' }
+  }
+
+  const now = options.now ?? new Date().toISOString()
+  const id = randomUUID()
+  database
+    .prepare(
+      `INSERT INTO learning_note (
+         id, entry_id, body, pinned, source_kind, source_pin_id, created_at, updated_at
+       ) VALUES (?, ?, ?, 0, 'manual', NULL, ?, ?)`
+    )
+    .run(id, request.entryId, body, now, now)
+
+  const note = readNote(database, id)
+  return note ? { status: 'saved', note } : { status: 'missing' }
+}
+
+/** 改一条学习内容，旧稿不保留。 */
+export function updateLearningNote(
+  database: AppDatabase,
+  request: UpdateLearningNoteRequest,
+  options: { now?: string } = {}
+): LearningNoteResult {
+  if (readNoteRow(database, request.noteId) === undefined) {
+    return { status: 'missing' }
+  }
+  const body = request.body.trim()
+  if (body === '') {
+    return { status: 'rejected', reason: 'empty' }
+  }
+
+  const now = options.now ?? new Date().toISOString()
+  database
+    .prepare('UPDATE learning_note SET body = ?, updated_at = ? WHERE id = ?')
+    .run(body, now, request.noteId)
+
+  const note = readNote(database, request.noteId)
+  return note ? { status: 'saved', note } : { status: 'missing' }
+}
+
+/** 置顶或取消置顶。置顶一条时，同一个词条里原来那条自动让位。 */
+export function pinLearningNote(
+  database: AppDatabase,
+  request: PinLearningNoteRequest,
+  options: { now?: string } = {}
+): LearningNoteResult {
+  const existing = readNoteRow(database, request.noteId)
+  if (!existing) {
+    return { status: 'missing' }
+  }
+
+  const now = options.now ?? new Date().toISOString()
+  database.transaction(() => {
+    if (request.pinned) {
+      database
+        .prepare(
+          `UPDATE learning_note SET pinned = 0, updated_at = ?
+            WHERE entry_id = ? AND id <> ? AND pinned = 1`
+        )
+        .run(now, existing.entry_id, existing.id)
+    }
+    database
+      .prepare('UPDATE learning_note SET pinned = ?, updated_at = ? WHERE id = ?')
+      .run(request.pinned ? 1 : 0, now, existing.id)
+  })()
+
+  const note = readNote(database, request.noteId)
+  return note ? { status: 'saved', note } : { status: 'missing' }
+}
+
+/** 删掉一条学习内容，不留墓碑。 */
+export function deleteLearningNote(
+  database: AppDatabase,
+  request: { noteId: string }
+): LearningNoteResult {
+  const result = database
+    .prepare('DELETE FROM learning_note WHERE id = ?')
+    .run(request.noteId)
+  return result.changes > 0 ? { status: 'deleted' } : { status: 'missing' }
+}
+
+/** 把学习内容移到另一个词条；目标已有置顶内容时，移过去的那条改为不置顶。 */
+export function moveLearningNote(
+  database: AppDatabase,
+  request: MoveLearningNoteRequest,
+  options: { now?: string } = {}
+): LearningNoteResult {
+  const existing = readNoteRow(database, request.noteId)
+  if (!existing) {
+    return { status: 'missing' }
+  }
+  if (existing.entry_id === request.entryId) {
+    return { status: 'rejected', reason: 'same-entry' }
+  }
+  if (!entryExists(database, request.entryId)) {
+    return { status: 'rejected', reason: 'entry' }
+  }
+
+  const pinnedTaken =
+    database
+      .prepare('SELECT 1 FROM learning_note WHERE entry_id = ? AND pinned = 1 AND id <> ?')
+      .get(request.entryId, existing.id) !== undefined
+  const pinned = existing.pinned === 1 && !pinnedTaken ? 1 : 0
+  const now = options.now ?? new Date().toISOString()
+
+  database
+    .prepare('UPDATE learning_note SET entry_id = ?, pinned = ?, updated_at = ? WHERE id = ?')
+    .run(request.entryId, pinned, now, existing.id)
+
+  const note = readNote(database, request.noteId)
+  return note ? { status: 'saved', note } : { status: 'missing' }
+}

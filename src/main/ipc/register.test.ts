@@ -1,8 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import type { ChatStartResult, ChatStopResult } from '../../shared/chat'
 import type {
+  ChangeMainFormResult,
   CollectSelectionResult,
   DeleteEntrySentenceResult,
+  EntryListResult,
+  EntryPage,
+  EntrySentenceTarget,
+  LearningNoteResult,
+  MergeEntriesResult,
+  MoveEntrySentenceResult,
+  ReselectEntrySentenceResult,
   WordEntryCard
 } from '../../shared/entries'
 import type {
@@ -76,9 +84,27 @@ function readingHandlers() {
     'reading:collect': (): CollectSelectionResult => ({
       status: 'rejected',
       reason: 'article'
-    }),
+    })
+  }
+}
+
+function entriesHandlers() {
+  const missingNote = (): LearningNoteResult => ({ status: 'missing' })
+  return {
     'entries:card': (): WordEntryCard | null => null,
-    'entries:delete-sentence': (): DeleteEntrySentenceResult => ({ status: 'missing' })
+    'entries:delete-sentence': (): DeleteEntrySentenceResult => ({ status: 'missing' }),
+    'entries:list': (): EntryListResult => ({ total: 0, entries: [] }),
+    'entries:page': (): EntryPage | null => null,
+    'entries:sentence': (): EntrySentenceTarget | null => null,
+    'entries:merge': (): MergeEntriesResult => ({ status: 'missing' }),
+    'entries:main-form': (): ChangeMainFormResult => ({ status: 'missing' }),
+    'entries:move-sentence': (): MoveEntrySentenceResult => ({ status: 'missing' }),
+    'entries:reselect-sentence': (): ReselectEntrySentenceResult => ({ status: 'missing' }),
+    'entries:create-note': missingNote,
+    'entries:update-note': missingNote,
+    'entries:pin-note': missingNote,
+    'entries:delete-note': missingNote,
+    'entries:move-note': missingNote
   }
 }
 
@@ -92,6 +118,7 @@ describe('registerIpcHandlers', () => {
       ...chatHandlers(),
       ...libraryHandlers(),
       ...readingHandlers(),
+      ...entriesHandlers(),
       'app:bootstrap': (payload, event) => {
         received.push(payload)
         events.push(event)
@@ -122,6 +149,7 @@ describe('registerIpcHandlers', () => {
       ...chatHandlers(),
       ...libraryHandlers(),
       ...readingHandlers(),
+      ...entriesHandlers(),
       'app:bootstrap': () => bootstrap,
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers

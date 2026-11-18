@@ -1,9 +1,10 @@
-import type { Page } from '@playwright/test'
+﻿import type { Page } from '@playwright/test'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { expect, test } from '../fixtures/app'
+import { clickAway, openArticle, selectText } from '../fixtures/reading'
 
 const articleTitle = '2026年6月 · 第1套 · 仔细阅读 Passage One'
 
@@ -32,80 +33,14 @@ test.afterAll(async () => {
   await rm(corpusDirectory, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
 })
 
-async function openArticle(page: Page): Promise<void> {
-  await page
-    .getByRole('navigation', { name: '全局导航' })
-    .getByRole('button', { name: '文章库' })
-    .click()
-  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
-  await page.locator('.library-row').first().click()
-  await page
-    .getByRole('complementary', { name: '文章详情' })
-    .getByRole('button', { name: '继续阅读' })
-    .click()
-  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
-  await expect(page.getByRole('heading', { name: articleTitle, level: 1 })).toBeVisible()
-}
-
-/**
- * 按段落在 DOM 里圈出一段文字，再补一次 mouseup，走的是阅读页真实的选区处理。
- * 浏览器里拖选不一定逐字可控，这里用 Range 精确落下同一段选区。
- */
-async function selectText(page: Page, paragraphIndex: number, text: string): Promise<void> {
-  await page.evaluate(
-    ({ paragraphIndex: index, text: target }) => {
-      const paragraph = document.querySelectorAll('.reading-paragraph')[index]
-      if (!paragraph) throw new Error(`没有第 ${index} 段`)
-      const walker = document.createTreeWalker(paragraph, NodeFilter.SHOW_TEXT)
-      const nodes: { node: Text; start: number }[] = []
-      let full = ''
-      while (walker.nextNode()) {
-        const node = walker.currentNode as Text
-        nodes.push({ node, start: full.length })
-        full += node.textContent ?? ''
-      }
-      const start = full.indexOf(target)
-      if (start < 0) throw new Error(`段落里没有 ${target}`)
-
-      const locate = (offset: number): [Text, number] => {
-        for (const entry of nodes) {
-          const length = entry.node.textContent?.length ?? 0
-          if (offset >= entry.start && offset <= entry.start + length) {
-            return [entry.node, offset - entry.start]
-          }
-        }
-        const last = nodes.at(-1)
-        if (!last) throw new Error('没有文字节点')
-        return [last.node, last.node.textContent?.length ?? 0]
-      }
-
-      const [startNode, startOffset] = locate(start)
-      const [endNode, endOffset] = locate(start + target.length)
-      const range = document.createRange()
-      range.setStart(startNode, startOffset)
-      range.setEnd(endNode, endOffset)
-      const selection = window.getSelection()
-      if (!selection) throw new Error('没有选区')
-      selection.removeAllRanges()
-      selection.addRange(range)
-      document
-        .querySelector('.reading-body')
-        ?.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
-    },
-    { paragraphIndex, text }
-  )
-}
-
-/** 点正文外的地方收起浮层，让选中态变成已收集的弱高亮。 */
-async function clickAway(page: Page): Promise<void> {
-  await page.locator('.reading-bar-title').click()
-  await expect(page.locator('.reading-selected')).toHaveCount(0)
+async function openTestArticle(page: Page): Promise<void> {
+  await openArticle(page, articleTitle)
 }
 
 test.describe('选词与原句', () => {
   test('圈一个词当场高亮，收成原句与词条，重读时弱高亮', async ({ launch }) => {
     const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
-    await openArticle(page)
+    await openTestArticle(page)
 
     await selectText(page, 0, 'hiring')
 
@@ -136,7 +71,7 @@ test.describe('选词与原句', () => {
 
   test('同篇同句重复圈只留一条关联', async ({ launch }) => {
     const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
-    await openArticle(page)
+    await openTestArticle(page)
 
     await selectText(page, 0, 'hiring')
     await expect(page.getByRole('complementary', { name: '选词结果' })).toBeVisible()
@@ -153,7 +88,7 @@ test.describe('选词与原句', () => {
 
   test('常见词形变化归入同一词条，点弱高亮能看词条卡', async ({ launch }) => {
     const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
-    await openArticle(page)
+    await openTestArticle(page)
 
     await selectText(page, 0, 'approach')
     await clickAway(page)
@@ -173,7 +108,7 @@ test.describe('选词与原句', () => {
 
   test('已收集的词弱高亮可以关掉，再打开', async ({ launch }) => {
     const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
-    await openArticle(page)
+    await openTestArticle(page)
 
     await selectText(page, 0, 'hiring')
     await clickAway(page)
@@ -192,7 +127,7 @@ test.describe('选词与原句', () => {
 
   test('删原句后计数正确，删最后一条先提示再连词条一起删', async ({ launch }) => {
     const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
-    await openArticle(page)
+    await openTestArticle(page)
 
     await selectText(page, 0, 'approach')
     await clickAway(page)

@@ -10,8 +10,8 @@ export function readingPointText(point: ReadingPoint): string {
   return `第 ${point.paragraphOrdinal} 段 · 第 ${point.sentenceOrdinal} 句`
 }
 
-/** 最近打开只写日期，按本机时区。 */
-export function formatOpenedAt(iso: string): string {
+/** 时间只写日期，按本机时区。 */
+export function formatDay(iso: string): string {
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) {
     return ''

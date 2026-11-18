@@ -146,6 +146,30 @@ export const migrations: readonly Migration[] = [
           ADD COLUMN weak_highlight INTEGER NOT NULL DEFAULT 1;
       `)
     }
+  },
+  {
+    version: 5,
+    up: (database) => {
+      // 学习内容：词条下的一段材料，可以由对话钉进来，也可以就地手写。
+      // 只保留最终稿，不存历史版本；同一个词条最多置顶一条（部分唯一索引兜住）。
+      database.exec(`
+        CREATE TABLE learning_note (
+          id            TEXT PRIMARY KEY,
+          entry_id      TEXT NOT NULL REFERENCES word_entry(id) ON DELETE CASCADE,
+          body          TEXT NOT NULL,
+          pinned        INTEGER NOT NULL DEFAULT 0,
+          source_kind   TEXT NOT NULL DEFAULT 'manual',
+          source_pin_id TEXT,
+          created_at    TEXT NOT NULL,
+          updated_at    TEXT NOT NULL
+        );
+
+        CREATE INDEX learning_note_entry
+          ON learning_note (entry_id, pinned DESC, created_at DESC);
+        CREATE UNIQUE INDEX learning_note_entry_pinned
+          ON learning_note (entry_id) WHERE pinned = 1;
+      `)
+    }
   }
 ]
 

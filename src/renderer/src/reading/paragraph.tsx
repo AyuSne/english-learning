@@ -7,10 +7,13 @@ import type { ReadingBlock, ReadingPart } from './content'
  */
 export function ReadingParagraphView({
   paragraph,
-  blocks
+  blocks,
+  focusedSentenceOrdinal = null
 }: {
   paragraph: ReadingParagraph
   blocks: readonly ReadingBlock[]
+  /** 从词条跳过来时，这一句整句底色高亮。 */
+  focusedSentenceOrdinal?: number | null
 }) {
   return (
     <div className="reading-row">
@@ -26,7 +29,11 @@ export function ReadingParagraphView({
           ) : (
             <span
               key={index}
-              className="reading-sentence"
+              className={
+                block.ordinal === focusedSentenceOrdinal
+                  ? 'reading-sentence reading-sentence-focused'
+                  : 'reading-sentence'
+              }
               data-paragraph-id={paragraph.id}
               data-paragraph-ordinal={paragraph.ordinal}
               data-sentence-ordinal={block.ordinal}

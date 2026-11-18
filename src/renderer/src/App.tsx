@@ -4,6 +4,7 @@ import { loadBootstrap } from './api'
 import { GlobalNav } from './components/GlobalNav'
 import { routeLabel } from './navigation'
 import { ChatPage } from './pages/ChatPage'
+import { EntriesPage } from './pages/EntriesPage'
 import { HomePage } from './pages/HomePage'
 import { LibraryPage } from './pages/LibraryPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
@@ -51,7 +52,13 @@ export function App() {
 
   // 阅读页收起全局栏，注意力只留在文章上。其余五页保留左栏。
   if (view.route === 'reading') {
-    return <ReadingPage articleId={view.articleId} />
+    return (
+      <ReadingPage
+        articleId={view.articleId}
+        entrySentenceId={view.entrySentenceId}
+        reselect={view.reselect}
+      />
+    )
   }
 
   const currentLabel = routeLabel(view.route)
@@ -62,6 +69,8 @@ export function App() {
       <main className={view.route === 'chat' ? 'main main-chat' : 'main'}>
         {view.route === 'home' ? (
           <HomePage />
+        ) : view.route === 'entries' ? (
+          <EntriesPage entryId={view.entryId} />
         ) : view.route === 'chat' ? (
           <ChatPage />
         ) : view.route === 'library' ? (

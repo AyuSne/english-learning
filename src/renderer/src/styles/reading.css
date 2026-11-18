@@ -207,6 +207,37 @@
 
 /* 正文 */
 
+/* 从词条跳过来：定位条 + 整句底色高亮，点别处才撤。 */
+
+.reading-context {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--line-pin);
+  background: var(--bed-pin);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.reading-context-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.reading-context-actions {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+
+.reading-sentence-focused {
+  border-radius: 4px;
+  background: var(--bed-pin);
+  box-shadow: 0 0 0 4px var(--bed-pin);
+}
+
 .reading-scroll {
   flex: 1;
   min-height: 0;

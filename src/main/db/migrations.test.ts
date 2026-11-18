@@ -93,4 +93,27 @@ describe('migrate', () => {
     expect(() => migrate(database)).toThrow(SchemaTooNewError)
     expect(readSchemaVersion(database)).toBe(99)
   })
+
+  it('迁移出学习内容表：同一个词条只能置顶一条', () => {
+    migrate(database)
+
+    const table = database
+      .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'learning_note'")
+      .get()
+    expect(table).toBeDefined()
+
+    const insert = database.prepare(
+      `INSERT INTO word_entry (id, main_form, normalized_key, created_at, last_collected_at)
+       VALUES ('entry-1', 'approach', 'approach', '2026-11-18T08:00:00.000Z', '2026-11-18T08:00:00.000Z')`
+    )
+    insert.run()
+    const insertNote = database.prepare(
+      `INSERT INTO learning_note (id, entry_id, body, pinned, created_at, updated_at)
+       VALUES (?, 'entry-1', '写法', ?, '2026-11-18T08:00:00.000Z', '2026-11-18T08:00:00.000Z')`
+    )
+    insertNote.run('note-1', 1)
+
+    expect(() => insertNote.run('note-2', 1)).toThrow(/UNIQUE/)
+    expect(() => insertNote.run('note-3', 0)).not.toThrow()
+  })
 })

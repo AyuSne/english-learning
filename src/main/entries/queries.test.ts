@@ -11,6 +11,7 @@ import {
   collectSelection,
   deleteEntrySentence,
   readArticleCollections,
+  readEntrySentenceTarget,
   readWordEntryCard
 } from './queries'
 
@@ -358,6 +359,24 @@ describe('readWordEntryCard', () => {
   })
 })
 
+describe('readEntrySentenceTarget', () => {
+  it('给出阅读页要定位的原句与它的词条', () => {
+    const collected = collect(database, article, 0, 'approach')
+    expect(collected.status).toBe('collected')
+    if (collected.status !== 'collected') return
+
+    expect(readEntrySentenceTarget(database, collected.sentence.id)).toMatchObject({
+      entry: { id: collected.entry.id, mainForm: 'approach' },
+      sentence: {
+        id: collected.sentence.id,
+        articleId: article.id,
+        sentenceText: 'Employers approach hiring differently.'
+      }
+    })
+    expect(readEntrySentenceTarget(database, 'nope')).toBeNull()
+  })
+})
+
 describe('deleteEntrySentence', () => {
   it('删掉一条原句后计数与标记同步更新', () => {
     const first = collect(database, article, 0, 'approach')
@@ -410,6 +429,20 @@ describe('deleteEntrySentence', () => {
     })
     expect(readWordEntryCard(database, collected.entry.id)).toBeNull()
     expect(readArticleCollections(database, article.id)).toEqual([])
+  })
+
+  it('删掉最近收集的那条后，词条的最近收集回到剩下最晚的一条', () => {
+    const first = collect(database, article, 0, 'approach', { now: T0 })
+    const second = collect(database, article, 1, 'approached', { now: T1 })
+    expect(first.status).toBe('collected')
+    expect(second.status).toBe('collected')
+    if (first.status !== 'collected' || second.status !== 'collected') return
+
+    const result = deleteEntrySentence(database, second.sentence.id)
+
+    expect(result.status).toBe('deleted')
+    if (result.status !== 'deleted') return
+    expect(result.entry?.lastCollectedAt).toBe(T0)
   })
 
   it('删不存在的原句返回 missing，不碰别的条目', () => {

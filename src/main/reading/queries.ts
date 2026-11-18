@@ -1,4 +1,3 @@
-import type { ArticleKind } from '../../shared/library'
 import type {
   ReadingAnnotation,
   ReadingParagraph,
@@ -20,6 +19,7 @@ import {
 } from '../../shared/reading'
 import type { AppDatabase } from '../db/database'
 import { readSetting } from '../db/settings'
+import { paragraphLetter } from '../corpus/letter'
 import { readArticleCollections } from '../entries/queries'
 import { openArticle, readArticleDetail, readReadingPoint } from '../library/queries'
 
@@ -218,16 +218,6 @@ export function saveReadingSettings(
  * 长篇匹配按原卷字母显示段首；仔细阅读不显示。语料约定段落 id 就是 A–P 的字母，
  * 万一 id 不是字母，按段序补一个；超过 P 的段不再编号，不发明原卷没有的字母。
  */
-function paragraphLetter(kind: ArticleKind, id: string, ordinal: number): string | null {
-  if (kind !== 'long_match') {
-    return null
-  }
-  if (/^[A-P]$/.test(id)) {
-    return id
-  }
-  return ordinal >= 0 && ordinal < 16 ? String.fromCharCode(65 + ordinal) : null
-}
-
 function groupByParagraph<T extends { paragraph_id: string }>(
   rows: readonly T[],
   paragraphOrder: readonly string[]

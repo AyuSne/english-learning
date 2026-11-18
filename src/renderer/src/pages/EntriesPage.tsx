@@ -1,0 +1,329 @@
+import { useEffect, useRef, useState } from 'react'
+import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
+import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
+import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
+import { entryHeadlineText } from '../entries/format'
+import { NoteRail } from '../entries/note-rail'
+import { SentenceRow } from '../entries/sentence-row'
+import { messageOf } from '../errors'
+import { navigate, replaceRoute } from '../navigate'
+
+/**
+ * 词条页：左列表、中原句、右学习内容。打开词条先看到原句，右栏默认收窄。
+ * 原句按文章分组，组内按句序；每条能回到原文、重新圈定、拆到别的词条或删除。
+ */
+export function EntriesPage({ entryId }: { entryId: string | null }) {
+  const [listing, setListing] = useState<EntryListResult | null>(null)
+  const [allEntries, setAllEntries] = useState<EntryListResult | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(entryId)
+  const [page, setPage] = useState<EntryPage | null>(null)
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<EntrySort>('recent')
+  const [filter, setFilter] = useState<EntryFilter>('all')
+  const [railOpen, setRailOpen] = useState(false)
+  const [listError, setListError] = useState<string | null>(null)
+  const [pageError, setPageError] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<EntrySentence | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [hint, setHint] = useState<string | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
+
+  const listRequest = useRef(0)
+  const pageRequest = useRef(0)
+
+  useEffect(() => {
+    if (entryId !== null) {
+      setSelectedId(entryId)
+    }
+  }, [entryId])
+
+  useEffect(() => {
+    const sequence = listRequest.current + 1
+    listRequest.current = sequence
+    loadEntryList({ query, sort, filter }).then(
+      (value) => {
+        if (sequence !== listRequest.current) return
+        setListing(value)
+        setListError(null)
+        setSelectedId((current) => {
+          if (value.entries.length === 0) {
+            return value.total === 0 ? null : current
+          }
+          if (current !== null && value.entries.some((entry) => entry.id === current)) {
+            return current
+          }
+          return value.entries[0]?.id ?? null
+        })
+      },
+      (error: unknown) => {
+        if (sequence === listRequest.current) {
+          setListError(messageOf(error))
+        }
+      }
+    )
+  }, [query, sort, filter, reloadToken])
+
+  useEffect(() => {
+    let active = true
+    loadEntryList({}).then(
+      (value) => {
+        if (active) setAllEntries(value)
+      },
+      () => undefined
+    )
+    return () => {
+      active = false
+    }
+  }, [reloadToken])
+
+  useEffect(() => {
+    if (selectedId === null) {
+      pageRequest.current += 1
+      setPage(null)
+      setPageError(null)
+      replaceRoute('entries')
+      return
+    }
+    replaceRoute('entries', { entryId: selectedId })
+    const sequence = pageRequest.current + 1
+    pageRequest.current = sequence
+    setPageError(null)
+    loadEntryPage(selectedId).then(
+      (value) => {
+        if (sequence !== pageRequest.current) return
+        if (value === null) {
+          setPage(null)
+          setPageError('这个词条已经不在了。')
+          return
+        }
+        setPage(value)
+      },
+      (error: unknown) => {
+        if (sequence === pageRequest.current) {
+          setPage(null)
+          setPageError(messageOf(error))
+        }
+      }
+    )
+  }, [selectedId, reloadToken])
+
+  useEffect(() => {
+    if (hint === null) return
+    const timer = window.setTimeout(() => setHint(null), 4000)
+    return () => window.clearTimeout(timer)
+  }, [hint])
+
+  function refresh(message?: string): void {
+    setReloadToken((token) => token + 1)
+    if (message !== undefined) {
+      setHint(message)
+    }
+  }
+
+  function selectEntry(id: string): void {
+    setSelectedId(id)
+    setRailOpen(false)
+    setActionError(null)
+    setConfirmDelete(null)
+  }
+
+  function openReading(sentence: EntrySentence, reselect: boolean): void {
+    navigate('reading', {
+      articleId: sentence.articleId,
+      entrySentenceId: sentence.id,
+      reselect
+    })
+  }
+
+  async function removeSentence(sentence: EntrySentence): Promise<void> {
+    if (deleting) return
+    setDeleting(true)
+    setActionError(null)
+    try {
+      const result = await deleteEntrySentence(sentence.id)
+      if (result.status === 'missing') {
+        setActionError('这条原句已经不在了。')
+        setConfirmDelete(null)
+        refresh()
+        return
+      }
+      setConfirmDelete(null)
+      if (result.entryDeleted || result.entry === null) {
+        setHint(`原句与「${page?.entry.mainForm ?? '这个词条'}」已删除。`)
+        setPage(null)
+        setSelectedId(null)
+        refresh()
+        return
+      }
+      refresh('原句已删除。')
+    } catch (error) {
+      setActionError(messageOf(error))
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  function requestDelete(sentence: EntrySentence): void {
+    if (page === null) return
+    if (page.entry.sentenceCount <= 1) {
+      setConfirmDelete(sentence)
+      return
+    }
+    void removeSentence(sentence)
+  }
+
+  function entryGone(): void {
+    setPage(null)
+    setSelectedId(null)
+    refresh()
+  }
+
+  const otherEntries = (allEntries?.entries ?? []).filter((entry) => entry.id !== page?.entry.id)
+
+  return (
+    <div className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
+      <EntryList
+        listing={listing}
+        selectedId={selectedId}
+        query={query}
+        sort={sort}
+        filter={filter}
+        onQuery={setQuery}
+        onSort={setSort}
+        onFilter={setFilter}
+        onSelect={selectEntry}
+      />
+
+      <section className="entries-main" aria-label="词条内容">
+        {listError === null ? null : (
+          <p className="entry-error" role="alert">
+            {listError}
+          </p>
+        )}
+
+        {page !== null ? (
+          <>
+            <header className="entries-main-head">
+              <div className="entries-main-title">
+                <p className="eyebrow">词条</p>
+                <h2 className="entries-title">{page.entry.mainForm}</h2>
+                <p className="entries-meta">{entryHeadlineText(page.entry)}</p>
+              </div>
+              <button
+                type="button"
+                className="button"
+                aria-expanded={railOpen}
+                onClick={() => setRailOpen(true)}
+              >
+                学习内容 {page.entry.noteCount}
+              </button>
+            </header>
+
+            {actionError === null ? null : (
+              <p className="entry-error" role="alert">
+                {actionError}
+              </p>
+            )}
+
+            {page.groups.length === 0 ? (
+              <p className="empty-line">这个词条还没有原句。</p>
+            ) : (
+              page.groups.map((group) => (
+                <section
+                  className="entry-group"
+                  key={group.articleId}
+                  aria-label={`${group.articleTitle} 的原句`}
+                >
+                  <h3 className="entry-group-head">
+                    <span>{group.articleTitle}</span>
+                    <span className="entry-group-count">{group.sentences.length} 句</span>
+                  </h3>
+                  <ul className="entry-sentences">
+                    {group.sentences.map((sentence) => (
+                      <SentenceRow
+                        key={sentence.id}
+                        sentence={sentence}
+                        otherEntries={otherEntries}
+                        busy={deleting}
+                        onBack={() => openReading(sentence, false)}
+                        onReselect={() => openReading(sentence, true)}
+                        onRequestDelete={() => requestDelete(sentence)}
+                        onChanged={(message) => refresh(message)}
+                        onEntryGone={entryGone}
+                      />
+                    ))}
+                  </ul>
+                </section>
+              ))
+            )}
+
+            {confirmDelete === null ? null : (
+              <div className="entry-confirm" role="alertdialog" aria-label="删除最后一条原句">
+                <p>
+                  这是最后一条原句。删掉后「{page.entry.mainForm}」词条连同{' '}
+                  {page.entry.noteCount} 条学习内容也会一起删除。
+                </p>
+                <div className="entries-main-actions">
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={deleting}
+                    onClick={() => setConfirmDelete(null)}
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="button"
+                    className="button entry-action-danger"
+                    disabled={deleting}
+                    onClick={() => void removeSentence(confirmDelete)}
+                  >
+                    删除词条与原句
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : pageError !== null ? (
+          <p className="entry-error" role="alert">
+            {pageError}
+          </p>
+        ) : listing !== null && listing.total === 0 ? (
+          <div className="entries-main-empty">
+            <p className="eyebrow">还没有词条</p>
+            <h2 className="entries-title">先读一篇</h2>
+            <p className="empty-line">读的时候圈一个词，它就会出现在这里。</p>
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={() => navigate('library')}
+            >
+              去文章库
+            </button>
+          </div>
+        ) : (
+          <p className="empty-line">在左边选一个词条。</p>
+        )}
+      </section>
+
+      {page === null ? null : (
+        <NoteRail
+          key={page.entry.id}
+          page={page}
+          entries={allEntries?.entries ?? []}
+          open={railOpen}
+          onToggle={() => setRailOpen((open) => !open)}
+          onChanged={(message) => refresh(message)}
+          onEntryGone={entryGone}
+        />
+      )}
+
+      {hint === null ? null : (
+        <p className="entries-toast" role="status">
+          {hint}
+        </p>
+      )}
+    </div>
+  )
+}

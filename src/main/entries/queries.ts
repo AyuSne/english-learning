@@ -4,11 +4,15 @@ import type {
   CollectSelectionResult,
   DeleteEntrySentenceResult,
   EntrySentence,
+  EntrySentenceTarget,
   EntrySummary,
   ReadingCollectionMark,
   WordEntryCard
 } from '../../shared/entries'
+import type { ArticleKind } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
+import { paragraphLetter } from '../corpus/letter'
+import { refreshLastCollected } from './entry-state'
 import { resolveLemma, type LemmaLexicon } from './lemma'
 
 /**
@@ -28,19 +32,25 @@ type EntrySummaryRow = {
   last_collected_at: string
   sentence_count: number
   article_count: number
+  note_count: number
 }
 
-type EntrySentenceRow = {
+export type EntrySentenceRow = {
   id: string
   surface: string
   article_id: string
   article_title: string
+  article_kind: ArticleKind
+  session_label: string
+  set_label: string
   paragraph_id: string
   paragraph_ordinal: number
   sentence_ordinal: number
   sentence_text: string
+  sentence_char_start: number
   char_start: number
   char_end: number
+  sentence_page: number | null
   collected_at: string
 }
 
@@ -100,17 +110,38 @@ function lemmaLexicon(database: AppDatabase): LemmaLexicon {
   return { has: (word) => words.has(word) }
 }
 
+/** 一个词形落到哪个词条键；选词与「拆到新词条」共用同一套归并。 */
+export function resolveEntryKey(database: AppDatabase, surface: string): string {
+  return resolveLemma(surface, lemmaLexicon(database))
+}
+
 function isWhitespace(character: string | undefined): boolean {
   return character !== undefined && /\s/u.test(character)
 }
 
-function readEntrySummary(database: AppDatabase, entryId: string): EntrySummary | null {
+/** 原句连同出处与句内位置，词条卡、词条页与重新圈定都从这里读同一套列。 */
+export const ENTRY_SENTENCE_COLUMNS = `es.id, es.surface, es.article_id,
+  a.title AS article_title, a.kind AS article_kind, a.session_label, a.set_label,
+  es.paragraph_id, p.ordinal AS paragraph_ordinal, es.sentence_ordinal,
+  s.text AS sentence_text, s.char_start AS sentence_char_start,
+  es.char_start, es.char_end, s.page AS sentence_page, es.collected_at`
+
+export const ENTRY_SENTENCE_JOINS = `JOIN article a ON a.id = es.article_id
+  JOIN paragraph p
+    ON p.article_id = es.article_id AND p.id = es.paragraph_id
+  JOIN sentence s
+    ON s.article_id = es.article_id
+   AND s.paragraph_id = es.paragraph_id
+   AND s.ordinal = es.sentence_ordinal`
+
+export function readEntrySummary(database: AppDatabase, entryId: string): EntrySummary | null {
   const row = database
     .prepare(
       `SELECT we.id, we.main_form, we.last_collected_at,
               (SELECT COUNT(*) FROM entry_sentence es WHERE es.entry_id = we.id) AS sentence_count,
               (SELECT COUNT(DISTINCT es.article_id) FROM entry_sentence es
-                WHERE es.entry_id = we.id) AS article_count
+                WHERE es.entry_id = we.id) AS article_count,
+              (SELECT COUNT(*) FROM learning_note ln WHERE ln.entry_id = we.id) AS note_count
          FROM word_entry we
         WHERE we.id = ?`
     )
@@ -136,11 +167,12 @@ function readEntrySummary(database: AppDatabase, entryId: string): EntrySummary 
       .filter((surface) => surface !== row.main_form),
     sentenceCount: row.sentence_count,
     articleCount: row.article_count,
+    noteCount: row.note_count,
     lastCollectedAt: row.last_collected_at
   }
 }
 
-function toEntrySentence(row: EntrySentenceRow): EntrySentence {
+export function toEntrySentence(row: EntrySentenceRow): EntrySentence {
   return {
     id: row.id,
     surface: row.surface,
@@ -148,32 +180,43 @@ function toEntrySentence(row: EntrySentenceRow): EntrySentence {
     articleTitle: row.article_title,
     paragraphId: row.paragraph_id,
     paragraphOrdinal: row.paragraph_ordinal + 1,
+    paragraphLetter: paragraphLetter(row.article_kind, row.paragraph_id, row.paragraph_ordinal),
     sentenceOrdinal: row.sentence_ordinal,
     sentenceText: row.sentence_text,
     start: row.char_start,
     end: row.char_end,
+    surfaceOffset: row.char_start - row.sentence_char_start,
+    page: row.sentence_page,
     collectedAt: row.collected_at
   }
 }
 
-function readEntrySentence(database: AppDatabase, id: string): EntrySentence | null {
+export function readEntrySentence(database: AppDatabase, id: string): EntrySentence | null {
   const row = database
     .prepare(
-      `SELECT es.id, es.surface, es.article_id, a.title AS article_title, es.paragraph_id,
-              p.ordinal AS paragraph_ordinal, es.sentence_ordinal, s.text AS sentence_text,
-              es.char_start, es.char_end, es.collected_at
+      `SELECT ${ENTRY_SENTENCE_COLUMNS}
          FROM entry_sentence es
-         JOIN article a ON a.id = es.article_id
-         JOIN paragraph p
-           ON p.article_id = es.article_id AND p.id = es.paragraph_id
-         JOIN sentence s
-           ON s.article_id = es.article_id
-          AND s.paragraph_id = es.paragraph_id
-          AND s.ordinal = es.sentence_ordinal
+         ${ENTRY_SENTENCE_JOINS}
         WHERE es.id = ?`
     )
     .get(id) as EntrySentenceRow | undefined
   return row ? toEntrySentence(row) : null
+}
+
+/** 阅读页从词条跳过来时要定位的原句，以及它属于哪个词条。 */
+export function readEntrySentenceTarget(
+  database: AppDatabase,
+  entrySentenceId: string
+): EntrySentenceTarget | null {
+  const stored = database
+    .prepare('SELECT entry_id FROM entry_sentence WHERE id = ?')
+    .get(entrySentenceId) as { entry_id: string } | undefined
+  if (!stored) {
+    return null
+  }
+  const entry = readEntrySummary(database, stored.entry_id)
+  const sentence = readEntrySentence(database, entrySentenceId)
+  return entry && sentence ? { entry, sentence } : null
 }
 
 /** 一篇原文里全部已收集标记，按段序、句序、段内位置排。 */
@@ -227,17 +270,9 @@ export function readWordEntryCard(
 
   const rows = database
     .prepare(
-      `SELECT es.id, es.surface, es.article_id, a.title AS article_title, es.paragraph_id,
-              p.ordinal AS paragraph_ordinal, es.sentence_ordinal, s.text AS sentence_text,
-              es.char_start, es.char_end, es.collected_at
+      `SELECT ${ENTRY_SENTENCE_COLUMNS}
          FROM entry_sentence es
-         JOIN article a ON a.id = es.article_id
-         JOIN paragraph p
-           ON p.article_id = es.article_id AND p.id = es.paragraph_id
-         JOIN sentence s
-           ON s.article_id = es.article_id
-          AND s.paragraph_id = es.paragraph_id
-          AND s.ordinal = es.sentence_ordinal
+         ${ENTRY_SENTENCE_JOINS}
         WHERE es.entry_id = ?
         ORDER BY es.collected_at DESC, es.id DESC`
     )
@@ -315,7 +350,7 @@ export function collectSelection(
     return { status: 'rejected', reason: 'empty' }
   }
 
-  const key = resolveLemma(surface, lemmaLexicon(database))
+  const key = resolveEntryKey(database, surface)
   const now = options.now ?? new Date().toISOString()
 
   const stored = database.transaction((): { entryId: string; sentenceId: string; created: boolean } => {
@@ -410,6 +445,8 @@ export function deleteEntrySentence(
       .get(stored.entry_id) as { count: number }
     if (count.count === 0) {
       database.prepare('DELETE FROM word_entry WHERE id = ?').run(stored.entry_id)
+    } else {
+      refreshLastCollected(database, stored.entry_id)
     }
     return count.count
   })()

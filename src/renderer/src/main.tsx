@@ -4,6 +4,7 @@ import { App } from './App'
 import './styles/tokens.css'
 import './styles/app.css'
 import './styles/chat.css'
+import './styles/entries.css'
 import './styles/library.css'
 import './styles/reading.css'
 

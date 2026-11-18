@@ -5,9 +5,26 @@ import type {
   LibrarySearchResults
 } from '../../shared/library'
 import type {
+  ChangeMainFormRequest,
+  ChangeMainFormResult,
   CollectSelectionRequest,
   CollectSelectionResult,
+  CreateLearningNoteRequest,
   DeleteEntrySentenceResult,
+  EntryListRequest,
+  EntryListResult,
+  EntryPage,
+  EntrySentenceTarget,
+  LearningNoteResult,
+  MergeEntriesRequest,
+  MergeEntriesResult,
+  MoveEntrySentenceRequest,
+  MoveEntrySentenceResult,
+  MoveLearningNoteRequest,
+  PinLearningNoteRequest,
+  ReselectEntrySentenceRequest,
+  ReselectEntrySentenceResult,
+  UpdateLearningNoteRequest,
   WordEntryCard
 } from '../../shared/entries'
 import type {
@@ -71,4 +88,71 @@ export function loadWordEntryCard(entryId: string): Promise<WordEntryCard | null
 /** 删掉一条原句；词条只剩这一条时连词条一起删。 */
 export function deleteEntrySentence(entrySentenceId: string): Promise<DeleteEntrySentenceResult> {
   return window.api.invoke('entries:delete-sentence', { entrySentenceId })
+}
+
+/** 词条页左栏：计数、搜索、排序与筛选。 */
+export function loadEntryList(request: EntryListRequest): Promise<EntryListResult> {
+  return window.api.invoke('entries:list', request)
+}
+
+/** 词条页的一整页：主词形、按文章分组的原句与学习内容。 */
+export function loadEntryPage(entryId: string): Promise<EntryPage | null> {
+  return window.api.invoke('entries:page', { entryId })
+}
+
+/** 阅读页从词条跳过来时要定位的原句。 */
+export function loadEntrySentenceTarget(
+  entrySentenceId: string
+): Promise<EntrySentenceTarget | null> {
+  return window.api.invoke('entries:sentence', { entrySentenceId })
+}
+
+/** 合并两个词条，源词条的原句与学习内容迁到目标。 */
+export function mergeWordEntries(request: MergeEntriesRequest): Promise<MergeEntriesResult> {
+  return window.api.invoke('entries:merge', request)
+}
+
+/** 换主词形，只能从已收集的词形里选。 */
+export function saveEntryMainForm(
+  request: ChangeMainFormRequest
+): Promise<ChangeMainFormResult> {
+  return window.api.invoke('entries:main-form', request)
+}
+
+/** 把一条原句拆到别的词条或新词条。 */
+export function moveEntrySentenceTo(
+  request: MoveEntrySentenceRequest
+): Promise<MoveEntrySentenceResult> {
+  return window.api.invoke('entries:move-sentence', request)
+}
+
+/** 重新圈定原句范围。 */
+export function reselectEntrySentence(
+  request: ReselectEntrySentenceRequest
+): Promise<ReselectEntrySentenceResult> {
+  return window.api.invoke('entries:reselect-sentence', request)
+}
+
+export function createEntryNote(
+  request: CreateLearningNoteRequest
+): Promise<LearningNoteResult> {
+  return window.api.invoke('entries:create-note', request)
+}
+
+export function updateEntryNote(
+  request: UpdateLearningNoteRequest
+): Promise<LearningNoteResult> {
+  return window.api.invoke('entries:update-note', request)
+}
+
+export function pinEntryNote(request: PinLearningNoteRequest): Promise<LearningNoteResult> {
+  return window.api.invoke('entries:pin-note', request)
+}
+
+export function deleteEntryNote(noteId: string): Promise<LearningNoteResult> {
+  return window.api.invoke('entries:delete-note', { noteId })
+}
+
+export function moveEntryNote(request: MoveLearningNoteRequest): Promise<LearningNoteResult> {
+  return window.api.invoke('entries:move-note', request)
 }

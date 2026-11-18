@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { formatOpenedAt, progressText, readingPointText } from './format'
+﻿import { describe, expect, it } from 'vitest'
+import { formatDay, progressText, readingPointText } from './format'
 
 describe('progressText', () => {
   it('没打开过写未读', () => {
@@ -24,14 +24,14 @@ describe('readingPointText', () => {
   })
 })
 
-describe('formatOpenedAt', () => {
+describe('formatDay', () => {
   it('按本机时区只写日期', () => {
     const iso = new Date(2026, 10, 18, 9, 30).toISOString()
 
-    expect(formatOpenedAt(iso)).toBe('2026-11-18')
+    expect(formatDay(iso)).toBe('2026-11-18')
   })
 
   it('不是时间的值返回空串', () => {
-    expect(formatOpenedAt('not-a-date')).toBe('')
+    expect(formatDay('not-a-date')).toBe('')
   })
 })

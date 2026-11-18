@@ -11,7 +11,7 @@ import {
   searchLibrary
 } from '../api'
 import { messageOf } from '../errors'
-import { formatOpenedAt, progressText } from '../library/format'
+import { formatDay, progressText } from '../library/format'
 import { navigate } from '../navigate'
 
 /**
@@ -217,7 +217,7 @@ export function LibraryPage({ corpusImport }: { corpusImport: ImportReport }) {
                   <dd>
                     {detail.lastOpenedAt === null
                       ? '还没打开过'
-                      : formatOpenedAt(detail.lastOpenedAt)}
+                      : formatDay(detail.lastOpenedAt)}
                   </dd>
                 </div>
                 {detail.pages === '' ? null : (

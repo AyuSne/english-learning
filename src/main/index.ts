@@ -10,8 +10,23 @@ import { openDatabase } from './db/database'
 import { migrate } from './db/migrations'
 import { readTheme } from './db/settings'
 import {
+  changeEntryMainForm,
+  mergeEntries,
+  moveEntrySentence,
+  reselectEntrySentence
+} from './entries/curation'
+import {
+  createLearningNote,
+  deleteLearningNote,
+  moveLearningNote,
+  pinLearningNote,
+  updateLearningNote
+} from './entries/notes'
+import { readEntryList, readEntryPage } from './entries/page'
+import {
   collectSelection,
   deleteEntrySentence,
+  readEntrySentenceTarget,
   readWordEntryCard
 } from './entries/queries'
 import { registerIpcHandlers } from './ipc/register'
@@ -99,6 +114,18 @@ function start(): void {
     'reading:collect': (payload) => collectSelection(opened, payload),
     'entries:card': (payload) => readWordEntryCard(opened, payload.entryId),
     'entries:delete-sentence': (payload) => deleteEntrySentence(opened, payload.entrySentenceId),
+    'entries:list': (payload) => readEntryList(opened, payload),
+    'entries:page': (payload) => readEntryPage(opened, payload.entryId),
+    'entries:sentence': (payload) => readEntrySentenceTarget(opened, payload.entrySentenceId),
+    'entries:merge': (payload) => mergeEntries(opened, payload),
+    'entries:main-form': (payload) => changeEntryMainForm(opened, payload),
+    'entries:move-sentence': (payload) => moveEntrySentence(opened, payload),
+    'entries:reselect-sentence': (payload) => reselectEntrySentence(opened, payload),
+    'entries:create-note': (payload) => createLearningNote(opened, payload),
+    'entries:update-note': (payload) => updateLearningNote(opened, payload),
+    'entries:pin-note': (payload) => pinLearningNote(opened, payload),
+    'entries:delete-note': (payload) => deleteLearningNote(opened, payload),
+    'entries:move-note': (payload) => moveLearningNote(opened, payload),
     'chat:start': (payload, event) =>
       chat.start(payload, (update) => event.sender.send('chat:event', update)),
     'chat:stop': (payload) => chat.stop(payload.streamId)
