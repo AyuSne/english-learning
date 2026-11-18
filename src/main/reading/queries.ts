@@ -20,6 +20,7 @@ import {
 } from '../../shared/reading'
 import type { AppDatabase } from '../db/database'
 import { readSetting } from '../db/settings'
+import { readArticleCollections } from '../entries/queries'
 import { openArticle, readArticleDetail, readReadingPoint } from '../library/queries'
 
 /**
@@ -29,13 +30,15 @@ import { openArticle, readArticleDetail, readReadingPoint } from '../library/que
 const SETTING_KEYS = {
   fontSize: 'reading.fontSize',
   lineHeight: 'reading.lineHeight',
-  annotationsVisible: 'reading.annotationsVisible'
+  annotationsVisible: 'reading.annotationsVisible',
+  weakHighlight: 'reading.weakHighlight'
 } as const
 
 type ArticleSettingRow = {
   font_size: number
   line_height_tenths: number
   annotations_visible: number
+  weak_highlight: number
 }
 
 type ParagraphRow = {
@@ -86,6 +89,16 @@ function parseAnnotationsVisible(value: string | null): boolean {
   return DEFAULT_READING_PREFERENCES.annotationsVisible
 }
 
+function parseWeakHighlight(value: string | null): boolean {
+  if (value === '1' || value === 'true') {
+    return true
+  }
+  if (value === '0' || value === 'false') {
+    return false
+  }
+  return DEFAULT_READING_PREFERENCES.weakHighlight
+}
+
 /** 本机全局默认。没设置过或值不认识时逐项回落到产品说明里的默认值。 */
 export function readReadingPreferences(database: AppDatabase): ReadingPreferences {
   return {
@@ -93,7 +106,8 @@ export function readReadingPreferences(database: AppDatabase): ReadingPreference
     lineHeight: parseLineHeight(readSetting(database, SETTING_KEYS.lineHeight)),
     annotationsVisible: parseAnnotationsVisible(
       readSetting(database, SETTING_KEYS.annotationsVisible)
-    )
+    ),
+    weakHighlight: parseWeakHighlight(readSetting(database, SETTING_KEYS.weakHighlight))
   }
 }
 
@@ -109,7 +123,7 @@ function readArticleSettingRow(
 ): ArticleSettingRow | undefined {
   return database
     .prepare(
-      `SELECT font_size, line_height_tenths, annotations_visible
+      `SELECT font_size, line_height_tenths, annotations_visible, weak_highlight
        FROM article_reading_setting WHERE article_id = ?`
     )
     .get(articleId) as ArticleSettingRow | undefined
@@ -130,7 +144,8 @@ function effectiveReadingSettings(
   const valid =
     fontSizes.includes(row.font_size) &&
     lineHeightTenths.includes(row.line_height_tenths) &&
-    (row.annotations_visible === 0 || row.annotations_visible === 1)
+    (row.annotations_visible === 0 || row.annotations_visible === 1) &&
+    (row.weak_highlight === 0 || row.weak_highlight === 1)
   if (!valid) {
     // 库里的值只该由这里写入；真坏掉时宁可回落全局，也不把界面打乱。
     return { ...readReadingPreferences(database), source: 'global' }
@@ -140,6 +155,7 @@ function effectiveReadingSettings(
     fontSize: row.font_size as ReadingPreferences['fontSize'],
     lineHeight: (row.line_height_tenths / 10) as ReadingPreferences['lineHeight'],
     annotationsVisible: row.annotations_visible === 1,
+    weakHighlight: row.weak_highlight === 1,
     source: 'article'
   }
 }
@@ -172,7 +188,8 @@ export function saveReadingSettings(
   if (
     !isReadingFontSize(preferences.fontSize) ||
     !isReadingLineHeight(preferences.lineHeight) ||
-    typeof preferences.annotationsVisible !== 'boolean'
+    typeof preferences.annotationsVisible !== 'boolean' ||
+    typeof preferences.weakHighlight !== 'boolean'
   ) {
     return { saved: false, settings: current }
   }
@@ -180,19 +197,21 @@ export function saveReadingSettings(
   database
     .prepare(
       `INSERT INTO article_reading_setting (
-         article_id, font_size, line_height_tenths, annotations_visible
-       ) VALUES (?, ?, ?, ?)
+         article_id, font_size, line_height_tenths, annotations_visible, weak_highlight
+       ) VALUES (?, ?, ?, ?, ?)
        ON CONFLICT (article_id) DO UPDATE SET
          font_size = excluded.font_size,
          line_height_tenths = excluded.line_height_tenths,
          annotations_visible = excluded.annotations_visible,
+         weak_highlight = excluded.weak_highlight,
          updated_at = datetime('now')`
     )
     .run(
       request.articleId,
       preferences.fontSize,
       Math.round(preferences.lineHeight * 10),
-      preferences.annotationsVisible ? 1 : 0
+      preferences.annotationsVisible ? 1 : 0,
+      preferences.weakHighlight ? 1 : 0
     )
 
   return {
@@ -300,7 +319,8 @@ export function readReadingView(database: AppDatabase, articleId: string): Readi
     article,
     paragraphs,
     settings: effectiveReadingSettings(database, articleId),
-    readingPoint: readReadingPoint(database, articleId)
+    readingPoint: readReadingPoint(database, articleId),
+    collected: readArticleCollections(database, articleId)
   }
 }
 

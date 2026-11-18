@@ -7,6 +7,7 @@ import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
 import { writeSetting } from '../db/settings'
+import { collectSelection } from '../entries/queries'
 import { readHomeSummary } from '../library/queries'
 import {
   openReadingView,
@@ -80,12 +81,30 @@ afterEach(() => {
   rmSync(directory, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
 })
 
+/** 在给定段落、句子与词形上构造一次选词请求。 */
+function collectWord(
+  articleId: string,
+  paragraphId: string,
+  paragraphText: string,
+  sentenceOrdinal: number,
+  word: string,
+  now = '2026-11-18T08:00:00.000Z'
+) {
+  const start = paragraphText.indexOf(word)
+  return collectSelection(
+    database,
+    { articleId, paragraphId, sentenceOrdinal, start, end: start + word.length },
+    { now }
+  )
+}
+
 describe('readReadingPreferences', () => {
   it('没设置过时用产品说明里的默认值', () => {
     expect(readReadingPreferences(database)).toEqual({
       fontSize: 20,
       lineHeight: 1.8,
-      annotationsVisible: true
+      annotationsVisible: true,
+      weakHighlight: true
     })
   })
 
@@ -93,21 +112,25 @@ describe('readReadingPreferences', () => {
     writeSetting(database, 'reading.fontSize', '22')
     writeSetting(database, 'reading.lineHeight', '2')
     writeSetting(database, 'reading.annotationsVisible', '0')
+    writeSetting(database, 'reading.weakHighlight', '0')
 
     expect(readReadingPreferences(database)).toEqual({
       fontSize: 22,
       lineHeight: 2,
-      annotationsVisible: false
+      annotationsVisible: false,
+      weakHighlight: false
     })
 
     writeSetting(database, 'reading.fontSize', '17')
     writeSetting(database, 'reading.lineHeight', '1.7')
     writeSetting(database, 'reading.annotationsVisible', '或许')
+    writeSetting(database, 'reading.weakHighlight', '或许')
 
     expect(readReadingPreferences(database)).toEqual({
       fontSize: 20,
       lineHeight: 1.8,
-      annotationsVisible: true
+      annotationsVisible: true,
+      weakHighlight: true
     })
   })
 })
@@ -118,6 +141,7 @@ describe('readReadingSettings', () => {
       fontSize: 20,
       lineHeight: 1.8,
       annotationsVisible: true,
+      weakHighlight: true,
       source: 'global'
     })
   })
@@ -131,7 +155,12 @@ describe('saveReadingSettings', () => {
   it('只改这一篇，下一篇文章仍用全局默认，全局本身不动', () => {
     const result = saveReadingSettings(database, {
       articleId: carefulReading.id,
-      preferences: { fontSize: 16, lineHeight: 2, annotationsVisible: false }
+      preferences: {
+        fontSize: 16,
+        lineHeight: 2,
+        annotationsVisible: false,
+        weakHighlight: false
+      }
     })
 
     expect(result).toEqual({
@@ -140,6 +169,7 @@ describe('saveReadingSettings', () => {
         fontSize: 16,
         lineHeight: 2,
         annotationsVisible: false,
+        weakHighlight: false,
         source: 'article'
       }
     })
@@ -147,36 +177,70 @@ describe('saveReadingSettings', () => {
       fontSize: 16,
       lineHeight: 2,
       annotationsVisible: false,
+      weakHighlight: false,
       source: 'article'
     })
     expect(readReadingSettings(database, olderReading.id)).toMatchObject({
       fontSize: 20,
       lineHeight: 1.8,
       annotationsVisible: true,
+      weakHighlight: true,
       source: 'global'
     })
     expect(readReadingPreferences(database)).toMatchObject({
       fontSize: 20,
       lineHeight: 1.8,
-      annotationsVisible: true
+      annotationsVisible: true,
+      weakHighlight: true
     })
   })
 
   it('再次保存覆盖本篇的值', () => {
     saveReadingSettings(database, {
       articleId: carefulReading.id,
-      preferences: { fontSize: 16, lineHeight: 1.6, annotationsVisible: false }
+      preferences: {
+        fontSize: 16,
+        lineHeight: 1.6,
+        annotationsVisible: false,
+        weakHighlight: false
+      }
     })
 
     expect(
       saveReadingSettings(database, {
         articleId: carefulReading.id,
-        preferences: { fontSize: 22, lineHeight: 2, annotationsVisible: true }
+        preferences: {
+          fontSize: 22,
+          lineHeight: 2,
+          annotationsVisible: true,
+          weakHighlight: true
+        }
       })
     ).toMatchObject({
       saved: true,
-      settings: { fontSize: 22, lineHeight: 2, annotationsVisible: true, source: 'article' }
+      settings: {
+        fontSize: 22,
+        lineHeight: 2,
+        annotationsVisible: true,
+        weakHighlight: true,
+        source: 'article'
+      }
     })
+  })
+
+  it('可以单独关掉本篇的弱高亮，不影响其他篇', () => {
+    saveReadingSettings(database, {
+      articleId: carefulReading.id,
+      preferences: {
+        fontSize: 20,
+        lineHeight: 1.8,
+        annotationsVisible: true,
+        weakHighlight: false
+      }
+    })
+
+    expect(readReadingSettings(database, carefulReading.id)?.weakHighlight).toBe(false)
+    expect(readReadingSettings(database, olderReading.id)?.weakHighlight).toBe(true)
   })
 
   it('不认识的字号或行距不写入，返回当前生效值', () => {
@@ -185,13 +249,20 @@ describe('saveReadingSettings', () => {
       preferences: {
         fontSize: 17 as never,
         lineHeight: 1.9 as never,
-        annotationsVisible: false
+        annotationsVisible: false,
+        weakHighlight: false
       }
     })
 
     expect(result).toMatchObject({
       saved: false,
-      settings: { fontSize: 20, lineHeight: 1.8, annotationsVisible: true, source: 'global' }
+      settings: {
+        fontSize: 20,
+        lineHeight: 1.8,
+        annotationsVisible: true,
+        weakHighlight: true,
+        source: 'global'
+      }
     })
     expect(readReadingSettings(database, carefulReading.id)).toMatchObject({ source: 'global' })
   })
@@ -200,7 +271,12 @@ describe('saveReadingSettings', () => {
     expect(
       saveReadingSettings(database, {
         articleId: 'nope',
-        preferences: { fontSize: 22, lineHeight: 2, annotationsVisible: false }
+        preferences: {
+          fontSize: 22,
+          lineHeight: 2,
+          annotationsVisible: false,
+          weakHighlight: false
+        }
       })
     ).toBeNull()
   })
@@ -244,7 +320,12 @@ describe('readReadingView', () => {
   it('带上本篇生效的阅读设置与上次读到的位置', () => {
     saveReadingSettings(database, {
       articleId: carefulReading.id,
-      preferences: { fontSize: 18, lineHeight: 1.6, annotationsVisible: false }
+      preferences: {
+        fontSize: 18,
+        lineHeight: 1.6,
+        annotationsVisible: false,
+        weakHighlight: false
+      }
     })
 
     const view = readReadingView(database, carefulReading.id)
@@ -253,9 +334,32 @@ describe('readReadingView', () => {
       fontSize: 18,
       lineHeight: 1.6,
       annotationsVisible: false,
+      weakHighlight: false,
       source: 'article'
     })
     expect(view?.readingPoint).toBeNull()
+  })
+
+  it('带上这一篇已收集的表达，别的篇不混进来', () => {
+    const paragraphText =
+      'Reading widely makes hard sentences easier. Context carries most of the meaning.'
+    expect(
+      collectWord(carefulReading.id, '1', paragraphText, 0, 'hard').status
+    ).toBe('collected')
+    expect(
+      collectWord(longMatch.id, 'A', 'Employers approach hiring differently.', 0, 'approach').status
+    ).toBe('collected')
+
+    const view = readReadingView(database, carefulReading.id)
+    expect(view?.collected).toHaveLength(1)
+    expect(view?.collected[0]).toMatchObject({
+      surface: 'hard',
+      entryMainForm: 'hard',
+      paragraphId: '1',
+      sentenceOrdinal: 0,
+      start: 21,
+      end: 25
+    })
   })
 
   it('文章不存在时返回 null', () => {

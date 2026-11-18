@@ -9,6 +9,11 @@ import type { AppDatabase } from './db/database'
 import { openDatabase } from './db/database'
 import { migrate } from './db/migrations'
 import { readTheme } from './db/settings'
+import {
+  collectSelection,
+  deleteEntrySentence,
+  readWordEntryCard
+} from './entries/queries'
 import { registerIpcHandlers } from './ipc/register'
 import {
   readArticleDetail,
@@ -91,6 +96,9 @@ function start(): void {
     'reading:open': (payload) => openReadingView(opened, payload.articleId),
     'reading:progress': (payload) => saveReadingPoint(opened, payload),
     'reading:settings': (payload) => saveReadingSettings(opened, payload),
+    'reading:collect': (payload) => collectSelection(opened, payload),
+    'entries:card': (payload) => readWordEntryCard(opened, payload.entryId),
+    'entries:delete-sentence': (payload) => deleteEntrySentence(opened, payload.entrySentenceId),
     'chat:start': (payload, event) =>
       chat.start(payload, (update) => event.sender.send('chat:event', update)),
     'chat:stop': (payload) => chat.stop(payload.streamId)

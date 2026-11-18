@@ -332,8 +332,241 @@
   border-bottom: 1px dotted color-mix(in srgb, var(--ink-2) 55%, transparent);
 }
 
+/* 词状态：已收集琥珀色 + 虚线下划线；本次选中麦色底；颜色不是唯一编码。 */
+
+.reading-collected {
+  border-bottom: 1px dashed var(--amber-underline);
+  color: var(--amber);
+  cursor: pointer;
+}
+
+.reading-collected:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.reading-selected {
+  border-bottom-color: transparent;
+  border-radius: 2px;
+  background: var(--bed-select);
+  color: var(--ink);
+}
+
+.reading[data-weak-highlight="off"] .reading-collected {
+  border-bottom-color: transparent;
+  color: inherit;
+  cursor: text;
+}
+
+.reading[data-weak-highlight="off"] .reading-collected:focus-visible {
+  outline: none;
+}
+
+/* 词条卡：阅读页右侧浮层，点已收集的词打开。 */
+
+.reading-panel {
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: 336px;
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 20px 50px rgba(40, 32, 20, 0.18);
+}
+
+[data-theme="dark"] .reading-panel {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.reading-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.reading-panel-eyebrow {
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.reading-panel-close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.reading-panel-close:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+.reading-panel-word {
+  margin-bottom: 4px;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.reading-panel-entry,
+.reading-panel-variants,
+.reading-panel-meta,
+.reading-panel-source {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.reading-panel-variants,
+.reading-panel-meta {
+  margin-top: 4px;
+}
+
+.reading-panel-sentence {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-left: 2px solid var(--amber);
+  border-radius: 0 8px 8px 0;
+  background: var(--sunken);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.reading-panel-sentences {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reading-panel-sentence-row {
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.reading-panel-sentence-row [role="button"],
+.reading-panel-sentence-row .reading-panel-delete {
+  margin-top: 4px;
+}
+
+.reading-panel-delete {
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.reading-panel-delete:hover {
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--rule));
+  background: var(--danger-bed);
+}
+
+.reading-panel-delete:disabled {
+  color: var(--ink-3);
+  cursor: default;
+}
+
+.reading-panel-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.reading-panel-confirm {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--rule));
+  border-radius: 10px;
+  background: var(--danger-bed);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.reading-button-danger {
+  border-color: color-mix(in srgb, var(--danger) 55%, var(--rule));
+  color: var(--danger);
+}
+
+.reading-button-danger:hover {
+  border-color: var(--danger);
+  background: var(--danger-bed);
+}
+
+.reading-panel-loading,
+.reading-panel-error {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.reading-panel-error {
+  margin-top: 8px;
+  color: var(--danger);
+}
+
+/* 圈选提示：落在底部中间，几秒后自己消失。 */
+
+.reading-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  max-width: min(560px, calc(100vw - 48px));
+  padding: 8px 14px;
+  transform: translateX(-50%);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.reading-toast-error {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--rule));
+  color: var(--danger);
+}
+
 .reading[data-annotations="hidden"] .reading-annotated {
   border-bottom: none;
+}
+
+/* 关掉注释不该顺手关掉词状态的下划线；本次选中始终没有下划线。 */
+.reading[data-annotations="hidden"] .reading-annotated.reading-collected {
+  border-bottom: 1px dashed var(--amber-underline);
+}
+
+.reading[data-annotations="hidden"] .reading-annotated.reading-selected {
+  border-bottom-color: transparent;
+}
+
+.reading[data-annotations="hidden"][data-weak-highlight="off"]
+  .reading-annotated.reading-collected {
+  border-bottom-color: transparent;
 }
 
 .reading[data-annotations="hidden"] .reading-notes {
@@ -410,6 +643,14 @@
 
   .reading-notes {
     display: none;
+  }
+
+  .reading-panel {
+    top: 64px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+    max-height: calc(100vh - 96px);
   }
 
   /* 注释行内展开，挂在原词后；伪元素不进入复制与模型文本。 */

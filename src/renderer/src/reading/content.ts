@@ -1,14 +1,33 @@
 import type { ReadingParagraph } from '../../../shared/reading'
 
 /**
- * 把一段正文切成「句子块」与句间空隙，句子块里再按原文注释切成文字片段。
+ * 把一段正文切成「句子块」与句间空隙，句子块里再按原文注释与已收集标记切成文字片段。
  * 渲染层只认这些块：正文文字一个不多一个不少，注释单独成段，绝不把注释
  * 拼回正文——复制与交给模型的文本因此天然是剥离注释后的英文。
  */
 
+/** 一处已收集或本次选中的标记，落在段内字符区间上。 */
+export type ReadingHighlight = {
+  entryId: string
+  /** 词条主词形，点击时用作无障碍标签。 */
+  label: string
+  start: number
+  end: number
+  /** 本次选中用麦色底；缺省是已收集的弱高亮。 */
+  selected?: boolean
+}
+
+/** 渲染到片段上的标记；同一片段只保留优先级最高的一个。 */
+export type ReadingMark = {
+  entryId: string
+  label: string
+  selected: boolean
+}
+
 export type ReadingTextPart = {
   kind: 'text'
   text: string
+  mark?: ReadingMark
 }
 
 export type ReadingAnnotationPart = {
@@ -19,6 +38,7 @@ export type ReadingAnnotationPart = {
   /** 段内字符区间。 */
   start: number
   end: number
+  mark?: ReadingMark
 }
 
 export type ReadingPart = ReadingTextPart | ReadingAnnotationPart
@@ -40,10 +60,56 @@ function clamp(value: number, max: number): number {
   return Math.max(0, Math.min(max, Math.round(value)))
 }
 
-export function buildReadingBlocks(paragraph: ReadingParagraph): ReadingBlock[] {
+function sameMark(left: ReadingMark | undefined, right: ReadingMark | undefined): boolean {
+  if (left === undefined || right === undefined) {
+    return left === right
+  }
+  return (
+    left.entryId === right.entryId && left.selected === right.selected && left.label === right.label
+  )
+}
+
+function appendPart(parts: ReadingPart[], part: ReadingPart): void {
+  const previous = parts.at(-1)
+  if (previous === undefined || previous.kind !== part.kind) {
+    parts.push(part)
+    return
+  }
+  if (!sameMark(previous.mark, part.mark)) {
+    parts.push(part)
+    return
+  }
+  if (previous.kind === 'text' && part.kind === 'text') {
+    previous.text += part.text
+    return
+  }
+  if (
+    previous.kind === 'annotation' &&
+    part.kind === 'annotation' &&
+    previous.gloss === part.gloss &&
+    previous.start === part.start &&
+    previous.end === part.end
+  ) {
+    previous.text += part.text
+    return
+  }
+  parts.push(part)
+}
+
+/**
+ * 把一段正文切成阅读页要渲染的块。`highlights` 里已收集的词与本次选中的词
+ * 都会在句子内切开；同一段文字重叠时本次选中优先，其次是已收集。
+ */
+export function buildReadingBlocks(
+  paragraph: ReadingParagraph,
+  highlights: readonly ReadingHighlight[] = []
+): ReadingBlock[] {
   const { text } = paragraph
   const annotations = [...paragraph.annotations].sort((left, right) => left.start - right.start)
   const sentences = [...paragraph.sentences].sort((left, right) => left.ordinal - right.ordinal)
+  const marks = highlights
+    .filter((highlight) => highlight.end > highlight.start)
+    .sort((left, right) => left.start - right.start || left.end - right.end)
 
   const blocks: ReadingBlock[] = []
   let cursor = 0
@@ -59,26 +125,62 @@ export function buildReadingBlocks(paragraph: ReadingParagraph): ReadingBlock[] 
       blocks.push({ kind: 'gap', text: text.slice(cursor, start) })
     }
 
+    const sentenceAnnotations = annotations.filter(
+      (annotation) => annotation.end > start && annotation.start < end
+    )
+    const sentenceMarks = marks.filter((mark) => mark.end > start && mark.start < end)
+
+    const boundaries = new Set<number>([start, end])
+    for (const annotation of sentenceAnnotations) {
+      boundaries.add(clamp(annotation.start, end))
+      boundaries.add(clamp(annotation.end, end))
+    }
+    for (const mark of sentenceMarks) {
+      boundaries.add(clamp(mark.start, end))
+      boundaries.add(clamp(mark.end, end))
+    }
+    const points = [...boundaries].sort((left, right) => left - right)
+
     const parts: ReadingPart[] = []
-    let partCursor = start
-    for (const annotation of annotations) {
-      if (annotation.start < partCursor || annotation.end > end) {
+    for (let index = 0; index < points.length - 1; index += 1) {
+      const segmentStart = points[index] as number
+      const segmentEnd = points[index + 1] as number
+      if (segmentEnd <= segmentStart) {
         continue
       }
-      if (annotation.start > partCursor) {
-        parts.push({ kind: 'text', text: text.slice(partCursor, annotation.start) })
+
+      const annotation = sentenceAnnotations.find(
+        (candidate) => candidate.start <= segmentStart && candidate.end >= segmentEnd
+      )
+      const selected = sentenceMarks.find(
+        (candidate) => candidate.selected === true && candidate.start <= segmentStart && candidate.end >= segmentEnd
+      )
+      const collected = sentenceMarks.find(
+        (candidate) => candidate.selected !== true && candidate.start <= segmentStart && candidate.end >= segmentEnd
+      )
+      const mark =
+        selected !== undefined
+          ? { entryId: selected.entryId, label: selected.label, selected: true }
+          : collected !== undefined
+            ? { entryId: collected.entryId, label: collected.label, selected: false }
+            : undefined
+
+      if (annotation) {
+        appendPart(parts, {
+          kind: 'annotation',
+          text: text.slice(segmentStart, segmentEnd),
+          gloss: annotation.gloss,
+          start: annotation.start,
+          end: annotation.end,
+          ...(mark === undefined ? {} : { mark })
+        })
+      } else {
+        appendPart(parts, {
+          kind: 'text',
+          text: text.slice(segmentStart, segmentEnd),
+          ...(mark === undefined ? {} : { mark })
+        })
       }
-      parts.push({
-        kind: 'annotation',
-        text: text.slice(annotation.start, annotation.end),
-        gloss: annotation.gloss,
-        start: annotation.start,
-        end: annotation.end
-      })
-      partCursor = annotation.end
-    }
-    if (partCursor < end) {
-      parts.push({ kind: 'text', text: text.slice(partCursor, end) })
     }
 
     blocks.push({ kind: 'sentence', ordinal: sentence.ordinal, parts })

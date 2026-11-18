@@ -91,4 +91,110 @@ describe('buildReadingBlocks', () => {
     const source = paragraph({ annotations: [] })
     expect(paragraphText(buildReadingBlocks(source))).toBe(source.text)
   })
+
+  it('已收集的词在句子里切成标记，前后文字一字不少', () => {
+    const text = 'Reading widely makes hard sentences easier.'
+    const source = paragraph({
+      text,
+      sentences: [{ ordinal: 0, text, start: 0, end: text.length, page: 1 }]
+    })
+
+    const blocks = buildReadingBlocks(source, [
+      { entryId: 'entry-1', label: 'hard', start: 21, end: 25 }
+    ])
+
+    expect(blocks).toEqual([
+      {
+        kind: 'sentence',
+        ordinal: 0,
+        parts: [
+          { kind: 'text', text: 'Reading widely makes ' },
+          {
+            kind: 'text',
+            text: 'hard',
+            mark: { entryId: 'entry-1', label: 'hard', selected: false }
+          },
+          { kind: 'text', text: ' sentences easier.' }
+        ]
+      }
+    ])
+    expect(paragraphText(blocks)).toBe(text)
+  })
+
+  it('本次选中压在已收集标记上时以本次选中为准', () => {
+    const text = 'Reading widely makes hard sentences easier.'
+    const source = paragraph({
+      text,
+      sentences: [{ ordinal: 0, text, start: 0, end: text.length, page: 1 }]
+    })
+
+    const blocks = buildReadingBlocks(source, [
+      { entryId: 'entry-1', label: 'hard', start: 21, end: 25 },
+      { entryId: 'entry-1', label: 'hard', start: 21, end: 25, selected: true }
+    ])
+
+    expect(blocks[0]).toMatchObject({
+      kind: 'sentence',
+      parts: [
+        { kind: 'text', text: 'Reading widely makes ' },
+        {
+          kind: 'text',
+          text: 'hard',
+          mark: { entryId: 'entry-1', label: 'hard', selected: true }
+        },
+        { kind: 'text', text: ' sentences easier.' }
+      ]
+    })
+  })
+
+  it('原文注释与已收集标记落在同一个词上时，释义与标记都保留', () => {
+    const source = paragraph({
+      annotations: [
+        { surface: 'Context', gloss: '语境', start: 44, end: 51, sentenceOrdinal: 1 }
+      ]
+    })
+
+    const sentence = buildReadingBlocks(source, [
+      { entryId: 'entry-1', label: 'Context', start: 44, end: 51 }
+    ])[2]
+
+    expect(sentence).toMatchObject({
+      kind: 'sentence',
+      parts: [
+        {
+          kind: 'annotation',
+          text: 'Context',
+          gloss: '语境',
+          start: 44,
+          end: 51,
+          mark: { entryId: 'entry-1', label: 'Context', selected: false }
+        },
+        { kind: 'text', text: ' carries most of the meaning.' }
+      ]
+    })
+    expect(paragraphText(buildReadingBlocks(source))).toBe(source.text)
+  })
+
+  it('相邻的两个已收集标记各自切开，不并成一块', () => {
+    const text = 'Reading widely makes hard sentences easier.'
+    const source = paragraph({
+      text,
+      sentences: [{ ordinal: 0, text, start: 0, end: text.length, page: 1 }]
+    })
+
+    const blocks = buildReadingBlocks(source, [
+      { entryId: 'entry-1', label: 'hard', start: 21, end: 25 },
+      { entryId: 'entry-2', label: 'sentences', start: 26, end: 35 }
+    ])
+
+    expect(blocks[0]).toMatchObject({
+      parts: [
+        { kind: 'text', text: 'Reading widely makes ' },
+        { kind: 'text', text: 'hard', mark: { entryId: 'entry-1' } },
+        { kind: 'text', text: ' ' },
+        { kind: 'text', text: 'sentences', mark: { entryId: 'entry-2' } },
+        { kind: 'text', text: ' easier.' }
+      ]
+    })
+  })
 })

@@ -6,6 +6,12 @@ import type {
   ChatStreamUpdate
 } from './chat'
 import type {
+  CollectSelectionRequest,
+  CollectSelectionResult,
+  DeleteEntrySentenceResult,
+  WordEntryCard
+} from './entries'
+import type {
   ArticleDetail,
   HomeSummary,
   LibraryListing,
@@ -33,6 +39,12 @@ export interface IpcContract {
   'reading:open': { payload: { articleId: string }; result: ReadingView | null }
   'reading:progress': { payload: ReadingProgressRequest; result: ReadingProgressResult }
   'reading:settings': { payload: ReadingSettingsRequest; result: ReadingSettingsResult | null }
+  'reading:collect': { payload: CollectSelectionRequest; result: CollectSelectionResult }
+  'entries:card': { payload: { entryId: string }; result: WordEntryCard | null }
+  'entries:delete-sentence': {
+    payload: { entrySentenceId: string }
+    result: DeleteEntrySentenceResult
+  }
   'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
 }
@@ -57,6 +69,9 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'reading:open': true,
   'reading:progress': true,
   'reading:settings': true,
+  'reading:collect': true,
+  'entries:card': true,
+  'entries:delete-sentence': true,
   'chat:start': true,
   'chat:stop': true
 }

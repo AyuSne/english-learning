@@ -5,6 +5,12 @@ import type {
   LibrarySearchResults
 } from '../../shared/library'
 import type {
+  CollectSelectionRequest,
+  CollectSelectionResult,
+  DeleteEntrySentenceResult,
+  WordEntryCard
+} from '../../shared/entries'
+import type {
   ReadingProgressRequest,
   ReadingProgressResult,
   ReadingSettingsRequest,
@@ -48,4 +54,21 @@ export function saveReadingSettings(
   request: ReadingSettingsRequest
 ): Promise<ReadingSettingsResult | null> {
   return window.api.invoke('reading:settings', request)
+}
+
+/** 收下一次选词：当场建原句、归词条，并拿回这一篇最新的标记。 */
+export function collectSelection(
+  request: CollectSelectionRequest
+): Promise<CollectSelectionResult> {
+  return window.api.invoke('reading:collect', request)
+}
+
+/** 点开一个已收集的词，读它的词条卡与原句。 */
+export function loadWordEntryCard(entryId: string): Promise<WordEntryCard | null> {
+  return window.api.invoke('entries:card', { entryId })
+}
+
+/** 删掉一条原句；词条只剩这一条时连词条一起删。 */
+export function deleteEntrySentence(entrySentenceId: string): Promise<DeleteEntrySentenceResult> {
+  return window.api.invoke('entries:delete-sentence', { entrySentenceId })
 }

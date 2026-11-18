@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { ChatStartResult, ChatStopResult } from '../../shared/chat'
 import type {
+  CollectSelectionResult,
+  DeleteEntrySentenceResult,
+  WordEntryCard
+} from '../../shared/entries'
+import type {
   ArticleDetail,
   HomeSummary,
   LibraryListing,
@@ -67,7 +72,13 @@ function readingHandlers() {
   return {
     'reading:open': (): ReadingView | null => null,
     'reading:progress': (): ReadingProgressResult => ({ saved: false }),
-    'reading:settings': (): ReadingSettingsResult | null => null
+    'reading:settings': (): ReadingSettingsResult | null => null,
+    'reading:collect': (): CollectSelectionResult => ({
+      status: 'rejected',
+      reason: 'article'
+    }),
+    'entries:card': (): WordEntryCard | null => null,
+    'entries:delete-sentence': (): DeleteEntrySentenceResult => ({ status: 'missing' })
   }
 }
 

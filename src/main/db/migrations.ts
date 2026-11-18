@@ -107,6 +107,45 @@ export const migrations: readonly Migration[] = [
         );
       `)
     }
+  },
+  {
+    version: 4,
+    up: (database) => {
+      // 选词的落点：一个词或短语归到一个词条，词条下挂着每条来自阅读的原句。
+      // 同篇同句重复圈同一个词条只保留一条关联；句子没了，关联跟着删。
+      database.exec(`
+        CREATE TABLE word_entry (
+          id                TEXT PRIMARY KEY,
+          main_form         TEXT NOT NULL,
+          normalized_key    TEXT NOT NULL UNIQUE,
+          created_at        TEXT NOT NULL,
+          last_collected_at TEXT NOT NULL
+        );
+
+        CREATE TABLE entry_sentence (
+          id               TEXT PRIMARY KEY,
+          entry_id         TEXT NOT NULL REFERENCES word_entry(id) ON DELETE CASCADE,
+          article_id       TEXT NOT NULL,
+          paragraph_id     TEXT NOT NULL,
+          sentence_ordinal INTEGER NOT NULL,
+          surface          TEXT NOT NULL,
+          char_start       INTEGER NOT NULL,
+          char_end         INTEGER NOT NULL,
+          collected_at     TEXT NOT NULL,
+          UNIQUE (entry_id, article_id, paragraph_id, sentence_ordinal),
+          FOREIGN KEY (article_id, paragraph_id, sentence_ordinal)
+            REFERENCES sentence(article_id, paragraph_id, ordinal) ON DELETE CASCADE
+        );
+
+        CREATE INDEX entry_sentence_article
+          ON entry_sentence (article_id, paragraph_id, sentence_ordinal);
+        CREATE INDEX entry_sentence_entry ON entry_sentence (entry_id);
+
+        -- 重读时给已收集的词做弱高亮，可单独关掉；默认开。
+        ALTER TABLE article_reading_setting
+          ADD COLUMN weak_highlight INTEGER NOT NULL DEFAULT 1;
+      `)
+    }
   }
 ]
 

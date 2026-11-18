@@ -1,3 +1,4 @@
+import type { ReadingCollectionMark } from './entries'
 import type { ArticleDetail, ReadingPoint } from './library'
 
 /**
@@ -18,6 +19,8 @@ export type ReadingPreferences = {
   fontSize: ReadingFontSize
   lineHeight: ReadingLineHeight
   annotationsVisible: boolean
+  /** 重读时是否给已收集的词做弱高亮。 */
+  weakHighlight: boolean
 }
 
 /**
@@ -27,11 +30,12 @@ export type ReadingSettings = ReadingPreferences & {
   source: 'global' | 'article'
 }
 
-/** 产品说明里定下的全局默认：20px、1.8、注释显示。 */
+/** 产品说明里定下的全局默认：20px、1.8、注释显示、弱高亮开。 */
 export const DEFAULT_READING_PREFERENCES: ReadingPreferences = {
   fontSize: 20,
   lineHeight: 1.8,
-  annotationsVisible: true
+  annotationsVisible: true,
+  weakHighlight: true
 }
 
 export function isReadingFontSize(value: unknown): value is ReadingFontSize {
@@ -84,6 +88,8 @@ export type ReadingView = {
   settings: ReadingSettings
   /** 上次读到的位置；没读过时为 null。 */
   readingPoint: ReadingPoint | null
+  /** 这一篇里已收集的表达，重读时做弱高亮，点开是词条卡。 */
+  collected: ReadingCollectionMark[]
 }
 
 export type ReadingProgressRequest = {
