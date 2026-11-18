@@ -15,6 +15,7 @@ import {
   readReadingSettings,
   readReadingView,
   saveReadingPoint,
+  saveReadingPreferences,
   saveReadingSettings
 } from './queries'
 
@@ -279,6 +280,88 @@ describe('saveReadingSettings', () => {
         }
       })
     ).toBeNull()
+  })
+})
+
+describe('saveReadingPreferences', () => {
+  it('写入全局默认，没有本篇覆盖的文章跟着变', () => {
+    const result = saveReadingPreferences(database, {
+      fontSize: 22,
+      lineHeight: 2,
+      annotationsVisible: false,
+      weakHighlight: false
+    })
+
+    expect(result).toEqual({
+      saved: true,
+      preferences: {
+        fontSize: 22,
+        lineHeight: 2,
+        annotationsVisible: false,
+        weakHighlight: false
+      }
+    })
+    expect(readReadingPreferences(database)).toEqual(result.preferences)
+    expect(readReadingSettings(database, olderReading.id)).toEqual({
+      ...result.preferences,
+      source: 'global'
+    })
+  })
+
+  it('已有本篇覆盖的文章不受设置页的全局默认影响', () => {
+    saveReadingSettings(database, {
+      articleId: carefulReading.id,
+      preferences: {
+        fontSize: 16,
+        lineHeight: 1.6,
+        annotationsVisible: false,
+        weakHighlight: false
+      }
+    })
+
+    expect(
+      saveReadingPreferences(database, {
+        fontSize: 22,
+        lineHeight: 2,
+        annotationsVisible: true,
+        weakHighlight: true
+      })
+    ).toMatchObject({ saved: true })
+
+    expect(readReadingSettings(database, carefulReading.id)).toEqual({
+      fontSize: 16,
+      lineHeight: 1.6,
+      annotationsVisible: false,
+      weakHighlight: false,
+      source: 'article'
+    })
+    expect(readReadingSettings(database, olderReading.id)).toMatchObject({
+      fontSize: 22,
+      lineHeight: 2,
+      annotationsVisible: true,
+      weakHighlight: true,
+      source: 'global'
+    })
+  })
+
+  it('不认识的字号或行距不写入，返回当前生效的全局默认', () => {
+    const result = saveReadingPreferences(database, {
+      fontSize: 17 as never,
+      lineHeight: 1.9 as never,
+      annotationsVisible: false,
+      weakHighlight: false
+    })
+
+    expect(result).toEqual({
+      saved: false,
+      preferences: {
+        fontSize: 20,
+        lineHeight: 1.8,
+        annotationsVisible: true,
+        weakHighlight: true
+      }
+    })
+    expect(readReadingPreferences(database).fontSize).toBe(20)
   })
 })
 

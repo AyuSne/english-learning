@@ -1,9 +1,25 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, nativeTheme } from 'electron'
 import { join } from 'node:path'
 import { THEME_PAPER } from '../shared/theme'
-import type { Theme } from '../shared/types'
+import { resolveTheme, type Theme, type ThemePreference } from '../shared/types'
 
-export function createMainWindow(theme: Theme): BrowserWindow {
+/**
+ * 主题偏好落到原生侧：themeSource、窗口底色，返回解析后的实际配色。
+ * 跟随系统时 Windows 改了深浅，调用方用 nativeTheme 的 updated 事件再调一次。
+ */
+export function applyThemePreference(preference: ThemePreference): Theme {
+  nativeTheme.themeSource = preference
+  const theme = resolveTheme(preference, nativeTheme.shouldUseDarkColors)
+  for (const window of BrowserWindow.getAllWindows()) {
+    window.setBackgroundColor(THEME_PAPER[theme])
+  }
+  return theme
+}
+
+export function createMainWindow(themePreference: ThemePreference): BrowserWindow {
+  // 先让 Electron 按偏好解析系统配色，窗口底色与界面首帧才一致。
+  const theme = applyThemePreference(themePreference)
+
   const window = new BrowserWindow({
     width: 1280,
     height: 860,

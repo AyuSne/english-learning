@@ -2,6 +2,7 @@ import type {
   ReadingAnnotation,
   ReadingParagraph,
   ReadingPreferences,
+  ReadingPreferencesResult,
   ReadingProgressRequest,
   ReadingProgressResult,
   ReadingSentence,
@@ -18,7 +19,7 @@ import {
   READING_LINE_HEIGHTS
 } from '../../shared/reading'
 import type { AppDatabase } from '../db/database'
-import { readSetting } from '../db/settings'
+import { readSetting, writeSetting } from '../db/settings'
 import { paragraphLetter } from '../corpus/letter'
 import { readArticleCollections } from '../entries/queries'
 import { openArticle, readArticleDetail, readReadingPoint } from '../library/queries'
@@ -105,6 +106,38 @@ export function readReadingPreferences(database: AppDatabase): ReadingPreference
   }
 }
 
+function isReadingPreferences(value: ReadingPreferences): boolean {
+  return (
+    isReadingFontSize(value.fontSize) &&
+    isReadingLineHeight(value.lineHeight) &&
+    typeof value.annotationsVisible === 'boolean' &&
+    typeof value.weakHighlight === 'boolean'
+  )
+}
+
+/**
+ * 设置页存的全局默认。只写 setting 表，不碰任何一篇的覆盖值：
+ * 已按篇调过的文章继续用自己那份，没调过的文章下次打开跟着新默认走。
+ */
+export function saveReadingPreferences(
+  database: AppDatabase,
+  preferences: ReadingPreferences
+): ReadingPreferencesResult {
+  if (!isReadingPreferences(preferences)) {
+    return { saved: false, preferences: readReadingPreferences(database) }
+  }
+
+  const write = database.transaction(() => {
+    writeSetting(database, SETTING_KEYS.fontSize, String(preferences.fontSize))
+    writeSetting(database, SETTING_KEYS.lineHeight, String(preferences.lineHeight))
+    writeSetting(database, SETTING_KEYS.annotationsVisible, preferences.annotationsVisible ? '1' : '0')
+    writeSetting(database, SETTING_KEYS.weakHighlight, preferences.weakHighlight ? '1' : '0')
+  })
+  write()
+
+  return { saved: true, preferences: readReadingPreferences(database) }
+}
+
 function articleExists(database: AppDatabase, articleId: string): boolean {
   return (
     database.prepare('SELECT 1 FROM article WHERE id = ?').get(articleId) !== undefined
@@ -179,12 +212,7 @@ export function saveReadingSettings(
   }
 
   const { preferences } = request
-  if (
-    !isReadingFontSize(preferences.fontSize) ||
-    !isReadingLineHeight(preferences.lineHeight) ||
-    typeof preferences.annotationsVisible !== 'boolean' ||
-    typeof preferences.weakHighlight !== 'boolean'
-  ) {
+  if (!isReadingPreferences(preferences)) {
     return { saved: false, settings: current }
   }
 

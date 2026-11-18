@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
-import type { AppBootstrap } from '../../shared/types'
+import { resolveTheme, type AppBootstrap } from '../../shared/types'
 import { loadBootstrap } from './api'
 import { setChatModel } from './chat/store'
 import { GlobalNav } from './components/GlobalNav'
-import { routeLabel } from './navigation'
 import { ChatPage } from './pages/ChatPage'
 import { EntriesPage } from './pages/EntriesPage'
 import { HomePage } from './pages/HomePage'
 import { LibraryPage } from './pages/LibraryPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
 import { ReadingPage } from './pages/ReadingPage'
+import { SettingsPage } from './pages/SettingsPage'
+import { setThemePreference, useSystemPrefersDark, useThemePreference } from './theme'
 import { useView } from './use-view'
 
 export function App() {
   const view = useView()
+  const themePreference = useThemePreference()
+  const systemPrefersDark = useSystemPrefersDark()
   const [bootstrap, setBootstrap] = useState<AppBootstrap | null>(null)
   const [bootError, setBootError] = useState<string | null>(null)
 
@@ -23,6 +25,7 @@ export function App() {
       (value) => {
         if (active) {
           setChatModel(value.chatModel)
+          setThemePreference(value.theme)
           setBootstrap(value)
         }
       },
@@ -35,11 +38,13 @@ export function App() {
     }
   }, [])
 
+  // 跟随系统时，Windows 切深浅不用重启；浅色与深色则按选择固定。
   useEffect(() => {
-    if (bootstrap) {
-      document.documentElement.dataset.theme = bootstrap.theme
-    }
-  }, [bootstrap])
+    document.documentElement.dataset.theme = resolveTheme(
+      themePreference,
+      systemPrefersDark
+    )
+  }, [themePreference, systemPrefersDark])
 
   if (bootError !== null) {
     return (
@@ -54,7 +59,7 @@ export function App() {
     return <div className="boot" aria-busy="true" />
   }
 
-  // 阅读页收起全局栏，注意力只留在文章上。其余五页保留左栏。
+  // 阅读页收起全局栏，注意力只留在文章上；其余五页保留左栏。
   if (view.route === 'reading') {
     return (
       <ReadingPage
@@ -65,12 +70,17 @@ export function App() {
     )
   }
 
-  const currentLabel = routeLabel(view.route)
+  const mainClass =
+    view.route === 'chat'
+      ? 'main main-chat'
+      : view.route === 'settings'
+        ? 'main main-settings'
+        : 'main'
 
   return (
     <div className="app">
       <GlobalNav route={view.route} />
-      <main className={view.route === 'chat' ? 'main main-chat' : 'main'}>
+      <main className={mainClass}>
         {view.route === 'home' ? (
           <HomePage />
         ) : view.route === 'entries' ? (
@@ -84,7 +94,7 @@ export function App() {
         ) : view.route === 'library' ? (
           <LibraryPage corpusImport={bootstrap.corpusImport} />
         ) : (
-          <PlaceholderPage title={currentLabel} />
+          <SettingsPage />
         )}
       </main>
     </div>

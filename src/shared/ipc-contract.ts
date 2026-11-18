@@ -49,12 +49,25 @@ import type {
   RestorePinsResult
 } from './pins'
 import type {
+  ReadingPreferences,
   ReadingProgressRequest,
   ReadingProgressResult,
+  ReadingPreferencesResult,
   ReadingSettingsRequest,
   ReadingSettingsResult,
   ReadingView
 } from './reading'
+import type {
+  ActivateModelProfileResult,
+  DeleteModelProfileResult,
+  OpenDataDirectoryResult,
+  SaveModelProfileRequest,
+  SaveModelProfileResult,
+  SaveThemeRequest,
+  SaveThemeResult,
+  SettingsOverview,
+  VerifyModelProfileResult
+} from './settings'
 import type {
   AskThreadRequest,
   ChatThreadView,
@@ -148,6 +161,32 @@ export interface IpcContract {
   'pins:file-all': { payload: FileAllUnfiledRequest; result: FileAllUnfiledResult }
   'pins:restore': { payload: RestorePinsRequest; result: RestorePinsResult }
   'pins:source': { payload: { pinId: string }; result: PinSourceResult }
+  'settings:overview': { payload: undefined; result: SettingsOverview }
+  'settings:profile-save': {
+    payload: SaveModelProfileRequest
+    result: SaveModelProfileResult
+  }
+  'settings:profile-activate': {
+    payload: { profileId: string }
+    result: ActivateModelProfileResult
+  }
+  'settings:profile-delete': {
+    payload: { profileId: string }
+    result: DeleteModelProfileResult
+  }
+  'settings:profile-verify': {
+    payload: { profileId: string | null }
+    result: VerifyModelProfileResult
+  }
+  'settings:reading-save': {
+    payload: { preferences: ReadingPreferences }
+    result: ReadingPreferencesResult
+  }
+  'settings:theme-save': { payload: SaveThemeRequest; result: SaveThemeResult }
+  'settings:open-data-directory': {
+    payload: undefined
+    result: OpenDataDirectoryResult
+  }
 }
 
 /**
@@ -205,7 +244,15 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'pins:delete': true,
   'pins:file-all': true,
   'pins:restore': true,
-  'pins:source': true
+  'pins:source': true,
+  'settings:overview': true,
+  'settings:profile-save': true,
+  'settings:profile-activate': true,
+  'settings:profile-delete': true,
+  'settings:profile-verify': true,
+  'settings:reading-save': true,
+  'settings:theme-save': true,
+  'settings:open-data-directory': true
 }
 
 const EVENT_CHANNEL_TABLE: Record<IpcEventChannel, true> = {

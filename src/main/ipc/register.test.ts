@@ -34,6 +34,7 @@ import type {
   ReadingSettingsResult,
   ReadingView
 } from '../../shared/reading'
+import type { SettingsOverview } from '../../shared/settings'
 import type {
   ChatThreadView,
   CreateThreadResult,
@@ -167,6 +168,51 @@ function pinsHandlers() {
   }
 }
 
+const settingsOverview: SettingsOverview = {
+  profiles: [],
+  activeId: null,
+  activeModel: '',
+  reading: {
+    fontSize: 20,
+    lineHeight: 1.8,
+    annotationsVisible: true,
+    weakHighlight: true
+  },
+  theme: 'light',
+  appVersion: '0.1.0',
+  electronVersion: '45.0.0',
+  dataDirectory: 'C:/data'
+}
+
+function settingsHandlers() {
+  return {
+    'settings:overview': (): SettingsOverview => settingsOverview,
+    'settings:profile-save': () => ({
+      status: 'saved' as const,
+      overview: settingsOverview,
+      profileId: 'profile-1'
+    }),
+    'settings:profile-activate': () => ({
+      status: 'activated' as const,
+      overview: settingsOverview
+    }),
+    'settings:profile-delete': () => ({
+      status: 'deleted' as const,
+      overview: settingsOverview
+    }),
+    'settings:profile-verify': () => ({
+      status: 'verified' as const,
+      overview: settingsOverview
+    }),
+    'settings:reading-save': () => ({
+      saved: true,
+      preferences: settingsOverview.reading
+    }),
+    'settings:theme-save': () => ({ saved: true, theme: 'light' as const }),
+    'settings:open-data-directory': () => ({ opened: true, path: 'C:/data' })
+  }
+}
+
 describe('registerIpcHandlers', () => {
   it('按契约注册每个 channel，调用时转给对应处理函数并传入调用事件', () => {
     const { ipc, registered } = fakeIpcMain()
@@ -180,6 +226,7 @@ describe('registerIpcHandlers', () => {
       ...entriesHandlers(),
       ...pinsHandlers(),
       ...dictionaryHandlers(),
+      ...settingsHandlers(),
       'app:bootstrap': (payload, event) => {
         received.push(payload)
         events.push(event)
@@ -213,6 +260,7 @@ describe('registerIpcHandlers', () => {
       ...entriesHandlers(),
       ...pinsHandlers(),
       ...dictionaryHandlers(),
+      ...settingsHandlers(),
       'app:bootstrap': () => bootstrap,
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers

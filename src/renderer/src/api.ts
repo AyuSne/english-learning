@@ -42,12 +42,24 @@ import type {
   RestorePinsResult
 } from '../../shared/pins'
 import type {
+  ReadingPreferences,
   ReadingProgressRequest,
   ReadingProgressResult,
+  ReadingPreferencesResult,
   ReadingSettingsRequest,
   ReadingSettingsResult,
   ReadingView
 } from '../../shared/reading'
+import type {
+  ActivateModelProfileResult,
+  DeleteModelProfileResult,
+  OpenDataDirectoryResult,
+  SaveModelProfileRequest,
+  SaveModelProfileResult,
+  SaveThemeResult,
+  SettingsOverview,
+  VerifyModelProfileResult
+} from '../../shared/settings'
 import type {
   AskThreadRequest,
   ChatThreadView,
@@ -66,7 +78,7 @@ import type {
   UpdateThreadContextRequest,
   UpdateThreadContextResult
 } from '../../shared/threads'
-import type { AppBootstrap } from '../../shared/types'
+import type { AppBootstrap, ThemePreference } from '../../shared/types'
 
 export function loadBootstrap(): Promise<AppBootstrap> {
   return window.api.invoke('app:bootstrap')
@@ -292,4 +304,53 @@ export function restorePins(request: RestorePinsRequest): Promise<RestorePinsRes
 /** 从学习内容点「来源」：拿到线程与这条回答在不在当前分支。 */
 export function loadPinSource(pinId: string): Promise<PinSourceResult> {
   return window.api.invoke('pins:source', { pinId })
+}
+
+/* ---------- 设置 ---------- */
+
+/** 设置页一次读全：模型配置、阅读默认、主题、版本与数据目录。 */
+export function loadSettingsOverview(): Promise<SettingsOverview> {
+  return window.api.invoke('settings:overview')
+}
+
+/** 新增或编辑一套配置；填了新密钥时主进程会先校验再决定存不存。 */
+export function saveModelProfile(
+  request: SaveModelProfileRequest
+): Promise<SaveModelProfileResult> {
+  return window.api.invoke('settings:profile-save', request)
+}
+
+export function activateModelProfile(
+  profileId: string
+): Promise<ActivateModelProfileResult> {
+  return window.api.invoke('settings:profile-activate', { profileId })
+}
+
+export function deleteModelProfile(
+  profileId: string
+): Promise<DeleteModelProfileResult> {
+  return window.api.invoke('settings:profile-delete', { profileId })
+}
+
+/** 测试当前连接；不传 id 时测使用中的那套。 */
+export function verifyModelProfile(
+  profileId: string | null
+): Promise<VerifyModelProfileResult> {
+  return window.api.invoke('settings:profile-verify', { profileId })
+}
+
+/** 改全局阅读默认；单篇覆盖不受影响。 */
+export function saveReadingPreferences(
+  preferences: ReadingPreferences
+): Promise<ReadingPreferencesResult> {
+  return window.api.invoke('settings:reading-save', { preferences })
+}
+
+/** 浅色 / 深色 / 跟随系统。 */
+export function saveTheme(theme: ThemePreference): Promise<SaveThemeResult> {
+  return window.api.invoke('settings:theme-save', { theme })
+}
+
+export function openDataDirectory(): Promise<OpenDataDirectoryResult> {
+  return window.api.invoke('settings:open-data-directory')
 }

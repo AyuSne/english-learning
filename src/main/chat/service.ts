@@ -14,13 +14,18 @@ export type ChatService = {
   stop(streamId: string): ChatStopResult
 }
 
+export type ChatServiceOptions = {
+  /** 每次 start 时重新解析：设置页切换配置只影响之后的调用。 */
+  resolveConfig: () => ChatConfig | null
+  /** 一次完整成功的调用之后把对应配置标成已验证。 */
+  onVerified?: (profileId: string) => void
+}
+
 /**
  * 一次生成的生命周期：start 立刻返回，事件经 send 推给调用方；stop 本地中断，
  * 已发出的内容由渲染层保留。同一 streamId 不会被启动两次。
  */
-export function createChatService(options: {
-  config: ChatConfig | null
-}): ChatService {
+export function createChatService(options: ChatServiceOptions): ChatService {
   const active = new Map<string, AbortController>()
 
   return {
@@ -32,6 +37,8 @@ export function createChatService(options: {
       const controller = new AbortController()
       active.set(request.streamId, controller)
 
+      const config = options.resolveConfig()
+
       // 窗口可能在生成中途关闭；发事件失败不该把主进程的流带崩。
       const emit: ChatUpdateSender = (update) => {
         try {
@@ -39,9 +46,16 @@ export function createChatService(options: {
         } catch {
           // 接收方已不在。
         }
+        if (update.event.type === 'done' && config?.profileId !== undefined) {
+          try {
+            options.onVerified?.(config.profileId)
+          } catch {
+            // 回写状态失败不影响这次回答。
+          }
+        }
       }
 
-      void runStream(request, emit, controller, options.config)
+      void runStream(request, emit, controller, config)
         .catch(() => {
           if (!controller.signal.aborted) {
             emit({

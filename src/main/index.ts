@@ -1,8 +1,8 @@
-import { app, dialog, ipcMain, Menu } from 'electron'
+import { app, dialog, ipcMain, Menu, nativeTheme, shell } from 'electron'
 import { mkdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { createBootstrap } from './app-bootstrap'
-import { readChatConfig } from './chat/config'
+import { readChatConfig, resolveChatConfig } from './chat/config'
 import { createChatService } from './chat/service'
 import {
   askQuestion,
@@ -21,7 +21,7 @@ import { importCorpus } from './corpus/import'
 import type { AppDatabase } from './db/database'
 import { openDatabase } from './db/database'
 import { migrate } from './db/migrations'
-import { readTheme } from './db/settings'
+import { readThemePreference } from './db/settings'
 import { missingDictionary, openDictionary, type Dictionary } from './dictionary/dictionary'
 import {
   changeEntryMainForm,
@@ -53,6 +53,7 @@ import {
 import {
   openReadingView,
   saveReadingPoint,
+  saveReadingPreferences,
   saveReadingSettings
 } from './reading/queries'
 import {
@@ -64,7 +65,18 @@ import {
   readPinSource,
   restorePins
 } from './pins/pins'
-import { createMainWindow } from './window'
+import { createElectronSecretStore } from './settings/electron-secrets'
+import {
+  activateProfile,
+  deleteProfile,
+  readSettingsOverview,
+  saveModelProfile,
+  verifySavedModelProfile
+} from './settings/operations'
+import { markProfileVerified } from './settings/profiles'
+import { saveThemePreference } from './settings/theme'
+import { verifyModelProfile } from './settings/verify'
+import { applyThemePreference, createMainWindow } from './window'
 
 const DATABASE_FILE = 'english-learning.db'
 /** 构建时把 docs/corpus 的 JSON 复制到主进程产物旁边。 */
@@ -122,7 +134,6 @@ function start(): void {
 
   const opened = openDatabase(join(userDataDirectory, DATABASE_FILE))
   database = opened
-
   const outcome = migrate(opened)
   if (outcome.applied.length > 0) {
     console.log(`[db] schema ${outcome.from} → ${outcome.to}`)
@@ -142,9 +153,21 @@ function start(): void {
     )
   }
 
-  const chatConfig = readChatConfig(process.env)
-  const chat = createChatService({ config: chatConfig })
-  /** 当前配置的模型名：给启动值保存回答用，也给钉住出处兜底。 */
+  // 密钥只经 safeStorage 加密保存；环境变量里的配置仍是没设本机配置时的退路。
+  const secrets = createElectronSecretStore()
+  const settingsOptions = () => ({
+    secrets,
+    fallbackModel: readChatConfig(process.env)?.model ?? '',
+    appVersion: app.getVersion(),
+    electronVersion: process.versions.electron ?? '',
+    dataDirectory: userDataDirectory
+  })
+  const chatConfig = resolveChatConfig(opened, secrets, process.env)
+  const chat = createChatService({
+    resolveConfig: () => resolveChatConfig(opened, secrets, process.env),
+    onVerified: (profileId) => markProfileVerified(opened, profileId)
+  })
+  /** 启动时的模型名：给启动值保存回答用，也给钉住出处兜底。 */
   const configuredModel = chatConfig?.model ?? ''
 
   // 词典查不到就换成「不可用」的替身：界面明说查不了，阅读与对话照常能用。
@@ -200,17 +223,61 @@ function start(): void {
     'chat:candidates': (payload) => readContextCandidates(opened, payload.threadId),
     'chat:switch-question': (payload) => switchQuestion(opened, payload),
     'chat:switch-answer': (payload) => switchAnswer(opened, payload),
-    'pins:create': (payload) => createPin(opened, payload, { model: configuredModel }),
+    'pins:create': (payload) =>
+      createPin(opened, payload, {
+        model: resolveChatConfig(opened, secrets, process.env)?.model ?? ''
+      }),
     'pins:board': (payload) => readPinBoard(opened, payload.threadId),
     'pins:move': (payload) => movePin(opened, payload),
     'pins:delete': (payload) => deletePin(opened, payload),
     'pins:file-all': (payload) => fileAllUnfiled(opened, payload),
     'pins:restore': (payload) => restorePins(opened, payload),
-    'pins:source': (payload) => readPinSource(opened, payload.pinId)
+    'pins:source': (payload) => readPinSource(opened, payload.pinId),
+    'settings:overview': () => readSettingsOverview(opened, settingsOptions()),
+    'settings:profile-save': (payload) =>
+      saveModelProfile(opened, payload, {
+        ...settingsOptions(),
+        verify: verifyModelProfile
+      }),
+    'settings:profile-activate': (payload) =>
+      activateProfile(opened, payload.profileId, settingsOptions()),
+    'settings:profile-delete': (payload) =>
+      deleteProfile(opened, payload.profileId, settingsOptions()),
+    'settings:profile-verify': (payload) =>
+      verifySavedModelProfile(opened, payload.profileId, {
+        ...settingsOptions(),
+        verify: verifyModelProfile
+      }),
+    'settings:reading-save': (payload) => saveReadingPreferences(opened, payload.preferences),
+    'settings:theme-save': (payload) => {
+      const result = saveThemePreference(opened, payload.theme)
+      if (result.saved) {
+        applyThemePreference(result.theme)
+      }
+      return result
+    },
+    'settings:open-data-directory': async () => {
+      const failure = await shell.openPath(userDataDirectory)
+      return { opened: failure === '', path: userDataDirectory }
+    }
   })
 
   Menu.setApplicationMenu(null)
-  createMainWindow(readTheme(opened))
+  createMainWindow(readThemePreference(opened))
+  keepWindowBackdropInSync(opened)
+}
+
+/**
+ * 跟随系统时，Windows 改了深浅后原生窗口底色也要跟着；
+ * 否则下次最小化 / 缩放会闪一下旧底色。浅色与深色选择下改的是 interface 本身，
+ * 这里只看 DB 里存的偏好，不跟界面的临时状态。
+ */
+function keepWindowBackdropInSync(database: AppDatabase): void {
+  nativeTheme.on('updated', () => {
+    if (readThemePreference(database) === 'system') {
+      applyThemePreference('system')
+    }
+  })
 }
 
 function closeResources(): void {

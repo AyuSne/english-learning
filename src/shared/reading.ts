@@ -112,3 +112,9 @@ export type ReadingSettingsResult = {
   saved: boolean
   settings: ReadingSettings
 }
+
+/** 设置页保存全局默认的结果；值不合法时不写入，带回当前生效值。 */
+export type ReadingPreferencesResult = {
+  saved: boolean
+  preferences: ReadingPreferences
+}

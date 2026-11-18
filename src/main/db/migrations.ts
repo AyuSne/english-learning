@@ -232,6 +232,31 @@ export const migrations: readonly Migration[] = [
         CREATE INDEX pin_unfiled ON pin (created_at DESC) WHERE target_kind = 'unfiled';
       `)
     }
+  },
+  {
+    version: 8,
+    up: (database) => {
+      // 多套模型服务配置。密钥只存 safeStorage（DPAPI）加密后的密文，明文不落库；
+      // 校验状态区分「确实通过」与「还没验证」，断网时可以先存着，成功调用后自动转已验证。
+      // 备份必须跳过 api_key_secret 这一列，密钥默认不进备份（见 #36）。
+      database.exec(`
+        CREATE TABLE model_profile (
+          id               TEXT PRIMARY KEY,
+          name             TEXT NOT NULL,
+          base_url         TEXT NOT NULL,
+          model            TEXT NOT NULL,
+          api_key_secret   TEXT,
+          verification     TEXT NOT NULL DEFAULT 'unverified',
+          last_error       TEXT,
+          last_checked_at  TEXT,
+          last_verified_at TEXT,
+          created_at       TEXT NOT NULL,
+          updated_at       TEXT NOT NULL
+        );
+
+        CREATE INDEX model_profile_created ON model_profile (created_at);
+      `)
+    }
   }
 ]
 

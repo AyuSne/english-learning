@@ -16,7 +16,7 @@ describe('describeChatError', () => {
       status: 401,
       title: '密钥无效（401）',
       detail: /这次生成没有开始/,
-      action: /换一个有效的 API 密钥/,
+      action: /设置 → 模型服务/,
       retryable: false
     },
     {
@@ -59,7 +59,7 @@ describe('describeChatError', () => {
       code: 'not-configured',
       title: '还没有配置模型服务',
       detail: /这次生成没有开始/,
-      action: /DEEPSEEK_API_KEY/,
+      action: /设置 → 模型服务/,
       retryable: false
     },
     {

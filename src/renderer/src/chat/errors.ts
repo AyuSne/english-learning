@@ -18,7 +18,7 @@ export function describeChatError(error: ChatError): ChatErrorPresentation {
       return {
         title: withStatus('密钥无效', error),
         detail: '这次生成没有开始。',
-        action: '换一个有效的 API 密钥，然后重新启动应用。',
+        action: '到设置 → 模型服务里换一个有效的 API 密钥。',
         retryable: false
       }
     case 'insufficient-balance':
@@ -57,7 +57,7 @@ export function describeChatError(error: ChatError): ChatErrorPresentation {
       return {
         title: '还没有配置模型服务',
         detail: '这次生成没有开始。',
-        action: '在环境变量 DEEPSEEK_API_KEY 里填入密钥，再重新启动应用。',
+        action: '到设置 → 模型服务里新增一套配置，填上接口地址、模型名与密钥。',
         retryable: false
       }
     case 'unknown':

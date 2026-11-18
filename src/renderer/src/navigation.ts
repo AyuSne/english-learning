@@ -11,7 +11,3 @@ export const NAV_ITEMS: readonly { route: Route; label: string }[] = [
   { route: 'library', label: '文章库' },
   { route: 'settings', label: '设置' }
 ]
-
-export function routeLabel(route: Route): string {
-  return NAV_ITEMS.find((item) => item.route === route)?.label ?? '素读'
-}

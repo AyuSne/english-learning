@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { ChatStreamEvent, ChatStreamUpdate } from '../../shared/chat'
 import {
   startSseStub,
-  unusedBaseUrl,
   type SseStub,
   type StubScript
 } from '../../testing/sse-stub'
@@ -67,7 +66,7 @@ describe('createChatService', () => {
       chunkDelayMs: 5,
       textDelayMs: 20
     })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
     expect(
@@ -103,7 +102,7 @@ describe('createChatService', () => {
       chunkDelayMs: 1,
       textDelayMs: 5
     })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
     service.start({ streamId: 'stream-fragmented', messages: [userTurn] }, send)
@@ -126,7 +125,7 @@ describe('createChatService', () => {
     [400, 'unknown']
   ] as const)('HTTP %i 归为 %s，并保留状态码与 request id', async (status, code) => {
     const target = await stub({ kind: 'status', status })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
     service.start({ streamId: `stream-${status}`, messages: [userTurn] }, send)
@@ -145,7 +144,7 @@ describe('createChatService', () => {
       thinking: ['想'],
       text: ['半句']
     })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
     service.start({ streamId: 'stream-truncate', messages: [userTurn] }, send)
@@ -162,7 +161,7 @@ describe('createChatService', () => {
       thinking: ['想'],
       text: ['半句']
     })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
     service.start({ streamId: 'stream-end-early', messages: [userTurn] }, send)
@@ -173,12 +172,13 @@ describe('createChatService', () => {
     expect(events.some((candidate) => candidate.type === 'done')).toBe(false)
   })
 
-  it('连不上模型服务时归为网络异常', async () => {    const service = createChatService({
-      config: {
+  it('连不上模型服务时归为网络异常', async () => {
+    const service = createChatService({
+      resolveConfig: () => ({
         apiKey: 'test-key',
-        baseUrl: await unusedBaseUrl(),
+        baseUrl: 'http://127.0.0.1:1',
         model: 'deepseek-flash'
-      }
+      })
     })
     const { events, send, waitFor } = collector()
 
@@ -193,7 +193,7 @@ describe('createChatService', () => {
   })
 
   it('没有配置密钥时给出配置错误，不发起请求', async () => {
-    const service = createChatService({ config: null })
+    const service = createChatService({ resolveConfig: () => null })
     const { events, send, waitFor } = collector()
 
     service.start({ streamId: 'stream-config', messages: [userTurn] }, send)
@@ -206,7 +206,7 @@ describe('createChatService', () => {
 
   it('停止会中断请求，已收到的内容保留，且不再补发 done 或 error', async () => {
     const target = await stub({ kind: 'hang', thinking: ['想'], text: ['半句'] })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
     service.start({ streamId: 'stream-stop', messages: [userTurn] }, send)
@@ -227,7 +227,7 @@ describe('createChatService', () => {
 
   it('同一 streamId 不会被启动两次', async () => {
     const target = await stub({ kind: 'hang' })
-    const service = createChatService({ config: configFor(target) })
+    const service = createChatService({ resolveConfig: () => configFor(target) })
     const { send } = collector()
 
     expect(
@@ -238,6 +238,58 @@ describe('createChatService', () => {
     ).toEqual({ accepted: false })
 
     service.stop('stream-duplicate')
+  })
+})
+
+describe('配置回写与切换', () => {
+  it('一次成功调用后把使用中的配置标成已验证', async () => {
+    const target = await stub({ kind: 'stream', text: ['答'] })
+    const verified: string[] = []
+    const service = createChatService({
+      resolveConfig: () => ({ ...configFor(target), profileId: 'profile-1' }),
+      onVerified: (profileId) => verified.push(profileId)
+    })
+    const { send, waitFor } = collector()
+
+    service.start({ streamId: 'stream-verified', messages: [userTurn] }, send)
+    await waitFor((current) => current.some((event) => event.type === 'done'))
+
+    expect(verified).toEqual(['profile-1'])
+  })
+
+  it('出错时不把配置标成已验证', async () => {
+    const target = await stub({ kind: 'status', status: 500 })
+    const verified: string[] = []
+    const service = createChatService({
+      resolveConfig: () => ({ ...configFor(target), profileId: 'profile-1' }),
+      onVerified: (profileId) => verified.push(profileId)
+    })
+    const { send, waitFor } = collector()
+
+    service.start({ streamId: 'stream-failed', messages: [userTurn] }, send)
+    await waitFor((current) => current.some((event) => event.type === 'error'))
+
+    expect(verified).toEqual([])
+  })
+
+  it('每次调用重新解析配置，切换只影响之后的调用', async () => {
+    const first = await stub({ kind: 'stream', text: ['一'] })
+    const second = await stub({ kind: 'stream', text: ['二'] })
+    let current: ChatConfig = configFor(first)
+    const service = createChatService({ resolveConfig: () => current })
+    const { send, waitFor } = collector()
+
+    service.start({ streamId: 'stream-first', messages: [userTurn] }, send)
+    await waitFor((events) => events.some((event) => event.type === 'done'))
+
+    current = { ...configFor(second), model: 'deepseek-v4-pro' }
+    service.start({ streamId: 'stream-second', messages: [userTurn] }, send)
+    await waitFor(
+      (events) => events.filter((event) => event.type === 'done').length === 2
+    )
+
+    expect(first.requests[0]?.body.model).toBe('deepseek-flash')
+    expect(second.requests[0]?.body.model).toBe('deepseek-v4-pro')
   })
 })
 

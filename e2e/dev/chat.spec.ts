@@ -122,7 +122,7 @@ test.describe('空白线程的流式与思维链', () => {
       }
 
       if (scenario.status === 401) {
-        await expect(alert).toContainText('下一步：换一个有效的 API 密钥')
+        await expect(alert).toContainText('下一步：到设置 → 模型服务里换一个有效的 API 密钥')
         await expect(alert).toContainText('请求 ID：stub-401')
       }
 
