@@ -257,6 +257,19 @@ export const migrations: readonly Migration[] = [
         CREATE INDEX model_profile_created ON model_profile (created_at);
       `)
     }
+  },
+  {
+    version: 9,
+    up: (database) => {
+      // 早期构建把 article 的库内顺序列叫 position；后来实现里改成了 ordinal。
+      // 迁移只在版本号落后时跑，所以这些老库停在 8 却带着旧列名，必须单独修一次。
+      const columns = database.pragma('table_info(article)') as { name: string }[]
+      const hasPosition = columns.some((column) => column.name === 'position')
+      const hasOrdinal = columns.some((column) => column.name === 'ordinal')
+      if (hasPosition && !hasOrdinal) {
+        database.exec('ALTER TABLE article RENAME COLUMN position TO ordinal')
+      }
+    }
   }
 ]
 

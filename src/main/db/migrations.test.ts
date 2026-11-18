@@ -116,4 +116,36 @@ describe('migrate', () => {
     expect(() => insertNote.run('note-2', 1)).toThrow(/UNIQUE/)
     expect(() => insertNote.run('note-3', 0)).not.toThrow()
   })
+
+  it('把旧库的 article.position 换成 ordinal，已导入的文章一条不丢', () => {
+    migrate(database)
+    // 还原早期构建留下的库：列名是 position，但 user_version 已经走到 8。
+    database.exec('ALTER TABLE article RENAME COLUMN ordinal TO position')
+    database.pragma('user_version = 8')
+    database
+      .prepare(
+        `INSERT INTO article (
+           id, title, kind, kind_label, session_key, session_label, set_label,
+           exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+           source_sha256, page_start, page_end, position
+         ) VALUES (
+           'cet6-2023-06-s1-b', '2023年6月 · 第1套 · 长篇匹配', 'long_match', '长篇匹配',
+           '2023-06', '2023年6月', '第1套', 2023, 6, 1, 3, 'Body text.', 'a.pdf',
+           'sha', 1, 2, 7
+         )`
+      )
+      .run()
+
+    const outcome = migrate(database)
+
+    expect(outcome.applied).toEqual([9])
+    const columns = (database.pragma('table_info(article)') as { name: string }[]).map(
+      (column) => column.name
+    )
+    expect(columns).toContain('ordinal')
+    expect(columns).not.toContain('position')
+    expect(
+      database.prepare('SELECT id, ordinal FROM article').get()
+    ).toEqual({ id: 'cet6-2023-06-s1-b', ordinal: 7 })
+  })
 })
