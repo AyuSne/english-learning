@@ -100,6 +100,54 @@
   margin-bottom: 24px;
 }
 
+/* 生成文章单独一段：与真题场次同一种列表节奏，但头部不写场次。 */
+.library-ai-section {
+  margin-bottom: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.library-ai-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.library-ai-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.library-ai-empty .empty-line {
+  margin: 0;
+}
+
+.library-source-words {
+  margin: 12px 0;
+}
+
+.library-source-word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.library-source-missing {
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
 .library-session-head {
   display: flex;
   align-items: baseline;

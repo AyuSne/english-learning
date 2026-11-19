@@ -426,6 +426,38 @@ describe('用一组词开线程', () => {
     expect(threads.every((thread) => thread.mainKind === 'none')).toBe(true)
   })
 
+  it('每一问都带提这一问时的词数快照，之后改线程上下文不改变它', () => {
+    const seeded = seed()
+    const created = createGroupThread(
+      database,
+      { entryIds: [seeded.approachEntryId, seeded.contextEntryId] },
+      { now: T4 }
+    )
+    if (created.status !== 'created') throw new Error('线程没建起来')
+    const asked = askQuestion(
+      database,
+      { threadId: created.thread.id, text: '用这两个词写一段话。' },
+      { now: T4 }
+    )
+    if (asked.status !== 'asked') throw new Error('提问没写进去')
+
+    const before = readThreadView(database, created.thread.id)
+    expect(before?.turns[0]?.question.wordCount).toBe(2)
+
+    // 回答之后把上下文改成只剩一个词：这一问的来源快照仍是两个词。
+    updateThreadContext(
+      database,
+      {
+        threadId: created.thread.id,
+        items: before?.context.filter((item) => item.id === `word:${seeded.approachEntryId}`) ?? []
+      },
+      { now: T4 }
+    )
+    const after = readThreadView(database, created.thread.id)
+    expect(after?.contextSummary.wordCount).toBe(1)
+    expect(after?.turns[0]?.question.wordCount).toBe(2)
+  })
+
   it('重复词条只算一个；空选择、缺失词条与超过 20 个词条都被拒绝，不静默少词', () => {
     const ids = collectManyWords(21)
     const twenty = createGroupThread(database, { entryIds: ids.slice(0, 20) }, { now: T4 })

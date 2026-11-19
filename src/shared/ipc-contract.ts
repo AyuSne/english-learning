@@ -43,7 +43,9 @@ import type {
   LibrarySearchResults,
   MarkArticleCompletedResult,
   RenameArticleRequest,
-  RenameArticleResult
+  RenameArticleResult,
+  SaveGeneratedArticleRequest,
+  SaveGeneratedArticleResult
 } from './library'
 import type {
   CopyLearningInstructionRequest,
@@ -133,6 +135,10 @@ export interface IpcContract {
     result: ArticleDeletionPreview | null
   }
   'library:delete': { payload: DeleteArticleRequest; result: DeleteArticleResult }
+  'library:save-generated': {
+    payload: SaveGeneratedArticleRequest
+    result: SaveGeneratedArticleResult
+  }
   'reading:open': { payload: { articleId: string }; result: ReadingView | null }
   'reading:words': { payload: { articleId: string }; result: ArticleWordsView | null }
   'reading:complete': {
@@ -279,6 +285,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'library:rename': true,
   'library:delete-preview': true,
   'library:delete': true,
+  'library:save-generated': true,
   'reading:open': true,
   'reading:words': true,
   'reading:complete': true,

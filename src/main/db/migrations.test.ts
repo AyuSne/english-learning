@@ -145,7 +145,7 @@ describe('migrate', () => {
     expect(outcome.from).toBe(8)
     // 后缀按实际排在 position→ordinal 之后的迁移逐条写出来，不靠「迁到最新」一句带过：
     // 10 是稍后看表，11 是完成时间列，12 是学习指令表。
-    expect(outcome.applied).toEqual([9, 10, 11, 12])
+    expect(outcome.applied).toEqual([9, 10, 11, 12, 13])
     const columns = (database.pragma('table_info(article)') as { name: string }[]).map(
       (column) => column.name
     )
@@ -197,7 +197,7 @@ describe('migrate', () => {
 
     expect(outcome.from).toBe(9)
     // 10 先建稍后看表，11 再给文章补完成时间，12 最后建学习指令表；三笔都只增不改。
-    expect(outcome.applied).toEqual([10, 11, 12])
+    expect(outcome.applied).toEqual([10, 11, 12, 13])
     // 稍后看表跟着建起来，已有的词条数据不受影响。
     expect(
       database
@@ -248,7 +248,7 @@ describe('migrate', () => {
 
     const outcome = migrate(database)
 
-    expect(outcome.applied).toEqual([10, 11, 12])
+    expect(outcome.applied).toEqual([10, 11, 12, 13])
     expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
     expect(
       (database.pragma('table_info(article)') as { name: string }[]).map((column) => column.name)
@@ -263,7 +263,7 @@ describe('migrate', () => {
     })
   })
 
-  it('12 版只追加学习指令表：停在 11 的旧库升级后旧数据原样保留，表从空开始', () => {
+  it('12 版追加学习指令表、13 版追加来源列：停在 11 的旧库升级后旧数据原样保留，表从空开始', () => {
     // 学习指令是独立表，不借 setting、也不动文章 / 词条 / 线程；示例只在前端常量里。
     migrate(database, {
       migrations: migrations.filter((migration) => migration.version <= 11)
@@ -301,8 +301,8 @@ describe('migrate', () => {
     const outcome = migrate(database)
 
     expect(outcome.from).toBe(11)
-    expect(outcome.applied).toEqual([12])
-    expect(readSchemaVersion(database)).toBe(12)
+    expect(outcome.applied).toEqual([12, 13])
+    expect(readSchemaVersion(database)).toBe(13)
     expect(
       database
         .prepare(
@@ -323,6 +323,145 @@ describe('migrate', () => {
       main_form: 'approach'
     })
     expect(database.prepare('SELECT id, ordinal FROM article').get()).toEqual({ id: 'a', ordinal: 1 })
+    expect(migrate(database).applied).toEqual([])
+  })
+
+  it('13 版只给文章补来源类型与来源词条：停在 12 的旧库升级后旧数据原样保留', () => {
+    // 生成文章需要记录「AI 生成」与来源词条；两个新列都可空，老行保持 NULL（视为真题）。
+    // 不改 v1–12，也不在同一笔迁移里重写任何既有数据。
+    migrate(database, {
+      migrations: migrations.filter((migration) => migration.version <= 12)
+    })
+    database
+      .prepare(
+        `INSERT INTO article (
+           id, title, kind, kind_label, session_key, session_label, set_label,
+           exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+           source_sha256, ordinal, completed_at
+         ) VALUES ('exam-1', '2024年6月 · 第1套 · 仔细阅读 Passage One', 'careful_reading',
+           '仔细阅读 Passage One', '2024-06', '2024年6月', '第1套', 2024, 6, 1, 3,
+           'Old body.', 'a.pdf', 'sha', 1, '2026-11-18T09:00:00.000Z')`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO word_entry (id, main_form, normalized_key, created_at, last_collected_at)
+         VALUES ('entry-old', 'approach', 'approach', '2026-11-18T08:00:00.000Z',
+                 '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO learning_note (id, entry_id, body, pinned, created_at, updated_at)
+         VALUES ('note-old', 'entry-old', '旧的学习内容', 0, '2026-11-18T08:00:00.000Z',
+                 '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+    database
+      .prepare(`INSERT INTO entry_later (entry_id, marked_at) VALUES ('entry-old', '2026-11-18T08:30:00.000Z')`)
+      .run()
+    database
+      .prepare(
+        `INSERT INTO learning_instruction (id, name, body, created_at, updated_at)
+         VALUES ('instruction-old', '旧指令', '照我的问法解释', '2026-11-18T08:00:00.000Z',
+                 '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+
+    const columnsBefore = (database.pragma('table_info(article)') as { name: string }[]).map(
+      (column) => column.name
+    )
+    expect(columnsBefore).not.toContain('source_type')
+    expect(columnsBefore).not.toContain('source_entry_ids')
+
+    const outcome = migrate(database)
+
+    expect(outcome.from).toBe(12)
+    expect(outcome.applied).toEqual([13])
+    expect(readSchemaVersion(database)).toBe(13)
+    const columns = (database.pragma('table_info(article)') as { name: string }[]).map(
+      (column) => column.name
+    )
+    expect(columns).toContain('source_type')
+    expect(columns).toContain('source_entry_ids')
+    // 旧文章是真题：来源类型留空，读取时按 NULL 处理，不在迁移里补写。
+    expect(
+      database.prepare('SELECT source_type, source_entry_ids FROM article WHERE id = ?').get('exam-1')
+    ).toEqual({ source_type: null, source_entry_ids: null })
+    // 既有文章、完成时间、词条、稍后看、学习内容与学习指令一条不丢。
+    expect(
+      database
+        .prepare('SELECT completed_at, body_text FROM article WHERE id = ?')
+        .get('exam-1')
+    ).toEqual({ completed_at: '2026-11-18T09:00:00.000Z', body_text: 'Old body.' })
+    expect(database.prepare('SELECT entry_id FROM entry_later').get()).toEqual({
+      entry_id: 'entry-old'
+    })
+    expect(database.prepare('SELECT body FROM learning_note WHERE id = ?').get('note-old')).toEqual({
+      body: '旧的学习内容'
+    })
+    expect(
+      database.prepare('SELECT name FROM learning_instruction WHERE id = ?').get('instruction-old')
+    ).toEqual({ name: '旧指令' })
+    // 重复迁移无操作。
+    expect(migrate(database).applied).toEqual([])
+    expect(readSchemaVersion(database)).toBe(13)
+  })
+
+  it('11 版的旧库直接升到 13：学习内容、完成状态、稍后看与文章都在', () => {
+    migrate(database, {
+      migrations: migrations.filter((migration) => migration.version <= 11)
+    })
+    database
+      .prepare(
+        `INSERT INTO article (
+           id, title, kind, kind_label, session_key, session_label, set_label,
+           exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+           source_sha256, ordinal
+         ) VALUES ('exam-11', '2023年12月 · 第2套 · 长篇匹配', 'long_match', '长篇匹配',
+           '2023-12', '2023年12月', '第2套', 2023, 12, 2, 5, 'Old eleven body.', 'b.pdf',
+           'sha-11', 2)`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO word_entry (id, main_form, normalized_key, created_at, last_collected_at)
+         VALUES ('entry-11', 'context', 'context', '2026-11-18T08:00:00.000Z',
+                 '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO learning_note (id, entry_id, body, pinned, created_at, updated_at)
+         VALUES ('note-11', 'entry-11', '保留的内容', 1, '2026-11-18T08:00:00.000Z',
+                 '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+    database
+      .prepare(`INSERT INTO entry_later (entry_id, marked_at) VALUES ('entry-11', '2026-11-18T08:20:00.000Z')`)
+      .run()
+    expect(readSchemaVersion(database)).toBe(11)
+
+    const outcome = migrate(database)
+
+    expect(outcome.from).toBe(11)
+    expect(outcome.applied).toEqual([12, 13])
+    expect(readSchemaVersion(database)).toBe(13)
+    expect(
+      (database.pragma('table_info(article)') as { name: string }[]).map((column) => column.name)
+    ).toEqual(expect.arrayContaining(['completed_at', 'source_type', 'source_entry_ids']))
+    expect(
+      database
+        .prepare('SELECT completed_at, source_type, source_entry_ids FROM article WHERE id = ?')
+        .get('exam-11')
+    ).toEqual({ completed_at: null, source_type: null, source_entry_ids: null })
+    expect(database.prepare('SELECT body, pinned FROM learning_note WHERE id = ?').get('note-11')).toEqual({
+      body: '保留的内容',
+      pinned: 1
+    })
+    expect(database.prepare('SELECT entry_id FROM entry_later').get()).toEqual({
+      entry_id: 'entry-11'
+    })
     expect(migrate(database).applied).toEqual([])
   })
 })

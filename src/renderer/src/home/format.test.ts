@@ -17,6 +17,7 @@ function article(overrides: Partial<LibraryArticle> = {}): LibraryArticle {
     id: 'fixture-2026-06-s1-c1',
     title: '2026年6月 · 第1套 · 仔细阅读 Passage One',
     kind: 'careful_reading',
+    sourceType: 'exam',
     kindLabel: '仔细阅读 Passage One',
     sessionLabel: '2026年6月',
     setLabel: '第1套',

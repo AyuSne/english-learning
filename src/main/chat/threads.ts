@@ -563,12 +563,16 @@ function articleItem(database: AppDatabase, articleId: string): ThreadContextIte
   if (main.kind !== 'article') {
     return null
   }
+  // 生成文章没有场次与套数，出处行只列真实存在的信息，不补假年份。
+  const source = [main.sessionLabel, main.setLabel, main.kindLabel, `${main.wordCount} 词`]
+    .filter((part) => part.trim() !== '')
+    .join(' · ')
   return {
     id: `article:${main.articleId}`,
     kind: 'article',
     label: main.title,
     text: main.title,
-    source: `${main.sessionLabel} · ${main.setLabel} · ${main.kindLabel} · ${main.wordCount} 词`
+    source
   }
 }
 
@@ -732,11 +736,13 @@ function buildTurns(rows: readonly ThreadEntryRow[], path: readonly ThreadEntryR
   const flush = (): void => {
     if (!question) return
     const questionRow = question
+    const payload = questionPayloadOf(questionRow)
     turns.push({
       question: {
         id: questionRow.id,
-        text: questionPayloadOf(questionRow).text,
+        text: payload.text,
         createdAt: questionRow.created_at,
+        wordCount: wordItemCount(payload.context),
         versions: versionsOf(
           rows,
           questionRow.parent_id,
@@ -1375,6 +1381,85 @@ export function switchAnswer(
   )
   const view = readThreadView(database, request.threadId)
   return view ? { status: 'switched', thread: view } : { status: 'missing' }
+}
+
+/**
+ * 「存为文章」要读的那一份回答：沿用这里的条目日志与回答聚合，不在文章服务里
+ * 重走一遍分支。正文是这一版根回答加它的继续生成，思维链不进来；
+ * `questionContext` 是提这一问时存下的不可变上下文快照——线程后来增删上下文不影响它，
+ * 来源词只认这一份。
+ */
+export type AnswerForArticle = {
+  text: string
+  /** 根回答与每一段继续生成的完成状态；任何一段不是 done 都不算完整。 */
+  phases: AnswerPhase[]
+  hasError: boolean
+  questionContext: ThreadContextItem[]
+}
+
+/** 从根回答顺着继续生成走到这一路的末尾；日志按时间排，最后一个子条目是最新的。 */
+function continuationChain(
+  database: AppDatabase,
+  threadId: string,
+  answer: ThreadEntryRow
+): ThreadEntryRow[] {
+  const rows = readThreadEntries(database, threadId)
+  const chain = [answer]
+  const seen = new Set([answer.id])
+  let cursor = answer
+  for (;;) {
+    const next = rows
+      .filter((row) => row.kind === 'continuation' && row.parent_id === cursor.id)
+      .at(-1)
+    if (!next || seen.has(next.id)) {
+      return chain
+    }
+    seen.add(next.id)
+    chain.push(next)
+    cursor = next
+  }
+}
+
+export function readAnswerForArticle(
+  database: AppDatabase,
+  threadId: string,
+  answerId: string
+): AnswerForArticle | null {
+  if (!readThreadRow(database, threadId)) {
+    return null
+  }
+  const answer = readEntryRow(database, threadId, answerId)
+  if (!answer || answer.kind !== 'answer' || answer.parent_id === null) {
+    return null
+  }
+  const question = readEntryRow(database, threadId, answer.parent_id)
+  if (!question || question.kind !== 'question') {
+    return null
+  }
+
+  const segments = continuationChain(database, threadId, answer).map(answerPayloadOf)
+  return {
+    text: segments.map((segment) => segment.text).join(''),
+    phases: segments.map((segment) => segment.phase),
+    hasError: segments.some((segment) => segment.error !== null),
+    questionContext: questionPayloadOf(question).context
+  }
+}
+
+/** 这一问提出来时带了哪些词条（不可变快照）；来源词只从这里取。 */
+export function wordEntryIdsOfQuestion(
+  questionContext: readonly ThreadContextItem[]
+): string[] {
+  const ids: string[] = []
+  const seen = new Set<string>()
+  for (const item of questionContext) {
+    if (item.kind !== 'word' || !item.id.startsWith('word:')) continue
+    const entryId = item.id.slice('word:'.length)
+    if (entryId === '' || seen.has(entryId)) continue
+    seen.add(entryId)
+    ids.push(entryId)
+  }
+  return ids
 }
 
 /**

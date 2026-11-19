@@ -315,6 +315,20 @@ export const migrations: readonly Migration[] = [
           ON learning_instruction (updated_at DESC, id DESC);
       `)
     }
+  },
+  {
+    version: 13,
+    up: (database) => {
+      // 生成文章要记录来源与来源词：`source_type` 为 'ai' 的是保存下来的生成文章，
+      // 旧文章与随包语料保持 NULL（读取时按真题处理，不在迁移里补写）。
+      // `source_entry_ids` 是保存那一刻的来源词条 id JSON 数组；词条后来被删也不清，
+      // 详情按当前词条读出显示名，读不到就显示已删除，不做级联。
+      // 这是文章自己的来源元数据，不是线程主对象类型（主对象仍是 none|entry|sentence|article）。
+      database.exec(`
+        ALTER TABLE article ADD COLUMN source_type TEXT;
+        ALTER TABLE article ADD COLUMN source_entry_ids TEXT;
+      `)
+    }
   }
 ]
 

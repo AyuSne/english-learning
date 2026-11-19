@@ -23,7 +23,8 @@ import {
   loadThread,
   loadThreadContextCandidates,
   movePin,
-  restorePins
+  restorePins,
+  saveGeneratedArticle
 } from '../api'
 import { readAnswerSelection, type AnswerSelection } from '../chat/answer-selection'
 import { AnswerText, type PinMarks } from '../chat/answer-text'
@@ -74,6 +75,7 @@ import {
 } from '../chat/store'
 import {
   BLANK_THREAD_SUBTITLE,
+  canSaveAnswerAsArticle,
   selectedVersionIndex,
   threadHeaderText
 } from '../chat/turns'
@@ -169,6 +171,8 @@ export function ChatPage({
   const [pinDialog, setPinDialog] = useState<PinDialogState | null>(null)
   const [dialogBusy, setDialogBusy] = useState(false)
   const [busyPinId, setBusyPinId] = useState<string | null>(null)
+  /** 正在存成文章的那一版回答；同一时间只允许一个保存动作。 */
+  const [savingArticleId, setSavingArticleId] = useState<string | null>(null)
   const [source, setSource] = useState<PinSource | null>(null)
   const [sourceHitPinId, setSourceHitPinId] = useState<string | null>(null)
   const [mainLinkError, setMainLinkError] = useState<string | null>(null)
@@ -862,6 +866,37 @@ export function ChatPage({
     )
   }
 
+  /** 存为文章：与钉住相互独立；保存的是这一版已完成的回答，重复点每次都新建一篇。 */
+  const saveAnswerAsArticle = async (answer: ThreadAnswer): Promise<void> => {
+    const view = store.current
+    if (view === null || savingArticleId !== null) return
+    setSavingArticleId(answer.id)
+    try {
+      const result = await saveGeneratedArticle({ threadId: view.id, answerId: answer.id })
+      if (result.status === 'saved') {
+        showToast(`已存为文章「${result.article.title}」，在文章库里可以打开。`)
+        return
+      }
+      if (result.status === 'missing') {
+        showToast('这条回答已经不在了，存不了文章。')
+        return
+      }
+      showToast(
+        result.reason === 'incomplete'
+          ? '这条回答还没写完，等它完成后再存。'
+          : result.reason === 'empty'
+            ? '这条回答没有正文，存不了文章。'
+            : result.reason === 'no-word-context'
+              ? '只有带词条上下文的回答才能存为文章。'
+              : '篇名太长了。'
+      )
+    } catch (error) {
+      showToast(failureText(error, '这次没有存成文章，再试一次。'))
+    } finally {
+      setSavingArticleId(null)
+    }
+  }
+
   const openBoard = (tab: PinTab): void => {
     setBoardTab(tab)
     setBoardOpen(true)
@@ -906,6 +941,9 @@ export function ChatPage({
   const threadGone = store.error === '这条线程已经不在了。'
   const canSend = draft.trim() !== '' && !store.busy && generation === null &&
     (store.deletingThreadId === null || store.deletingThreadId !== store.currentId)
+  /** 生成、提交或改口时，回答上的动作一律收起，避免存到半截或旧版本。 */
+  const actionsDisabled =
+    generatingHere || generatingElsewhere || store.busy || editing !== null
   const threadEntryId =
     current === null
       ? null
@@ -1157,7 +1195,7 @@ export function ChatPage({
                       : null
                   }
                   now={now}
-                  disabled={generatingHere || generatingElsewhere || store.busy || editing !== null}
+                  disabled={actionsDisabled}
                   marks={pinMarks}
                   onSwitchQuestion={switchQuestionVersion}
                   onSwitchAnswer={switchAnswerVersion}
@@ -1171,6 +1209,13 @@ export function ChatPage({
                   onRetry={regenerateLastAnswer}
                   onToggleThinking={setThinkingOpen}
                   onCopy={copyText}
+                  canSaveAsArticle={canSaveAnswerAsArticle(
+                    turn.question,
+                    turn.answer,
+                    actionsDisabled
+                  )}
+                  savingArticle={savingArticleId === turn.answer?.id}
+                  onSaveAsArticle={(answer) => void saveAnswerAsArticle(answer)}
                   onPinAnswer={(answer) =>
                     openCreateDialog({
                       answerId: answer.id,
@@ -1407,6 +1452,9 @@ function ChatTurnView({
   onRetry,
   onToggleThinking,
   onCopy,
+  canSaveAsArticle,
+  savingArticle,
+  onSaveAsArticle,
   onPinAnswer
 }: {
   turn: ThreadTurn
@@ -1424,6 +1472,10 @@ function ChatTurnView({
   onRetry: () => void
   onToggleThinking: (open: boolean) => void
   onCopy: (text: string) => void
+  /** 这一版回答带词上下文且已完成时，才给独立的「存为文章」。 */
+  canSaveAsArticle: boolean
+  savingArticle: boolean
+  onSaveAsArticle: (answer: ThreadAnswer) => void
   onPinAnswer: (answer: ThreadAnswer) => void
 }) {
   return (
@@ -1450,6 +1502,9 @@ function ChatTurnView({
           thinkingOpen={thinkingOpen}
           disabled={disabled}
           marks={marks}
+          canSaveAsArticle={canSaveAsArticle}
+          savingArticle={savingArticle}
+          onSaveAsArticle={onSaveAsArticle}
           onPinAnswer={onPinAnswer}
           onCopy={onCopy}
           onSwitchVersion={(answerId) => onSwitchAnswer(turn.question.id, answerId)}
@@ -1558,6 +1613,9 @@ function AnswerCard({
   thinkingOpen,
   disabled,
   marks,
+  canSaveAsArticle,
+  savingArticle,
+  onSaveAsArticle,
   onPinAnswer,
   onCopy,
   onSwitchVersion,
@@ -1571,6 +1629,9 @@ function AnswerCard({
   thinkingOpen: boolean | null
   disabled: boolean
   marks: PinMarks
+  canSaveAsArticle: boolean
+  savingArticle: boolean
+  onSaveAsArticle: (answer: ThreadAnswer) => void
   onPinAnswer: (answer: ThreadAnswer) => void
   onCopy: (text: string) => void
   onSwitchVersion: (answerId: string) => void
@@ -1669,6 +1730,16 @@ function AnswerCard({
           <button type="button" className="chat-action" onClick={() => onCopy(answer.text)}>
             复制
           </button>
+          {canSaveAsArticle && !disabled ? (
+            <button
+              type="button"
+              className="chat-action"
+              disabled={savingArticle}
+              onClick={() => onSaveAsArticle(answer)}
+            >
+              {savingArticle ? '正在保存…' : '存为文章'}
+            </button>
+          ) : null}
           {isLast && !disabled ? (
             <>
               <button type="button" className="chat-action" onClick={onRegenerate}>

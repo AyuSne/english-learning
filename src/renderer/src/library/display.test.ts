@@ -16,6 +16,7 @@ function article(overrides: Partial<LibraryArticle> = {}): LibraryArticle {
     id: 'fixture-2026-06-s1-c1',
     title: '2026年6月 · 第1套 · 仔细阅读 Passage One',
     kind: 'careful_reading',
+    sourceType: 'exam',
     kindLabel: '仔细阅读 Passage One',
     sessionLabel: '2026年6月',
     setLabel: '第1套',
@@ -27,6 +28,47 @@ function article(overrides: Partial<LibraryArticle> = {}): LibraryArticle {
 }
 
 describe('articleTitleParts', () => {
+  it('生成文章没有场次与套数可拆，整串就是篇名', () => {
+    const generated = article({
+      title: 'approach、Context',
+      sourceType: 'ai',
+      kindLabel: 'AI 生成',
+      sessionLabel: '',
+      setLabel: '',
+      wordCount: 42
+    })
+
+    expect(articleTitleParts(generated)).toEqual({
+      sessionLine: '',
+      rest: 'approach、Context',
+      titleIsKind: false
+    })
+    // AI 段的行只标 AI 生成与词数，不补场次/年份。
+    expect(libraryArticleMetaParts(generated)).toEqual(['AI 生成', '42 词'])
+    expect(libraryArticleMetaParts(generated, { includeSession: true })).toEqual([
+      'AI 生成',
+      '42 词'
+    ])
+  })
+
+  it('首页继续阅读对生成文章不编场次，eyebrow 退回「继续阅读」', () => {
+    const generated = article({
+      title: 'context alone',
+      sourceType: 'ai',
+      kindLabel: 'AI 生成',
+      sessionLabel: '',
+      setLabel: '',
+      wordCount: 120,
+      progress: { state: 'reading', percent: 30 }
+    })
+
+    expect(continueReadingDisplay(generated)).toEqual({
+      eyebrow: '继续阅读',
+      title: 'context alone',
+      meta: 'AI 生成 · 120 词 · 读到 30%'
+    })
+  })
+
   it('默认语料篇名拆出场次与题型，剩下的就是题型本身', () => {
     expect(articleTitleParts(article())).toEqual({
       sessionLine: '2026年6月 · 第1套',

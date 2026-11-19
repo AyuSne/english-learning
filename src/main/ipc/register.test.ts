@@ -24,7 +24,8 @@ import type {
   LibraryListing,
   LibrarySearchResults,
   MarkArticleCompletedResult,
-  RenameArticleResult
+  RenameArticleResult,
+  SaveGeneratedArticleResult
 } from '../../shared/library'
 import type {
   LearningInstructionList,
@@ -125,7 +126,12 @@ function libraryHandlers() {
       recentEntries: [],
       laterEntries: []
     }),
-    'library:list': (): LibraryListing => ({ articleCount: 0, sessionCount: 0, sessions: [] }),
+    'library:list': (): LibraryListing => ({
+      articleCount: 0,
+      sessionCount: 0,
+      sessions: [],
+      aiArticles: []
+    }),
     'library:reimport': (): ImportReport => ({
       total: 0,
       imported: 0,
@@ -144,7 +150,8 @@ function libraryHandlers() {
       title: payload.title
     }),
     'library:delete-preview': (): ArticleDeletionPreview | null => null,
-    'library:delete': (): DeleteArticleResult => ({ status: 'missing' })
+    'library:delete': (): DeleteArticleResult => ({ status: 'missing' }),
+    'library:save-generated': (): SaveGeneratedArticleResult => ({ status: 'missing' })
   }
 }
 
