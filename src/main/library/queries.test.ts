@@ -7,6 +7,7 @@ import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
 import {
+  markArticleCompleted,
   openArticle,
   readArticleDetail,
   readHomeSummary,
@@ -181,6 +182,7 @@ describe('readHomeSummary', () => {
     expect(readHomeSummary(database)).toEqual({
       library: { articleCount: 3, sessionCount: 2 },
       continueReading: null,
+      completedArticleCount: 0,
       recentEntries: []
     })
   })
@@ -196,5 +198,75 @@ describe('readHomeSummary', () => {
     expect(summary.continueReading?.lastReadPoint?.sentenceText).toBe(
       'Reading widely makes hard sentences easier.'
     )
+  })
+
+  it('继续阅读跳过已读完的篇目，从后往前找最近一篇没读完的', () => {
+    openArticle(database, olderReading.id, { now: '2026-11-18T08:00:00.000Z' })
+    openArticle(database, carefulReading.id, { now: '2026-11-18T09:00:00.000Z' })
+    markArticleCompleted(database, carefulReading.id, { now: '2026-11-18T10:00:00.000Z' })
+
+    const summary = readHomeSummary(database)
+
+    expect(summary.continueReading?.article.id).toBe(olderReading.id)
+    expect(summary.completedArticleCount).toBe(1)
+  })
+
+  it('全部读完后没有继续阅读，暴露已读完篇数以便首页区分首启空态', () => {
+    openArticle(database, olderReading.id, { now: '2026-11-18T08:00:00.000Z' })
+    openArticle(database, carefulReading.id, { now: '2026-11-18T09:00:00.000Z' })
+    openArticle(database, longMatch.id, { now: '2026-11-18T09:30:00.000Z' })
+    markArticleCompleted(database, olderReading.id, { now: '2026-11-18T10:00:00.000Z' })
+    markArticleCompleted(database, carefulReading.id, { now: '2026-11-18T10:01:00.000Z' })
+    markArticleCompleted(database, longMatch.id, { now: '2026-11-18T10:02:00.000Z' })
+
+    const summary = readHomeSummary(database)
+
+    expect(summary.continueReading).toBeNull()
+    expect(summary.completedArticleCount).toBe(3)
+  })
+})
+
+describe('markArticleCompleted', () => {
+  it('列表、详情与首页给同一份已读完状态：100%，不是 81–99%', () => {
+    openArticle(database, carefulReading.id, { now: '2026-11-18T08:00:00.000Z' })
+
+    const result = markArticleCompleted(database, carefulReading.id, {
+      now: '2026-11-18T09:00:00.000Z'
+    })
+
+    expect(result).toEqual({
+      status: 'completed',
+      articleId: carefulReading.id,
+      completedAt: '2026-11-18T09:00:00.000Z',
+      changed: true
+    })
+    expect(readArticleDetail(database, carefulReading.id)?.progress).toEqual({
+      state: 'completed',
+      percent: 100
+    })
+    const listed = readLibrary(database)
+      .sessions.flatMap((session) => session.articles)
+      .find((article) => article.id === carefulReading.id)
+    expect(listed?.progress).toEqual({ state: 'completed', percent: 100 })
+    expect(readHomeSummary(database).completedArticleCount).toBe(1)
+  })
+
+  it('只写一次完成时间：再次标记不再改库', () => {
+    const first = markArticleCompleted(database, carefulReading.id, {
+      now: '2026-11-18T08:00:00.000Z'
+    })
+    const second = markArticleCompleted(database, carefulReading.id, {
+      now: '2026-11-18T09:00:00.000Z'
+    })
+
+    expect(first).toMatchObject({ changed: true, completedAt: '2026-11-18T08:00:00.000Z' })
+    expect(second).toMatchObject({ changed: false, completedAt: '2026-11-18T08:00:00.000Z' })
+  })
+
+  it('文章不存在时返回 missing，库里的文章一篇不动', () => {
+    expect(markArticleCompleted(database, 'nope', { now: '2026-11-18T08:00:00.000Z' })).toEqual({
+      status: 'missing'
+    })
+    expect(readLibrary(database).articleCount).toBe(3)
   })
 })

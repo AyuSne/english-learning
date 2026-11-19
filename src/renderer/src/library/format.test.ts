@@ -9,6 +9,10 @@ describe('progressText', () => {
   it('打开过写读到百分之几', () => {
     expect(progressText({ state: 'reading', percent: 33 })).toBe('读到 33%')
   })
+
+  it('已读完写已读完与 100%，列表与详情共用这一句', () => {
+    expect(progressText({ state: 'completed', percent: 100 })).toBe('已读完 · 100%')
+  })
 })
 
 describe('readingPointText', () => {

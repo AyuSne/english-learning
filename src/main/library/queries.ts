@@ -28,17 +28,23 @@ type ArticleRow = {
   last_opened_at: string | null
   last_paragraph_id: string | null
   last_sentence_index: number | null
+  completed_at: string | null
 }
 
 const ARTICLE_COLUMNS = `id, title, kind, kind_label, session_key, session_label, set_label,
   word_count, body_text, page_start, page_end, ordinal,
-  last_opened_at, last_paragraph_id, last_sentence_index`
+  last_opened_at, last_paragraph_id, last_sentence_index, completed_at`
 
 /**
  * 打开过的文章才有进度：按最后到的句子在全文里排第几算百分比。
- * 「已读完」要等阅读页把「进入本篇选词」写进库，这一版只给未读 / 读到 N%。
+ * 完成时间一旦写下就是第三种状态，固定 100%；读到末句也先停在 99%，
+ * 「读完」只由进入「本篇选词」这一条入口写。
  */
 function readingProgress(database: AppDatabase, row: ArticleRow): ReadingProgress {
+  if (row.completed_at !== null) {
+    return { state: 'completed', percent: 100 }
+  }
+
   if (
     row.last_opened_at === null ||
     row.last_paragraph_id === null ||
@@ -268,6 +274,57 @@ export function openArticle(
 }
 
 /**
+ * 进入「本篇选词」即读完：写下完成时间，只写一次。
+ * 只碰 completed_at——阅读位置、最近打开与本篇阅读设置都是各自的列，重读、滚动、
+ * 改设置都不该被这一笔顺手改掉。文章不存在时什么都不写。
+ */
+export type MarkArticleCompletedResult =
+  | { status: 'completed'; articleId: string; completedAt: string; changed: boolean }
+  | { status: 'missing' }
+
+export function markArticleCompleted(
+  database: AppDatabase,
+  articleId: string,
+  options: { now?: string } = {}
+): MarkArticleCompletedResult {
+  const row = database
+    .prepare('SELECT completed_at FROM article WHERE id = ?')
+    .get(articleId) as { completed_at: string | null } | undefined
+  if (!row) {
+    return { status: 'missing' }
+  }
+  if (row.completed_at !== null) {
+    return {
+      status: 'completed',
+      articleId,
+      completedAt: row.completed_at,
+      changed: false
+    }
+  }
+
+  const now = options.now ?? new Date().toISOString()
+  const updated = database
+    .prepare('UPDATE article SET completed_at = ? WHERE id = ? AND completed_at IS NULL')
+    .run(now, articleId)
+  if (updated.changes === 0) {
+    // 理论上只在并发写入时走到；以库里已经落下的那一份为准，不覆盖。
+    const current = database
+      .prepare('SELECT completed_at FROM article WHERE id = ?')
+      .get(articleId) as { completed_at: string | null }
+    if (current.completed_at !== null) {
+      return {
+        status: 'completed',
+        articleId,
+        completedAt: current.completed_at,
+        changed: false
+      }
+    }
+  }
+
+  return { status: 'completed', articleId, completedAt: now, changed: true }
+}
+
+/**
  * 上次读到的位置。段与句都用 1 起，句中文字一并带上，首页据此显示「上次停在哪」。
  * 位置指向的句子已经不在了（比如语料更新过）就当作没读过。
  */
@@ -313,19 +370,23 @@ export function readReadingPoint(
 }
 
 /**
- * 首页：文章库规模，最近打开、还没读完的那一篇，以及真实的最近收集。
+ * 首页：文章库规模，最近打开、还没读完的那一篇，已读完篇数，以及真实的最近收集。
+ * 「继续阅读」只挑没读完的：读完后它让位给更早打开的那一篇，全部读完才是 null。
  */
 export function readHomeSummary(database: AppDatabase): HomeSummary {
   const totals = database
     .prepare(
-      `SELECT COUNT(*) AS articles, COUNT(DISTINCT session_key) AS sessions FROM article`
+      `SELECT COUNT(*) AS articles,
+              COUNT(DISTINCT session_key) AS sessions,
+              (SELECT COUNT(*) FROM article WHERE completed_at IS NOT NULL) AS completed
+         FROM article`
     )
-    .get() as { articles: number; sessions: number }
+    .get() as { articles: number; sessions: number; completed: number }
 
   const recent = database
     .prepare(
       `SELECT ${ARTICLE_COLUMNS} FROM article
-       WHERE last_opened_at IS NOT NULL
+       WHERE last_opened_at IS NOT NULL AND completed_at IS NULL
        ORDER BY last_opened_at DESC
        LIMIT 1`
     )
@@ -339,6 +400,7 @@ export function readHomeSummary(database: AppDatabase): HomeSummary {
           lastReadPoint: readReadingPoint(database, recent.id)
         }
       : null,
+    completedArticleCount: totals.completed,
     recentEntries: readRecentEntries(database)
   }
 }

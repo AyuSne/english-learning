@@ -339,6 +339,9 @@ async function replaceWithFile(
     } finally {
       from.close()
     }
+    // 整库换页后，这个连接里可能还留着换页前的表定义；先重新读一次 schema，
+    // 让调用方随后的迁移按恢复进来的版本判断（否则「加列」会被旧定义当成重复列）。
+    database.prepare('SELECT COUNT(*) AS tables FROM sqlite_master').get()
   } finally {
     candidate.cleanup()
     if (ownsDirectory) {

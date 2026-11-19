@@ -5,12 +5,12 @@
 export type ArticleKind = 'long_match' | 'careful_reading'
 
 /**
- * 阅读进度：没打开过是 unread；打开过就按已到的句子算百分比。
- * 「已读完」要等阅读页把「进入本篇选词」写进库才算数，这里先只有两态。
+ * 阅读进度：没打开过是 unread；打开过就按已到的句子算百分比；进入「本篇选词」
+ * 就算读完，给 completed 与 100%。读到末句也只停在 99%——「读完」只由那一个入口写。
  */
 export type ReadingProgress = {
-  state: 'unread' | 'reading'
-  /** 0–99；unread 时为 0。 */
+  state: 'unread' | 'reading' | 'completed'
+  /** 0–100；unread 时为 0，reading 为 1–99，completed 为 100。 */
   percent: number
 }
 
@@ -139,6 +139,11 @@ export type HomeEntryChip = {
 export type HomeSummary = {
   library: LibrarySize
   continueReading: ContinueReading | null
+  /**
+   * 已读完的篇数。没有未读完的篇目时，首页靠它区分「第一次来」与「都读完了」，
+   * 只数真正标过完成的篇目，不拿文章库总数冒充已读。
+   */
+  completedArticleCount: number
   /** 真实的词条按最近收集时间倒序；没有词条时为空数组。 */
   recentEntries: HomeEntryChip[]
 }

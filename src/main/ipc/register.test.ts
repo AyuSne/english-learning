@@ -110,6 +110,7 @@ function libraryHandlers() {
     'home:summary': (): HomeSummary => ({
       library: { articleCount: 0, sessionCount: 0 },
       continueReading: null,
+      completedArticleCount: 0,
       recentEntries: []
     }),
     'library:list': (): LibraryListing => ({ articleCount: 0, sessionCount: 0, sessions: [] }),

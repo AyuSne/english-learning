@@ -11,6 +11,7 @@ import {
   LATEST_SCHEMA_VERSION
 } from '../db/migrations'
 import { readThemePreference, writeSetting } from '../db/settings'
+import { readArticleDetail } from '../library/queries'
 import { createModelProfile, listModelProfiles } from '../settings/profiles'
 import type { SecretStore } from '../settings/secret-store'
 import {
@@ -263,6 +264,86 @@ describe('restoreBackup', () => {
     expect(profiles).toHaveLength(1)
     expect(profiles[0]?.apiKeyMask).toBeNull()
     expect(profiles[0]?.verification).toBe('unverified')
+  })
+
+  it('带完成时间的当前版本备份恢复后仍是已读完，进度读出 100%', async () => {
+    database
+      .prepare(
+        `INSERT INTO article (
+           id, title, kind, kind_label, session_key, session_label, set_label,
+           exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+           source_sha256, ordinal, completed_at
+         ) VALUES ('a', 'A', 'careful_reading', '仔细阅读', '2026-06', '2026年6月', '第1套',
+           2026, 6, 1, 3, 'Body.', 'a.pdf', 'sha', 1, ?)`
+      )
+      .run(now)
+    const file = backupFile()
+    await createBackup(database, { file, now })
+
+    // 恢复到本机前先抹掉完成时间：恢复该把它带回来。
+    database.prepare('UPDATE article SET completed_at = NULL').run()
+    const outcome = await restoreBackup(database, {
+      file,
+      snapshotDirectory: snapshots(),
+      now: later
+    })
+
+    expect(outcome.status).toBe('restored')
+    expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
+    expect(readArticleDetail(database, 'a')?.progress).toEqual({
+      state: 'completed',
+      percent: 100
+    })
+  })
+
+  it('旧版本（还没有完成时间列）的备份恢复后就地补上可空列，旧数据不丢', async () => {
+    const oldFile = join(directory, 'v9-schema.db')
+    const oldDatabase = openDatabase(oldFile)
+    try {
+      migrate(oldDatabase, { migrations: migrations.filter((migration) => migration.version <= 9) })
+      oldDatabase
+        .prepare(
+          `INSERT INTO article (
+             id, title, kind, kind_label, session_key, session_label, set_label,
+             exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+             source_sha256, ordinal, last_opened_at, last_paragraph_id, last_sentence_index
+           ) VALUES ('old', 'Old', 'careful_reading', '仔细阅读', '2026-06', '2026年6月', '第1套',
+             2026, 6, 1, 3, 'Body.', 'a.pdf', 'sha', 1, '2026-11-18T08:00:00.000Z', '1', 0)`
+        )
+        .run()
+      oldDatabase
+        .prepare(
+          `INSERT INTO paragraph (article_id, id, ordinal, text, page_start, page_end)
+           VALUES ('old', '1', 0, 'One. Two.', 1, 1)`
+        )
+        .run()
+      oldDatabase
+        .prepare(
+          `INSERT INTO sentence (article_id, paragraph_id, ordinal, text, char_start, char_end, page)
+           VALUES ('old', '1', 0, 'One.', 0, 4, 1), ('old', '1', 1, ' Two.', 4, 9, 1)`
+        )
+        .run()
+      // 应用写出的备份都是单文件（DELETE 日志）；夹具也收成单文件，避开 WAL 残余。
+      oldDatabase.pragma('journal_mode = DELETE')
+    } finally {
+      oldDatabase.close()
+    }
+
+    const outcome = await restoreBackup(database, {
+      file: oldFile,
+      snapshotDirectory: snapshots(),
+      now: later
+    })
+
+    expect(outcome.status).toBe('restored')
+    expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
+    expect(
+      (database.pragma('table_info(article)') as { name: string }[]).map((column) => column.name)
+    ).toContain('completed_at')
+    expect(readArticleDetail(database, 'old')?.progress).toEqual({ state: 'reading', percent: 50 })
+    expect(
+      database.prepare('SELECT completed_at FROM article WHERE id = ?').get('old')
+    ).toEqual({ completed_at: null })
   })
 
   it('旧版本的备份恢复后就地升到当前 schema，数据照常可读', async () => {

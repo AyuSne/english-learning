@@ -1,7 +1,10 @@
 import type { ReadingPoint, ReadingProgress } from '../../../shared/library'
 
-/** 文章库里显示的一行进度文字。 */
+/** 文章库里显示的一行进度文字：未读 / 读到 N% / 已读完 100%。 */
 export function progressText(progress: ReadingProgress): string {
+  if (progress.state === 'completed') {
+    return '已读完 · 100%'
+  }
   return progress.state === 'unread' ? '未读' : `读到 ${progress.percent}%`
 }
 

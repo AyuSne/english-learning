@@ -3,7 +3,7 @@ import type { ArticleWordsView } from '../../../shared/article-words'
 import { loadArticleWords } from '../api'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
-import { goBack, navigate } from '../navigate'
+import { goBack, forgetLibraryArticle, navigate, replaceRoute } from '../navigate'
 import type { ReadingSource } from '../routes'
 import {
   articleWordsSummaryText,
@@ -15,8 +15,9 @@ import {
 /**
  * 本篇选词：同一篇文章下的子视图，按段落列出这篇实际收下的词条与原句。
  *
- * 只读视图——进入、刷新或退出都不写阅读位置与本篇阅读设置；「进入即已读完」的
- * 完成时间由 #54 负责，这一层只留出稳定入口（阅读页页脚与文章库详情）。
+ * 「进入即已读完」：完成时间由主进程在 `reading:words` 这一条入口里写入，页面只按
+ * 返回的文章信息渲染；写入失败时整页报错并可重试，不做乐观的假 100%。进入、刷新或
+ * 退出都不写阅读位置与本篇阅读设置。
  */
 export function ArticleWordsPage({
   articleId,
@@ -42,7 +43,10 @@ export function ArticleWordsPage({
       (value) => {
         if (!active) return
         if (value === null) {
-          setError('这篇文章已经不在库里了。')
+          // 文章可能刚在文章库里被删掉：沿用 #41 的退路，清掉最近文章并回文章库，
+          // 不把「本篇选词」停在一条死地址上。
+          forgetLibraryArticle(articleId)
+          replaceRoute('library')
           return
         }
         setView(value)

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import type { LibraryArticle } from '../../../shared/library'
-import { continueReadingDisplay, homeEntryMeta } from './format'
+import type { HomeSummary, LibraryArticle } from '../../../shared/library'
+import {
+  continueReadingDisplay,
+  finishedReadingDisplay,
+  homeEntryMeta,
+  homeReadingState
+} from './format'
 
 /**
  * 首页继续阅读的三行文字：场次在 eyebrow、篇名在标题、meta 只留题型、词数与进度。
@@ -81,5 +86,51 @@ describe('homeEntryMeta', () => {
     expect(
       homeEntryMeta({ id: 'entry-1', mainForm: 'approach', sentenceCount: 3, articleCount: 2, lastCollectedAt: '' })
     ).toBe('3 句 · 2 篇')
+  })
+})
+
+describe('homeReadingState', () => {
+  function summary(overrides: Partial<HomeSummary> = {}): HomeSummary {
+    return {
+      library: { articleCount: 63, sessionCount: 7 },
+      continueReading: null,
+      completedArticleCount: 0,
+      recentEntries: [],
+      ...overrides
+    }
+  }
+
+  it('还没打开过任何一篇是首启空态', () => {
+    expect(homeReadingState(summary())).toBe('first-start')
+    expect(homeReadingState(null)).toBe('first-start')
+  })
+
+  it('有未读完的一篇时继续阅读', () => {
+    expect(
+      homeReadingState(
+        summary({
+          continueReading: {
+            article: article(),
+            lastReadPoint: null
+          }
+        })
+      )
+    ).toBe('continue')
+  })
+
+  it('没有未读完的但读过并完成过，是「读完了」而不是首启', () => {
+    expect(homeReadingState(summary({ completedArticleCount: 1 }))).toBe('finished')
+    expect(homeReadingState(summary({ completedArticleCount: 63 }))).toBe('finished')
+  })
+})
+
+describe('finishedReadingDisplay', () => {
+  it('只说明真正读完的篇数，不拿文章库总数冒充已读', () => {
+    const display = finishedReadingDisplay(2)
+
+    expect(display.eyebrow).toBe('已读完 2 篇')
+    expect(display.title).toBe('没有未读完的文章了')
+    expect(display.lede).toContain('重读')
+    expect(display.lede).not.toContain('63')
   })
 })
