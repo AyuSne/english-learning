@@ -79,6 +79,8 @@ import type {
   CreateThreadResult,
   EditQuestionRequest,
   ExportThreadResult,
+  OpenThreadForMainRequest,
+  OpenThreadForMainResult,
   QuestionResult,
   SaveAnswerRequest,
   SaveAnswerResult,
@@ -146,6 +148,8 @@ export interface IpcContract {
   'chat:list': { payload: undefined; result: ThreadListResult }
   'chat:thread': { payload: { threadId: string }; result: ChatThreadView | null }
   'chat:create': { payload: CreateThreadRequest; result: CreateThreadResult }
+  'chat:find-for-main': { payload: CreateThreadRequest; result: ChatThreadView | null }
+  'chat:open-for-main': { payload: OpenThreadForMainRequest; result: OpenThreadForMainResult }
   'chat:ask': { payload: AskThreadRequest; result: QuestionResult }
   'chat:edit-question': { payload: EditQuestionRequest; result: QuestionResult }
   'chat:answer': { payload: SaveAnswerRequest; result: SaveAnswerResult }
@@ -241,6 +245,8 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'chat:list': true,
   'chat:thread': true,
   'chat:create': true,
+  'chat:find-for-main': true,
+  'chat:open-for-main': true,
   'chat:ask': true,
   'chat:edit-question': true,
   'chat:answer': true,

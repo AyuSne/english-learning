@@ -110,6 +110,8 @@ export type ChatThreadView = {
   id: string
   title: string
   main: ThreadMain
+  /** 原主对象已删除时保留其类型，避免误显示成空白线程。 */
+  missingMain?: Exclude<ThreadMainKind, 'none'>
   /** 这一路对话当前带上的上下文，按加入顺序。 */
   context: ThreadContextItem[]
   contextSummary: ThreadContextSummary
@@ -143,6 +145,12 @@ export type CreateThreadRequest = {
 
 export type CreateThreadResult =
   | { status: 'created'; thread: ChatThreadView }
+  | { status: 'rejected'; reason: 'missing-main' }
+
+export type OpenThreadForMainRequest = CreateThreadRequest & { forceNew?: boolean }
+
+export type OpenThreadForMainResult =
+  | { status: 'created' | 'reused'; thread: ChatThreadView }
   | { status: 'rejected'; reason: 'missing-main' }
 
 export type AskThreadRequest = {

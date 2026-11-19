@@ -13,7 +13,7 @@ import {
 } from '../api'
 import { failureText } from '../errors'
 import { ErrorBlock } from '../components/error-block'
-import { openThreadForMain } from '../chat/store'
+import { getChatStore, openThreadForMain } from '../chat/store'
 import { formatDay, progressText } from '../library/format'
 import { navigate, replaceRoute } from '../navigate'
 import { parseView } from '../routes'
@@ -121,6 +121,13 @@ export function LibraryPage({
 
   function open(articleId: string): void {
     navigate('reading', { articleId, readingFrom: 'library' })
+  }
+
+  async function askAboutArticle(forceNew = false): Promise<void> {
+    if (detail === null) return
+    setLoadError(null)
+    const opened = await openThreadForMain({ kind: 'article', articleId: detail.id }, { forceNew })
+    if (opened === null) setLoadError(getChatStore().error ?? '没能打开线程，请刷新文章库后再试。')
   }
 
   function retryLoad(): void {
@@ -308,11 +315,12 @@ export function LibraryPage({
                 <button
                   type="button"
                   className="button"
-                  onClick={() =>
-                    void openThreadForMain({ kind: 'article', articleId: detail.id })
-                  }
+                  onClick={() => void askAboutArticle()}
                 >
                   与这篇对话
+                </button>
+                <button type="button" className="button" onClick={() => void askAboutArticle(true)}>
+                  新开一条
                 </button>
               </div>
             </>
