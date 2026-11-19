@@ -41,6 +41,7 @@ import { PinTargetDialog } from '../chat/pin-target-dialog'
 import { DictionaryView } from '../dictionary/dictionary-view'
 import { useDictionaryLookup } from '../dictionary/lookup'
 import { singleWordOf } from '../dictionary/presentation'
+import { LearningInstructionPanel } from '../instructions/learning-instructions'
 import { ErrorBlock } from '../components/error-block'
 import {
   liveAnswerText,
@@ -1201,6 +1202,8 @@ export function ChatPage({
                 onRemove={removeItem}
               />
             )}
+
+            <LearningInstructionPanel draft={draft} onAppend={setDraft} />
 
             {editing === null ? null : (
               <div className="edit-banner" role="status">

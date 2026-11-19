@@ -53,6 +53,13 @@ import {
   readWordEntryCard
 } from './entries/queries'
 import { registerIpcHandlers } from './ipc/register'
+import {
+  copyLearningInstruction,
+  createLearningInstruction,
+  deleteLearningInstruction,
+  readLearningInstructions,
+  updateLearningInstruction
+} from './instructions/instructions'
 import { fileStamp } from './file-stamp'
 import {
   deleteArticle,
@@ -234,6 +241,11 @@ function start(): void {
     'entries:pin-note': (payload) => pinLearningNote(opened, payload),
     'entries:delete-note': (payload) => deleteLearningNote(opened, payload),
     'entries:move-note': (payload) => moveLearningNote(opened, payload),
+    'instructions:list': () => ({ instructions: readLearningInstructions(opened) }),
+    'instructions:create': (payload) => createLearningInstruction(opened, payload),
+    'instructions:update': (payload) => updateLearningInstruction(opened, payload),
+    'instructions:copy': (payload) => copyLearningInstruction(opened, payload),
+    'instructions:delete': (payload) => deleteLearningInstruction(opened, payload),
     'chat:start': (payload, event) => {
       if (typeof payload?.threadId !== 'string' || !threadExists(opened, payload.threadId)) {
         return { accepted: false }

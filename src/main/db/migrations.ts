@@ -295,6 +295,26 @@ export const migrations: readonly Migration[] = [
       // 完成时间只写一次，重读、滚动、改设置都不该把它清掉或重写。
       database.exec('ALTER TABLE article ADD COLUMN completed_at TEXT')
     }
+  },
+  {
+    version: 12,
+    up: (database) => {
+      // 学习指令是学习者自己保存的命名要求：名称、正文、创建与更新时间。
+      // 独立表承载，不借 setting；六条内置示例只是界面里的只读常量，不写进这里，
+      // 所以改名、复制、删除都只会动到用户自己的记录。
+      database.exec(`
+        CREATE TABLE learning_instruction (
+          id         TEXT PRIMARY KEY,
+          name       TEXT NOT NULL,
+          body       TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+
+        CREATE INDEX learning_instruction_updated
+          ON learning_instruction (updated_at DESC, id DESC);
+      `)
+    }
   }
 ]
 

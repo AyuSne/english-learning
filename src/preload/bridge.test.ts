@@ -94,6 +94,41 @@ describe('createBridge', () => {
     ])
   })
 
+  it('学习指令的列表、保存、修改、复制与删除都走同一份白名单', async () => {
+    const { ipc, invocations } = fakeRenderer()
+    const bridge = createBridge(ipc)
+
+    await bridge.invoke('instructions:list')
+    await bridge.invoke('instructions:create', { name: '我的问法', body: '请解释这个词。' })
+    await bridge.invoke('instructions:update', {
+      instructionId: 'instruction-1',
+      name: '新名字',
+      body: '新正文'
+    })
+    await bridge.invoke('instructions:copy', { instructionId: 'instruction-1' })
+    await bridge.invoke('instructions:delete', { instructionId: 'instruction-1' })
+
+    expect(JSON.parse(JSON.stringify(invocations))).toEqual([
+      { channel: 'instructions:list', payload: undefined },
+      {
+        channel: 'instructions:create',
+        payload: { name: '我的问法', body: '请解释这个词。' }
+      },
+      {
+        channel: 'instructions:update',
+        payload: { instructionId: 'instruction-1', name: '新名字', body: '新正文' }
+      },
+      {
+        channel: 'instructions:copy',
+        payload: { instructionId: 'instruction-1' }
+      },
+      {
+        channel: 'instructions:delete',
+        payload: { instructionId: 'instruction-1' }
+      }
+    ])
+  })
+
   it('文章重命名与删除的请求和结果穿过 preload 白名单', async () => {
     const { ipc, invocations } = fakeRenderer()
     const bridge = createBridge(ipc)
