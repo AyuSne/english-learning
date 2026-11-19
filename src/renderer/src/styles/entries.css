@@ -420,8 +420,11 @@
 .entries-main-actions,
 .entries-rail-actions {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+}
+
+.entries-main-actions {
+  flex-wrap: wrap;
 }
 
 .entry-confirm p {
