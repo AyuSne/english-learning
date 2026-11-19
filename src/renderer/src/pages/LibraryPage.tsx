@@ -15,6 +15,7 @@ import { failureText } from '../errors'
 import { ErrorBlock } from '../components/error-block'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { LibraryArticleActions } from '../library/article-actions'
+import { ArticleCollectedSection } from '../library/article-collected'
 import { formatDay, progressText } from '../library/format'
 import { forgetLibraryArticle, navigate, replaceRoute } from '../navigate'
 import { parseView } from '../routes'
@@ -390,6 +391,7 @@ export function LibraryPage({
                   新开一条
                 </button>
               </div>
+              <ArticleCollectedSection article={detail} />
               <LibraryArticleActions
                 detail={detail}
                 onRenamed={articleRenamed}

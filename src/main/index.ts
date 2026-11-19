@@ -44,6 +44,7 @@ import {
   updateLearningNote
 } from './entries/notes'
 import { readEntryList, readEntryPage } from './entries/page'
+import { readArticleWords } from './entries/article-words'
 import {
   collectSelection,
   deleteEntrySentence,
@@ -205,6 +206,7 @@ function start(): void {
       readArticleDeletionPreview(opened, payload.articleId),
     'library:delete': (payload) => deleteArticle(opened, payload),
     'reading:open': (payload) => openReadingView(opened, payload.articleId),
+    'reading:words': (payload) => readArticleWords(opened, payload.articleId),
     'reading:progress': (payload) => saveReadingPoint(opened, payload),
     'reading:settings': (payload) => saveReadingSettings(opened, payload),
     'reading:collect': (payload) =>

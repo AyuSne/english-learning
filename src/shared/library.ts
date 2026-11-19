@@ -60,6 +60,10 @@ export type LibrarySearchResults = {
 export type ArticleDetail = LibraryArticle & {
   paragraphCount: number
   sentenceCount: number
+  /** 这一篇收下的不同词条数（不是原句条数）。 */
+  wordEntryCount: number
+  /** 这一篇收下的原句条数。 */
+  collectedSentenceCount: number
   /** 形如「第 7–8 页」；没有页码时为空串。 */
   pages: string
 }

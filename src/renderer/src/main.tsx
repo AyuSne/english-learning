@@ -10,6 +10,7 @@ import './styles/dictionary.css'
 import './styles/library.css'
 import './styles/pins.css'
 import './styles/reading.css'
+import './styles/article-words.css'
 import './styles/settings.css'
 
 // 首帧先按系统深浅兜底，bootstrap 读到本机偏好后再对齐，避免深色下闪一片白。

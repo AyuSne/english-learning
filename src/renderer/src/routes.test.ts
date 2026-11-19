@@ -15,6 +15,7 @@ function view(route: Route, overrides: Partial<View> = {}): View {
     pinId: null,
     fromEntryId: null,
     readingFrom: null,
+    readingWords: false,
     ...overrides
   }
 }
@@ -60,6 +61,18 @@ describe('parseView', () => {
     // 没有文章就没有可定位的原句；reselect 单独出现也不生效。
     expect(parseView('#/reading?sentence=es-1')).toEqual(view('reading'))
     expect(parseView('#/reading/a?reselect=1')).toEqual(view('reading', { articleId: 'a' }))
+  })
+
+  it('阅读页的「本篇选词」是同一篇文章下的子视图，刷新后仍从地址恢复', () => {
+    expect(parseView('#/reading/a%20b/words')).toEqual(
+      view('reading', { articleId: 'a b', readingWords: true })
+    )
+    expect(parseView('#/reading/a/words?from=library')).toEqual(
+      view('reading', { articleId: 'a', readingWords: true, readingFrom: 'library' })
+    )
+    // 子视图段认不出时不当成文章，回首页。
+    expect(parseView('#/reading/a/other')).toEqual(view('home'))
+    expect(parseView('#/reading/a/words/more')).toEqual(view('home'))
   })
 
   it('词条页带要打开的代码', () => {
@@ -138,6 +151,17 @@ describe('routeHash', () => {
     expect(routeHash('reading', { articleId: 'a b' })).toBe('#/reading/a%20b')
     expect(routeHash('reading')).toBe('#/reading')
     expect(routeHash('home', { articleId: 'ignored' })).toBe('#/home')
+  })
+
+  it('阅读页的本篇选词把 words 段与来源一起编进 hash', () => {
+    expect(routeHash('reading', { articleId: 'a b', words: true })).toBe(
+      '#/reading/a%20b/words'
+    )
+    expect(
+      routeHash('reading', { articleId: 'a', words: true, readingFrom: 'library' })
+    ).toBe('#/reading/a/words?from=library')
+    // 没有文章就没有本篇选词，退回普通阅读页。
+    expect(routeHash('reading', { words: true })).toBe('#/reading')
   })
 
   it('阅读页带上要定位的原句与重新圈定', () => {

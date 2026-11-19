@@ -26,6 +26,8 @@ export type View = {
   fromEntryId: string | null
   /** 阅读页由哪里打开，用于标明返回目标。 */
   readingFrom: ReadingSource | null
+  /** 阅读页正在看的是「本篇选词」子视图，而不是正文。 */
+  readingWords: boolean
 }
 
 export type RouteHashOptions = {
@@ -37,6 +39,8 @@ export type RouteHashOptions = {
   pinId?: string | null
   fromEntryId?: string | null
   readingFrom?: ReadingSource | null
+  /** 阅读页进入「本篇选词」；只有带文章 id 时才成立。 */
+  words?: boolean
 }
 
 function routeOf(segment: string): Route | null {
@@ -66,7 +70,8 @@ function blankView(route: Route): View {
     reselect: false,
     pinId: null,
     fromEntryId: null,
-    readingFrom: null
+    readingFrom: null,
+    readingWords: false
   }
 }
 
@@ -87,7 +92,13 @@ export function parseView(hash: string): View {
   }
 
   if (route === 'reading') {
-    if (segments.length > 2) {
+    // `#/reading/<articleId>` 是正文；`#/reading/<articleId>/words` 是同一篇文章的
+    // 「本篇选词」子视图。第三段认不出时不把前一段当成文章，直接退回首页。
+    if (segments.length > 3) {
+      return blankView('home')
+    }
+    const readingWords = segments.length === 3 && segments[2] === 'words'
+    if (segments.length === 3 && !readingWords) {
       return blankView('home')
     }
     const params = new URLSearchParams(query)
@@ -103,7 +114,7 @@ export function parseView(hash: string): View {
     if (articleId === null) {
       return blankView('reading')
     }
-    const sentence = params.get('sentence')
+    const sentence = readingWords ? null : params.get('sentence')
     const entrySentenceId = sentence === null ? null : decodeSegment(sentence)
     return {
       route,
@@ -114,7 +125,8 @@ export function parseView(hash: string): View {
       reselect: entrySentenceId !== null && params.get('reselect') === '1',
       pinId: null,
       fromEntryId: null,
-      readingFrom
+      readingFrom,
+      readingWords
     }
   }
 
@@ -163,9 +175,12 @@ export function parseView(hash: string): View {
 
 export function routeHash(route: Route, options: RouteHashOptions = {}): string {
   if (route === 'reading') {
-    let hash = options.articleId ? `#/reading/${encodeURIComponent(options.articleId)}` : '#/reading'
+    const words = options.words === true && Boolean(options.articleId)
+    let hash = options.articleId
+      ? `#/reading/${encodeURIComponent(options.articleId)}${words ? '/words' : ''}`
+      : '#/reading'
     const params: string[] = []
-    if (options.articleId && options.entrySentenceId) {
+    if (options.articleId && !words && options.entrySentenceId) {
       params.push(`sentence=${encodeURIComponent(options.entrySentenceId)}`)
       if (options.reselect) {
         params.push('reselect=1')
