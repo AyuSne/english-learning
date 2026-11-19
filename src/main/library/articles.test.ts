@@ -146,6 +146,13 @@ function close(): void {
   db.close()
 }
 
+/** 按当前影响面发一次删除，等价于界面「先看影响面、再确认」。 */
+function deleteCurrent(articleId: string = articleA.id) {
+  const confirmed = readArticleDeletionPreview(db, articleId)
+  if (confirmed === null) throw new Error(`文章 ${articleId} 不在库里`)
+  return deleteArticle(db, { articleId, confirmed })
+}
+
 beforeEach(() => {
   directory = mkdtempSync(join(tmpdir(), 'english-learning-articles-'))
   writeCorpusDirectory(directory, [articleA, articleB])
@@ -193,6 +200,16 @@ describe('renameArticle', () => {
     )
   })
 
+  it('篇名上限 200 只有一份：服务与输入框共用，201 个字拒绝', () => {
+    expect(
+      renameArticle(db, { articleId: articleA.id, title: 'a'.repeat(200) })
+    ).toMatchObject({ status: 'renamed' })
+    expect(
+      renameArticle(db, { articleId: articleA.id, title: 'b'.repeat(201) })
+    ).toEqual({ status: 'rejected', reason: 'too-long' })
+    expect(readArticleDetail(db, articleA.id)?.title).toBe('a'.repeat(200))
+  })
+
   it('重启与语料刷新都保留用户改的显示名', () => {
     renameArticle(db, { articleId: articleA.id, title: '我的文章' })
     close()
@@ -236,7 +253,7 @@ describe('deleteArticle', () => {
     const originalPreview = readArticleDeletionPreview(db, articleA.id)
     expect(originalPreview).not.toBeNull()
 
-    const result = deleteArticle(db, { articleId: articleA.id })
+    const result = deleteCurrent()
 
     expect(result).toEqual({
       status: 'deleted',
@@ -280,7 +297,7 @@ describe('deleteArticle', () => {
     )
     if (!alphaPin || !sharedPin || !articleBPin) throw new Error('种子钉住不完整')
 
-    deleteArticle(db, { articleId: articleA.id })
+    deleteCurrent(articleA.id)
 
     const board = readPinBoard(db, threadId)
     expect(board.unfiledPins.map((pin) => pin.id).sort()).toEqual(
@@ -332,7 +349,7 @@ describe('deleteArticle', () => {
   })
 
   it('删除后重启再对一遍语料也不会把这篇文章导回来', () => {
-    deleteArticle(db, { articleId: articleA.id })
+    deleteCurrent(articleA.id)
     close()
     open()
 
@@ -345,7 +362,61 @@ describe('deleteArticle', () => {
 
   it('文章不存在时什么也不动', () => {
     const before = readLibrary(db).articleCount
-    expect(deleteArticle(db, { articleId: 'nope' })).toEqual({ status: 'missing' })
+    const confirmed = readArticleDeletionPreview(db, articleA.id)
+    if (confirmed === null) throw new Error('文章不在了')
+    expect(
+      deleteArticle(db, {
+        articleId: 'nope',
+        confirmed: { ...confirmed, articleId: 'nope' }
+      })
+    ).toEqual({ status: 'missing' })
     expect(readLibrary(db).articleCount).toBe(before)
+  })
+
+  it('预览之后库变了就整体拒绝：不删文章、不动原句与钉住，带回最新影响面', () => {
+    const confirmed = readArticleDeletionPreview(db, articleA.id)
+    if (confirmed === null) throw new Error('文章不在了')
+    // 预览之后又在这篇收了一个词：原句关联、词条与学习内容都可能变。
+    collect(articleA, 0, 'Beta', T4)
+
+    const rowsBefore = db
+      .prepare('SELECT COUNT(*) AS count FROM entry_sentence WHERE article_id = ?')
+      .get(articleA.id)
+    const pinsBefore = db.prepare('SELECT COUNT(*) AS count FROM pin').get()
+
+    const result = deleteArticle(db, { articleId: articleA.id, confirmed })
+
+    expect(result.status).toBe('stale')
+    if (result.status !== 'stale') return
+    expect(result.preview.articleId).toBe(articleA.id)
+    expect(result.preview.sentenceAssociationCount).toBe(3)
+    expect(result.preview).not.toEqual(confirmed)
+    expect(readArticleDetail(db, articleA.id)).not.toBeNull()
+    expect(readEntryPage(db, alpha.id)).not.toBeNull()
+    expect(
+      db.prepare('SELECT COUNT(*) AS count FROM entry_sentence WHERE article_id = ?').get(articleA.id)
+    ).toEqual(rowsBefore)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM pin').get()).toEqual(pinsBefore)
+
+    // 拿最新一份重新确认才真的删。
+    expect(deleteArticle(db, { articleId: articleA.id, confirmed: result.preview })).toMatchObject({
+      status: 'deleted',
+      articleId: articleA.id,
+      preview: result.preview
+    })
+    expect(readArticleDetail(db, articleA.id)).toBeNull()
+  })
+
+  it('确认的是另一篇文章的影响面时也不删', () => {
+    const other = readArticleDeletionPreview(db, articleB.id)
+    if (other === null) throw new Error('另一篇也不在')
+    const result = deleteArticle(db, { articleId: articleA.id, confirmed: other })
+    expect(result).toMatchObject({
+      status: 'stale',
+      articleId: articleA.id,
+      preview: { articleId: articleA.id }
+    })
+    expect(readArticleDetail(db, articleA.id)).not.toBeNull()
+    expect(readArticleDetail(db, articleB.id)).not.toBeNull()
   })
 })

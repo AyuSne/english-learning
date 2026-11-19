@@ -1,16 +1,17 @@
 import type {
   ArticleDetail,
   ArticleKind,
-  HomeEntryChip,
   HomeSummary,
   LibraryArticle,
   LibraryListing,
   LibrarySearchResults,
   LibrarySession,
+  MarkArticleCompletedResult,
   ReadingPoint,
   ReadingProgress
 } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
+import { readRecentEntryChips } from '../entries/page'
 import { readLaterEntries } from '../entries/later'
 
 type ArticleRow = {
@@ -279,10 +280,6 @@ export function openArticle(
  * 只碰 completed_at——阅读位置、最近打开与本篇阅读设置都是各自的列，重读、滚动、
  * 改设置都不该被这一笔顺手改掉。文章不存在时什么都不写。
  */
-export type MarkArticleCompletedResult =
-  | { status: 'completed'; articleId: string; completedAt: string; changed: boolean }
-  | { status: 'missing' }
-
 export function markArticleCompleted(
   database: AppDatabase,
   articleId: string,
@@ -402,46 +399,8 @@ export function readHomeSummary(database: AppDatabase): HomeSummary {
         }
       : null,
     completedArticleCount: totals.completed,
-    recentEntries: readRecentEntries(database),
+    recentEntries: readRecentEntryChips(database),
     laterEntries: readLaterEntries(database)
   }
-}
-
-/** 首页最多摆几个词条 chip；再多就交给词条页。 */
-const HOME_RECENT_ENTRY_LIMIT = 8
-
-type HomeEntryRow = {
-  id: string
-  main_form: string
-  last_collected_at: string
-  sentence_count: number
-  article_count: number
-}
-
-/**
- * 最近收集只数真实收下的词条：没有原句的孤儿词条不算，钉住也不会自己变成词条。
- * 排序与词条列表一致，最近收词的排前面。
- */
-function readRecentEntries(database: AppDatabase): HomeEntryChip[] {
-  const rows = database
-    .prepare(
-      `SELECT we.id, we.main_form, we.last_collected_at,
-              (SELECT COUNT(*) FROM entry_sentence es WHERE es.entry_id = we.id) AS sentence_count,
-              (SELECT COUNT(DISTINCT es.article_id) FROM entry_sentence es
-                WHERE es.entry_id = we.id) AS article_count
-         FROM word_entry we
-        WHERE EXISTS (SELECT 1 FROM entry_sentence es WHERE es.entry_id = we.id)
-        ORDER BY we.last_collected_at DESC, we.id DESC
-        LIMIT ?`
-    )
-    .all(HOME_RECENT_ENTRY_LIMIT) as HomeEntryRow[]
-
-  return rows.map((row) => ({
-    id: row.id,
-    mainForm: row.main_form,
-    sentenceCount: row.sentence_count,
-    articleCount: row.article_count,
-    lastCollectedAt: row.last_collected_at
-  }))
 }
 

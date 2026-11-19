@@ -41,6 +41,7 @@ import type {
   ImportReport,
   LibraryListing,
   LibrarySearchResults,
+  MarkArticleCompletedResult,
   RenameArticleRequest,
   RenameArticleResult
 } from './library'
@@ -124,6 +125,10 @@ export interface IpcContract {
   'library:delete': { payload: DeleteArticleRequest; result: DeleteArticleResult }
   'reading:open': { payload: { articleId: string }; result: ReadingView | null }
   'reading:words': { payload: { articleId: string }; result: ArticleWordsView | null }
+  'reading:complete': {
+    payload: { articleId: string }
+    result: MarkArticleCompletedResult
+  }
   'reading:progress': { payload: ReadingProgressRequest; result: ReadingProgressResult }
   'reading:settings': { payload: ReadingSettingsRequest; result: ReadingSettingsResult | null }
   'reading:collect': { payload: CollectSelectionRequest; result: CollectSelectionResult }
@@ -245,6 +250,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'library:delete': true,
   'reading:open': true,
   'reading:words': true,
+  'reading:complete': true,
   'reading:progress': true,
   'reading:settings': true,
   'reading:collect': true,

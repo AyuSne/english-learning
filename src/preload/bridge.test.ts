@@ -97,15 +97,26 @@ describe('createBridge', () => {
   it('文章重命名与删除的请求和结果穿过 preload 白名单', async () => {
     const { ipc, invocations } = fakeRenderer()
     const bridge = createBridge(ipc)
+    const confirmed = {
+      articleId: 'article-1',
+      sentenceAssociationCount: 0,
+      affectedEntryCount: 0,
+      disappearingEntryCount: 0,
+      survivingEntryCount: 0,
+      disappearingLearningNoteCount: 0,
+      articlePinCount: 0
+    }
 
     await bridge.invoke('library:rename', { articleId: 'article-1', title: '我的文章' })
     await bridge.invoke('library:delete-preview', { articleId: 'article-1' })
-    await bridge.invoke('library:delete', { articleId: 'article-1' })
+    await bridge.invoke('library:delete', { articleId: 'article-1', confirmed })
+    await bridge.invoke('reading:complete', { articleId: 'article-1' })
 
     expect(JSON.parse(JSON.stringify(invocations))).toEqual([
       { channel: 'library:rename', payload: { articleId: 'article-1', title: '我的文章' } },
       { channel: 'library:delete-preview', payload: { articleId: 'article-1' } },
-      { channel: 'library:delete', payload: { articleId: 'article-1' } }
+      { channel: 'library:delete', payload: { articleId: 'article-1', confirmed } },
+      { channel: 'reading:complete', payload: { articleId: 'article-1' } }
     ])
   })
 

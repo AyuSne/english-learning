@@ -55,7 +55,12 @@ test.describe('文章重命名与删除', () => {
 
       const detail = page.getByRole('complementary', { name: '文章详情' })
       await expect(detail.locator('.library-detail-title')).toHaveText(TITLE_A)
-      await expect(page.locator('.library-row').first()).toContainText(TITLE_A)
+      const firstRow = page.locator('.library-row').first()
+      await expect(firstRow).toContainText(TITLE_A)
+      // 默认篇名里已经带场次、套数与题型，行内 meta 不再重复一遍。
+      await expect(firstRow.locator('.library-row-name')).toHaveText(TITLE_A)
+      await expect(firstRow.locator('.library-row-meta')).not.toContainText('仔细阅读 Passage One')
+      await expect(firstRow.locator('.library-row-meta')).not.toContainText('第1套')
 
       await detail.getByRole('button', { name: '重命名' }).click()
       await detail.getByRole('textbox', { name: '篇名' }).fill('我的文章')
@@ -63,6 +68,13 @@ test.describe('文章重命名与删除', () => {
 
       await expect(detail.locator('.library-detail-title')).toHaveText('我的文章')
       await expect(page.locator('.library-row').first()).toContainText('我的文章')
+      // 改名后的篇名不再自带套数与题型，meta 补回来做区分。
+      await expect(page.locator('.library-row').first().locator('.library-row-meta')).toContainText(
+        '第1套'
+      )
+      await expect(page.locator('.library-row').first().locator('.library-row-meta')).toContainText(
+        '仔细阅读 Passage One'
+      )
       await expect(page.getByText('篇名已改为「我的文章」。')).toBeVisible()
 
       await detail.getByRole('button', { name: '继续阅读' }).click()
@@ -86,6 +98,34 @@ test.describe('文章重命名与删除', () => {
         '影响 1 个词条：0 个仍有别的原句、会保留，1 个会连同 1 条学习内容一起删除。'
       )
       await expect(dialog).toContainText('没有挂在本篇的钉住。')
+
+      // 预览之后又在这篇收了一个词：确认时主进程重算影响面，发现对不上就整体拒绝，
+      // 文章、原句与学习内容一条都不动，界面换成最新数字等用户重新确认。
+      const paragraph = (articleA.json.paragraphs as { id: string; text: string }[])[0]
+      if (!paragraph) throw new Error('fixture 没有段落')
+      const start = paragraph.text.indexOf('passage')
+      await second.page.evaluate(
+        async (payload) => {
+          const api = (window as unknown as {
+            api: { invoke(channel: string, payload: unknown): Promise<unknown> }
+          }).api
+          await api.invoke('reading:collect', payload)
+        },
+        {
+          articleId: articleA.id,
+          paragraphId: paragraph.id,
+          sentenceOrdinal: 0,
+          start,
+          end: start + 'passage'.length
+        }
+      )
+
+      await dialog.getByRole('button', { name: '确认删除' }).click()
+      await expect(dialog).toContainText('影响面变了，上面是最新一份。请重新确认后再删除。')
+      await expect(dialog).toContainText('将删除 2 条原句关联。')
+      // 第一次确认没有删任何东西，两篇都还在。
+      await expect(second.page.locator('.library-row')).toHaveCount(2)
+
       await dialog.getByRole('button', { name: '确认删除' }).click()
 
       await expect(second.page.getByText('1 篇 · 1 个场次')).toBeVisible()

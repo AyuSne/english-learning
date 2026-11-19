@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { HomeLaterEntry, HomeSummary } from '../../../shared/library'
-import { loadHomeSummary, setEntryLater } from '../api'
+import { loadHomeSummary } from '../api'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
 import {
@@ -9,7 +9,8 @@ import {
   homeEntryMeta,
   homeReadingState
 } from '../home/format'
-import { HOME_LATER_EMPTY, laterRemoveLabel, laterUnmarkedNotice } from '../later/format'
+import { HOME_LATER_EMPTY, laterRemoveLabel } from '../later/format'
+import { useLaterMark } from '../later/use-later-mark'
 import { formatDay, readingPointText } from '../library/format'
 import { navigate } from '../navigate'
 
@@ -21,9 +22,9 @@ export function HomePage() {
   const [summary, setSummary] = useState<HomeSummary | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
-  const [laterBusyId, setLaterBusyId] = useState<string | null>(null)
   const [laterNotice, setLaterNotice] = useState<string | null>(null)
   const [laterError, setLaterError] = useState<string | null>(null)
+  const later = useLaterMark()
 
   useEffect(() => {
     let active = true
@@ -58,30 +59,31 @@ export function HomePage() {
   }
 
   /** 从首页移除：立刻把这一行拿掉，并给一句看得见、读得出的「已移除」。 */
-  async function removeLater(entry: HomeLaterEntry): Promise<void> {
-    if (laterBusyId !== null) return
-    setLaterBusyId(entry.entryId)
+  function removeLater(entry: HomeLaterEntry): void {
     setLaterNotice(null)
     setLaterError(null)
-    try {
-      // 词条已经不在了也按移除处理：首页不该继续留着一条打不开的稍后看。
-      await setEntryLater({ entryId: entry.entryId, later: false })
-      setSummary((current) =>
-        current === null
-          ? current
-          : {
-              ...current,
-              laterEntries: current.laterEntries.filter(
-                (item) => item.entryId !== entry.entryId
-              )
-            }
-      )
-      setLaterNotice(laterUnmarkedNotice(entry.mainForm))
-    } catch (reason) {
-      setLaterError(failureText(reason, '这条稍后看没有移除。'))
-    } finally {
-      setLaterBusyId(null)
-    }
+    void later.setLater(
+      { entryId: entry.entryId, mainForm: entry.mainForm, later: false },
+      {
+        failureMessage: '这条稍后看没有移除。',
+        // 词条已经不在了也按移除处理：首页不该继续留着一条打不开的稍后看。
+        missingAsSettled: true,
+        onSettled: ({ entryId, notice }) => {
+          setSummary((current) =>
+            current === null
+              ? current
+              : {
+                  ...current,
+                  laterEntries: current.laterEntries.filter(
+                    (item) => item.entryId !== entryId
+                  )
+                }
+          )
+          setLaterNotice(notice)
+        },
+        onError: ({ message }) => setLaterError(message)
+      }
+    )
   }
 
   const recentEntries = summary?.recentEntries ?? null
@@ -201,8 +203,8 @@ export function HomePage() {
                   type="button"
                   className="home-later-remove"
                   aria-label={laterRemoveLabel(entry.mainForm)}
-                  disabled={laterBusyId === entry.entryId}
-                  onClick={() => void removeLater(entry)}
+                  disabled={later.busyEntryId === entry.entryId}
+                  onClick={() => removeLater(entry)}
                 >
                   移除
                 </button>

@@ -11,7 +11,7 @@ import {
 import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
-import { readArticleDetail, readReadingPoint } from '../library/queries'
+import { readArticleDetail, markArticleCompleted, readReadingPoint } from '../library/queries'
 import { readReadingSettings, saveReadingPoint, saveReadingSettings } from '../reading/queries'
 import { readArticleWords } from './article-words'
 import { collectSelection, readEntrySentence, readEntrySummary } from './queries'
@@ -189,7 +189,7 @@ describe('readArticleWords', () => {
     })
   })
 
-  it('进入本篇选词即标记已读完；不改阅读位置与本篇阅读设置', () => {
+  it('本篇选词是只读查询：不写完成时间，也不改阅读位置、最近打开与本篇阅读设置', () => {
     collect(database, carefulReading, 0, 'approach')
     const secondParagraph = paragraphAt(carefulReading, 1)
     saveReadingPoint(
@@ -206,47 +206,57 @@ describe('readArticleWords', () => {
         weakHighlight: false
       }
     })
+    const articleBefore = database
+      .prepare(
+        `SELECT completed_at, last_paragraph_id, last_sentence_index, last_opened_at
+           FROM article WHERE id = ?`
+      )
+      .get(carefulReading.id)
     const pointBefore = readReadingPoint(database, carefulReading.id)
     const settingsBefore = readReadingSettings(database, carefulReading.id)
-    const openedBefore = database
-      .prepare('SELECT last_opened_at FROM article WHERE id = ?')
-      .get(carefulReading.id)
 
-    const words = readArticleWords(database, carefulReading.id, { now: T1 })
+    const words = readArticleWords(database, carefulReading.id)
 
     expect(words).not.toBeNull()
     if (words === null) return
-    // 完成状态由这一条入口返回的同一份文章信息给出，界面不靠乐观更新。
-    expect(words.article.progress).toEqual({ state: 'completed', percent: 100 })
-    expect(readArticleDetail(database, carefulReading.id)).toMatchObject({
-      progress: { state: 'completed', percent: 100 }
-    })
-    // 已读完是独立状态：阅读位置、最近打开与本篇阅读设置一动不动。
-    expect(readReadingPoint(database, carefulReading.id)).toEqual(pointBefore)
+    // 查询只返回库里已有的进度，读没读完仍由显式命令决定。
+    expect(words.article.progress.state).not.toBe('completed')
+    expect(readArticleDetail(database, carefulReading.id)?.progress.state).not.toBe('completed')
     expect(
-      database.prepare('SELECT last_opened_at FROM article WHERE id = ?').get(carefulReading.id)
-    ).toEqual(openedBefore)
+      database
+        .prepare(
+          `SELECT completed_at, last_paragraph_id, last_sentence_index, last_opened_at
+             FROM article WHERE id = ?`
+        )
+        .get(carefulReading.id)
+    ).toEqual(articleBefore)
+    expect(readReadingPoint(database, carefulReading.id)).toEqual(pointBefore)
     expect(readReadingSettings(database, carefulReading.id)).toEqual(settingsBefore)
-    expect(readReadingSettings(database, carefulReading.id)).toMatchObject({
-      fontSize: 22,
-      lineHeight: 2,
-      annotationsVisible: false,
-      weakHighlight: false,
-      source: 'article'
-    })
   })
 
-  it('已读完可重复进入：完成时间保持第一次，不被后来的进入改写', () => {
-    readArticleWords(database, carefulReading.id, { now: T0 })
-    const first = database
-      .prepare('SELECT completed_at FROM article WHERE id = ?')
-      .get(carefulReading.id) as { completed_at: string }
+  it('读完只由显式命令写：查询不写，命令只写一次，之后的查询读到同一份状态', () => {
+    collect(database, carefulReading, 0, 'approach')
 
-    readArticleWords(database, carefulReading.id, { now: T1 })
-
-    expect(first.completed_at).toBe(T0)
+    // 反复打开子视图也不会偷偷写完成时间。
+    readArticleWords(database, carefulReading.id)
+    readArticleWords(database, carefulReading.id)
     expect(
-      database.prepare('SELECT completed_at FROM article WHERE id = ?').get(carefulReading.id)
+      database
+        .prepare('SELECT completed_at FROM article WHERE id = ?')
+        .get(carefulReading.id)
+    ).toEqual({ completed_at: null })
+
+    const first = markArticleCompleted(database, carefulReading.id, { now: T0 })
+    expect(first).toMatchObject({ status: 'completed', changed: true, completedAt: T0 })
+    const second = markArticleCompleted(database, carefulReading.id, { now: T1 })
+    expect(second).toMatchObject({ status: 'completed', changed: false, completedAt: T0 })
+
+    const words = readArticleWords(database, carefulReading.id)
+    expect(words?.article.progress).toEqual({ state: 'completed', percent: 100 })
+    expect(
+      database
+        .prepare('SELECT completed_at FROM article WHERE id = ?')
+        .get(carefulReading.id)
     ).toEqual({ completed_at: T0 })
   })
 

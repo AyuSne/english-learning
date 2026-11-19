@@ -6,9 +6,12 @@ import { readSetting, writeSetting } from '../db/settings'
  *
  * - 删掉的随包文章 id：启动与「重新导入」都会再跑一遍语料导入，没有这个标记，
  *   被删的文章会在下次启动时被清单导回来。它只给语料导入看，生成文章不会走导入。
+ *   这个列表不做清理：清掉之后下次导入就会把文章导回来。
  * - 用户改过的显示名：语料内容哈希变化会重写文章元信息，标记让重写保留用户改的名字。
  *
+ * 两者都随整库备份/恢复一起走（备份包含 setting 表）；恢复后墓碑与改名仍然生效。
  * 两处写入都必须与删除 / 重命名放在同一笔事务里，避免库改了而标记没跟上。
+ * 详见 docs/adr/0004-article-library-maintenance.md。
  */
 
 const DELETED_ARTICLE_KEY = 'library.deleted-articles'

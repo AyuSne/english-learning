@@ -24,17 +24,17 @@ import {
   loadWordEntryCard,
   openReadingView,
   reselectEntrySentence,
-  saveReadingSettings,
-  setEntryLater
+  saveReadingSettings
 } from '../api'
 import { lookupDictionaryOrUnavailable } from '../dictionary/lookup'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
-import { laterMarkedNotice, laterUnmarkedNotice } from '../later/format'
+import { useLaterMark } from '../later/use-later-mark'
 import { readingPointText } from '../library/format'
 import { forgetLibraryArticle, goBack, navigate, replaceRoute } from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
+import { readingBackTarget } from '../reading/back-target'
 import {
   CollectedPanelView,
   EntryPanelView,
@@ -96,6 +96,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
   const [hint, setHint] = useState<string | null>(null)
   const [collectError, setCollectError] = useState<string | null>(null)
   const [openingThread, setOpeningThread] = useState(false)
+  const later = useLaterMark()
 
   const { scrollRef, position, writeError, retryWrite } = useReadingPosition(view)
   const settingsRequest = useRef(0)
@@ -206,9 +207,10 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
         setSettingsOpen(false)
         return
       }
-      goBack(readingFrom === 'library' || readingFrom === 'entries' ? readingFrom : 'home', {
-        entrySentenceId: readingFrom === 'entries' ? entrySentenceId : null
-      })
+      goBack(
+        readingBackTarget(readingFrom, entrySentenceId).route,
+        readingBackTarget(readingFrom, entrySentenceId).options
+      )
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
@@ -237,6 +239,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
       if (target.closest('.reading-settings') !== null) return
       if (settingsButtonRef.current?.contains(target)) return
       if (target.closest('.reading-context') !== null) return
+      if (target.closest('.reading-foot') !== null) return
       if (target.closest('.reading-sentence-focused') !== null) return
       if (entryIdOf(target) !== null) return
       setActiveSelection(null)
@@ -384,7 +387,6 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
       error: null,
       confirmingDelete: false,
       deleting: false,
-      laterBusy: false,
       laterNotice: null
     })
     loadWordEntryCard(entryId).then(
@@ -598,47 +600,38 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
 
   /** 阅读词条卡上的「稍后看」：只写独立标记，卡片与首页共享同一份持久状态。 */
   function togglePanelLater(): void {
-    if (panel === null || panel.kind !== 'entry' || panel.card === null || panel.laterBusy) {
-      return
-    }
+    if (panel === null || panel.kind !== 'entry' || panel.card === null) return
     const entry = panel.card.entry
     const next = entry.laterMarkedAt === null
-    updateEntryPanel((current) => ({ ...current, laterBusy: true, laterNotice: null }))
-    setEntryLater({ entryId: entry.id, later: next }).then(
-      (result) => {
-        if (result.status === 'missing') {
-          updateEntryPanel((current) => ({
-            ...current,
-            laterBusy: false,
-            error: '这个词条已经不在了。'
-          }))
-          return
-        }
-        updateEntryPanel((current) =>
-          current.card === null
-            ? current
-            : {
-                ...current,
-                laterBusy: false,
-                laterNotice: next
-                  ? laterMarkedNotice(entry.mainForm)
-                  : laterUnmarkedNotice(entry.mainForm),
-                card: {
-                  ...current.card,
-                  entry: {
-                    ...current.card.entry,
-                    laterMarkedAt: result.status === 'marked' ? result.markedAt : null
-                  }
-                }
+    void later.setLater(
+      { entryId: entry.id, mainForm: entry.mainForm, later: next },
+      {
+        failureMessage: '稍后看没有改成功，再试一次。',
+        onSettled: ({ entryId, markedAt, notice }) => {
+          updateEntryPanel((current) => {
+            if (current.entryId !== entryId || current.card === null) return current
+            return {
+              ...current,
+              laterNotice: notice,
+              card: {
+                ...current.card,
+                entry: { ...current.card.entry, laterMarkedAt: markedAt }
               }
-        )
-      },
-      (error: unknown) => {
-        updateEntryPanel((current) => ({
-          ...current,
-          laterBusy: false,
-          error: failureText(error, '稍后看没有改成功，再试一次。')
-        }))
+            }
+          })
+        },
+        onMissing: (entryId) => {
+          updateEntryPanel((current) =>
+            current.entryId === entryId
+              ? { ...current, error: '这个词条已经不在了。' }
+              : current
+          )
+        },
+        onError: ({ entryId, message }) => {
+          updateEntryPanel((current) =>
+            current.entryId === entryId ? { ...current, error: message } : current
+          )
+        }
       }
     )
   }
@@ -657,11 +650,17 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
   /**
    * 进入本篇选词。子视图与正文共用同一篇的文章地址（`#/reading/<id>/words`），
    * 刷新或直接打开都能回到这里，也不写阅读位置与本篇阅读设置。
-   * 「进入即读完」的完成时间由主进程在这一条入口（`reading:words`）里写。
+   * 「进入即读完」由子视图页面先发 `reading:complete` 再读视图；`wordsFrom=reader`
+   * 让子视图的返回目标明确指向阅读页，同时把阅读页自己的来源原样带回去。
    */
   function openArticleWords(): void {
     if (!view) return
-    navigate('reading', { articleId: view.article.id, words: true, readingFrom })
+    navigate('reading', {
+      articleId: view.article.id,
+      words: true,
+      readingFrom,
+      wordsFrom: 'reader'
+    })
   }
 
   async function openReadingThread(
@@ -719,14 +718,8 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
     .filter(Boolean)
     .join(' ')
 
-  const backLabels: Record<ReadingSource, string> = {
-    library: '文章库',
-    home: '首页',
-    entries: '词条',
-    search: '搜索结果'
-  }
-  const backLabel = readingFrom === null ? '' : backLabels[readingFrom]
-  const backFallback = readingFrom === 'library' || readingFrom === 'entries' ? readingFrom : 'home'
+  const backTarget = readingBackTarget(readingFrom, entrySentenceId)
+  const backLabel = backTarget.label
 
   return (
     <div
@@ -745,10 +738,8 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
         <button
           type="button"
           className="reading-back"
-          aria-label={`返回${backLabel}`}
-          onClick={() => goBack(backFallback, {
-            entrySentenceId: readingFrom === 'entries' ? entrySentenceId : null
-          })}
+          aria-label={backTarget.ariaLabel}
+          onClick={() => goBack(backTarget.route, backTarget.options)}
         >
           <span aria-hidden="true">←</span> {backLabel || '返回'}
         </button>
@@ -940,6 +931,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
             }
           }}
           openingThread={openingThread}
+          laterBusy={panel.kind === 'entry' && later.busyEntryId === panel.entryId}
           onToggleLater={togglePanelLater}
           onDelete={requestDeleteSentence}
           onConfirmDeleteLast={confirmDeleteLast}

@@ -9,6 +9,7 @@ import type {
   ImportReport,
   LibraryListing,
   LibrarySearchResults,
+  MarkArticleCompletedResult,
   RenameArticleRequest,
   RenameArticleResult
 } from '../../shared/library'
@@ -133,7 +134,7 @@ export function loadArticleDeletionPreview(
   return window.api.invoke('library:delete-preview', { articleId })
 }
 
-/** 删除文章；连带规则与确认弹层看到的是同一份预览。 */
+/** 删除文章；请求带上确认弹层看到的那份影响面，变了主进程会拒绝并带回最新一份。 */
 export function deleteArticle(request: DeleteArticleRequest): Promise<DeleteArticleResult> {
   return window.api.invoke('library:delete', request)
 }
@@ -145,10 +146,20 @@ export function openReadingView(articleId: string): Promise<ReadingView | null> 
 
 /**
  * 一篇文章的「本篇选词」：按段落列出实际收下的词条与原句。
- * 只读，不记最近打开、不改阅读位置与本篇阅读设置。
+ * 纯查询，不写完成时间、不记最近打开、不改阅读位置与本篇阅读设置。
  */
 export function loadArticleWords(articleId: string): Promise<ArticleWordsView | null> {
   return window.api.invoke('reading:words', { articleId })
+}
+
+/**
+ * 显式标记这一篇已读完：只写完成时间、只写一次。进入本篇选词的页面先发这条命令，
+ * 再读视图；命令失败就报错重试，不拿乐观的 100% 冒充已读完。
+ */
+export function completeArticleReading(
+  articleId: string
+): Promise<MarkArticleCompletedResult> {
+  return window.api.invoke('reading:complete', { articleId })
 }
 
 /** 记下读到哪一段、哪一句。 */

@@ -6,7 +6,7 @@ import type {
 import type { EntrySummary } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
 import { paragraphLetter } from '../corpus/letter'
-import { markArticleCompleted, readArticleDetail } from '../library/queries'
+import { readArticleDetail } from '../library/queries'
 import {
   ENTRY_SENTENCE_COLUMNS,
   ENTRY_SENTENCE_JOINS,
@@ -18,9 +18,9 @@ import {
 /**
  * 本篇选词：一篇文章里实际收下的词条与原句，按段落与文章顺序分组。
  *
- * 进入这个子视图就是「读完了」：这是唯一写完成时间的入口，页面正文、页脚按钮、
- * 文章库「打开本篇选词」与直接打开地址都走这里。完成时间只写一次（重复进入不改），
- * 也不碰阅读位置、最近打开与本篇阅读设置——读完与读到哪是两件独立的事。
+ * 这是纯查询：只读文章信息与原句关联，不写完成时间、阅读位置、最近打开或阅读设置。
+ * 「读完了」由单独的显式命令（`reading:complete`）写，界面在进入子视图时先发那条命令、
+ * 再读这份视图，所以这里返回的进度就是库里的真实状态，不存在乐观更新。
  * 计数按不同词条算（同一个词条在一篇里出现多段仍是一个），与词条页、文章库详情一致。
  */
 
@@ -30,14 +30,8 @@ type ArticleWordRow = EntrySentenceRow & {
 
 export function readArticleWords(
   database: AppDatabase,
-  articleId: string,
-  options: { now?: string } = {}
+  articleId: string
 ): ArticleWordsView | null {
-  // 先落完成时间再读文章信息：返回的进度就是库里的真实状态，界面不用乐观更新。
-  if (markArticleCompleted(database, articleId, options).status === 'missing') {
-    return null
-  }
-
   const article = readArticleDetail(database, articleId)
   if (article === null) {
     return null

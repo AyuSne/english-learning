@@ -2,17 +2,31 @@
  * 文章库与首页「继续阅读」的跨层类型。渲染层只读这些结构，不自己拼 SQL。
  */
 
+import type { EntryListItem } from './entries'
+
 export type ArticleKind = 'long_match' | 'careful_reading'
+
+/** 篇名上限：服务端校验与输入框的 maxLength 共用这一份。 */
+export const ARTICLE_TITLE_MAX_LENGTH = 200
 
 /**
  * 阅读进度：没打开过是 unread；打开过就按已到的句子算百分比；进入「本篇选词」
- * 就算读完，给 completed 与 100%。读到末句也只停在 99%——「读完」只由那一个入口写。
+ * 时发出的显式完成命令会写完成时间，给 completed 与 100%。读到末句也只停在 99%——
+ * 「读完」只由那条命令写，查询本身不写。
  */
 export type ReadingProgress = {
   state: 'unread' | 'reading' | 'completed'
   /** 0–100；unread 时为 0，reading 为 1–99，completed 为 100。 */
   percent: number
 }
+
+/**
+ * 显式标记「读完」的结果。这条命令只写完成时间、只写一次；返回 `changed` 让调用方
+ * 知道这次是否真的落库，但界面仍以重新读出的文章进度为准，不做乐观的假 100%。
+ */
+export type MarkArticleCompletedResult =
+  | { status: 'completed'; articleId: string; completedAt: string; changed: boolean }
+  | { status: 'missing' }
 
 export type LibraryArticle = {
   id: string
@@ -101,16 +115,27 @@ export type RenameArticleResult =
 
 export type DeleteArticleRequest = {
   articleId: string
+  /**
+   * 用户在确认弹层里看到的那份影响面。主进程在事务里重新算一遍；只要有一项对不上
+   * 就整体拒绝删除，带回最新一份让界面重新确认，绝不按旧数字悄悄删。
+   */
+  confirmed: ArticleDeletionPreview
 }
 
 export type DeleteArticleResult =
   | {
       status: 'deleted'
       articleId: string
-      /** 删除前算的影响面，与确认弹层看到的是同一份。 */
+      /** 删除时算的影响面，与确认弹层看到的是同一份。 */
       preview: ArticleDeletionPreview
     }
   | { status: 'missing' }
+  | {
+      /** 影响面在预览之后变了：这次什么都没删，`preview` 是最新的一份。 */
+      status: 'stale'
+      articleId: string
+      preview: ArticleDeletionPreview
+    }
 
 /** 上次停下的那一句：段与句都从 1 数，方便直接写进界面。 */
 export type ReadingPoint = {
@@ -125,16 +150,11 @@ export type ContinueReading = {
   lastReadPoint: ReadingPoint | null
 }
 
-/** 首页「最近收集」的一个词条 chip：只带点开词条与说明规模所需的最少字段。 */
-export type HomeEntryChip = {
-  id: string
-  /** 词条当前的主词形。 */
-  mainForm: string
-  sentenceCount: number
-  articleCount: number
-  /** 这个词条最近一次收词的时间，ISO 8601 UTC。 */
-  lastCollectedAt: string
-}
+/** 首页「最近收集」的一个词条 chip：复用词条列表那一行，只取 chip 需要的字段。 */
+export type HomeEntryChip = Pick<
+  EntryListItem,
+  'id' | 'mainForm' | 'sentenceCount' | 'articleCount' | 'lastCollectedAt'
+>
 
 /**
  * 首页「稍后看」的一行。只带词条与标记时间：不算进最近收集，

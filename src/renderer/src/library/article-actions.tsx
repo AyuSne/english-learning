@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ArticleDeletionPreview, ArticleDetail } from '../../../shared/library'
+import { ARTICLE_TITLE_MAX_LENGTH } from '../../../shared/library'
 import {
   deleteArticle,
   loadArticleDeletionPreview,
@@ -9,8 +10,10 @@ import { failureText } from '../errors'
 import { deletionImpactLines } from './impact'
 
 /**
- * 文章详情里的重命名与删除。删除先取影响面，确认后才真删；
- * 计数怎么读由 impact.ts 统一，别的页面复用时不会各写一套文案。
+ * 文章详情里的重命名与删除。删除先取影响面，确认后才真删；确认时把看到的那份影响面
+ * 一起发给主进程，主进程在事务里重算，变了就拒绝并带回最新一份，界面重新摆出来让用户
+ * 再确认一次。预览请求带序号与文章 id：换选中项后回来的旧预览不会贴到下一篇上，
+ * 也不能拿 A 的预览去确认 B。
  */
 export function LibraryArticleActions({
   detail,
@@ -29,14 +32,22 @@ export function LibraryArticleActions({
   const [renamingError, setRenamingError] = useState<string | null>(null)
   const [preview, setPreview] = useState<ArticleDeletionPreview | null>(null)
   const [previewLoading, setPreviewLoading] = useState(false)
+  const [previewStale, setPreviewStale] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const previewRequest = useRef(0)
+  /** 当前详情对应的文章；预览响应必须还属于它，否则丢弃。 */
+  const detailId = useRef(detail.id)
+  detailId.current = detail.id
 
   useEffect(() => {
+    // 换文章（含重命名后刷新）时作废在途预览，旧响应回来也不再落到新文章上。
+    previewRequest.current += 1
     setRenaming(false)
     setDraft(detail.title)
     setRenamingError(null)
     setPreview(null)
     setPreviewLoading(false)
+    setPreviewStale(false)
     setDeleting(false)
   }, [detail.id, detail.title])
 
@@ -70,36 +81,55 @@ export function LibraryArticleActions({
     setDraft(detail.title)
     setRenamingError(null)
     setPreview(null)
+    setPreviewStale(false)
     setRenaming(true)
   }
 
   async function requestDelete(): Promise<void> {
     if (previewLoading) return
+    const requestedId = detail.id
+    const request = previewRequest.current + 1
+    previewRequest.current = request
     setRenaming(false)
     setPreviewLoading(true)
     setPreview(null)
+    setPreviewStale(false)
     try {
-      const value = await loadArticleDeletionPreview(detail.id)
+      const value = await loadArticleDeletionPreview(requestedId)
+      if (request !== previewRequest.current || detailId.current !== requestedId) return
       if (value === null) {
         onError('这篇文章已经不在了。')
         return
       }
+      // 预览必须属于请求的那一篇，响应里的 id 对不上也不贴到眼前这一篇上。
+      if (value.articleId !== requestedId) return
       setPreview(value)
     } catch (error) {
-      onError(failureText(error, '这次没能读到删除影响面，再试一次。'))
+      if (request === previewRequest.current) {
+        onError(failureText(error, '这次没能读到删除影响面，再试一次。'))
+      }
     } finally {
-      setPreviewLoading(false)
+      if (request === previewRequest.current) setPreviewLoading(false)
     }
   }
 
   async function confirmDelete(): Promise<void> {
-    if (deleting) return
+    // 预览必须属于眼前这篇文章；拿旧文章的预览绝不能确认。
+    if (deleting || preview === null || preview.articleId !== detail.id) return
+    const confirmed = preview
     setDeleting(true)
     try {
-      const result = await deleteArticle({ articleId: detail.id })
+      const result = await deleteArticle({ articleId: detail.id, confirmed })
       if (result.status === 'deleted') {
         setPreview(null)
+        setPreviewStale(false)
         onDeleted(result.articleId)
+        return
+      }
+      if (result.status === 'stale') {
+        // 预览之后库变了：这次什么都没删，换上最新影响面等用户再确认一次。
+        setPreview(result.preview)
+        setPreviewStale(true)
         return
       }
       setPreview(null)
@@ -128,7 +158,7 @@ export function LibraryArticleActions({
               type="text"
               value={draft}
               autoFocus
-              maxLength={200}
+              maxLength={ARTICLE_TITLE_MAX_LENGTH}
               onChange={(event) => setDraft(event.target.value)}
             />
           </label>
@@ -179,12 +209,20 @@ export function LibraryArticleActions({
               <li key={line}>{line}</li>
             ))}
           </ul>
+          {previewStale ? (
+            <p className="library-impact-stale" role="status">
+              影响面变了，上面是最新一份。请重新确认后再删除。
+            </p>
+          ) : null}
           <div className="library-manage-row">
             <button
               type="button"
               className="button"
               disabled={deleting}
-              onClick={() => setPreview(null)}
+              onClick={() => {
+                setPreview(null)
+                setPreviewStale(false)
+              }}
             >
               取消
             </button>
