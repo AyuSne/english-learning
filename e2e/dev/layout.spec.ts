@@ -74,10 +74,10 @@ async function resizeTo(
   } else {
     await page.setViewportSize({ width, height: 820 })
   }
-  // Windows 在某些 DPI 下会把内容宽度舍入 1px；先等真实窗口缩到目标附近。
+  // Windows 在 125% 等 DPI 缩放下会把内容宽度舍入 1–2px；先等真实窗口缩到目标附近。
   await expect
     .poll(() => page.evaluate(() => window.innerWidth), { timeout: 5_000 })
-    .toBeLessThanOrEqual(width + 1)
+    .toBeLessThanOrEqual(width + 2)
   // 让媒体查询与 React 布局按新宽度重排完再断言。
   await page.waitForTimeout(150)
   // innerWidth 是整数，DPI 缩放下媒体查询实际比较的视口宽度可能带小数。

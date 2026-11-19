@@ -5,6 +5,7 @@ import type {
   ChatStopResult,
   ChatStreamUpdate
 } from './chat'
+import type { ArticleWordsView } from './article-words'
 import type { DictionaryLookup, DictionaryLookupRequest } from './dictionary'
 import type {
   ChangeMainFormRequest,
@@ -109,6 +110,7 @@ export interface IpcContract {
   'library:detail': { payload: { articleId: string }; result: ArticleDetail | null }
   'library:search': { payload: { query: string }; result: LibrarySearchResults }
   'reading:open': { payload: { articleId: string }; result: ReadingView | null }
+  'reading:words': { payload: { articleId: string }; result: ArticleWordsView | null }
   'reading:progress': { payload: ReadingProgressRequest; result: ReadingProgressResult }
   'reading:settings': { payload: ReadingSettingsRequest; result: ReadingSettingsResult | null }
   'reading:collect': { payload: CollectSelectionRequest; result: CollectSelectionResult }
@@ -225,6 +227,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'library:detail': true,
   'library:search': true,
   'reading:open': true,
+  'reading:words': true,
   'reading:progress': true,
   'reading:settings': true,
   'reading:collect': true,

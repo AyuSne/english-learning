@@ -1,4 +1,5 @@
 import type { DictionaryLookup } from '../../shared/dictionary'
+import type { ArticleWordsView } from '../../shared/article-words'
 import type {
   ArticleDetail,
   HomeSummary,
@@ -116,6 +117,14 @@ export function searchLibrary(query: string): Promise<LibrarySearchResults> {
 /** 打开一篇文章：换回正文、生效设置与上次读到的位置，同时记下「最近打开」。 */
 export function openReadingView(articleId: string): Promise<ReadingView | null> {
   return window.api.invoke('reading:open', { articleId })
+}
+
+/**
+ * 一篇文章的「本篇选词」：按段落列出实际收下的词条与原句。
+ * 只读，不记最近打开、不改阅读位置与本篇阅读设置。
+ */
+export function loadArticleWords(articleId: string): Promise<ArticleWordsView | null> {
+  return window.api.invoke('reading:words', { articleId })
 }
 
 /** 记下读到哪一段、哪一句。 */

@@ -9,6 +9,7 @@ import { EntriesPage } from './pages/EntriesPage'
 import { HomePage } from './pages/HomePage'
 import { LibraryPage } from './pages/LibraryPage'
 import { ReadingPage } from './pages/ReadingPage'
+import { ArticleWordsPage } from './reading/article-words-page'
 import { SettingsPage } from './pages/SettingsPage'
 import { setThemePreference, useSystemPrefersDark, useThemePreference } from './theme'
 import { useView } from './use-view'
@@ -66,8 +67,11 @@ export function App() {
   }
 
   // 阅读页收起全局栏，注意力只留在文章上；其余五页保留左栏。
+  // 「本篇选词」是同一篇文章下的只读子视图，同样不显示全局栏。
   if (view.route === 'reading') {
-    return (
+    return view.readingWords ? (
+      <ArticleWordsPage articleId={view.articleId} readingFrom={view.readingFrom} />
+    ) : (
       <ReadingPage
         articleId={view.articleId}
         entrySentenceId={view.entrySentenceId}

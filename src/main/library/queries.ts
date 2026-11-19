@@ -137,17 +137,24 @@ export function readArticleDetail(
     .prepare(
       `SELECT
          (SELECT COUNT(*) FROM paragraph WHERE article_id = ?) AS paragraphs,
-         (SELECT COUNT(*) FROM sentence WHERE article_id = ?) AS sentences`
+         (SELECT COUNT(*) FROM sentence WHERE article_id = ?) AS sentences,
+         (SELECT COUNT(DISTINCT es.entry_id) FROM entry_sentence es
+           WHERE es.article_id = ?) AS word_entries,
+         (SELECT COUNT(*) FROM entry_sentence es WHERE es.article_id = ?) AS collected_sentences`
     )
-    .get(articleId, articleId) as {
+    .get(articleId, articleId, articleId, articleId) as {
     paragraphs: number
     sentences: number
+    word_entries: number
+    collected_sentences: number
   }
 
   return {
     ...toArticle(database, row),
     paragraphCount: counted.paragraphs,
     sentenceCount: counted.sentences,
+    wordEntryCount: counted.word_entries,
+    collectedSentenceCount: counted.collected_sentences,
     pages: formatPages(row.page_start, row.page_end)
   }
 }

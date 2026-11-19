@@ -1,0 +1,169 @@
+﻿/* ---------- 鏈瘒閫夎瘝锛堥槄璇诲瓙瑙嗗浘锛変笌鏂囩珷搴撱€屾湰绡囨敹杩囥€?---------- */
+
+.reading-words .reading-sheet {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.article-words-summary {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.reading-foot-words {
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.reading-foot-words:hover {
+  border-color: var(--rule-hover);
+  color: var(--ink);
+}
+
+.article-words-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-words-paragraph-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.article-words-paragraph-label {
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+}
+
+.article-words-paragraph-count {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.article-words-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-words-entry {
+  padding: 10px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.article-words-entry-link {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.article-words-entry-link:hover .article-words-entry-form {
+  color: var(--amber);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article-words-entry-form {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.article-words-entry-meta {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.article-words-sentences {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-words-sentence {
+  color: var(--ink-2);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.article-words-surface {
+  border-radius: 3px;
+  background: var(--bed-select);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.article-words-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 48px 0;
+}
+
+.article-words-empty-title {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 30px;
+}
+
+/* ---------- 鏂囩珷搴撹鎯呯殑銆屾湰绡囨敹杩囥€?---------- */
+
+.library-collected {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.library-collected-title {
+  margin: 0 0 6px;
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+}
+
+.library-collected-count {
+  margin: 0 0 10px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}

@@ -48,6 +48,7 @@ import type {
   UpdateThreadContextResult
 } from '../../shared/threads'
 import type { AppBootstrap } from '../../shared/types'
+import type { ArticleWordsView } from '../../shared/article-words'
 import { IPC_CHANNELS } from '../../shared/ipc-contract'
 import {
   registerIpcHandlers,
@@ -126,6 +127,7 @@ function libraryHandlers() {
 function readingHandlers() {
   return {
     'reading:open': (): ReadingView | null => null,
+    'reading:words': (): ArticleWordsView | null => null,
     'reading:progress': (): ReadingProgressResult => ({ saved: false }),
     'reading:settings': (): ReadingSettingsResult | null => null,
     'reading:collect': (): CollectSelectionResult => ({

@@ -137,6 +137,8 @@ describe('readArticleDetail', () => {
       id: carefulReading.id,
       paragraphCount: 2,
       sentenceCount: 3,
+      wordEntryCount: 0,
+      collectedSentenceCount: 0,
       pages: '第 1–2 页'
     })
   })
