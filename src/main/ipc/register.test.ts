@@ -12,6 +12,7 @@ import type {
   MergeEntriesResult,
   MoveEntrySentenceResult,
   ReselectEntrySentenceResult,
+  SetEntryLaterResult,
   WordEntryCard
 } from '../../shared/entries'
 import type {
@@ -111,7 +112,8 @@ function libraryHandlers() {
       library: { articleCount: 0, sessionCount: 0 },
       continueReading: null,
       completedArticleCount: 0,
-      recentEntries: []
+      recentEntries: [],
+      laterEntries: []
     }),
     'library:list': (): LibraryListing => ({ articleCount: 0, sessionCount: 0, sessions: [] }),
     'library:reimport': (): ImportReport => ({
@@ -161,6 +163,7 @@ function entriesHandlers() {
     'entries:main-form': (): ChangeMainFormResult => ({ status: 'missing' }),
     'entries:move-sentence': (): MoveEntrySentenceResult => ({ status: 'missing' }),
     'entries:reselect-sentence': (): ReselectEntrySentenceResult => ({ status: 'missing' }),
+    'entries:later': (): SetEntryLaterResult => ({ status: 'missing' }),
     'entries:create-note': missingNote,
     'entries:update-note': missingNote,
     'entries:pin-note': missingNote,

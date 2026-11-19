@@ -2,6 +2,7 @@ import type { RefObject } from 'react'
 import type { WordEntryCard } from '../../../shared/entries'
 import { DictionaryView } from '../dictionary/dictionary-view'
 import type { DictionaryLookupState } from '../dictionary/lookup'
+import { laterToggleLabel } from '../later/format'
 
 /**
  * 阅读页右侧的两张浮层：
@@ -32,6 +33,9 @@ export type EntryPanel = {
   /** 删最后一条原句前先确认，会连词条一起删。 */
   confirmingDelete: boolean
   deleting: boolean
+  /** 稍后看标记的写入状态与刚给的反馈。 */
+  laterBusy: boolean
+  laterNotice: string | null
 }
 
 export type PanelState = CollectedPanel | EntryPanel
@@ -84,6 +88,7 @@ export function EntryPanelView({
   onAsk,
   onAskNew,
   openingThread,
+  onToggleLater,
   onDelete,
   onConfirmDeleteLast,
   onCancelConfirm
@@ -95,6 +100,7 @@ export function EntryPanelView({
   onAsk: () => void
   onAskNew: () => void
   openingThread: boolean
+  onToggleLater: () => void
   onDelete: (entrySentenceId: string) => void
   onConfirmDeleteLast: () => void
   onCancelConfirm: () => void
@@ -152,7 +158,22 @@ export function EntryPanelView({
             >
               新建线程
             </button>
+            <button
+              type="button"
+              className="button"
+              aria-pressed={panel.card.entry.laterMarkedAt !== null}
+              disabled={panel.laterBusy}
+              onClick={onToggleLater}
+            >
+              {laterToggleLabel(panel.card.entry.laterMarkedAt !== null)}
+            </button>
           </div>
+
+          {panel.laterNotice === null ? null : (
+            <p className="reading-panel-later-status" role="status">
+              {panel.laterNotice}
+            </p>
+          )}
 
           <ul className="reading-panel-sentences">
             {panel.card.sentences.map((sentence) => (

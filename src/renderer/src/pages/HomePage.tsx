@@ -1,19 +1,29 @@
 import { useEffect, useState } from 'react'
-import type { HomeSummary } from '../../../shared/library'
-import { loadHomeSummary } from '../api'
+import type { HomeLaterEntry, HomeSummary } from '../../../shared/library'
+import { loadHomeSummary, setEntryLater } from '../api'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
-import { continueReadingDisplay, finishedReadingDisplay, homeEntryMeta, homeReadingState } from '../home/format'
-import { readingPointText } from '../library/format'
+import {
+  continueReadingDisplay,
+  finishedReadingDisplay,
+  homeEntryMeta,
+  homeReadingState
+} from '../home/format'
+import { HOME_LATER_EMPTY, laterRemoveLabel, laterUnmarkedNotice } from '../later/format'
+import { formatDay, readingPointText } from '../library/format'
 import { navigate } from '../navigate'
 
 /**
- * 首页：继续阅读是最近读过的一篇；最近收集列出真实的词条，点一下进词条。
+ * 首页：继续阅读是最近读过的一篇；最近收集列出真实的词条，点一下进词条；
+ * 稍后看单列显示标过的词条，可以进词条或就地移除。
  */
 export function HomePage() {
   const [summary, setSummary] = useState<HomeSummary | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
+  const [laterBusyId, setLaterBusyId] = useState<string | null>(null)
+  const [laterNotice, setLaterNotice] = useState<string | null>(null)
+  const [laterError, setLaterError] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
@@ -47,12 +57,40 @@ export function HomePage() {
     navigate('entries', { entryId })
   }
 
+  /** 从首页移除：立刻把这一行拿掉，并给一句看得见、读得出的「已移除」。 */
+  async function removeLater(entry: HomeLaterEntry): Promise<void> {
+    if (laterBusyId !== null) return
+    setLaterBusyId(entry.entryId)
+    setLaterNotice(null)
+    setLaterError(null)
+    try {
+      // 词条已经不在了也按移除处理：首页不该继续留着一条打不开的稍后看。
+      await setEntryLater({ entryId: entry.entryId, later: false })
+      setSummary((current) =>
+        current === null
+          ? current
+          : {
+              ...current,
+              laterEntries: current.laterEntries.filter(
+                (item) => item.entryId !== entry.entryId
+              )
+            }
+      )
+      setLaterNotice(laterUnmarkedNotice(entry.mainForm))
+    } catch (reason) {
+      setLaterError(failureText(reason, '这条稍后看没有移除。'))
+    } finally {
+      setLaterBusyId(null)
+    }
+  }
+
   const recentEntries = summary?.recentEntries ?? null
+  const laterEntries = summary?.laterEntries ?? null
 
   return (
     <div className="page home">
       {finished !== null ? (
-        // 读过并完成了，但没有未读完的篇目：明确说「没有未读完的文章了」，
+        // 读过并完成了，但没有读到一半的篇目：明确说「没有读到一半的文章了」，
         // 不把已读完的那篇再当成「继续阅读」端出来，也不暗示整个文章库都读过了。
         <section className="home-finished" aria-label="已读完">
           <p className="eyebrow">{finished.eyebrow}</p>
@@ -141,9 +179,47 @@ export function HomePage() {
           </div>
         )}
       </section>
-      <section className="home-section">
+      <section className="home-section" aria-label="稍后看">
         <h2 className="section-label">稍后看</h2>
-        <p className="empty-line">空着。看到不想现在查的词，标一下会收到这里。</p>
+        {laterEntries === null ? null : laterEntries.length === 0 ? (
+          <p className="empty-line">{HOME_LATER_EMPTY}</p>
+        ) : (
+          <ul className="home-later" aria-label="稍后看的词条">
+            {laterEntries.map((entry) => (
+              <li className="home-later-row" key={entry.entryId}>
+                <button
+                  type="button"
+                  className="home-later-open"
+                  onClick={() => openEntry(entry.entryId)}
+                >
+                  <span className="home-later-form">{entry.mainForm}</span>
+                  <span className="home-later-meta">
+                    标记于 {formatDay(entry.markedAt)}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="home-later-remove"
+                  aria-label={laterRemoveLabel(entry.mainForm)}
+                  disabled={laterBusyId === entry.entryId}
+                  onClick={() => void removeLater(entry)}
+                >
+                  移除
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {laterError === null ? null : (
+          <p className="home-later-error" role="alert">
+            {laterError}
+          </p>
+        )}
+        {laterNotice === null ? null : (
+          <p className="home-later-notice" role="status">
+            {laterNotice}
+          </p>
+        )}
       </section>
       <section className="home-section">
         <h2 className="section-label">文章库</h2>

@@ -96,6 +96,7 @@ describe('homeReadingState', () => {
       continueReading: null,
       completedArticleCount: 0,
       recentEntries: [],
+      laterEntries: [],
       ...overrides
     }
   }
@@ -129,7 +130,7 @@ describe('finishedReadingDisplay', () => {
     const display = finishedReadingDisplay(2)
 
     expect(display.eyebrow).toBe('已读完 2 篇')
-    expect(display.title).toBe('没有未读完的文章了')
+    expect(display.title).toBe('没有读到一半的文章了')
     expect(display.lede).toContain('重读')
     expect(display.lede).not.toContain('63')
   })

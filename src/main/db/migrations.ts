@@ -274,6 +274,22 @@ export const migrations: readonly Migration[] = [
   {
     version: 10,
     up: (database) => {
+      // 「稍后看」是按词条的一条独立标记，只记标记时间：不算进已收集，
+      // 也不参看原句数、学习内容或收集时间。词条删掉（例如删最后一条原句）时
+      // 标记随外键级联消失；反向不成立——标记不会凭空建出词条。
+      database.exec(`
+        CREATE TABLE entry_later (
+          entry_id  TEXT PRIMARY KEY REFERENCES word_entry(id) ON DELETE CASCADE,
+          marked_at TEXT NOT NULL
+        );
+
+        CREATE INDEX entry_later_marked ON entry_later (marked_at DESC);
+      `)
+    }
+  },
+  {
+    version: 11,
+    up: (database) => {
       // 「进入本篇选词」即视为读完：只追加一个可空的完成时间，旧文章默认 NULL。
       // 进度由此得到第三种状态（已读完、100%）；阅读位置与设置仍是各自独立的列，
       // 完成时间只写一次，重读、滚动、改设置都不该把它清掉或重写。

@@ -365,6 +365,33 @@ describe('restoreBackup', () => {
     expect(outcome.status).toBe('restored')
     expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
     expect(readThemePreference(database)).toBe('dark')
+    // 旧备份就地升级时会补上这一版新增的「稍后看」表。
+    expect(
+      database
+        .prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entry_later'")
+        .get()
+    ).toBeDefined()
+  })
+
+  it('当前版本的备份缺了稍后看表时不会被当成可恢复的备份', async () => {
+    const file = backupFile('missing-later.db')
+    await createBackup(database, { file, now })
+    // 版本号写着最新、表却不齐：只看 setting 一张表就会把它当成好备份。
+    const copy = openDatabase(file)
+    try {
+      copy.exec('DROP TABLE entry_later')
+    } finally {
+      copy.close()
+    }
+
+    expect(inspectBackupFile(file)).toEqual({ ok: false, reason: 'not-a-library' })
+    expect(
+      await restoreBackup(database, {
+        file,
+        snapshotDirectory: snapshots(),
+        now: later
+      })
+    ).toEqual({ status: 'rejected', reason: 'not-a-library' })
   })
 
   it('版本高于当前程序的备份拒绝恢复，本机数据不动', async () => {
@@ -484,6 +511,21 @@ describe('inspectBackupFile', () => {
     const fake = openDatabase(fakeFile)
     try {
       fake.exec('CREATE TABLE setting (key TEXT PRIMARY KEY, value TEXT NOT NULL)')
+      fake.pragma(`user_version = ${LATEST_SCHEMA_VERSION}`)
+    } finally {
+      fake.close()
+    }
+
+    expect(inspectBackupFile(fakeFile)).toEqual({ ok: false, reason: 'not-a-library' })
+  })
+
+  it('版本号写着最新、表也齐但没有完成时间列的文件不会被当成备份', () => {
+    // 停在加完成时间列之前（v10）的库：表全在，只差 article.completed_at；
+    // 把版本号谎报成最新时，列检查必须把它拦下。
+    const fakeFile = join(directory, 'fake-columns.db')
+    const fake = openDatabase(fakeFile)
+    try {
+      migrate(fake, { migrations: migrations.filter((migration) => migration.version <= 10) })
       fake.pragma(`user_version = ${LATEST_SCHEMA_VERSION}`)
     } finally {
       fake.close()

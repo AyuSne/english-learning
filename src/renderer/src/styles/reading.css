@@ -525,6 +525,18 @@
   margin-top: 12px;
 }
 
+.reading-panel-actions .button[aria-pressed="true"] {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.reading-panel-later-status {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
 .reading-panel-confirm {
   margin-top: 12px;
   padding: 12px;

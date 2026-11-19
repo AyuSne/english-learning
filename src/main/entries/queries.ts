@@ -33,6 +33,7 @@ type EntrySummaryRow = {
   id: string
   main_form: string
   last_collected_at: string
+  later_marked_at: string | null
   sentence_count: number
   article_count: number
   note_count: number
@@ -76,6 +77,8 @@ export function readEntrySummary(database: AppDatabase, entryId: string): EntryS
   const row = database
     .prepare(
       `SELECT we.id, we.main_form, we.last_collected_at,
+              (SELECT el.marked_at FROM entry_later el WHERE el.entry_id = we.id)
+                AS later_marked_at,
               (SELECT COUNT(*) FROM entry_sentence es WHERE es.entry_id = we.id) AS sentence_count,
               (SELECT COUNT(DISTINCT es.article_id) FROM entry_sentence es
                 WHERE es.entry_id = we.id) AS article_count,
@@ -106,7 +109,8 @@ export function readEntrySummary(database: AppDatabase, entryId: string): EntryS
     sentenceCount: row.sentence_count,
     articleCount: row.article_count,
     noteCount: row.note_count,
-    lastCollectedAt: row.last_collected_at
+    lastCollectedAt: row.last_collected_at,
+    laterMarkedAt: row.later_marked_at
   }
 }
 

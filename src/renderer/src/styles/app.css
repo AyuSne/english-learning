@@ -282,6 +282,87 @@ button:focus-visible {
   line-height: 16px;
 }
 
+/* 首页「稍后看」的单列：词形可点进词条，右侧就地移除。 */
+.home-later {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-later-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.home-later-row:last-child {
+  border-bottom: 0;
+}
+
+.home-later-open {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.home-later-form {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.home-later-meta {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.home-later-remove {
+  flex: none;
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.home-later-remove:hover {
+  border-color: var(--rule);
+  color: var(--ink);
+}
+
+.home-later-remove:disabled {
+  color: var(--ink-3);
+  cursor: default;
+}
+
+.home-later-notice {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.home-later-error {
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
 /* ---------- 错误块 ---------- */
 
 /*

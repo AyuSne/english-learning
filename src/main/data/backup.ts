@@ -242,12 +242,34 @@ const TABLES_BY_VERSION: readonly { version: number; tables: readonly string[] }
   { version: 5, tables: ['learning_note'] },
   { version: 6, tables: ['thread', 'thread_entry'] },
   { version: 7, tables: ['pin'] },
-  { version: 8, tables: ['model_profile'] }
+  { version: 8, tables: ['model_profile'] },
+  { version: 10, tables: ['entry_later'] }
 ]
 
+/**
+ * 各版本该有的新列。只查表不够：版本号写着 11、表也齐、但文章表没有
+ * `completed_at` 的文件，恢复进来会让「已读完」的读取直接报错。
+ */
+const COLUMNS_BY_VERSION: readonly {
+  version: number
+  table: string
+  columns: readonly string[]
+}[] = [{ version: 11, table: 'article', columns: ['completed_at'] }]
+
+function tableColumns(database: AppDatabase, table: string): Set<string> {
+  const columns = database.pragma(`table_info(${table})`) as { name: string }[]
+  return new Set(columns.map((column) => column.name))
+}
+
 function isLibraryDatabase(database: AppDatabase, schemaVersion: number): boolean {
-  return TABLES_BY_VERSION.filter((entry) => entry.version <= schemaVersion).every((entry) =>
-    entry.tables.every((table) => hasTable(database, table))
+  return (
+    TABLES_BY_VERSION.filter((entry) => entry.version <= schemaVersion).every((entry) =>
+      entry.tables.every((table) => hasTable(database, table))
+    ) &&
+    COLUMNS_BY_VERSION.filter((entry) => entry.version <= schemaVersion).every((entry) => {
+      const present = tableColumns(database, entry.table)
+      return entry.columns.every((column) => present.has(column))
+    })
   )
 }
 

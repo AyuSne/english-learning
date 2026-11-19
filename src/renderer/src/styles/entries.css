@@ -427,6 +427,12 @@
   flex-wrap: wrap;
 }
 
+/* 「稍后看」是蓝色状态的词，按下时按钮也跟着用蓝字，和阅读侧一致。 */
+.entries-main-actions .button[aria-pressed="true"] {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
 .entry-confirm p {
   font-size: 14px;
   line-height: 20px;

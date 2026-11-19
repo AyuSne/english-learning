@@ -35,6 +35,8 @@ export type EntrySummary = {
   noteCount: number
   /** ISO 8601 UTC。 */
   lastCollectedAt: string
+  /** 「稍后看」的标记时间；没标时为 null。与收集时间、计数互不影响。 */
+  laterMarkedAt: string | null
 }
 
 /** 词条下的一条原句：选中词形、原句文字与出处。 */
@@ -288,3 +290,19 @@ export type EntrySentenceTarget = {
   entry: EntrySummary
   sentence: EntrySentence
 }
+
+/** 设置或取消一个词条的「稍后看」标记。 */
+export type SetEntryLaterRequest = {
+  entryId: string
+  /** true = 加入稍后看；false = 取消。 */
+  later: boolean
+}
+
+/**
+ * 稍后看只改独立标记：`marked` 带回标记时间（重复标记保持第一次），
+ * `unmarked` 是取消后的状态，词条不存在时 `missing`，这时不会新建词条。
+ */
+export type SetEntryLaterResult =
+  | { status: 'marked'; markedAt: string }
+  | { status: 'unmarked' }
+  | { status: 'missing' }

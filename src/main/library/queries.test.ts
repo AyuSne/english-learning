@@ -183,7 +183,8 @@ describe('readHomeSummary', () => {
       library: { articleCount: 3, sessionCount: 2 },
       continueReading: null,
       completedArticleCount: 0,
-      recentEntries: []
+      recentEntries: [],
+      laterEntries: []
     })
   })
 

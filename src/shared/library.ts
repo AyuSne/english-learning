@@ -136,6 +136,18 @@ export type HomeEntryChip = {
   lastCollectedAt: string
 }
 
+/**
+ * 首页「稍后看」的一行。只带词条与标记时间：不算进最近收集，
+ * 也不显示原句数、笔记数这些收集侧的规模。
+ */
+export type HomeLaterEntry = {
+  entryId: string
+  /** 词条当前的主词形。 */
+  mainForm: string
+  /** 标记「稍后看」的时间，ISO 8601 UTC；列表按它倒序。 */
+  markedAt: string
+}
+
 export type HomeSummary = {
   library: LibrarySize
   continueReading: ContinueReading | null
@@ -146,6 +158,8 @@ export type HomeSummary = {
   completedArticleCount: number
   /** 真实的词条按最近收集时间倒序；没有词条时为空数组。 */
   recentEntries: HomeEntryChip[]
+  /** 标了「稍后看」的词条，按标记时间倒序；没有时为空数组。 */
+  laterEntries: HomeLaterEntry[]
 }
 
 export type ImportFailure = {
