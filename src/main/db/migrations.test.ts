@@ -144,8 +144,8 @@ describe('migrate', () => {
 
     expect(outcome.from).toBe(8)
     // 后缀按实际排在 position→ordinal 之后的迁移逐条写出来，不靠「迁到最新」一句带过：
-    // 10 是稍后看表，11 是完成时间列。
-    expect(outcome.applied).toEqual([9, 10, 11])
+    // 10 是稍后看表，11 是完成时间列，12 是学习指令表。
+    expect(outcome.applied).toEqual([9, 10, 11, 12])
     const columns = (database.pragma('table_info(article)') as { name: string }[]).map(
       (column) => column.name
     )
@@ -196,8 +196,8 @@ describe('migrate', () => {
     const outcome = migrate(database)
 
     expect(outcome.from).toBe(9)
-    // 10 先建稍后看表，11 再给文章补完成时间；两笔都只增不改。
-    expect(outcome.applied).toEqual([10, 11])
+    // 10 先建稍后看表，11 再给文章补完成时间，12 最后建学习指令表；三笔都只增不改。
+    expect(outcome.applied).toEqual([10, 11, 12])
     // 稍后看表跟着建起来，已有的词条数据不受影响。
     expect(
       database
@@ -248,7 +248,7 @@ describe('migrate', () => {
 
     const outcome = migrate(database)
 
-    expect(outcome.applied).toEqual([10, 11])
+    expect(outcome.applied).toEqual([10, 11, 12])
     expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
     expect(
       (database.pragma('table_info(article)') as { name: string }[]).map((column) => column.name)
@@ -261,5 +261,68 @@ describe('migrate', () => {
       id: 'entry-old',
       main_form: 'approach'
     })
+  })
+
+  it('12 版只追加学习指令表：停在 11 的旧库升级后旧数据原样保留，表从空开始', () => {
+    // 学习指令是独立表，不借 setting、也不动文章 / 词条 / 线程；示例只在前端常量里。
+    migrate(database, {
+      migrations: migrations.filter((migration) => migration.version <= 11)
+    })
+    database
+      .prepare(
+        `INSERT INTO setting (key, value) VALUES ('reading.font-size', '22')`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO word_entry (id, main_form, normalized_key, created_at, last_collected_at)
+         VALUES ('entry-old', 'approach', 'approach', '2026-11-18T08:00:00.000Z', '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO article (
+           id, title, kind, kind_label, session_key, session_label, set_label,
+           exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+           source_sha256, ordinal
+         ) VALUES ('a', 'A', 'careful_reading', '仔细阅读', '2026-06', '2026年6月', '第1套',
+           2026, 6, 1, 3, 'Body.', 'a.pdf', 'sha', 1)`
+      )
+      .run()
+    expect(readSchemaVersion(database)).toBe(11)
+    expect(
+      database
+        .prepare(
+          "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'learning_instruction'"
+        )
+        .get()
+    ).toBeUndefined()
+
+    const outcome = migrate(database)
+
+    expect(outcome.from).toBe(11)
+    expect(outcome.applied).toEqual([12])
+    expect(readSchemaVersion(database)).toBe(12)
+    expect(
+      database
+        .prepare(
+          "SELECT 1 FROM sqlite_master WHERE type = 'index' AND name = 'learning_instruction_updated'"
+        )
+        .get()
+    ).toBeDefined()
+    // 新表默认是空的，内置示例没有被写成用户记录。
+    expect(database.prepare('SELECT COUNT(*) AS count FROM learning_instruction').get()).toEqual({
+      count: 0
+    })
+    // 旧数据一条不丢。
+    expect(database.prepare("SELECT value FROM setting WHERE key = 'reading.font-size'").get()).toEqual({
+      value: '22'
+    })
+    expect(database.prepare('SELECT id, main_form FROM word_entry').get()).toEqual({
+      id: 'entry-old',
+      main_form: 'approach'
+    })
+    expect(database.prepare('SELECT id, ordinal FROM article').get()).toEqual({ id: 'a', ordinal: 1 })
+    expect(migrate(database).applied).toEqual([])
   })
 })

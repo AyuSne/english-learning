@@ -27,6 +27,10 @@ import type {
   RenameArticleResult
 } from '../../shared/library'
 import type {
+  LearningInstructionList,
+  LearningInstructionResult
+} from '../../shared/learning-instructions'
+import type {
   CreatePinResult,
   DeletePinResult,
   FileAllUnfiledResult,
@@ -174,6 +178,19 @@ function entriesHandlers() {
   }
 }
 
+function instructionsHandlers() {
+  return {
+    'instructions:list': (): LearningInstructionList => ({ instructions: [] }),
+    'instructions:create': (): LearningInstructionResult => ({
+      status: 'rejected',
+      reason: 'empty-name'
+    }),
+    'instructions:update': (): LearningInstructionResult => ({ status: 'missing' }),
+    'instructions:copy': (): LearningInstructionResult => ({ status: 'missing' }),
+    'instructions:delete': (): LearningInstructionResult => ({ status: 'missing' })
+  }
+}
+
 function dictionaryHandlers() {
   return {
     'dictionary:lookup': (payload: { word: string }): DictionaryLookup => ({
@@ -270,6 +287,7 @@ describe('registerIpcHandlers', () => {
       ...libraryHandlers(),
       ...readingHandlers(),
       ...entriesHandlers(),
+      ...instructionsHandlers(),
       ...pinsHandlers(),
       ...dictionaryHandlers(),
       ...settingsHandlers(),
@@ -304,6 +322,7 @@ describe('registerIpcHandlers', () => {
       ...libraryHandlers(),
       ...readingHandlers(),
       ...entriesHandlers(),
+      ...instructionsHandlers(),
       ...pinsHandlers(),
       ...dictionaryHandlers(),
       ...settingsHandlers(),

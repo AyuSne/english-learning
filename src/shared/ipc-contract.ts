@@ -46,6 +46,14 @@ import type {
   RenameArticleResult
 } from './library'
 import type {
+  CopyLearningInstructionRequest,
+  CreateLearningInstructionRequest,
+  DeleteLearningInstructionRequest,
+  LearningInstructionList,
+  LearningInstructionResult,
+  UpdateLearningInstructionRequest
+} from './learning-instructions'
+import type {
   CreatePinRequest,
   CreatePinResult,
   DeletePinResult,
@@ -166,6 +174,23 @@ export interface IpcContract {
   'entries:pin-note': { payload: PinLearningNoteRequest; result: LearningNoteResult }
   'entries:delete-note': { payload: { noteId: string }; result: LearningNoteResult }
   'entries:move-note': { payload: MoveLearningNoteRequest; result: LearningNoteResult }
+  'instructions:list': { payload: undefined; result: LearningInstructionList }
+  'instructions:create': {
+    payload: CreateLearningInstructionRequest
+    result: LearningInstructionResult
+  }
+  'instructions:update': {
+    payload: UpdateLearningInstructionRequest
+    result: LearningInstructionResult
+  }
+  'instructions:copy': {
+    payload: CopyLearningInstructionRequest
+    result: LearningInstructionResult
+  }
+  'instructions:delete': {
+    payload: DeleteLearningInstructionRequest
+    result: LearningInstructionResult
+  }
   'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
   'chat:list': { payload: undefined; result: ThreadListResult }
@@ -270,6 +295,11 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'entries:pin-note': true,
   'entries:delete-note': true,
   'entries:move-note': true,
+  'instructions:list': true,
+  'instructions:create': true,
+  'instructions:update': true,
+  'instructions:copy': true,
+  'instructions:delete': true,
   'chat:start': true,
   'chat:stop': true,
   'chat:list': true,
