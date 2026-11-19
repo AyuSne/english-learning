@@ -168,6 +168,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     navigate('reading', {
       articleId: sentence.articleId,
       entrySentenceId: sentence.id,
+      readingFrom: 'entries',
       reselect
     })
   }

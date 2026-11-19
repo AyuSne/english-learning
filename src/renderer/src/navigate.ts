@@ -70,10 +70,14 @@ export function navigateFromGlobal(route: Route): void {
   if (parseView(window.location.hash).route === route) return
   if (route === 'reading') {
     const fromHash = window.location.hash
+    const fromRoute = parseView(fromHash).route
+    const readingFrom = fromRoute === 'home' || fromRoute === 'library' || fromRoute === 'entries'
+      ? fromRoute
+      : null
     void loadHomeSummary().then(
       (summary) => {
         if (navigationRequest !== request || window.location.hash !== fromHash) return
-        navigate('reading', { articleId: summary.continueReading?.article.id ?? null })
+        navigate('reading', { articleId: summary.continueReading?.article.id ?? null, readingFrom })
       },
       () => {
         if (navigationRequest === request && window.location.hash === fromHash) navigate('reading')

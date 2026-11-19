@@ -145,7 +145,7 @@ export function LibraryPage({
   }
 
   function open(articleId: string): void {
-    navigate('reading', { articleId })
+    navigate('reading', { articleId, readingFrom: 'library' })
   }
 
   async function askAboutArticle(forceNew = false): Promise<void> {

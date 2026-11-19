@@ -1,6 +1,7 @@
 export const ROUTES = ['home', 'reading', 'entries', 'chat', 'library', 'settings'] as const
 
 export type Route = (typeof ROUTES)[number]
+export type ReadingSource = 'library' | 'home' | 'entries' | 'search'
 
 /**
  * 当前视图。阅读页要带上是哪一篇（可以再带一条要定位的原句），
@@ -23,6 +24,8 @@ export type View = {
   pinId: string | null
   /** 回跳时「回词条」要回到的词条。 */
   fromEntryId: string | null
+  /** 阅读页由哪里打开，用于标明返回目标。 */
+  readingFrom: ReadingSource | null
 }
 
 export type RouteHashOptions = {
@@ -33,6 +36,7 @@ export type RouteHashOptions = {
   reselect?: boolean
   pinId?: string | null
   fromEntryId?: string | null
+  readingFrom?: ReadingSource | null
 }
 
 function routeOf(segment: string): Route | null {
@@ -61,7 +65,8 @@ function blankView(route: Route): View {
     entrySentenceId: null,
     reselect: false,
     pinId: null,
-    fromEntryId: null
+    fromEntryId: null,
+    readingFrom: null
   }
 }
 
@@ -95,6 +100,11 @@ export function parseView(hash: string): View {
     const params = new URLSearchParams(query)
     const sentence = params.get('sentence')
     const entrySentenceId = sentence === null ? null : decodeSegment(sentence)
+    const from = params.get('from')
+    const readingFrom =
+      from === 'library' || from === 'home' || from === 'entries' || from === 'search'
+        ? from
+        : null
     return {
       route,
       articleId,
@@ -103,7 +113,8 @@ export function parseView(hash: string): View {
       entrySentenceId,
       reselect: entrySentenceId !== null && params.get('reselect') === '1',
       pinId: null,
-      fromEntryId: null
+      fromEntryId: null,
+      readingFrom
     }
   }
 
@@ -153,12 +164,15 @@ export function parseView(hash: string): View {
 export function routeHash(route: Route, options: RouteHashOptions = {}): string {
   if (route === 'reading' && options.articleId) {
     let hash = `#/reading/${encodeURIComponent(options.articleId)}`
+    const params: string[] = []
     if (options.entrySentenceId) {
-      hash += `?sentence=${encodeURIComponent(options.entrySentenceId)}`
+      params.push(`sentence=${encodeURIComponent(options.entrySentenceId)}`)
       if (options.reselect) {
-        hash += '&reselect=1'
+        params.push('reselect=1')
       }
     }
+    if (options.readingFrom) params.push(`from=${options.readingFrom}`)
+    if (params.length > 0) hash += `?${params.join('&')}`
     return hash
   }
   if (route === 'entries' && options.entryId) {

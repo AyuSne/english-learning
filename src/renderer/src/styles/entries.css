@@ -215,6 +215,7 @@
 
 .entries-main-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
@@ -228,6 +229,7 @@
 
 .entries-main-title {
   min-width: 0;
+  flex: 1 1 160px;
 }
 
 .entries-title {
@@ -419,6 +421,10 @@
 .entries-rail-actions {
   display: flex;
   gap: 8px;
+}
+
+.entries-main-actions {
+  flex-wrap: wrap;
 }
 
 .entry-confirm p {

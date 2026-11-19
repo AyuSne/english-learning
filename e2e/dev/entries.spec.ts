@@ -88,6 +88,30 @@ function entryRow(page: Page, name: string) {
 }
 
 test.describe('词条页', () => {
+  test('窄窗口仍能看清词条标题并使用两种对话入口', async ({ launch, userDataDirectory }) => {
+    seed(userDataDirectory, [{ entry: firstArticle, paragraphIndex: 0, needle: 'approach' }])
+    const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+    if (electronApp === null) throw new Error('需要开发版 Electron 进程')
+    await electronApp.evaluate(({ BrowserWindow }) => {
+      const window = BrowserWindow.getAllWindows()[0]
+      if (!window) throw new Error('没有主窗口')
+      window.setContentSize(900, 820)
+    })
+    await openEntries(page)
+    await entryRow(page, 'approach').click()
+    const main = page.getByRole('region', { name: '词条内容' })
+    const title = main.getByRole('heading', { name: 'approach', level: 2 })
+    await expect(title).toBeVisible()
+    expect((await title.boundingBox())?.width ?? 0).toBeGreaterThan(64)
+    await expect(main.getByRole('button', { name: '开始对话' })).toBeVisible()
+    await expect(main.getByRole('button', { name: '新开一条' })).toBeVisible()
+    const dimensions = await main.evaluate((element) => ({
+      scroll: element.scrollWidth,
+      client: element.clientWidth
+    }))
+    expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1)
+  })
+
   test('三栏打开词条：原句按文章分组、组内按句序，动作悬停与键盘聚焦都出现', async ({
     launch,
     userDataDirectory
@@ -299,7 +323,7 @@ test.describe('词条页', () => {
     await entryRow(page, 'approach').click()
     await sentence.hover()
     await sentence.getByRole('button', { name: '回到原文' }).click()
-    await page.getByRole('button', { name: '回词条' }).click()
+    await page.getByRole('button', { name: '回词条', exact: true }).click()
     await expect(page.getByRole('heading', { name: '词条', level: 1 })).toBeVisible()
     await expect(
       page.getByRole('region', { name: '词条内容' }).getByRole('heading', { name: 'approach', level: 2 })
@@ -336,7 +360,7 @@ test.describe('词条页', () => {
     // 换到别的句子不算，给出提示。
     await selectText(page, 1, 'Context')
     await expect(page.getByText('重新圈定只在原句所在的这一句里换范围。')).toBeVisible()
-    await page.getByRole('button', { name: '回词条' }).click()
+    await page.getByRole('button', { name: '回词条', exact: true }).click()
 
     await entryRow(page, 'approach hiring').click()
     await sentence.hover()
@@ -345,7 +369,7 @@ test.describe('词条页', () => {
 
     await expect(page.getByText('已重新圈定为「approach」。')).toBeVisible()
     await expect(page.locator('.reading-context-text')).toContainText('来自词条 approach')
-    await page.getByRole('button', { name: '回词条' }).click()
+    await page.getByRole('button', { name: '回词条', exact: true }).click()
 
     // 主词形跟着修正后的单词走，列表里也不再是那句短语。
     await entryRow(page, 'approach').click()

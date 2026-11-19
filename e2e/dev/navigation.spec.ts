@@ -142,7 +142,7 @@ test('阅读导航在没有读过的文章时显示空态，有时续读最近�
   await nav.getByRole('button', { name: '阅读' }).click()
   await expect(page.getByRole('heading', { name: otherTitle, level: 1 })).toBeVisible()
   await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(
-    `#/reading/${otherArticle.id}`
+    `#/reading/${otherArticle.id}?from=home`
   )
 })
 
