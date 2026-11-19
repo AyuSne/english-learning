@@ -378,7 +378,7 @@ export function LibraryPage({
                   className="button button-primary"
                   onClick={() => open(detail.id)}
                 >
-                  继续阅读
+                  {detail.progress.state === 'completed' ? '重读' : '继续阅读'}
                 </button>
                 <button
                   type="button"

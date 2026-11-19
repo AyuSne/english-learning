@@ -3,12 +3,13 @@ import type { HomeLaterEntry, HomeSummary } from '../../../shared/library'
 import { loadHomeSummary, setEntryLater } from '../api'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
-import { continueReadingDisplay, homeEntryMeta } from '../home/format'
 import {
-  HOME_LATER_EMPTY,
-  laterRemoveLabel,
-  laterUnmarkedNotice
-} from '../later/format'
+  continueReadingDisplay,
+  finishedReadingDisplay,
+  homeEntryMeta,
+  homeReadingState
+} from '../home/format'
+import { HOME_LATER_EMPTY, laterRemoveLabel, laterUnmarkedNotice } from '../later/format'
 import { formatDay, readingPointText } from '../library/format'
 import { navigate } from '../navigate'
 
@@ -41,7 +42,12 @@ export function HomePage() {
   }, [reloadToken])
 
   const current = summary?.continueReading ?? null
+  const readingState = homeReadingState(summary)
   const display = current === null ? null : continueReadingDisplay(current.article)
+  const finished =
+    readingState === 'finished' && summary !== null
+      ? finishedReadingDisplay(summary.completedArticleCount)
+      : null
 
   function continueReading(articleId: string): void {
     navigate('reading', { articleId, readingFrom: 'home' })
@@ -83,7 +89,27 @@ export function HomePage() {
 
   return (
     <div className="page home">
-      {current === null ? (
+      {finished !== null ? (
+        // 读过并完成了，但没有读到一半的篇目：明确说「没有读到一半的文章了」，
+        // 不把已读完的那篇再当成「继续阅读」端出来，也不暗示整个文章库都读过了。
+        <section className="home-finished" aria-label="已读完">
+          <p className="eyebrow">{finished.eyebrow}</p>
+          <h1 className="home-title">{finished.title}</h1>
+          <p className="home-lede">{finished.lede}</p>
+          <div className="home-actions">
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={() => navigate('library')}
+            >
+              从文章库挑一篇
+            </button>
+            <button type="button" className="button" onClick={() => navigate('chat')}>
+              用一组词生成
+            </button>
+          </div>
+        </section>
+      ) : current === null ? (
         <>
           <p className="eyebrow">还没有开始读</p>
           <h1 className="home-title">先读一篇</h1>

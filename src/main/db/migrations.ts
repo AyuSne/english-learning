@@ -286,6 +286,15 @@ export const migrations: readonly Migration[] = [
         CREATE INDEX entry_later_marked ON entry_later (marked_at DESC);
       `)
     }
+  },
+  {
+    version: 11,
+    up: (database) => {
+      // 「进入本篇选词」即视为读完：只追加一个可空的完成时间，旧文章默认 NULL。
+      // 进度由此得到第三种状态（已读完、100%）；阅读位置与设置仍是各自独立的列，
+      // 完成时间只写一次，重读、滚动、改设置都不该把它清掉或重写。
+      database.exec('ALTER TABLE article ADD COLUMN completed_at TEXT')
+    }
   }
 ]
 

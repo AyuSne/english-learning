@@ -8,7 +8,7 @@ import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
 import { writeSetting } from '../db/settings'
 import { collectSelection } from '../entries/queries'
-import { readHomeSummary } from '../library/queries'
+import { markArticleCompleted, readHomeSummary } from '../library/queries'
 import {
   openReadingView,
   readReadingPreferences,
@@ -505,6 +505,36 @@ describe('saveReadingPoint', () => {
       sentenceText: 'Context carries most of the meaning.'
     })
     expect(summary.continueReading?.article.progress).toEqual({ state: 'reading', percent: 67 })
+  })
+
+  it('已读完后重读、滚动与改设置都不撤销已读完', () => {
+    openReadingView(database, carefulReading.id, { now: '2026-11-18T08:00:00.000Z' })
+    saveReadingPoint(
+      database,
+      { articleId: carefulReading.id, paragraphId: '2', sentenceOrdinal: 0 },
+      { now: '2026-11-18T08:05:00.000Z' }
+    )
+    markArticleCompleted(database, carefulReading.id, { now: '2026-11-18T08:10:00.000Z' })
+
+    // 重读：回到第一段并再写一次位置，完成状态与阅读位置各自保留。
+    saveReadingPoint(
+      database,
+      { articleId: carefulReading.id, paragraphId: '1', sentenceOrdinal: 1 },
+      { now: '2026-11-18T09:00:00.000Z' }
+    )
+    saveReadingSettings(database, {
+      articleId: carefulReading.id,
+      preferences: { fontSize: 16, lineHeight: 1.6, annotationsVisible: true, weakHighlight: true }
+    })
+    const reopened = openReadingView(database, carefulReading.id, {
+      now: '2026-11-18T10:00:00.000Z'
+    })
+
+    expect(reopened?.article.progress).toEqual({ state: 'completed', percent: 100 })
+    expect(reopened?.readingPoint).toMatchObject({ paragraphOrdinal: 1, sentenceOrdinal: 2 })
+    expect(reopened?.settings).toMatchObject({ fontSize: 16, lineHeight: 1.6, source: 'article' })
+    // 已经读完的篇目不会再回到首页「继续阅读」。
+    expect(readHomeSummary(database).continueReading).toBeNull()
   })
 
   it('段落或句子不属于这篇时不写入', () => {

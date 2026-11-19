@@ -120,13 +120,12 @@ describe('migrate', () => {
 
   it('把旧库的 article.position 换成 ordinal，已导入的文章一条不丢', () => {
     // 先造一份真正停在 8 版的旧库：只跑 1–8 的迁移，不能先升到最新再倒回版本号，
-    // 否则 9 / 10 的建表与改列会在已经升级过的 schema 上再跑一次。
+    // 否则后面的迁移会在已经升级过的 schema 上再跑一次。
     migrate(database, {
       migrations: migrations.filter((migration) => migration.version <= 8)
     })
     // 还原早期构建留下的库：列名是 position，但 user_version 已经走到 8。
     database.exec('ALTER TABLE article RENAME COLUMN ordinal TO position')
-    database.pragma('user_version = 8')
     database
       .prepare(
         `INSERT INTO article (
@@ -143,19 +142,94 @@ describe('migrate', () => {
 
     const outcome = migrate(database)
 
-    expect(outcome.applied).toEqual([9, 10])
+    expect(outcome.from).toBe(8)
+    // 后缀按实际排在 position→ordinal 之后的迁移逐条写出来，不靠「迁到最新」一句带过：
+    // 10 是稍后看表，11 是完成时间列。
+    expect(outcome.applied).toEqual([9, 10, 11])
     const columns = (database.pragma('table_info(article)') as { name: string }[]).map(
       (column) => column.name
     )
     expect(columns).toContain('ordinal')
     expect(columns).not.toContain('position')
-    expect(
-      database.prepare('SELECT id, ordinal FROM article').get()
-    ).toEqual({ id: 'cet6-2023-06-s1-b', ordinal: 7 })
+    expect(columns).toContain('completed_at')
+    // 旧记录原样保留，新列默认 NULL 而不是随便补一个「已读完」。
+    expect(database.prepare('SELECT id, ordinal, completed_at FROM article').get()).toEqual({
+      id: 'cet6-2023-06-s1-b',
+      ordinal: 7,
+      completed_at: null
+    })
+    // 已经迁到最新的库不会再跑一遍；不重置 user_version 去看迁移副作用。
+    expect(migrate(database).applied).toEqual([])
+    expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
   })
 
-  it('把停在 9 版的旧库升到 10：新建稍后看表，原有词条照常可读', () => {
-    // 版本 10 只加一张独立的「稍后看」表；老库升级后标记从空开始，旧数据不动。
+  it('完成时间只增列：旧库已有的阅读位置与设置原样保留', () => {
+    // 先迁到 v9（既没有稍后看表、也没有完成时间列的一版），写入一篇读过的文章。
+    migrate(database, { migrations: migrations.filter((migration) => migration.version <= 9) })
+    database
+      .prepare(
+        `INSERT INTO article (
+           id, title, kind, kind_label, session_key, session_label, set_label,
+           exam_year, exam_month, exam_set, word_count, body_text, source_pdf,
+           source_sha256, ordinal
+         ) VALUES ('a', 'A', 'careful_reading', '仔细阅读', '2026-06', '2026年6月', '第1套',
+           2026, 6, 1, 3, 'Body.', 'a.pdf', 'sha', 1)`
+      )
+      .run()
+    database
+      .prepare(
+        `UPDATE article
+            SET last_opened_at = '2026-11-18T08:00:00.000Z',
+                last_paragraph_id = '1',
+                last_sentence_index = 0
+          WHERE id = 'a'`
+      )
+      .run()
+    database
+      .prepare(
+        `INSERT INTO article_reading_setting
+           (article_id, font_size, line_height_tenths, annotations_visible, weak_highlight)
+         VALUES ('a', 22, 20, 0, 0)`
+      )
+      .run()
+
+    const outcome = migrate(database)
+
+    expect(outcome.from).toBe(9)
+    // 10 先建稍后看表，11 再给文章补完成时间；两笔都只增不改。
+    expect(outcome.applied).toEqual([10, 11])
+    // 稍后看表跟着建起来，已有的词条数据不受影响。
+    expect(
+      database
+        .prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entry_later'")
+        .get()
+    ).toBeDefined()
+    expect(
+      database
+        .prepare(
+          `SELECT last_opened_at, last_paragraph_id, last_sentence_index, completed_at
+             FROM article WHERE id = 'a'`
+        )
+        .get()
+    ).toEqual({
+      last_opened_at: '2026-11-18T08:00:00.000Z',
+      last_paragraph_id: '1',
+      last_sentence_index: 0,
+      completed_at: null
+    })
+    expect(
+      database
+        .prepare(
+          `SELECT font_size, line_height_tenths, annotations_visible, weak_highlight
+             FROM article_reading_setting WHERE article_id = 'a'`
+        )
+        .get()
+    ).toEqual({ font_size: 22, line_height_tenths: 20, annotations_visible: 0, weak_highlight: 0 })
+  })
+
+  it('把停在 9 版的旧库升到最新：新建稍后看表并补完成时间列，原有词条照常可读', () => {
+    // 版本 10 加一张独立的「稍后看」表，版本 11 给文章补可空的完成时间；
+    // 老库升级后标记从空开始、完成时间全为 NULL，旧数据不动。
     migrate(database, {
       migrations: migrations.filter((migration) => migration.version <= 9)
     })
@@ -174,8 +248,11 @@ describe('migrate', () => {
 
     const outcome = migrate(database)
 
-    expect(outcome.applied).toEqual([10])
-    expect(readSchemaVersion(database)).toBe(10)
+    expect(outcome.applied).toEqual([10, 11])
+    expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
+    expect(
+      (database.pragma('table_info(article)') as { name: string }[]).map((column) => column.name)
+    ).toContain('completed_at')
     // 新表默认是空的；旧的词条一条不丢。
     expect(database.prepare('SELECT COUNT(*) AS count FROM entry_later').get()).toEqual({
       count: 0

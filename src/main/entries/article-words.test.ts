@@ -11,7 +11,7 @@ import {
 import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
-import { readArticleDetail } from '../library/queries'
+import { readArticleDetail, readReadingPoint } from '../library/queries'
 import { readReadingSettings, saveReadingPoint, saveReadingSettings } from '../reading/queries'
 import { readArticleWords } from './article-words'
 import { collectSelection, readEntrySentence, readEntrySummary } from './queries'
@@ -189,7 +189,7 @@ describe('readArticleWords', () => {
     })
   })
 
-  it('只读：不改阅读位置，也不改本篇阅读设置', () => {
+  it('进入本篇选词即标记已读完；不改阅读位置与本篇阅读设置', () => {
     collect(database, carefulReading, 0, 'approach')
     const secondParagraph = paragraphAt(carefulReading, 1)
     saveReadingPoint(
@@ -206,13 +206,26 @@ describe('readArticleWords', () => {
         weakHighlight: false
       }
     })
-
-    const detailBefore = readArticleDetail(database, carefulReading.id)
+    const pointBefore = readReadingPoint(database, carefulReading.id)
     const settingsBefore = readReadingSettings(database, carefulReading.id)
+    const openedBefore = database
+      .prepare('SELECT last_opened_at FROM article WHERE id = ?')
+      .get(carefulReading.id)
 
-    readArticleWords(database, carefulReading.id)
+    const words = readArticleWords(database, carefulReading.id, { now: T1 })
 
-    expect(readArticleDetail(database, carefulReading.id)).toEqual(detailBefore)
+    expect(words).not.toBeNull()
+    if (words === null) return
+    // 完成状态由这一条入口返回的同一份文章信息给出，界面不靠乐观更新。
+    expect(words.article.progress).toEqual({ state: 'completed', percent: 100 })
+    expect(readArticleDetail(database, carefulReading.id)).toMatchObject({
+      progress: { state: 'completed', percent: 100 }
+    })
+    // 已读完是独立状态：阅读位置、最近打开与本篇阅读设置一动不动。
+    expect(readReadingPoint(database, carefulReading.id)).toEqual(pointBefore)
+    expect(
+      database.prepare('SELECT last_opened_at FROM article WHERE id = ?').get(carefulReading.id)
+    ).toEqual(openedBefore)
     expect(readReadingSettings(database, carefulReading.id)).toEqual(settingsBefore)
     expect(readReadingSettings(database, carefulReading.id)).toMatchObject({
       fontSize: 22,
@@ -221,6 +234,20 @@ describe('readArticleWords', () => {
       weakHighlight: false,
       source: 'article'
     })
+  })
+
+  it('已读完可重复进入：完成时间保持第一次，不被后来的进入改写', () => {
+    readArticleWords(database, carefulReading.id, { now: T0 })
+    const first = database
+      .prepare('SELECT completed_at FROM article WHERE id = ?')
+      .get(carefulReading.id) as { completed_at: string }
+
+    readArticleWords(database, carefulReading.id, { now: T1 })
+
+    expect(first.completed_at).toBe(T0)
+    expect(
+      database.prepare('SELECT completed_at FROM article WHERE id = ?').get(carefulReading.id)
+    ).toEqual({ completed_at: T0 })
   })
 
   it('本篇还没收词时给空段落列表', () => {

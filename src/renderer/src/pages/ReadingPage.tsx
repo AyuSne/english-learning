@@ -657,7 +657,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
   /**
    * 进入本篇选词。子视图与正文共用同一篇的文章地址（`#/reading/<id>/words`），
    * 刷新或直接打开都能回到这里，也不写阅读位置与本篇阅读设置。
-   * 「进入即读完」的完成时间由 #54 在这里接。
+   * 「进入即读完」的完成时间由主进程在这一条入口（`reading:words`）里写。
    */
   function openArticleWords(): void {
     if (!view) return
