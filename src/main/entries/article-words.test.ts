@@ -208,6 +208,9 @@ describe('readArticleWords', () => {
     })
     const pointBefore = readReadingPoint(database, carefulReading.id)
     const settingsBefore = readReadingSettings(database, carefulReading.id)
+    const openedBefore = database
+      .prepare('SELECT last_opened_at FROM article WHERE id = ?')
+      .get(carefulReading.id)
 
     const words = readArticleWords(database, carefulReading.id, { now: T1 })
 
@@ -218,8 +221,11 @@ describe('readArticleWords', () => {
     expect(readArticleDetail(database, carefulReading.id)).toMatchObject({
       progress: { state: 'completed', percent: 100 }
     })
-    // 已读完是独立状态：阅读位置与本篇阅读设置一动不动。
+    // 已读完是独立状态：阅读位置、最近打开与本篇阅读设置一动不动。
     expect(readReadingPoint(database, carefulReading.id)).toEqual(pointBefore)
+    expect(
+      database.prepare('SELECT last_opened_at FROM article WHERE id = ?').get(carefulReading.id)
+    ).toEqual(openedBefore)
     expect(readReadingSettings(database, carefulReading.id)).toEqual(settingsBefore)
     expect(readReadingSettings(database, carefulReading.id)).toMatchObject({
       fontSize: 22,
