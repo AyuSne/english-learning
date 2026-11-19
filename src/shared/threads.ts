@@ -135,6 +135,12 @@ export type ThreadListResult = {
   threads: ThreadListItem[]
 }
 
+export type DeleteThreadRequest = { threadId: string }
+
+export type DeleteThreadResult =
+  | { status: 'deleted' | 'missing' }
+  | { status: 'busy' }
+
 export type CreateThreadRequest = {
   main:
     | { kind: 'none' }

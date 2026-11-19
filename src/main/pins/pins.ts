@@ -43,15 +43,20 @@ type PinRow = {
   target_kind: PinTargetKind
   target_id: string | null
   created_at: string
+  source_alive: number
 }
 
-const PIN_COLUMNS = `id, thread_id, thread_title, answer_id, turn_index, model,
-  captured_text, char_start, char_end, source_sentence_id, source_sentence_text,
-  target_kind, target_id, created_at`
+/** 来源是某条线程里的某版回答，而不只是仍能找到同名线程。p 是快照的表别名。 */
+export const PIN_SOURCE_EXISTS_SQL = `EXISTS (
+  SELECT 1 FROM thread_entry e JOIN thread t ON t.id = e.thread_id
+   WHERE t.id = p.thread_id AND e.id = p.answer_id AND e.kind = 'answer'
+)`
+
+const PIN_COLUMNS = `p.*, ${PIN_SOURCE_EXISTS_SQL} AS source_alive`
 
 function readPinRow(database: AppDatabase, pinId: string): PinRow | undefined {
   return database
-    .prepare(`SELECT ${PIN_COLUMNS} FROM pin WHERE id = ?`)
+    .prepare(`SELECT ${PIN_COLUMNS} FROM pin p WHERE id = ?`)
     .get(pinId) as PinRow | undefined
 }
 
@@ -190,7 +195,7 @@ function toPin(database: AppDatabase, row: PinRow): Pin {
     target: readTargetView(database, row),
     defaultTarget: defaultTargetOf(database, thread),
     provenance: provenanceOf(row),
-    threadAlive: thread !== undefined,
+    threadAlive: row.source_alive === 1,
     createdAt: row.created_at
   }
 }
@@ -485,7 +490,7 @@ export function fileAllUnfiled(
   }
   const rows = database
     .prepare(
-      `SELECT ${PIN_COLUMNS} FROM pin
+      `SELECT ${PIN_COLUMNS} FROM pin p
         WHERE target_kind = 'unfiled'
         ORDER BY created_at, rowid`
     )
@@ -577,7 +582,7 @@ function readPinsWhere(
   parameter: string | null
 ): Pin[] {
   const statement = database.prepare(
-    `SELECT ${PIN_COLUMNS} FROM pin
+    `SELECT ${PIN_COLUMNS} FROM pin p
       WHERE ${where}
       ORDER BY created_at DESC, rowid DESC`
   )
@@ -622,7 +627,7 @@ export function readPinSource(database: AppDatabase, pinId: string): PinSourceRe
     return null
   }
   const pin = toPin(database, row)
-  const thread = readThreadView(database, row.thread_id)
+  const thread = pin.threadAlive ? readThreadView(database, row.thread_id) : null
   if (!thread) {
     return { pin, thread: null, onBranch: false, questionId: null }
   }

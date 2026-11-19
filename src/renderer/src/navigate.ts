@@ -57,6 +57,24 @@ export function currentView(): View {
   return parseView(window.location.hash)
 }
 
+/** 删除最近线程时清掉恢复地址，但不把用户从另一个页面或线程拉回来。 */
+export function forgetChatThread(threadId: string): boolean {
+  const view = parseView(window.location.hash)
+  if (view.route === 'chat' && view.threadId === threadId) {
+    replaceRoute('chat')
+    return true
+  }
+  if (recentThreadId === threadId) {
+    recentThreadId = null
+    try {
+      window.localStorage.removeItem(RECENT_THREAD_KEY)
+    } catch {
+      // 存储不可用时仍清理当前窗口里的最近线程。
+    }
+  }
+  return false
+}
+
 export function navigate(route: Route, options: NavigateOptions = {}): void {
   rememberObject(window.location.hash)
   const target = routeHash(route, options)

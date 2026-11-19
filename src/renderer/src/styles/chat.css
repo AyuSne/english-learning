@@ -47,6 +47,53 @@
   list-style: none;
 }
 
+.thread-list-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.thread-delete-button {
+  padding: 6px;
+  border-radius: 4px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+.thread-delete-button:hover:not(:disabled) {
+  color: var(--danger);
+  background: var(--hover);
+}
+
+.thread-delete-button:disabled {
+  opacity: .55;
+}
+
+.thread-delete-dialog {
+  width: min(400px, calc(100vw - 32px));
+  padding: 24px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  color: var(--ink);
+  background: var(--panel);
+}
+
+.thread-delete-dialog::backdrop {
+  background: rgb(0 0 0 / 35%);
+}
+
+.thread-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.thread-delete-danger {
+  color: var(--danger);
+}
+
 .thread-row {
   display: flex;
   flex-direction: column;

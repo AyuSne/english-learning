@@ -5,6 +5,8 @@ import type {
   ChatThreadView,
   CreateThreadRequest,
   CreateThreadResult,
+  DeleteThreadRequest,
+  DeleteThreadResult,
   EditQuestionRequest,
   OpenThreadForMainRequest,
   OpenThreadForMainResult,
@@ -823,6 +825,26 @@ function setLeaf(database: AppDatabase, threadId: string, leafId: string | null,
   database
     .prepare('UPDATE thread SET leaf_entry_id = ?, updated_at = ? WHERE id = ?')
     .run(leafId, now, threadId)
+}
+
+export function threadExists(database: AppDatabase, threadId: string): boolean {
+  return database.prepare('SELECT 1 FROM thread WHERE id = ?').get(threadId) !== undefined
+}
+
+/** 一笔事务删掉所有分支和线程，不触碰出处快照。 */
+export function deleteThread(
+  database: AppDatabase,
+  { threadId }: DeleteThreadRequest
+): DeleteThreadResult {
+  return database.transaction(() => {
+    // 日志只追加，子条目的 rowid 比父条目大。先删子条目，避免长分支触发 SQLite 的递归级联深度上限。
+    const entries = database.prepare('SELECT id FROM thread_entry WHERE thread_id = ? ORDER BY rowid DESC')
+      .all(threadId) as { id: string }[]
+    const deleteEntry = database.prepare('DELETE FROM thread_entry WHERE id = ?')
+    for (const entry of entries) deleteEntry.run(entry.id)
+    const deleted = database.prepare('DELETE FROM thread WHERE id = ?').run(threadId)
+    return { status: deleted.changes > 0 ? 'deleted' : 'missing' } as const
+  }).immediate()
 }
 
 export function createThread(

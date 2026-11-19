@@ -8,7 +8,7 @@ import type {
   UpdateLearningNoteRequest
 } from '../../shared/entries'
 import type { AppDatabase } from '../db/database'
-import { removePinForNote, retargetPinForNote } from '../pins/pins'
+import { PIN_SOURCE_EXISTS_SQL, removePinForNote, retargetPinForNote } from '../pins/pins'
 import { entryExists, hasPinnedNote } from './entry-state'
 
 /**
@@ -39,7 +39,7 @@ const NOTE_COLUMNS = `ln.id, ln.entry_id, ln.body, ln.pinned, ln.source_kind,
   ln.source_pin_id, ln.created_at, ln.updated_at,
   p.id AS pin_id, p.thread_id AS pin_thread_id, p.thread_title AS pin_thread_title,
   p.turn_index AS pin_turn_index, p.model AS pin_model, p.created_at AS pin_created_at,
-  EXISTS(SELECT 1 FROM thread t WHERE t.id = p.thread_id) AS pin_thread_alive`
+  ${PIN_SOURCE_EXISTS_SQL} AS pin_thread_alive`
 
 const NOTE_FROM = `FROM learning_note ln LEFT JOIN pin p ON p.id = ln.source_pin_id`
 

@@ -8,6 +8,7 @@ import { createChatService } from './chat/service'
 import {
   askQuestion,
   createThread,
+  deleteThread,
   editQuestion,
   findRecentThreadForMain,
   listThreads,
@@ -18,6 +19,7 @@ import {
   saveContinuation,
   switchAnswer,
   switchQuestion,
+  threadExists,
   updateThreadContext
 } from './chat/threads'
 import { importCorpus } from './corpus/import'
@@ -217,12 +219,20 @@ function start(): void {
     'entries:pin-note': (payload) => pinLearningNote(opened, payload),
     'entries:delete-note': (payload) => deleteLearningNote(opened, payload),
     'entries:move-note': (payload) => moveLearningNote(opened, payload),
-    'chat:start': (payload, event) =>
-      chat.start(payload, (update) => event.sender.send('chat:event', update)),
+    'chat:start': (payload, event) => {
+      if (typeof payload?.threadId !== 'string' || !threadExists(opened, payload.threadId)) {
+        return { accepted: false }
+      }
+      return chat.start(payload, (update) => event.sender.send('chat:event', update), payload.threadId)
+    },
     'chat:stop': (payload) => chat.stop(payload.streamId),
     'chat:list': () => listThreads(opened),
     'chat:thread': (payload) => readThreadView(opened, payload.threadId),
     'chat:create': (payload) => createThread(opened, payload),
+    'chat:delete': (payload) => {
+      // 两个操作都在主进程同步判断，活跃流不得被删除，已删除的线程也不能开新流。
+      return chat.hasActiveThread(payload.threadId) ? { status: 'busy' } : deleteThread(opened, payload)
+    },
     'chat:find-for-main': (payload) => findRecentThreadForMain(opened, payload.main),
     'chat:open-for-main': (payload) => openThreadForMain(opened, payload),
     'chat:ask': (payload) => askQuestion(opened, payload),

@@ -77,6 +77,8 @@ import type {
   ChatThreadView,
   CreateThreadRequest,
   CreateThreadResult,
+  DeleteThreadRequest,
+  DeleteThreadResult,
   EditQuestionRequest,
   ExportThreadResult,
   OpenThreadForMainRequest,
@@ -143,11 +145,12 @@ export interface IpcContract {
   'entries:pin-note': { payload: PinLearningNoteRequest; result: LearningNoteResult }
   'entries:delete-note': { payload: { noteId: string }; result: LearningNoteResult }
   'entries:move-note': { payload: MoveLearningNoteRequest; result: LearningNoteResult }
-  'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
+  'chat:start': { payload: ChatStartRequest & { threadId: string }; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
   'chat:list': { payload: undefined; result: ThreadListResult }
   'chat:thread': { payload: { threadId: string }; result: ChatThreadView | null }
   'chat:create': { payload: CreateThreadRequest; result: CreateThreadResult }
+  'chat:delete': { payload: DeleteThreadRequest; result: DeleteThreadResult }
   'chat:find-for-main': { payload: CreateThreadRequest; result: ChatThreadView | null }
   'chat:open-for-main': { payload: OpenThreadForMainRequest; result: OpenThreadForMainResult }
   'chat:ask': { payload: AskThreadRequest; result: QuestionResult }
@@ -245,6 +248,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'chat:list': true,
   'chat:thread': true,
   'chat:create': true,
+  'chat:delete': true,
   'chat:find-for-main': true,
   'chat:open-for-main': true,
   'chat:ask': true,
