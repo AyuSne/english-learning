@@ -13,6 +13,7 @@ import type {
   ThreadTurn,
   ThreadVersion
 } from '../../../shared/threads'
+import { GROUP_WORD_LIMIT } from '../../../shared/threads'
 import {
   createPin,
   deletePin,
@@ -501,6 +502,16 @@ export function ChatPage({
   }
 
   const addItem = (item: ThreadContextItem): void => {
+    const view = store.current
+    // 界面先拦一次超词数；主进程的 updateThreadContext 还会再校验一遍。
+    if (
+      item.kind === 'word' &&
+      view !== null &&
+      view.context.filter((existing) => existing.kind === 'word').length >= GROUP_WORD_LIMIT
+    ) {
+      showToast(`一条线程最多带 ${GROUP_WORD_LIMIT} 个词。`)
+      return
+    }
     addContextItem(item)
     setCandidates((current) => current?.filter((candidate) => candidate.id !== item.id) ?? current)
   }

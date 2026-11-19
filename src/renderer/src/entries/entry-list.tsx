@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import type { EntryListResult } from '../../../shared/entries'
 import { entriesViewState, updateEntriesViewState } from '../view-state'
 import { entryListMetaText } from './format'
+import { selectionCountText } from './selection'
 
 export type EntrySort = 'recent' | 'alpha'
 export type EntryFilter = 'all' | 'has-notes' | 'no-notes'
@@ -12,27 +13,39 @@ const FILTERS: readonly { value: EntryFilter; label: string }[] = [
   { value: 'no-notes', label: '没有学习内容' }
 ]
 
-/** 词条页左栏：词条列表、搜索、排序与「有/无学习内容」筛选。 */
+/** 词条页左栏：词条列表、搜索、排序与「有/无学习内容」筛选，以及多选后的一组词动作。 */
 export function EntryList({
   listing,
   selectedId,
   query,
   sort,
   filter,
+  selectedEntryIds,
+  selectionHint,
+  startingGroup,
   onQuery,
   onSort,
   onFilter,
-  onSelect
+  onSelect,
+  onToggleSelect,
+  onStartGroup,
+  onClearSelection
 }: {
   listing: EntryListResult | null
   selectedId: string | null
   query: string
   sort: EntrySort
   filter: EntryFilter
+  selectedEntryIds: readonly string[]
+  selectionHint: string | null
+  startingGroup: boolean
   onQuery: (query: string) => void
   onSort: (sort: EntrySort) => void
   onFilter: (filter: EntryFilter) => void
   onSelect: (entryId: string) => void
+  onToggleSelect: (entryId: string) => void
+  onStartGroup: () => void
+  onClearSelection: () => void
 }) {
   const listRef = useRef<HTMLUListElement>(null)
   const restoredScroll = useRef(false)
@@ -102,6 +115,33 @@ export function EntryList({
         </label>
       </div>
 
+      {selectedEntryIds.length === 0 ? null : (
+        <div className="entries-selection" role="group" aria-label="已选词条">
+          <p className="entries-selection-count">
+            {selectionCountText(selectedEntryIds.length)}
+          </p>
+          <div className="entries-selection-actions">
+            <button
+              type="button"
+              className="button button-primary"
+              disabled={startingGroup}
+              onClick={onStartGroup}
+            >
+              用这些词学习
+            </button>
+            <button type="button" className="button" onClick={onClearSelection}>
+              取消选择
+            </button>
+          </div>
+        </div>
+      )}
+
+      {selectionHint === null ? null : (
+        <p className="entries-selection-hint" role="status">
+          {selectionHint}
+        </p>
+      )}
+
       {listing !== null && listing.entries.length === 0 ? (
         <p className="empty-line entries-empty">
           {listing.total === 0
@@ -118,22 +158,36 @@ export function EntryList({
             }
           }}
         >
-          {(listing?.entries ?? []).map((entry) => (
-            <li key={entry.id}>
-              <button
-                type="button"
-                className="entries-row"
-                aria-current={entry.id === selectedId ? 'true' : undefined}
-                onClick={() => onSelect(entry.id)}
+          {(listing?.entries ?? []).map((entry) => {
+            const checked = selectedEntryIds.includes(entry.id)
+            return (
+              <li
+                key={entry.id}
+                className="entries-row-item"
+                data-selected={checked ? 'true' : 'false'}
               >
-                <span className="entries-row-name">{entry.mainForm}</span>
-                <span className="entries-row-meta">{entryListMetaText(entry)}</span>
-                {entry.noteCount > 0 ? (
-                  <span className="entries-row-notes">学习 {entry.noteCount}</span>
-                ) : null}
-              </button>
-            </li>
-          ))}
+                <input
+                  type="checkbox"
+                  className="entries-row-check"
+                  aria-label={`选择词条：${entry.mainForm}`}
+                  checked={checked}
+                  onChange={() => onToggleSelect(entry.id)}
+                />
+                <button
+                  type="button"
+                  className="entries-row"
+                  aria-current={entry.id === selectedId ? 'true' : undefined}
+                  onClick={() => onSelect(entry.id)}
+                >
+                  <span className="entries-row-name">{entry.mainForm}</span>
+                  <span className="entries-row-meta">{entryListMetaText(entry)}</span>
+                  {entry.noteCount > 0 ? (
+                    <span className="entries-row-notes">学习 {entry.noteCount}</span>
+                  ) : null}
+                </button>
+              </li>
+            )
+          })}
         </ul>
       )}
     </aside>

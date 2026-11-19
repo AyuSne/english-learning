@@ -8,6 +8,7 @@ import type {
 } from '../../../shared/threads'
 import {
   askThread,
+  createGroupThread,
   createThread,
   deleteThread,
   editThreadQuestion,
@@ -321,6 +322,63 @@ async function openMainThread(
 
 /* ---------- 发送与生成 ---------- */
 
+/** 提问被拒时的说法；上下文超词数与空提问不是同一件事。 */
+function questionRejectText(reason: 'empty' | 'too-many-words'): string {
+  return reason === 'too-many-words'
+    ? '一条线程最多带 20 个词，先移除一个再发。'
+    : '这条提问是空的。'
+}
+
+/* ---------- 用一组词学习 ---------- */
+
+function groupThreadRejectText(reason: 'empty' | 'missing-word' | 'too-many-words'): string {
+  switch (reason) {
+    case 'empty':
+      return '先选几个词再开始。'
+    case 'too-many-words':
+      return '一次最多选 20 个词。'
+    case 'missing-word':
+      return '有词条已经不在了，刷新词条列表后再试。'
+  }
+}
+
+/**
+ * 「用这些词学习」：每次都新开一条无主对象的线程，绝不复用旧的空白或组词线程。
+ * 打开后跳到对话页；失败时把原因写在 store 里，由调用方就地提示。
+ */
+export async function openGroupThread(entryIds: readonly string[]): Promise<string | null> {
+  const ids = [...new Set(entryIds.map((id) => id.trim()).filter((id) => id !== ''))]
+  if (ids.length === 0) {
+    fail('先选几个词再开始。', '先选几个词再开始。', null)
+    return null
+  }
+  try {
+    const result = await createGroupThread({ entryIds: ids })
+    if (result.status === 'rejected') {
+      const message = groupThreadRejectText(result.reason)
+      fail(message, message, null)
+      return null
+    }
+    retryAction = null
+    state = {
+      ...state,
+      currentId: result.thread.id,
+      current: result.thread,
+      loading: false,
+      error: null,
+      canRetry: false
+    }
+    emit()
+    navigate('chat', { threadId: result.thread.id })
+    return result.thread.id
+  } catch (error) {
+    fail(error, '没能用这些词开线程，再试一次。', () => {
+      void openGroupThread(ids)
+    })
+    return null
+  }
+}
+
 export function sendChatMessage(raw: string): boolean {
   const text = raw.trim()
   if (
@@ -360,7 +418,7 @@ async function submitQuestion(text: string): Promise<void> {
     if (asked.status !== 'asked') {
       set({ busy: false })
       fail(
-        asked.status === 'rejected' ? '这条提问是空的。' : '这条线程已经不在了。',
+        asked.status === 'rejected' ? questionRejectText(asked.reason) : '这条线程已经不在了。',
         '这条提问没有发出去。',
         asked.status === 'rejected'
           ? null
@@ -654,7 +712,9 @@ export function submitEdit(raw: string): boolean {
       if (result.status !== 'asked') {
         set({ busy: false })
         fail(
-          result.status === 'rejected' ? '这条提问是空的。' : '这条线程已经不在了。',
+          result.status === 'rejected'
+            ? questionRejectText(result.reason)
+            : '这条线程已经不在了。',
           '这次修改没有发出去。',
           result.status === 'rejected' ? null : () => submitEdit(text)
         )
@@ -711,6 +771,21 @@ function changeContext(view: ChatThreadView, items: ThreadContextItem[]): void {
       if (result.status === 'saved') {
         set({ current: result.thread })
         clearError()
+        return
+      }
+      if (result.status === 'rejected') {
+        // 主进程边界拦下了超词数的上下文：把界面拉回已存下的那一份，并说清原因。
+        fail(
+          '一条线程最多带 20 个词。',
+          '一条线程最多带 20 个词，先移除一个再加。',
+          null
+        )
+        void loadThread(view.id).then(
+          (latest) => {
+            if (state.currentId === view.id && latest !== null) set({ current: latest })
+          },
+          () => undefined
+        )
       }
     },
     (error: unknown) => {

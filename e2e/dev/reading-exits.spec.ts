@@ -217,7 +217,7 @@ test('阅读页顶部可以围绕当前文章对话', async ({ launch }) => {
   const title = await page.locator('.reading-bar-title').innerText()
   await page.getByRole('button', { name: '与这篇文章对话' }).click()
   await expect(page.getByRole('heading', { name: title, level: 1 })).toBeVisible()
-  await expect(page.getByTestId('context-summary')).toHaveText(/^0 条原句 · 约 \d+ 字$/)
+  await expect(page.getByTestId('context-summary')).toHaveText(/^0 个词 · 0 条原句 · 约 \d+ 字$/)
 })
 
 test('旧线程上下文已满时保留原内容，提示可以新开线程', async ({ launch, userDataDirectory }) => {

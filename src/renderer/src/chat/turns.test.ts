@@ -61,7 +61,7 @@ function view(overrides: Partial<ChatThreadView> = {}): ChatThreadView {
       articleCount: 2
     },
     context: [contextItem],
-    contextSummary: { sentenceCount: 1, charCount: 56 },
+    contextSummary: { wordCount: 0, sentenceCount: 1, charCount: 56 },
     turns: [],
     createdAt: '2026-11-18T08:00:00.000Z',
     updatedAt: '2026-11-18T08:00:00.000Z',
@@ -70,12 +70,16 @@ function view(overrides: Partial<ChatThreadView> = {}): ChatThreadView {
 }
 
 describe('contextSummaryText', () => {
-  it('按「N 条原句 · 约 M 字」显示', () => {
-    expect(contextSummaryText({ sentenceCount: 3, charCount: 420 })).toBe('3 条原句 · 约 420 字')
-    expect(contextSummaryText({ sentenceCount: 0, charCount: 0 })).toBe('0 条原句 · 约 0 字')
+  it('按「N 个词 · M 条原句 · 约 K 字」显示，词与原句各自计数', () => {
+    expect(contextSummaryText({ wordCount: 2, sentenceCount: 3, charCount: 420 })).toBe(
+      '2 个词 · 3 条原句 · 约 420 字'
+    )
+    expect(contextSummaryText({ wordCount: 0, sentenceCount: 0, charCount: 0 })).toBe(
+      '0 个词 · 0 条原句 · 约 0 字'
+    )
   })
 
-  it('原句只数 sentence，字数把词与段落也算进去', () => {
+  it('词只数 word，原句只数 sentence，字数把词与段落也算进去', () => {
     expect(
       summarizeContext([
         contextItem,
@@ -83,9 +87,33 @@ describe('contextSummaryText', () => {
         { id: 'note:1', kind: 'note', label: 'lament', text: '学习内容', source: '' }
       ])
     ).toEqual({
+      wordCount: 1,
       sentenceCount: 1,
       charCount: Array.from(contextItem.text).length + 6 + 4
     })
+  })
+
+  it('组词上下文同时数出 20 个词与它们的原句', () => {
+    const items = Array.from({ length: 20 }, (_, index) => [
+      {
+        id: `word:e-${index}`,
+        kind: 'word' as const,
+        label: `word${index}`,
+        text: `word${index}`,
+        source: ''
+      },
+      {
+        id: `sentence:s-${index}`,
+        kind: 'sentence' as const,
+        label: `word${index}`,
+        text: `The word${index} appears here.`,
+        source: ''
+      }
+    ]).flat()
+    const summary = summarizeContext(items)
+    expect(summary.wordCount).toBe(20)
+    expect(summary.sentenceCount).toBe(20)
+    expect(contextSummaryText(summary)).toMatch(/^20 个词 · 20 条原句 · 约 \d+ 字$/)
   })
 })
 

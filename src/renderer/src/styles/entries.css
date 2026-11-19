@@ -213,6 +213,69 @@
   white-space: nowrap;
 }
 
+/*
+ * 多选：复选框是行按钮的兄弟而不是子元素，避免交互控件嵌套；
+ * 选择按词条 id 记，筛选与排序只改可见行，不动已选。
+ */
+.entries-row-item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.entries-row-check {
+  width: 16px;
+  height: 16px;
+  margin: 10px 0 0;
+  accent-color: var(--amber);
+  cursor: pointer;
+}
+
+.entries-row-check:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.entries-row-item[data-selected="true"] .entries-row {
+  border-color: var(--amber);
+  background: var(--bed-select);
+}
+
+.entries-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--sunken);
+}
+
+.entries-selection-count {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.entries-selection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.entries-selection-actions .button {
+  white-space: nowrap;
+}
+
+.entries-selection-hint {
+  color: var(--amber);
+  font-size: 12px;
+  line-height: 16px;
+}
+
 .entries-empty {
   padding: 8px 2px;
 }

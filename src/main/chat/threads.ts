@@ -3,6 +3,8 @@ import type { ChatError } from '../../shared/chat'
 import type {
   AskThreadRequest,
   ChatThreadView,
+  CreateGroupThreadRequest,
+  CreateGroupThreadResult,
   CreateThreadRequest,
   CreateThreadResult,
   DeleteThreadRequest,
@@ -31,6 +33,7 @@ import type {
   UpdateThreadContextRequest,
   UpdateThreadContextResult
 } from '../../shared/threads'
+import { GROUP_WORD_LIMIT } from '../../shared/threads'
 import { paragraphLetter } from '../corpus/letter'
 import type { AppDatabase } from '../db/database'
 
@@ -148,17 +151,26 @@ export function sanitizeContextItems(value: unknown): ThreadContextItem[] {
   return items
 }
 
-/** 「N 条原句 · 约 M 字」：原句条数只数 sentence 条目，字数据正文码点。 */
+/** 「N 个词 · M 条原句 · 约 K 字」：词与原句各数各的，字数据正文码点。 */
 export function summarizeContext(items: readonly ThreadContextItem[]): ThreadContextSummary {
+  let wordCount = 0
   let sentenceCount = 0
   let charCount = 0
   for (const item of items) {
+    if (item.kind === 'word') {
+      wordCount += 1
+    }
     if (item.kind === 'sentence') {
       sentenceCount += 1
     }
     charCount += Array.from(item.text).length
   }
-  return { sentenceCount, charCount }
+  return { wordCount, sentenceCount, charCount }
+}
+
+/** 上下文里带上的词条条目数；列表按 id 去过重，同一个词条只算一个。 */
+function wordItemCount(items: readonly ThreadContextItem[]): number {
+  return items.reduce((count, item) => (item.kind === 'word' ? count + 1 : count), 0)
 }
 
 /* ---------- 主对象 ---------- */
@@ -338,18 +350,52 @@ function titleFromQuestion(text: string): string {
 
 /* ---------- 上下文条目 ---------- */
 
+function toWordItem(
+  entryId: string,
+  mainForm: string,
+  sentenceCount: number,
+  articleCount: number
+): ThreadContextItem {
+  return {
+    id: `word:${entryId}`,
+    kind: 'word',
+    label: mainForm,
+    text: mainForm,
+    source: `已收 ${sentenceCount} 条原句 · ${articleCount} 篇`
+  }
+}
+
 function wordItem(database: AppDatabase, entryId: string): ThreadContextItem | null {
   const main = readEntryMain(database, entryId)
   if (main.kind !== 'entry') {
     return null
   }
-  return {
-    id: `word:${main.entryId}`,
-    kind: 'word',
-    label: main.mainForm,
-    text: main.mainForm,
-    source: `已收 ${main.sentenceCount} 条原句 · ${main.articleCount} 篇`
-  }
+  return toWordItem(main.entryId, main.mainForm, main.sentenceCount, main.articleCount)
+}
+
+type LibraryWordRow = {
+  id: string
+  main_form: string
+  sentence_count: number
+  article_count: number
+}
+
+/**
+ * 空白/组词线程没有主对象可围着找材料，候选就从库里全部词条来：
+ * 自由学习可以自己挑词，被移除的词也还能从这里加回来。
+ */
+function libraryWordItems(database: AppDatabase): ThreadContextItem[] {
+  const rows = database
+    .prepare(
+      `SELECT we.id, we.main_form,
+              (SELECT COUNT(*) FROM entry_sentence es WHERE es.entry_id = we.id) AS sentence_count,
+              (SELECT COUNT(DISTINCT es.article_id) FROM entry_sentence es
+                WHERE es.entry_id = we.id) AS article_count
+         FROM word_entry we
+        ORDER BY we.last_collected_at DESC, we.main_form`
+    )
+    .all() as LibraryWordRow[]
+  return rows.map((row) => toWordItem(row.id, row.main_form, row.sentence_count, row.article_count))
 }
 
 type SentenceItemRow = {
@@ -875,6 +921,86 @@ export function createThread(
   return { status: 'created', thread }
 }
 
+/** 组词线程的标题只用来在列表里认人：第一个词加总数，不改变主对象。 */
+function groupTitleOf(forms: readonly string[]): string {
+  const first = forms[0] ?? ''
+  return forms.length <= 1 ? first : `${first} 等 ${forms.length} 个词`
+}
+
+/** 请求里的词条 id 去空白、去重；非字符串与空串不算选中的词。 */
+function uniqueEntryIds(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+  const ids: string[] = []
+  const seen = new Set<string>()
+  for (const candidate of value) {
+    if (typeof candidate !== 'string') continue
+    const id = candidate.trim()
+    if (id === '' || seen.has(id)) continue
+    seen.add(id)
+    ids.push(id)
+  }
+  return ids
+}
+
+/**
+ * 「用这些词学习」：从词条列表多选后一次开一条新线程。
+ * 线程主对象保持空白（落点即未归档），默认上下文是每个词与它最近收的那句原句；
+ * 每次调用都新建，绝不复用已有的空白或组词线程。选中的词一个都不能少：
+ * 缺词直接拒绝，超过上限也直接拒绝，不在服务端悄悄截断。
+ */
+export function createGroupThread(
+  database: AppDatabase,
+  request: CreateGroupThreadRequest,
+  options: { now?: string } = {}
+): CreateGroupThreadResult {
+  const entryIds = uniqueEntryIds(request?.entryIds)
+  if (entryIds.length === 0) {
+    return { status: 'rejected', reason: 'empty' }
+  }
+  if (entryIds.length > GROUP_WORD_LIMIT) {
+    return { status: 'rejected', reason: 'too-many-words' }
+  }
+
+  const now = nowOf(options)
+  const context: ThreadContextItem[] = []
+  const seen = new Set<string>()
+  const forms: string[] = []
+  for (const entryId of entryIds) {
+    const word = wordItem(database, entryId)
+    if (word === null) {
+      return { status: 'rejected', reason: 'missing-word' }
+    }
+    // 与挂单个词条的默认语义一致：最近收的那句原句；有更多原句再从 picker 加。
+    const items = [word, sentenceItemsOfEntry(database, entryId)[0] ?? null]
+    for (const item of items) {
+      if (item !== null && !seen.has(item.id)) {
+        seen.add(item.id)
+        context.push(item)
+      }
+    }
+    forms.push(word.label)
+  }
+
+  const id = randomUUID()
+  database.transaction(() => {
+    database
+      .prepare(
+        `INSERT INTO thread (id, title, main_kind, main_id, context_json, leaf_entry_id,
+                             created_at, updated_at)
+         VALUES (?, ?, 'none', NULL, ?, NULL, ?, ?)`
+      )
+      .run(id, groupTitleOf(forms), JSON.stringify(context), now, now)
+  }).immediate()
+
+  const thread = readThreadView(database, id)
+  if (!thread) {
+    return { status: 'rejected', reason: 'missing-word' }
+  }
+  return { status: 'created', thread }
+}
+
 /** 查找与主对象完全相同、最近更新的线程；空白线程不复用。 */
 export function findRecentThreadForMain(
   database: AppDatabase,
@@ -917,6 +1043,9 @@ export function openThreadForMain(
               items: [...existing.context, ...missing]
             }, options)
             if (result.status === 'saved') return { status: 'reused', thread: result.thread } as const
+            if (result.status === 'rejected') {
+              return { status: 'rejected', reason: 'context-full' } as const
+            }
           }
         }
         return { status: 'reused', thread: existing } as const
@@ -935,6 +1064,9 @@ export function updateThreadContext(
     return { status: 'missing' }
   }
   const items = sanitizeContextItems(request.items)
+  if (wordItemCount(items) > GROUP_WORD_LIMIT) {
+    return { status: 'rejected', reason: 'too-many-words' }
+  }
   database
     .prepare('UPDATE thread SET context_json = ?, updated_at = ? WHERE id = ?')
     .run(JSON.stringify(items), nowOf(options), request.threadId)
@@ -999,6 +1131,9 @@ export function askQuestion(
     request.context === undefined
       ? parseContextJson(thread.context_json)
       : sanitizeContextItems(request.context)
+  if (wordItemCount(context) > GROUP_WORD_LIMIT) {
+    return { status: 'rejected', reason: 'too-many-words' }
+  }
 
   return insertQuestion(database, {
     thread,
@@ -1182,6 +1317,9 @@ export function editQuestion(
     request.context === undefined
       ? parseContextJson(thread.context_json)
       : sanitizeContextItems(request.context)
+  if (wordItemCount(context) > GROUP_WORD_LIMIT) {
+    return { status: 'rejected', reason: 'too-many-words' }
+  }
 
   // 新提问挂在原来那条的父条目下：同一位置多出一个版本，原回答整支仍在库里。
   return insertQuestion(database, {
@@ -1252,9 +1390,8 @@ export function readContextCandidates(
     return { items: [] }
   }
   const main = describeMain(database, thread.main_kind as ThreadMainKind, thread.main_id)
-  const included = new Set(
-    parseContextJson(thread.context_json).map((item) => item.id)
-  )
+  const context = parseContextJson(thread.context_json)
+  const included = new Set(context.map((item) => item.id))
 
   const candidates: ThreadContextItem[] = []
   const seen = new Set<string>()
@@ -1274,6 +1411,18 @@ export function readContextCandidates(
     for (const item of sentenceItemsOfArticle(database, main.articleId)) push(item)
     for (const item of paragraphItemsOfArticle(database, main.articleId)) push(item)
     for (const item of noteItemsOfArticle(database, main.articleId)) push(item)
+  } else {
+    // 空白与组词线程（主对象为空）：候选是库里全部词条，加上已带上的词的原句、
+    // 段落与学习内容。这样自由学习能加词、组词线程能补更多原句，移除的词也能加回来。
+    for (const item of libraryWordItems(database)) push(item)
+    for (const item of context) {
+      if (item.kind !== 'word' || !item.id.startsWith('word:')) continue
+      const entryId = item.id.slice('word:'.length)
+      if (entryId === '') continue
+      for (const nested of sentenceItemsOfEntry(database, entryId)) push(nested)
+      for (const nested of paragraphItemsOfEntry(database, entryId)) push(nested)
+      for (const nested of noteItemsOfEntry(database, entryId)) push(nested)
+    }
   }
 
   return { items: candidates }

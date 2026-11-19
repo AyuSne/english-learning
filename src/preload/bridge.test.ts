@@ -61,8 +61,18 @@ describe('createBridge', () => {
     ])
   })
 
-  it('删除线程的请求和结果穿过 preload 白名单', async () => {
-    const { ipc } = fakeRenderer()
+  it('用一组词开线程的请求穿过白名单', async () => {
+    const { ipc, invocations } = fakeRenderer()
+    const bridge = createBridge(ipc)
+
+    await bridge.invoke('chat:create-group', { entryIds: ['entry-1', 'entry-2'] })
+
+    expect(JSON.parse(JSON.stringify(invocations))).toEqual([
+      { channel: 'chat:create-group', payload: { entryIds: ['entry-1', 'entry-2'] } }
+    ])
+  })
+
+  it('删除线程的请求和结果穿过 preload 白名单', async () => {    const { ipc } = fakeRenderer()
     const calls: unknown[] = []
     const bridge = createBridge({
       ...ipc,

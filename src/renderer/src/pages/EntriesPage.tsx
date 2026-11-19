@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
 import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
-import { getChatStore, openThreadForMain } from '../chat/store'
+import { getChatStore, openGroupThread, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
 import { deleteLastSentenceText, entryHeadlineText } from '../entries/format'
 import { entryLayoutForWidth, type EntryLayout } from '../entries/layout'
 import { NoteRail } from '../entries/note-rail'
+import {
+  selectionBlockedText,
+  toggleEntrySelection
+} from '../entries/selection'
 import { SentenceRow } from '../entries/sentence-row'
 import { failureText } from '../errors'
 import { laterToggleLabel } from '../later/format'
@@ -43,6 +47,10 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const [deleting, setDeleting] = useState(false)
   const [hint, setHint] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
+  // 多选只是这一页的临时动作，不写进浏览状态仓：取消或离开页面就没了。
+  const [selectedEntryIds, setSelectedEntryIds] = useState<readonly string[]>([])
+  const [selectionHint, setSelectionHint] = useState<string | null>(null)
+  const [startingGroup, setStartingGroup] = useState(false)
   const later = useLaterMark()
 
   const listRequest = useRef(0)
@@ -205,6 +213,35 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     setConfirmDelete(null)
   }
 
+  /** 多选按词条 id 记；第 21 个被拦下时留一句明确提示，已选内容不动。 */
+  function toggleSelected(id: string): void {
+    const next = toggleEntrySelection(selectedEntryIds, id)
+    if (next.blocked) {
+      setSelectionHint(selectionBlockedText())
+      return
+    }
+    setSelectedEntryIds(next.ids)
+    setSelectionHint(null)
+  }
+
+  function clearSelection(): void {
+    setSelectedEntryIds([])
+    setSelectionHint(null)
+  }
+
+  /** 「用这些词学习」：一次新开一条线程，不复用已有的空白或组词线程。 */
+  async function startGroup(): Promise<void> {
+    if (selectedEntryIds.length === 0 || startingGroup) return
+    setStartingGroup(true)
+    setActionError(null)
+    setSelectionHint(null)
+    const opened = await openGroupThread(selectedEntryIds)
+    if (opened === null) {
+      setSelectionHint(getChatStore().error ?? '没能用这些词开线程，再试一次。')
+    }
+    setStartingGroup(false)
+  }
+
   function openReading(sentence: EntrySentence, reselect: boolean): void {
     navigate('reading', {
       articleId: sentence.articleId,
@@ -320,6 +357,9 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
         query={query}
         sort={sort}
         filter={filter}
+        selectedEntryIds={selectedEntryIds}
+        selectionHint={selectionHint}
+        startingGroup={startingGroup}
         onQuery={(value) => {
           setQuery(value)
           updateEntriesViewState({ query: value })
@@ -333,6 +373,9 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
           updateEntriesViewState({ filter: value })
         }}
         onSelect={selectEntry}
+        onToggleSelect={toggleSelected}
+        onStartGroup={() => void startGroup()}
+        onClearSelection={clearSelection}
       />
 
       <section className="entries-main" aria-label="词条内容">
