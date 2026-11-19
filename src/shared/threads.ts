@@ -60,8 +60,12 @@ export type ThreadContextItem = {
   source: string
 }
 
-/** 输入框上方那行「N 条原句 · 约 M 字」；字数据正文的字数（码点）算。 */
+/** 一条线程一次最多带多少个不同的词条；界面与主进程边界共用同一个数。 */
+export const GROUP_WORD_LIMIT = 20
+
+/** 输入框上方那行「N 个词 · M 条原句 · 约 K 字」；字数据正文的字数（码点）算。 */
 export type ThreadContextSummary = {
+  wordCount: number
   sentenceCount: number
   charCount: number
 }
@@ -153,6 +157,13 @@ export type CreateThreadResult =
   | { status: 'created'; thread: ChatThreadView }
   | { status: 'rejected'; reason: 'missing-main' }
 
+/** 「用这些词学习」：一次选中一组词，开一条带词与各自原句的无主对象线程。 */
+export type CreateGroupThreadRequest = { entryIds: string[] }
+
+export type CreateGroupThreadResult =
+  | { status: 'created'; thread: ChatThreadView }
+  | { status: 'rejected'; reason: 'empty' | 'missing-word' | 'too-many-words' }
+
 export type OpenThreadForMainRequest = CreateThreadRequest & {
   forceNew?: boolean
   /** 阅读页主动就所点词提问时，复用线程也应带上该词及原句。 */
@@ -173,7 +184,7 @@ export type AskThreadRequest = {
 export type QuestionResult =
   | { status: 'asked'; questionId: string; thread: ChatThreadView }
   | { status: 'missing' }
-  | { status: 'rejected'; reason: 'empty' }
+  | { status: 'rejected'; reason: 'empty' | 'too-many-words' }
 
 export type SaveAnswerRequest = {
   threadId: string
@@ -213,6 +224,7 @@ export type UpdateThreadContextRequest = {
 export type UpdateThreadContextResult =
   | { status: 'saved'; thread: ChatThreadView }
   | { status: 'missing' }
+  | { status: 'rejected'; reason: 'too-many-words' }
 
 /** 还没进上下文、这次可以加进来的材料。 */
 export type ThreadContextCandidates = {

@@ -92,6 +92,8 @@ import type {
 import type {
   AskThreadRequest,
   ChatThreadView,
+  CreateGroupThreadRequest,
+  CreateGroupThreadResult,
   CreateThreadRequest,
   CreateThreadResult,
   DeleteThreadRequest,
@@ -196,6 +198,10 @@ export interface IpcContract {
   'chat:list': { payload: undefined; result: ThreadListResult }
   'chat:thread': { payload: { threadId: string }; result: ChatThreadView | null }
   'chat:create': { payload: CreateThreadRequest; result: CreateThreadResult }
+  'chat:create-group': {
+    payload: CreateGroupThreadRequest
+    result: CreateGroupThreadResult
+  }
   'chat:delete': { payload: DeleteThreadRequest; result: DeleteThreadResult }
   'chat:find-for-main': { payload: CreateThreadRequest; result: ChatThreadView | null }
   'chat:open-for-main': { payload: OpenThreadForMainRequest; result: OpenThreadForMainResult }
@@ -305,6 +311,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'chat:list': true,
   'chat:thread': true,
   'chat:create': true,
+  'chat:create-group': true,
   'chat:delete': true,
   'chat:find-for-main': true,
   'chat:open-for-main': true,

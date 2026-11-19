@@ -103,6 +103,10 @@ import type {
   UpdateThreadContextRequest,
   UpdateThreadContextResult
 } from '../../shared/threads'
+import type {
+  CreateGroupThreadRequest,
+  CreateGroupThreadResult
+} from '../../shared/threads'
 import type { AppBootstrap, ThemePreference } from '../../shared/types'
 
 export function loadBootstrap(): Promise<AppBootstrap> {
@@ -328,6 +332,13 @@ export function deleteThread(threadId: string): Promise<DeleteThreadResult> {
 /** 按主对象开一条线程：词条 / 原句 / 文章 / 不挂。 */
 export function createThread(request: CreateThreadRequest): Promise<CreateThreadResult> {
   return window.api.invoke('chat:create', request)
+}
+
+/** 「用这些词学习」：一次选中的词开一条新线程，主对象为空。 */
+export function createGroupThread(
+  request: CreateGroupThreadRequest
+): Promise<CreateGroupThreadResult> {
+  return window.api.invoke('chat:create-group', request)
 }
 
 /** 按主对象复用最近线程，或明确新开一条。 */

@@ -35,22 +35,26 @@ export const CONTEXT_KIND_LABEL: Record<ThreadContextKind, string> = {
 }
 
 export function contextSummaryText(summary: ThreadContextSummary): string {
-  return `${summary.sentenceCount} 条原句 · 约 ${summary.charCount} 字`
+  return `${summary.wordCount} 个词 · ${summary.sentenceCount} 条原句 · 约 ${summary.charCount} 字`
 }
 
-/** 与主进程同一套算法：原句条数只数 sentence，字数按正文码点。 */
+/** 与主进程同一套算法：词只数 word，原句只数 sentence，字数按正文码点。 */
 export function summarizeContext(
   items: readonly ThreadContextItem[]
 ): ThreadContextSummary {
+  let wordCount = 0
   let sentenceCount = 0
   let charCount = 0
   for (const item of items) {
+    if (item.kind === 'word') {
+      wordCount += 1
+    }
     if (item.kind === 'sentence') {
       sentenceCount += 1
     }
     charCount += Array.from(item.text).length
   }
-  return { sentenceCount, charCount }
+  return { wordCount, sentenceCount, charCount }
 }
 
 /** 学习上下文写成一段 system 前言；没有材料时返回 null，请求里就不带 system 消息。 */

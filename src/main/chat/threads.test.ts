@@ -12,6 +12,7 @@ import { createLearningNote } from '../entries/notes'
 import { collectSelection, deleteEntrySentence } from '../entries/queries'
 import {
   askQuestion,
+  createGroupThread,
   createThread,
   editQuestion,
   listThreads,
@@ -51,6 +52,22 @@ const longMatch = fixtureArticle({
   set: 1,
   kind: 'long_match',
   sentences: [['First paragraph here.'], ['Nothing on approach.'], ['Another approach appears here.']]
+})
+
+/** 每个词只出现一次，用来一次凑够 21 个不同词条。 */
+const MANY_WORDS = [
+  'alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot', 'golf',
+  'hotel', 'india', 'juliet', 'kilo', 'lima', 'mike', 'november',
+  'oscar', 'papa', 'quebec', 'romeo', 'sierra', 'tango', 'uniform'
+] as const
+
+const manyWords = fixtureArticle({
+  id: 'fixture-many-words',
+  sentences: [0, 1, 2].map((paragraph) =>
+    MANY_WORDS.slice(paragraph * 7, paragraph * 7 + 7).map(
+      (word) => `The ${word} belongs to this practice sentence.`
+    )
+  )
 })
 
 type JsonParagraph = {
@@ -102,7 +119,7 @@ beforeEach(() => {
   directory = mkdtempSync(join(tmpdir(), 'english-learning-threads-'))
   database = openDatabase(join(directory, 'test.db'))
   migrate(database)
-  writeCorpusDirectory(directory, [firstArticle, longMatch])
+  writeCorpusDirectory(directory, [firstArticle, longMatch, manyWords])
   importCorpus(database, { directory })
 })
 
@@ -116,6 +133,7 @@ function seed(): {
   approachEntryId: string
   approachSentenceIds: string[]
   contextEntryId: string
+  contextSentenceId: string
   latestSentenceId: string
 } {
   const first = collect(database, firstArticle, 0, 'approach', T0)
@@ -131,8 +149,23 @@ function seed(): {
     approachEntryId: first.entry.id,
     approachSentenceIds: [first.sentence.id, second.sentence.id, third.sentence.id],
     contextEntryId: context.entry.id,
+    contextSentenceId: context.sentence.id,
     latestSentenceId: third.sentence.id
   }
+}
+
+/** 收下前 count 个互不相同的词，返回词条 id；每个词条只有一条原句。 */
+function collectManyWords(count: number): string[] {
+  return MANY_WORDS.slice(0, count).map((word, index) => {
+    const paragraphIndex = Math.floor(index / 7)
+    return collect(
+      database,
+      manyWords,
+      paragraphIndex,
+      word,
+      new Date(Date.UTC(2026, 10, 19, 8, index)).toISOString()
+    ).entry.id
+  })
 }
 
 function itemIds(items: readonly ThreadContextItem[]): string[] {
@@ -337,7 +370,7 @@ describe('createThread', () => {
     expect(blank.thread.title).toBe('新的学习')
     expect(blank.thread.main).toEqual({ kind: 'none' })
     expect(blank.thread.context).toEqual([])
-    expect(blank.thread.contextSummary).toEqual({ sentenceCount: 0, charCount: 0 })
+    expect(blank.thread.contextSummary).toEqual({ wordCount: 0, sentenceCount: 0, charCount: 0 })
 
     expect(
       createThread(database, { main: { kind: 'entry', entryId: 'nope' } }, { now: T4 })
@@ -349,6 +382,149 @@ describe('createThread', () => {
 
   it('读不到的线程返回 null', () => {
     expect(readThreadView(database, 'nope')).toBeNull()
+  })
+})
+
+describe('用一组词开线程', () => {
+  it('每次新建一条无主对象的线程，默认上下文是每个词与它最近收的原句', () => {
+    const seeded = seed()
+    const request = { entryIds: [seeded.approachEntryId, seeded.contextEntryId] }
+    const first = createGroupThread(database, request, { now: T4 })
+    expect(first.status).toBe('created')
+    if (first.status !== 'created') return
+
+    // 不新增主对象类型：组词线程就是一条空白线程，落点自然回到未归档。
+    expect(first.thread.main).toEqual({ kind: 'none' })
+    expect(first.thread.title).toBe('approach 等 2 个词')
+    expect(first.thread.context.map((item) => item.kind)).toEqual([
+      'word',
+      'sentence',
+      'word',
+      'sentence'
+    ])
+    expect(itemIds(first.thread.context)).toEqual([
+      `word:${seeded.approachEntryId}`,
+      `sentence:${seeded.latestSentenceId}`,
+      `word:${seeded.contextEntryId}`,
+      `sentence:${seeded.contextSentenceId}`
+    ])
+    expect(first.thread.context[1]?.text).toBe('Another approach appears here.')
+    expect(first.thread.context[3]?.text).toBe('Context keeps the skill alive.')
+    expect(first.thread.contextSummary).toEqual({
+      wordCount: 2,
+      sentenceCount: 2,
+      charCount: 75
+    })
+
+    // 「用这些词学习」每次都是新线程，不复用空白或组词线程。
+    const second = createGroupThread(database, request, { now: '2026-11-18T09:30:00.000Z' })
+    expect(second.status).toBe('created')
+    if (second.status !== 'created') return
+    expect(second.thread.id).not.toBe(first.thread.id)
+    const threads = listThreads(database).threads
+    expect(threads).toHaveLength(2)
+    expect(threads.every((thread) => thread.mainKind === 'none')).toBe(true)
+  })
+
+  it('重复词条只算一个；空选择、缺失词条与超过 20 个词条都被拒绝，不静默少词', () => {
+    const ids = collectManyWords(21)
+    const twenty = createGroupThread(database, { entryIds: ids.slice(0, 20) }, { now: T4 })
+    expect(twenty.status).toBe('created')
+    if (twenty.status !== 'created') return
+    expect(twenty.thread.contextSummary.wordCount).toBe(20)
+    expect(twenty.thread.contextSummary.sentenceCount).toBe(20)
+    expect(
+      twenty.thread.context.filter((item) => item.kind === 'word')
+    ).toHaveLength(20)
+
+    expect(createGroupThread(database, { entryIds: ids }, { now: T4 })).toEqual({
+      status: 'rejected',
+      reason: 'too-many-words'
+    })
+    expect(createGroupThread(database, { entryIds: [] }, { now: T4 })).toEqual({
+      status: 'rejected',
+      reason: 'empty'
+    })
+    expect(
+      createGroupThread(database, { entryIds: [ids[0] as string, 'nope'] }, { now: T4 })
+    ).toEqual({ status: 'rejected', reason: 'missing-word' })
+
+    // 拒绝的请求一条线程都没有留下。
+    expect(listThreads(database).threads).toHaveLength(1)
+
+    const repeated = createGroupThread(
+      database,
+      { entryIds: [ids[1] as string, ids[1] as string] },
+      { now: T4 }
+    )
+    expect(repeated.status).toBe('created')
+    if (repeated.status !== 'created') return
+    expect(repeated.thread.title).toBe('bravo')
+    expect(repeated.thread.contextSummary.wordCount).toBe(1)
+    expect(repeated.thread.contextSummary.sentenceCount).toBe(1)
+  })
+
+  it('超过 20 个词的上下文改不动，已经存下的上下文保持原样', () => {
+    const ids = collectManyWords(21)
+    const created = createThread(database, { main: { kind: 'none' } }, { now: T4 })
+    if (created.status !== 'created') throw new Error('create failed')
+    const wordItem = (index: number): ThreadContextItem => ({
+      id: `word:${ids[index]}`,
+      kind: 'word',
+      label: `词 ${index}`,
+      text: `词 ${index}`,
+      source: ''
+    })
+
+    const twenty = updateThreadContext(
+      database,
+      { threadId: created.thread.id, items: ids.slice(0, 20).map((_, index) => wordItem(index)) },
+      { now: T4 }
+    )
+    expect(twenty.status).toBe('saved')
+    if (twenty.status !== 'saved') return
+    expect(twenty.thread.contextSummary.wordCount).toBe(20)
+
+    expect(
+      updateThreadContext(
+        database,
+        {
+          threadId: created.thread.id,
+          items: ids.map((_, index) => wordItem(index))
+        },
+        { now: T4 }
+      )
+    ).toEqual({ status: 'rejected', reason: 'too-many-words' })
+    expect(readThreadView(database, created.thread.id)?.contextSummary.wordCount).toBe(20)
+  })
+
+  it('提问时临时带上的上下文同样受 20 个词限制', () => {
+    const ids = collectManyWords(21)
+    const created = createThread(database, { main: { kind: 'none' } }, { now: T4 })
+    if (created.status !== 'created') throw new Error('create failed')
+    const items = ids.map((id, index): ThreadContextItem => ({
+      id: `word:${id}`,
+      kind: 'word',
+      label: `词 ${index}`,
+      text: `词 ${index}`,
+      source: ''
+    }))
+
+    expect(
+      askQuestion(
+        database,
+        { threadId: created.thread.id, text: '这些问题怎么用？', context: items },
+        { now: T4 }
+      )
+    ).toEqual({ status: 'rejected', reason: 'too-many-words' })
+    expect(readThreadView(database, created.thread.id)?.turns).toHaveLength(0)
+
+    const accepted = askQuestion(
+      database,
+      { threadId: created.thread.id, text: '这些问题怎么用？', context: items.slice(0, 20) },
+      { now: T4 }
+    )
+    expect(accepted.status).toBe('asked')
   })
 })
 
@@ -712,6 +888,7 @@ describe('上下文', () => {
     if (result.status !== 'saved') return
     expect(itemIds(result.thread.context)).toEqual([`sentence:${sentenceId}`])
     expect(result.thread.contextSummary).toEqual({
+      wordCount: 0,
       sentenceCount: 1,
       charCount: Array.from('Employers approach hiring differently.').length
     })
@@ -760,10 +937,98 @@ describe('上下文', () => {
     )
   })
 
-  it('空白线程没有可加的材料', () => {
+  it('空白线程也能从库里加词，加进来之后再给这个词的原句与学习内容', () => {
+    const seeded = seed()
     const created = createThread(database, { main: { kind: 'none' } }, { now: T4 })
     if (created.status !== 'created') throw new Error('create failed')
-    expect(readContextCandidates(database, created.thread.id)).toEqual({ items: [] })
+
+    // 空白线程没有主对象可围着找材料，但自由学习要能自己挑词：候选是库里全部词条。
+    const before = readContextCandidates(database, created.thread.id)
+    expect(itemIds(before.items)).toEqual([
+      `word:${seeded.contextEntryId}`,
+      `word:${seeded.approachEntryId}`
+    ])
+    expect(before.items[1]?.source).toBe('已收 3 条原句 · 2 篇')
+
+    updateThreadContext(
+      database,
+      {
+        threadId: created.thread.id,
+        items: [before.items[1] as ThreadContextItem]
+      },
+      { now: T4 }
+    )
+    const after = itemIds(readContextCandidates(database, created.thread.id).items)
+    expect(after).not.toContain(`word:${seeded.approachEntryId}`)
+    expect(after).toContain(`sentence:${seeded.latestSentenceId}`)
+    expect(after.some((id) => id.startsWith('note:'))).toBe(true)
+  })
+
+  it('组词线程的候选是这些词更多的原句、段落与学习内容，移除的词句重启后还能加回来', () => {
+    const seeded = seed()
+    const created = createGroupThread(
+      database,
+      { entryIds: [seeded.approachEntryId, seeded.contextEntryId] },
+      { now: T4 }
+    )
+    if (created.status !== 'created') throw new Error('create failed')
+    const threadId = created.thread.id
+
+    const before = itemIds(readContextCandidates(database, threadId).items)
+    // 已带上的词与最近一句不再出现在候选里。
+    expect(before).not.toContain(`word:${seeded.approachEntryId}`)
+    expect(before).not.toContain(`sentence:${seeded.latestSentenceId}`)
+    // 这些词更多的原句可以从 picker 加进来。
+    expect(before).toContain(`sentence:${seeded.approachSentenceIds[0]}`)
+    expect(before).toContain(`sentence:${seeded.approachSentenceIds[1]}`)
+    expect(before.some((id) => id.startsWith('paragraph:'))).toBe(true)
+    expect(before.some((id) => id.startsWith('note:'))).toBe(true)
+
+    // 移除词与原句后：词重新成为可加材料；把词加回来，它的原句又出现在候选里。
+    const remaining = created.thread.context.filter(
+      (item) =>
+        item.id !== `word:${seeded.approachEntryId}` &&
+        item.id !== `sentence:${seeded.latestSentenceId}`
+    )
+    updateThreadContext(database, { threadId, items: remaining }, { now: T4 })
+    const afterRemove = readContextCandidates(database, threadId).items
+    expect(itemIds(afterRemove)).toContain(`word:${seeded.approachEntryId}`)
+    const word = afterRemove.find((item) => item.id === `word:${seeded.approachEntryId}`)
+    if (!word) throw new Error('missing removed word candidate')
+    updateThreadContext(
+      database,
+      { threadId, items: [...remaining, word] },
+      { now: T4 }
+    )
+    const afterWord = itemIds(readContextCandidates(database, threadId).items)
+    expect(afterWord).toContain(`sentence:${seeded.latestSentenceId}`)
+
+    // 重启（关库再开）后线程还在，移除的词句仍能从候选加回来并继续编辑。
+    database.close()
+    database = openDatabase(join(directory, 'test.db'))
+    const restarted = readThreadView(database, threadId)
+    expect(restarted?.main).toEqual({ kind: 'none' })
+    expect(restarted?.contextSummary.wordCount).toBe(2)
+    const candidates = readContextCandidates(database, threadId).items
+    const sentence = candidates.find(
+      (item) => item.id === `sentence:${seeded.latestSentenceId}`
+    )
+    expect(sentence).toBeDefined()
+    const restored = updateThreadContext(
+      database,
+      {
+        threadId,
+        items: [...(restarted?.context ?? []), sentence as ThreadContextItem]
+      },
+      { now: '2026-11-18T10:00:00.000Z' }
+    )
+    expect(restored.status).toBe('saved')
+    if (restored.status !== 'saved') return
+    expect(restored.thread.contextSummary).toEqual({
+      wordCount: 2,
+      sentenceCount: 2,
+      charCount: 75
+    })
   })
 })
 

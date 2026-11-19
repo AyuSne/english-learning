@@ -7,6 +7,7 @@ import { threadExportFileName, writeThreadJsonl } from './chat/export'
 import { createChatService } from './chat/service'
 import {
   askQuestion,
+  createGroupThread,
   createThread,
   deleteThread,
   editQuestion,
@@ -256,6 +257,7 @@ function start(): void {
     'chat:list': () => listThreads(opened),
     'chat:thread': (payload) => readThreadView(opened, payload.threadId),
     'chat:create': (payload) => createThread(opened, payload),
+    'chat:create-group': (payload) => createGroupThread(opened, payload),
     'chat:delete': (payload) => {
       // 两个操作都在主进程同步判断，活跃流不得被删除，已删除的线程也不能开新流。
       return chat.hasActiveThread(payload.threadId) ? { status: 'busy' } : deleteThread(opened, payload)
