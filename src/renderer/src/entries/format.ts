@@ -5,6 +5,7 @@ import type {
   LearningNote,
   LearningNoteSourcePin
 } from '../../../shared/entries'
+import { pinSourceIssueText } from '../chat/pin-text'
 import { formatDay } from '../library/format'
 
 /** 左栏一行：「2 句 · 1 篇」。 */
@@ -51,9 +52,8 @@ export function noteSourceText(
     if (day !== '') {
       parts.push(day)
     }
-    if (!pin.threadAlive) {
-      parts.push('源对话已删除，内容按快照保留')
-    }
+    const sourceIssue = pinSourceIssueText(pin.sourceStatus)
+    if (sourceIssue !== null) parts.push(`${sourceIssue}，内容按快照保留`)
     return parts.join(' · ')
   }
   const origin = note.source === 'pin' ? '来自对话' : '词条内手写'

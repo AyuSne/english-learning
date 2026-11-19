@@ -39,7 +39,7 @@ export function MarkdownBlock({ block, decorate }: {
   if (block.kind === 'list') {
     const List = block.ordered ? 'ol' : 'ul'
     return (
-      <List {...attributes}>
+      <List {...attributes} start={block.ordered && block.firstNumber !== 1 ? block.firstNumber : undefined}>
         {block.items.map((item) => {
           const decoration = decorate?.(item)
           return (

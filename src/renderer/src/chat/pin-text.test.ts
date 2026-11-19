@@ -25,7 +25,7 @@ const pin = (overrides: Partial<Pin> = {}): Pin => ({
     model: 'deepseek-flash',
     sourceSentence: null
   },
-  threadAlive: true,
+  sourceStatus: 'available',
   createdAt: new Date(2026, 10, 18, 9, 5).toISOString(),
   ...overrides
 })

@@ -70,7 +70,7 @@ describe('createChatService', () => {
     const { events, send, waitFor } = collector()
 
     expect(
-      service.start({ streamId: 'stream-1', messages: [userTurn] }, send)
+      service.start({ threadId: 'thread-1', streamId: 'stream-1', messages: [userTurn] }, send)
     ).toEqual({ accepted: true })
     await waitFor((current) => current.some((event) => event.type === 'done'))
 
@@ -105,7 +105,7 @@ describe('createChatService', () => {
     const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-fragmented', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-fragmented', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'done'))
 
     expect(events).toEqual([
@@ -128,7 +128,7 @@ describe('createChatService', () => {
     const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: `stream-${status}`, messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: `stream-${status}`, messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'error'))
 
     const event = events.find((candidate) => candidate.type === 'error')
@@ -147,7 +147,7 @@ describe('createChatService', () => {
     const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-truncate', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-truncate', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'error'))
 
     const event = events.find((candidate) => candidate.type === 'error')
@@ -164,7 +164,7 @@ describe('createChatService', () => {
     const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-end-early', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-end-early', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'error'))
 
     const event = events.find((candidate) => candidate.type === 'error')
@@ -182,7 +182,7 @@ describe('createChatService', () => {
     })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-network', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-network', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'error'))
 
     const event = events[0]
@@ -196,7 +196,7 @@ describe('createChatService', () => {
     const service = createChatService({ resolveConfig: () => null })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-config', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-config', messages: [userTurn] }, send)
     await waitFor((current) => current.length > 0)
 
     expect(events).toEqual([
@@ -209,9 +209,11 @@ describe('createChatService', () => {
     const service = createChatService({ resolveConfig: () => configFor(target) })
     const { events, send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-stop', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-stop', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'text'))
 
+    expect(service.hasActiveThread('thread-1')).toBe(true)
+    expect(service.hasActiveThread('another-thread')).toBe(false)
     expect(service.stop('stream-stop')).toEqual({ stopped: true })
     await waitUntil(() => target.abortedConnections > 0)
     await new Promise((resolve) => setTimeout(resolve, 50))
@@ -231,10 +233,10 @@ describe('createChatService', () => {
     const { send } = collector()
 
     expect(
-      service.start({ streamId: 'stream-duplicate', messages: [userTurn] }, send)
+      service.start({ threadId: 'thread-1', streamId: 'stream-duplicate', messages: [userTurn] }, send)
     ).toEqual({ accepted: true })
     expect(
-      service.start({ streamId: 'stream-duplicate', messages: [userTurn] }, send)
+      service.start({ threadId: 'thread-1', streamId: 'stream-duplicate', messages: [userTurn] }, send)
     ).toEqual({ accepted: false })
 
     service.stop('stream-duplicate')
@@ -251,7 +253,7 @@ describe('配置回写与切换', () => {
     })
     const { send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-verified', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-verified', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'done'))
 
     expect(verified).toEqual(['profile-1'])
@@ -266,7 +268,7 @@ describe('配置回写与切换', () => {
     })
     const { send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-failed', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-failed', messages: [userTurn] }, send)
     await waitFor((current) => current.some((event) => event.type === 'error'))
 
     expect(verified).toEqual([])
@@ -279,11 +281,11 @@ describe('配置回写与切换', () => {
     const service = createChatService({ resolveConfig: () => current })
     const { send, waitFor } = collector()
 
-    service.start({ streamId: 'stream-first', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-first', messages: [userTurn] }, send)
     await waitFor((events) => events.some((event) => event.type === 'done'))
 
     current = { ...configFor(second), model: 'deepseek-v4-pro' }
-    service.start({ streamId: 'stream-second', messages: [userTurn] }, send)
+    service.start({ threadId: 'thread-1', streamId: 'stream-second', messages: [userTurn] }, send)
     await waitFor(
       (events) => events.filter((event) => event.type === 'done').length === 2
     )

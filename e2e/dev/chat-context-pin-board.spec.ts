@@ -1,11 +1,11 @@
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { askQuestion, createThread, saveAnswer } from '../../src/main/chat/threads'
 import { openDatabase } from '../../src/main/db/database'
 import { createPin } from '../../src/main/pins/pins'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { expect, test } from '../fixtures/app'
+import { seedAnsweredThread } from '../fixtures/chat'
 import { databasePath } from '../fixtures/database'
 import { seedWordEntries } from '../fixtures/entries'
 
@@ -63,17 +63,8 @@ function seedPinThreads(userDataDirectory: string): string {
   const database = openDatabase(databasePath(userDataDirectory))
   try {
     const seedThread = (question: string, filed: string, unfiled: string[]): string => {
-      const thread = createThread(database, { main: { kind: 'none' } })
-      if (thread.status !== 'created') throw new Error('线程没建起来')
-      const threadId = thread.thread.id
-      const asked = askQuestion(database, { threadId, text: question })
-      if (asked.status !== 'asked') throw new Error('问题没写进去')
       const text = [filed, ...unfiled].join('\n\n')
-      const saved = saveAnswer(database, {
-        threadId, questionId: asked.questionId, text, thinking: '', phase: 'done'
-      })
-      const answerId = saved.status === 'saved' && saved.thread.turns[0]?.answer?.id
-      if (!answerId) throw new Error('没有回答')
+      const { threadId, answerId } = seedAnsweredThread(database, { question, answer: text })
       for (const excerpt of [filed, ...unfiled]) {
         const start = text.indexOf(excerpt)
         const result = createPin(database, {
@@ -111,11 +102,27 @@ test('顶栏和窄条区分本线程与全局未归档，两类 tab 的计数对
   await expect(panel).toContainText('其他线程的第二条暂存')
   await expect(panel).not.toContainText('已归档')
 
-  await page.getByRole('button', { name: '钉板 1 · 本线程', exact: true }).click()
-  await expect(board.getByRole('tab', { name: '这条线程 1', exact: true })).toHaveAttribute('aria-selected', 'true')
+  const headerCount = page.getByRole('button', { name: '钉板 2 · 本线程', exact: true })
+  await expect(headerCount).toBeVisible()
+  const threadTab = board.getByRole('tab', { name: '这条线程 1', exact: true })
+  await headerCount.click()
+  await expect(threadTab).toHaveAttribute('aria-selected', 'true')
   await expect(panel.getByRole('article')).toHaveCount(1)
   await expect(panel).toContainText('本线程已归档')
   await expect(panel).not.toContainText('其他线程已归档')
+
+  await board.getByRole('tab', { name: '未归档 3', exact: true }).click()
+  await panel.getByRole('article').filter({ hasText: '本线程的暂存' })
+    .getByRole('button', { name: '归到文章' }).click()
+  const dialog = page.getByRole('dialog', { name: '归到哪儿' })
+  await dialog.getByRole('combobox', { name: '选择文章' }).selectOption(article.id)
+  await dialog.getByRole('button', { name: '归位', exact: true }).click()
+  await expect(board.getByRole('tab', { name: '未归档 2', exact: true })).toBeVisible()
+  await expect(headerCount).toBeVisible()
+  await headerCount.click()
+  await expect(panel.getByRole('article')).toHaveCount(2)
+  await expect(panel).toContainText('本线程的暂存')
+  await expect(panel).not.toContainText('其他线程')
 })
 
 test('窄窗钉板覆盖而不挤压正文，空态一行并可用关闭按钮、遮罩或 Esc 收起', async ({ launch }) => {

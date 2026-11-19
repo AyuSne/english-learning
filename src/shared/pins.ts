@@ -34,6 +34,9 @@ export type PinProvenance = {
   sourceSentence: { id: string; text: string } | null
 }
 
+/** 另一分支的回答仍可跳转；只在源线程或原回答缺失时置灰。 */
+export type PinSourceStatus = 'available' | 'thread-deleted' | 'answer-missing'
+
 export type Pin = {
   id: string
   /** 复制出来的正文快照。 */
@@ -45,8 +48,7 @@ export type Pin = {
   /** 按源线程主对象推导的落点；未归档的钉住归位时用它预选。 */
   defaultTarget: PinTargetView
   provenance: PinProvenance
-  /** 源线程还在不在；被删了内容按快照保留，入口置灰。 */
-  threadAlive: boolean
+  sourceStatus: PinSourceStatus
   createdAt: string
 }
 
@@ -55,7 +57,7 @@ export type PinBoard = {
   threadId: string | null
   threadPins: Pin[]
   unfiledPins: Pin[]
-  /** 未归档总数；左栏与顶栏的计数都读它。 */
+  /** 全局未归档总数；左栏与钉板窄条使用。 */
   unfiledCount: number
 }
 

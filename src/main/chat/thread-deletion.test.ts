@@ -79,16 +79,16 @@ it('删除线程及所有分支条目，同一主对象不再复用它；各落�
 
   database.close()
   database = openDatabase(join(directory, 'test.db'))
-  expect(readPinBoard(database, null).unfiledPins).toMatchObject([{ id: pins[0]!.id, capturedText: answerText, threadAlive: false }])
+  expect(readPinBoard(database, null).unfiledPins).toMatchObject([{ id: pins[0]!.id, capturedText: answerText, sourceStatus: 'thread-deleted' }])
   for (const pin of pins) {
     expect(readPinSource(database, pin.id)).toMatchObject({
       thread: null, onBranch: false, questionId: null,
-      pin: { capturedText: answerText, createdAt: now, target: pin.target, threadAlive: false,
+      pin: { capturedText: answerText, createdAt: now, target: pin.target, sourceStatus: 'thread-deleted',
         provenance: { threadId, threadTitle: 'approach', answerId, turnIndex: 1, model: 'fixture-model', sourceSentence: { text: sourceSentence } } }
     })
   }
   expect(readLearningNotes(database, entryId)).toMatchObject([{
-    id: note!.id, body: '改过的学习内容', sourcePin: { id: pins[1]!.id, threadId, threadTitle: 'approach', threadAlive: false }
+    id: note!.id, body: '改过的学习内容', sourcePin: { id: pins[1]!.id, threadId, threadTitle: 'approach', sourceStatus: 'thread-deleted' }
   }])
 })
 
@@ -138,11 +138,11 @@ it('旧快照的线程仍在但回答已不在时，不给钉板和学习内容�
   })
   expect(restored.status).toBe('restored')
   expect(readThreadView(database, threadId)).not.toBeNull()
-  expect(readPinBoard(database, null).unfiledPins).toMatchObject([{ id: 'unfiled-snapshot', threadAlive: false }])
+  expect(readPinBoard(database, null).unfiledPins).toMatchObject([{ id: 'unfiled-snapshot', sourceStatus: 'answer-missing' }])
   expect(readPinSource(database, 'entry-snapshot')).toMatchObject({
-    thread: null, onBranch: false, questionId: null, pin: { threadAlive: false, provenance }
+    thread: null, onBranch: false, questionId: null, pin: { sourceStatus: 'answer-missing', provenance }
   })
   expect(readLearningNotes(database, entryId)).toMatchObject([{
-    body: answerText, sourcePin: { id: 'entry-snapshot', threadTitle: '旧线程名', threadAlive: false }
+    body: answerText, sourcePin: { id: 'entry-snapshot', threadTitle: '旧线程名', sourceStatus: 'answer-missing' }
   }])
 })

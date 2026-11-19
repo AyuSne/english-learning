@@ -10,7 +10,7 @@ import { streamChatCompletion } from './pi-stream'
 export type ChatUpdateSender = (update: ChatStreamUpdate) => void
 
 export type ChatService = {
-  start(request: ChatStartRequest, send: ChatUpdateSender, threadId?: string): ChatStartResult
+  start(request: ChatStartRequest, send: ChatUpdateSender): ChatStartResult
   stop(streamId: string): ChatStopResult
   hasActiveThread(threadId: string): boolean
 }
@@ -27,17 +27,17 @@ export type ChatServiceOptions = {
  * 已发出的内容由渲染层保留。同一 streamId 不会被启动两次。
  */
 export function createChatService(options: ChatServiceOptions): ChatService {
-  const active = new Map<string, { controller: AbortController; threadId: string | undefined }>()
+  const active = new Map<string, { controller: AbortController; threadId: string }>()
 
   return {
-    start(request, send, threadId) {
+    start(request, send) {
       if (active.has(request.streamId)) {
         return { accepted: false }
       }
 
       const config = options.resolveConfig()
       const controller = new AbortController()
-      active.set(request.streamId, { controller, threadId })
+      active.set(request.streamId, { controller, threadId: request.threadId })
 
       // 窗口可能在生成中途关闭；发事件失败不该把主进程的流带崩。
       const emit: ChatUpdateSender = (update) => {

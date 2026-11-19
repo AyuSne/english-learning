@@ -196,7 +196,7 @@ describe('createPin', () => {
       end: ANSWER.indexOf('lament') + 'lament'.length,
       target: { kind: 'entry', entryId: seeded.approachEntryId, label: 'approach' },
       defaultTarget: { kind: 'entry', entryId: seeded.approachEntryId, label: 'approach' },
-      threadAlive: true,
+      sourceStatus: 'available',
       createdAt: T5
     })
     expect(result.pin.provenance).toMatchObject({
@@ -220,7 +220,7 @@ describe('createPin', () => {
         threadTitle: 'approach',
         turnIndex: 1,
         model: 'deepseek-flash',
-        threadAlive: true
+        sourceStatus: 'available'
       }
     })
   })
@@ -517,6 +517,7 @@ describe('源对话', () => {
     if (regenerated.status !== 'saved') throw new Error('新版本没写进去')
 
     const offBranch = readPinSource(database, pin.id)
+    expect(offBranch?.pin.sourceStatus).toBe('available')
     expect(offBranch?.onBranch).toBe(false)
     expect(offBranch?.questionId).toBe(seeded.questionId)
 
@@ -538,17 +539,34 @@ describe('源对话', () => {
     expect(board.threadPins).toHaveLength(1)
     expect(board.threadPins[0]).toMatchObject({
       id: pin.id,
-      threadAlive: false,
+      sourceStatus: 'thread-deleted',
       defaultTarget: { kind: 'unfiled' },
       provenance: { threadTitle: 'approach' }
     })
     const note = readLearningNotes(database, seeded.approachEntryId)[0]
-    expect(note?.sourcePin).toMatchObject({ threadAlive: false, threadTitle: 'approach' })
+    expect(note?.sourcePin).toMatchObject({ sourceStatus: 'thread-deleted', threadTitle: 'approach' })
     expect(readPinSource(database, pin.id)).toMatchObject({
       thread: null,
       onBranch: false,
       questionId: null,
-      pin: { threadAlive: false }
+      pin: { sourceStatus: 'thread-deleted' }
+    })
+  })
+
+  it('旧快照的原回答缺失时不把仍存在的线程报告为已删除', () => {
+    const seeded = seedThread()
+    const pin = pinAtEntry(seeded)
+    // Simulate a legacy snapshot whose answer is missing but whose thread is intact.
+    database.prepare('UPDATE pin SET answer_id = ? WHERE id = ?').run('missing-answer', pin.id)
+
+    expect(readPinBoard(database, seeded.threadId).threadPins).toMatchObject([
+      { id: pin.id, capturedText: pin.capturedText, sourceStatus: 'answer-missing' }
+    ])
+    expect(readLearningNotes(database, seeded.approachEntryId)[0]).toMatchObject({
+      body: pin.capturedText, sourcePin: { id: pin.id, sourceStatus: 'answer-missing' }
+    })
+    expect(readPinSource(database, pin.id)).toMatchObject({
+      thread: null, onBranch: false, questionId: null, pin: { sourceStatus: 'answer-missing' }
     })
   })
 

@@ -145,7 +145,7 @@ export interface IpcContract {
   'entries:pin-note': { payload: PinLearningNoteRequest; result: LearningNoteResult }
   'entries:delete-note': { payload: { noteId: string }; result: LearningNoteResult }
   'entries:move-note': { payload: MoveLearningNoteRequest; result: LearningNoteResult }
-  'chat:start': { payload: ChatStartRequest & { threadId: string }; result: ChatStartResult }
+  'chat:start': { payload: ChatStartRequest; result: ChatStartResult }
   'chat:stop': { payload: ChatStopRequest; result: ChatStopResult }
   'chat:list': { payload: undefined; result: ThreadListResult }
   'chat:thread': { payload: { threadId: string }; result: ChatThreadView | null }

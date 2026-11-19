@@ -60,7 +60,7 @@ describe('noteSourceText', () => {
           turnIndex: 2,
           model: 'deepseek-flash',
           capturedAt: new Date(2026, 10, 18, 9, 30).toISOString(),
-          threadAlive: true
+          sourceStatus: 'available'
         }
       })
     ).toBe('来自 lament · 第 2 轮 · deepseek-flash · 2026-11-18')
