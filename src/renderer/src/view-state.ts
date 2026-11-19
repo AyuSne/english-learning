@@ -37,6 +37,10 @@ export function updateThreadViewState(
   threadStates.set(threadId, { ...threadViewState(threadId), ...patch })
 }
 
+export function clearThreadViewState(threadId: string | null): void {
+  threadStates.delete(threadId)
+}
+
 export function entriesViewState(): EntriesViewState {
   return entriesState
 }

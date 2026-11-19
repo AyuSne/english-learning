@@ -51,6 +51,9 @@ export function noteSourceText(
     if (day !== '') {
       parts.push(day)
     }
+    if (!pin.threadAlive) {
+      parts.push('源对话已删除，内容按快照保留')
+    }
     return parts.join(' · ')
   }
   const origin = note.source === 'pin' ? '来自对话' : '词条内手写'

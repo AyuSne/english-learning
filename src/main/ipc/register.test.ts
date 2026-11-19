@@ -86,6 +86,7 @@ function chatHandlers() {
     'chat:list': (): ThreadListResult => ({ threads: [] }),
     'chat:thread': (): ChatThreadView | null => null,
     'chat:create': (): CreateThreadResult => ({ status: 'rejected', reason: 'missing-main' }),
+    'chat:delete': () => ({ status: 'missing' as const }),
     'chat:find-for-main': (): ChatThreadView | null => null,
     'chat:open-for-main': (): CreateThreadResult => ({ status: 'rejected', reason: 'missing-main' }),
     'chat:ask': missingQuestion,

@@ -221,6 +221,11 @@ function PinCard({
           </>
         ) : (
           <>
+            {!pin.threadAlive && (
+              <button type="button" className="pin-card-action" disabled title="源对话已删除">
+                看原对话
+              </button>
+            )}
             <button
               type="button"
               className="pin-card-action"

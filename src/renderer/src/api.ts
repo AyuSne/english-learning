@@ -69,6 +69,7 @@ import type {
   ChatThreadView,
   CreateThreadRequest,
   CreateThreadResult,
+  DeleteThreadResult,
   EditQuestionRequest,
   ExportThreadResult,
   OpenThreadForMainRequest,
@@ -226,6 +227,10 @@ export function loadThreads(): Promise<ThreadListResult> {
 /** 打开一条线程：主对象、上下文与这一路的对话。 */
 export function loadThread(threadId: string): Promise<ChatThreadView | null> {
   return window.api.invoke('chat:thread', { threadId })
+}
+
+export function deleteThread(threadId: string): Promise<DeleteThreadResult> {
+  return window.api.invoke('chat:delete', { threadId })
 }
 
 /** 按主对象开一条线程：词条 / 原句 / 文章 / 不挂。 */

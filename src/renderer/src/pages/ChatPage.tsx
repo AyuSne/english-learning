@@ -9,6 +9,7 @@ import type {
 import type {
   ThreadAnswer,
   ThreadContextItem,
+  ThreadListItem,
   ThreadTurn,
   ThreadVersion
 } from '../../../shared/threads'
@@ -27,6 +28,7 @@ import { readAnswerSelection, type AnswerSelection } from '../chat/answer-select
 import { AnswerText, type PinMarks } from '../chat/answer-text'
 import { describeChatError, suggestsSettings } from '../chat/errors'
 import { ContextPanel } from '../chat/context-panel'
+import { DeleteThreadDialog } from '../chat/delete-thread-dialog'
 import { PinBoardPanel, type PinTab } from '../chat/pin-board'
 import {
   defaultPinTarget,
@@ -51,8 +53,11 @@ import {
   addContextItem,
   beginEditLastQuestion,
   cancelEdit,
+  canDeleteChatThread,
   continueLastAnswer,
   ensureChatEvents,
+  getChatStore,
+  isDeletedChatThread,
   openChatThread,
   regenerateLastAnswer,
   removeContextItem,
@@ -71,6 +76,7 @@ import {
 } from '../chat/turns'
 import { failureText } from '../errors'
 import { navigate } from '../navigate'
+import { parseView } from '../routes'
 import { threadViewState, updateThreadViewState } from '../view-state'
 
 type PinSelection = AnswerSelection & { text: string }
@@ -146,6 +152,7 @@ export function ChatPage({
   const [now, setNow] = useState(() => Date.now())
   const [pickerOpen, setPickerOpen] = useState(false)
   const [railOpen, setRailOpen] = useState(false)
+  const [deleteCandidate, setDeleteCandidate] = useState<ThreadListItem | null>(null)
   const [candidates, setCandidates] = useState<ThreadContextItem[] | null>(null)
   const [board, setBoard] = useState<PinBoard>(EMPTY_BOARD)
   const [boardOpen, setBoardOpen] = useState(false)
@@ -189,7 +196,7 @@ export function ChatPage({
     if (!node) return
     restoredScroll.current = false
     const remember = (): void => {
-      if (restoredScroll.current) {
+      if (restoredScroll.current && (viewThreadId === null || !isDeletedChatThread(viewThreadId))) {
         updateThreadViewState(viewThreadId, { scrollTop: node.scrollTop })
       }
     }
@@ -218,16 +225,18 @@ export function ChatPage({
     generation !== null && generation.status === 'live' && generation.threadId !== store.currentId
 
   const refreshBoard = (id: string | null): void => {
-    const sequence = boardRequest.current + 1
-    boardRequest.current = sequence
+    const isCurrent = (): boolean => {
+      const route = parseView(window.location.hash)
+      return route.route === 'chat' && route.threadId === id
+    }
+    if (!isCurrent()) return
+    const sequence = ++boardRequest.current
     loadPinBoard(id).then(
       (value) => {
-        if (sequence === boardRequest.current) {
-          setBoard(value)
-        }
+        if (sequence === boardRequest.current && isCurrent()) setBoard(value)
       },
       (error: unknown) => {
-        if (sequence === boardRequest.current) {
+        if (sequence === boardRequest.current && isCurrent()) {
           setToast({ message: failureText(error), undo: null })
         }
       }
@@ -773,9 +782,13 @@ export function ChatPage({
       showToast('源对话已删除，内容按快照保留。')
       return
     }
+    const fromHash = window.location.hash
     loadPinSource(pin.id).then(
       (result) => {
-        if (result === null || result.thread === null) {
+        if (window.location.hash !== fromHash) return
+        const sourceThreadId = pin.provenance.threadId
+        if (getChatStore().deletingThreadId === sourceThreadId) return
+        if (isDeletedChatThread(sourceThreadId) || result === null || result.thread === null) {
           showToast('源对话已删除，内容按快照保留。')
           return
         }
@@ -839,8 +852,10 @@ export function ChatPage({
 
   async function openMainObject(): Promise<void> {
     if (current === null || current.main.kind === 'none') return
+    const fromHash = window.location.hash
     try {
       const refreshed = await loadThread(current.id)
+      if (window.location.hash !== fromHash || isDeletedChatThread(current.id)) return
       if (refreshed === null) {
         setMainLinkError('这条线程已经不在了，请从线程列表选择另一条。')
         return
@@ -861,7 +876,8 @@ export function ChatPage({
   }
   /** 线程已经不在了：重试只会再失败，改成回到一条空白学习。 */
   const threadGone = store.error === '这条线程已经不在了。'
-  const canSend = draft.trim() !== '' && !store.busy && generation === null
+  const canSend = draft.trim() !== '' && !store.busy && generation === null &&
+    (store.deletingThreadId === null || store.deletingThreadId !== store.currentId)
   const threadEntryId =
     current === null
       ? null
@@ -907,7 +923,7 @@ export function ChatPage({
         ) : (
           <ul className="thread-list">
             {store.threads.map((thread) => (
-              <li key={thread.id}>
+              <li key={thread.id} className="thread-list-item">
                 <button
                   type="button"
                   className="thread-row"
@@ -922,9 +938,33 @@ export function ChatPage({
                     {thread.mainLabel} · {thread.turnCount} 轮
                   </span>
                 </button>
+                <button
+                  type="button"
+                  className="thread-delete-button"
+                  aria-label={`删除线程：${thread.title}`}
+                  title={canDeleteChatThread(store, thread.id) ? '删除线程' : '等操作完成后再删除'}
+                  disabled={!canDeleteChatThread(store, thread.id)}
+                  onClick={() => setDeleteCandidate(thread)}
+                >
+                  删除
+                </button>
               </li>
             ))}
           </ul>
+        )}
+        {deleteCandidate && (
+          <DeleteThreadDialog
+            thread={deleteCandidate}
+            canDelete={canDeleteChatThread(store, deleteCandidate.id)}
+            busy={store.deletingThreadId === deleteCandidate.id}
+            onClose={() => setDeleteCandidate(null)}
+            onDeleted={() => {
+              targetOverrides.current.delete(deleteCandidate.id)
+              setDeleteCandidate(null)
+              const route = parseView(window.location.hash)
+              if (route.route === 'chat') refreshBoard(route.threadId)
+            }}
+          />
         )}
       </aside>
 

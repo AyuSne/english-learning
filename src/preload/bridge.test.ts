@@ -61,6 +61,20 @@ describe('createBridge', () => {
     ])
   })
 
+  it('删除线程的请求和结果穿过 preload 白名单', async () => {
+    const { ipc } = fakeRenderer()
+    const calls: unknown[] = []
+    const bridge = createBridge({
+      ...ipc,
+      async invoke(channel, payload) {
+        calls.push({ channel, payload })
+        return { status: 'deleted' }
+      }
+    })
+    await expect(bridge.invoke('chat:delete', { threadId: 'thread-1' })).resolves.toEqual({ status: 'deleted' })
+    expect(calls).toEqual([{ channel: 'chat:delete', payload: { threadId: 'thread-1' } }])
+  })
+
   it('未知 channel 立即报错，且不发给主进程', async () => {
     const { ipc, invocations } = fakeRenderer()
     const bridge = createBridge(ipc)

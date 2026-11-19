@@ -9,6 +9,7 @@ import type {
 import {
   askThread,
   createThread,
+  deleteThread,
   editThreadQuestion,
   loadThread,
   loadThreads,
@@ -20,7 +21,8 @@ import {
   updateThreadContext
 } from '../api'
 import { failureText } from '../errors'
-import { navigate, replaceRoute } from '../navigate'
+import { forgetChatThread, navigate, replaceRoute } from '../navigate'
+import { clearThreadViewState } from '../view-state'
 import {
   chatSessionReducer,
   initialChatSession,
@@ -45,6 +47,7 @@ export type ChatStoreState = {
   /** 打开线程与提交问题之间的空隙，避免连按两次发出两条。 */
   busy: boolean
   loading: boolean
+  deletingThreadId: string | null
   error: string | null
   /** 这条错误有下一步可执行的动作；没有时界面不显示「再试一次」。 */
   canRetry: boolean
@@ -58,6 +61,7 @@ const initialState: ChatStoreState = {
   editing: null,
   busy: false,
   loading: false,
+  deletingThreadId: null,
   error: null,
   canRetry: false
 }
@@ -72,6 +76,21 @@ let retryAction: (() => void) | null = null
 let chatModel = ''
 /** 上下文改动连点时只认最后一次返回；界面先按本地算的摘要往前走。 */
 let contextSequence = 0
+let threadListSequence = 0
+const deletedThreads = new Set<string>()
+
+export function isDeletedChatThread(threadId: string): boolean {
+  return deletedThreads.has(threadId)
+}
+
+export function canDeleteChatThread(store: ChatStoreState, threadId: string): boolean {
+  return !store.busy && store.deletingThreadId === null &&
+    store.session.generation?.threadId !== threadId
+}
+
+function currentThreadBeingDeleted(): boolean {
+  return state.deletingThreadId !== null && state.deletingThreadId === state.currentId
+}
 
 export function getChatStore(): ChatStoreState {
   return state
@@ -189,8 +208,7 @@ export function openChatThread(threadId: string | null): void {
     (view) => {
       if (state.currentId !== threadId) return
       if (view === null) {
-        set({ loading: false })
-        fail('这条线程已经不在了。', '这条线程已经不在了。', null)
+        forgetDeletedThread(threadId)
         return
       }
       set({ current: view, loading: false })
@@ -204,13 +222,46 @@ export function openChatThread(threadId: string | null): void {
 }
 
 export function refreshThreads(): Promise<void> {
+  const sequence = ++threadListSequence
   return loadThreads().then(
-    (listing) => set({ threads: listing.threads }),
-    (error: unknown) =>
-      fail(error, '对话没有读出来。', () => {
+    (listing) => {
+      if (sequence === threadListSequence) set({ threads: listing.threads })
+    },
+    (error: unknown) => {
+      if (sequence === threadListSequence) fail(error, '对话没有读出来。', () => {
         void refreshThreads()
       })
+    }
   )
+}
+
+function forgetDeletedThread(threadId: string): void {
+  deletedThreads.add(threadId)
+  ++threadListSequence
+  clearThreadViewState(threadId)
+  const threads = state.threads.filter((thread) => thread.id !== threadId)
+  if (state.currentId === threadId) {
+    ++contextSequence
+    retryAction = null
+    set({ threads, currentId: null, current: null, editing: null, loading: false, error: null, canRetry: false })
+  } else {
+    set({ threads })
+  }
+  if (forgetChatThread(threadId)) clearThreadViewState(null)
+  void refreshThreads()
+}
+
+export async function removeChatThread(threadId: string): Promise<boolean> {
+  if (!canDeleteChatThread(state, threadId)) return false
+  set({ deletingThreadId: threadId })
+  try {
+    const result = await deleteThread(threadId)
+    if (result.status === 'busy') return false
+    forgetDeletedThread(threadId)
+    return true
+  } finally {
+    set({ deletingThreadId: null })
+  }
 }
 
 const openingThreads = new Map<string, Promise<string | null>>()
@@ -247,6 +298,7 @@ async function openMainThread(
       fail(message, message, null)
       return null
     }
+    if (isDeletedChatThread(result.thread.id)) return null
     retryAction = null
     state = {
       ...state,
@@ -275,6 +327,7 @@ export function sendChatMessage(raw: string): boolean {
     text === '' ||
     generationPending() ||
     state.busy ||
+    currentThreadBeingDeleted() ||
     state.editing !== null
   ) {
     return false
@@ -350,7 +403,7 @@ export function stopChat(): void {
 /** 重新生成上一条回答：同一提问下多出一个版本，旧版仍在。 */
 export function regenerateLastAnswer(): void {
   const view = state.current
-  if (view === null || generationPending() || state.busy) {
+  if (view === null || generationPending() || state.busy || currentThreadBeingDeleted()) {
     return
   }
   const turn = lastTurn(view)
@@ -370,7 +423,7 @@ export function regenerateLastAnswer(): void {
 /** 继续生成：新的正文接在当前回答这一路后面，不产生新版本。 */
 export function continueLastAnswer(): void {
   const view = state.current
-  if (view === null || generationPending() || state.busy) {
+  if (view === null || generationPending() || state.busy || currentThreadBeingDeleted()) {
     return
   }
   const answer = lastTurn(view)?.answer
@@ -416,6 +469,7 @@ function startGeneration(
   const systemPrompt = threadSystemPrompt(view.context)
   const payload = {
     streamId,
+    threadId: view.id,
     messages: buildMessages(view, mode),
     ...(systemPrompt === null ? {} : { systemPrompt })
   }
@@ -515,7 +569,7 @@ async function persistGeneration(generation: LiveGeneration): Promise<void> {
 /** 切到另一版回答；旧版里接下去的问与答留在库里，切回来还在。 */
 export function switchAnswerVersion(questionId: string, answerId: string): void {
   const view = state.current
-  if (view === null || generationPending() || state.busy) {
+  if (view === null || generationPending() || state.busy || currentThreadBeingDeleted()) {
     return
   }
   void switchThreadAnswer({
@@ -529,16 +583,17 @@ export function switchAnswerVersion(questionId: string, answerId: string): void 
         clearError()
       }
     },
-    (error: unknown) =>
-      fail(error, '切换回答版本没有完成，再试一次。', () =>
-        switchAnswerVersion(questionId, answerId)
-      )
+    (error: unknown) => {
+      if (state.currentId === view.id) {
+        fail(error, '切换回答版本没有完成，再试一次。', () => switchAnswerVersion(questionId, answerId))
+      }
+    }
   )
 }
 
 export function switchQuestionVersion(questionId: string): void {
   const view = state.current
-  if (view === null || generationPending() || state.busy) {
+  if (view === null || generationPending() || state.busy || currentThreadBeingDeleted()) {
     return
   }
   void switchThreadQuestion({ threadId: view.id, questionId }).then(
@@ -548,10 +603,11 @@ export function switchQuestionVersion(questionId: string): void {
         clearError()
       }
     },
-    (error: unknown) =>
-      fail(error, '切换提问版本没有完成，再试一次。', () =>
-        switchQuestionVersion(questionId)
-      )
+    (error: unknown) => {
+      if (state.currentId === view.id) {
+        fail(error, '切换提问版本没有完成，再试一次。', () => switchQuestionVersion(questionId))
+      }
+    }
   )
 }
 
@@ -580,7 +636,8 @@ export function submitEdit(raw: string): boolean {
     editing === null ||
     text === '' ||
     generationPending() ||
-    state.busy
+    state.busy ||
+    currentThreadBeingDeleted()
   ) {
     return false
   }
