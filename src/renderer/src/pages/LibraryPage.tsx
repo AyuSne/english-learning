@@ -15,16 +15,19 @@ import { failureText } from '../errors'
 import { ErrorBlock } from '../components/error-block'
 import { openThreadForMain } from '../chat/store'
 import { formatDay, progressText } from '../library/format'
-import { navigate } from '../navigate'
+import { navigate, replaceRoute } from '../navigate'
+import { parseView } from '../routes'
 
 /**
  * 文章库：左边按场次分组的列表（搜索时换成命中结果），右边是选中一篇的详情。
  * 「继续阅读」把文章 id 交给阅读页，由阅读页记下最近打开并恢复上次位置。
  */
 export function LibraryPage({
+  articleId,
   corpusImport,
   onReimport
 }: {
+  articleId: string | null
   corpusImport: ImportReport
   onReimport: (report: ImportReport) => void
 }) {
@@ -33,7 +36,7 @@ export function LibraryPage({
   const [reloadToken, setReloadToken] = useState(0)
   const [query, setQuery] = useState('')
   const [found, setFound] = useState<LibrarySearchResults | null>(null)
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(articleId)
   const [detail, setDetail] = useState<ArticleDetail | null>(null)
   const [reimporting, setReimporting] = useState(false)
   const [importMessage, setImportMessage] = useState<string | null>(null)
@@ -45,7 +48,12 @@ export function LibraryPage({
       (value) => {
         if (!active) return
         setListing(value)
-        setSelectedId((current) => current ?? value.sessions[0]?.articles[0]?.id ?? null)
+        const firstId = value.sessions[0]?.articles[0]?.id ?? null
+        const current = parseView(window.location.hash)
+        if (current.route === 'library' && current.articleId === null && firstId !== null) {
+          replaceRoute('library', { articleId: firstId })
+        }
+        setSelectedId((current) => current ?? firstId)
       },
       (error: unknown) => {
         if (active) setLoadError(failureText(error, '文章库没有读出来。'))
@@ -55,6 +63,10 @@ export function LibraryPage({
       active = false
     }
   }, [reloadToken])
+
+  useEffect(() => {
+    if (articleId !== null) setSelectedId(articleId)
+  }, [articleId])
 
   useEffect(() => {
     if (selectedId === null) {
@@ -104,6 +116,7 @@ export function LibraryPage({
 
   function select(articleId: string): void {
     setSelectedId(articleId)
+    replaceRoute('library', { articleId })
   }
 
   function open(articleId: string): void {

@@ -1,4 +1,4 @@
-import { navigate } from '../navigate'
+import { navigateFromGlobal } from '../navigate'
 import { NAV_ITEMS } from '../navigation'
 import type { Route } from '../routes'
 
@@ -18,7 +18,7 @@ export function GlobalNav({ route }: { route: Route }) {
             type="button"
             className="nav-item"
             aria-current={item.route === route ? 'page' : undefined}
-            onClick={() => navigate(item.route)}
+            onClick={() => navigateFromGlobal(item.route)}
           >
             {item.label}
           </button>

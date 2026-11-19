@@ -99,6 +99,7 @@ export function App() {
           />
         ) : view.route === 'library' ? (
           <LibraryPage
+            articleId={view.articleId}
             corpusImport={corpusImport ?? bootstrap.corpusImport}
             onReimport={setCorpusImport}
           />
