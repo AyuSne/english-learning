@@ -196,6 +196,19 @@ test('直接打开本篇选词地址也标记已读完，并沿用 #41 的存在
   ).toHaveText('已读完 · 100%')
 })
 
+test('本篇选词地址指向已不存在的文章时沿用 #41 的退路回到文章库', async ({ launch }) => {
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await page.evaluate(() => {
+    window.location.hash = '#/reading/no-such-article/words'
+  })
+
+  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+  await expect(page.getByText('这篇文章已经不在库里了。')).toHaveCount(0)
+  await expect
+    .poll(() => page.evaluate(() => window.location.hash))
+    .toMatch(/^#\/library\/.+$/)
+})
+
 test('继续阅读按最近未读完回退，阅读 tab 与首页用同一份选择，全部读完才给空态', async ({
   launch
 }) => {
