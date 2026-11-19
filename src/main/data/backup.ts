@@ -242,7 +242,8 @@ const TABLES_BY_VERSION: readonly { version: number; tables: readonly string[] }
   { version: 5, tables: ['learning_note'] },
   { version: 6, tables: ['thread', 'thread_entry'] },
   { version: 7, tables: ['pin'] },
-  { version: 8, tables: ['model_profile'] }
+  { version: 8, tables: ['model_profile'] },
+  { version: 10, tables: ['entry_later'] }
 ]
 
 function isLibraryDatabase(database: AppDatabase, schemaVersion: number): boolean {

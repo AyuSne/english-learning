@@ -44,6 +44,7 @@ import {
   updateLearningNote
 } from './entries/notes'
 import { readEntryList, readEntryPage } from './entries/page'
+import { setEntryLater } from './entries/later'
 import {
   collectSelection,
   deleteEntrySentence,
@@ -214,6 +215,7 @@ function start(): void {
       moveEntrySentence(opened, payload, { dictionary: entryDictionary }),
     'entries:reselect-sentence': (payload) =>
       reselectEntrySentence(opened, payload, { dictionary: entryDictionary }),
+    'entries:later': (payload) => setEntryLater(opened, payload),
     'entries:create-note': (payload) => createLearningNote(opened, payload),
     'entries:update-note': (payload) => updateLearningNote(opened, payload),
     'entries:pin-note': (payload) => pinLearningNote(opened, payload),

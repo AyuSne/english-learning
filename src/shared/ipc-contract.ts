@@ -26,6 +26,8 @@ import type {
   PinLearningNoteRequest,
   ReselectEntrySentenceRequest,
   ReselectEntrySentenceResult,
+  SetEntryLaterRequest,
+  SetEntryLaterResult,
   UpdateLearningNoteRequest,
   WordEntryCard
 } from './entries'
@@ -134,6 +136,7 @@ export interface IpcContract {
     payload: ReselectEntrySentenceRequest
     result: ReselectEntrySentenceResult
   }
+  'entries:later': { payload: SetEntryLaterRequest; result: SetEntryLaterResult }
   'entries:create-note': {
     payload: CreateLearningNoteRequest
     result: LearningNoteResult
@@ -238,6 +241,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'entries:main-form': true,
   'entries:move-sentence': true,
   'entries:reselect-sentence': true,
+  'entries:later': true,
   'entries:create-note': true,
   'entries:update-note': true,
   'entries:pin-note': true,

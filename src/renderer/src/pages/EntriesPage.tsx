@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
-import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
+import { deleteEntrySentence, loadEntryList, loadEntryPage, setEntryLater } from '../api'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
@@ -8,6 +8,7 @@ import { entryHeadlineText } from '../entries/format'
 import { NoteRail } from '../entries/note-rail'
 import { SentenceRow } from '../entries/sentence-row'
 import { failureText } from '../errors'
+import { laterMarkedNotice, laterToggleLabel, laterUnmarkedNotice } from '../later/format'
 import { navigate, replaceRoute } from '../navigate'
 import {
   entriesViewState,
@@ -34,6 +35,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const [actionError, setActionError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<EntrySentence | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [laterBusy, setLaterBusy] = useState(false)
   const [hint, setHint] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
 
@@ -222,6 +224,39 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     refresh()
   }
 
+  /** 词条页上的「稍后看」：状态只改独立标记，原句、学习内容与收集时间都不动。 */
+  async function toggleLater(): Promise<void> {
+    if (page === null || laterBusy) return
+    const { id, mainForm, laterMarkedAt } = page.entry
+    const next = laterMarkedAt === null
+    setLaterBusy(true)
+    setActionError(null)
+    try {
+      const result = await setEntryLater({ entryId: id, later: next })
+      if (result.status === 'missing') {
+        setActionError('这个词条已经不在了。')
+        refresh()
+        return
+      }
+      setPage((current) =>
+        current === null
+          ? current
+          : {
+              ...current,
+              entry: {
+                ...current.entry,
+                laterMarkedAt: result.status === 'marked' ? result.markedAt : null
+              }
+            }
+      )
+      setHint(next ? laterMarkedNotice(mainForm) : laterUnmarkedNotice(mainForm))
+    } catch (error) {
+      setActionError(failureText(error, '稍后看没有改成功，再试一次。'))
+    } finally {
+      setLaterBusy(false)
+    }
+  }
+
   async function askAboutEntry(forceNew = false): Promise<void> {
     if (page === null) return
     setActionError(null)
@@ -284,6 +319,15 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
                 </button>
                 <button type="button" className="button" onClick={() => void askAboutEntry(true)}>
                   新开一条
+                </button>
+                <button
+                  type="button"
+                  className="button"
+                  aria-pressed={page.entry.laterMarkedAt !== null}
+                  disabled={laterBusy}
+                  onClick={() => void toggleLater()}
+                >
+                  {laterToggleLabel(page.entry.laterMarkedAt !== null)}
                 </button>
                 <button
                   type="button"

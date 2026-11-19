@@ -284,6 +284,33 @@ describe('restoreBackup', () => {
     expect(outcome.status).toBe('restored')
     expect(readSchemaVersion(database)).toBe(LATEST_SCHEMA_VERSION)
     expect(readThemePreference(database)).toBe('dark')
+    // 旧备份就地升级时会补上这一版新增的「稍后看」表。
+    expect(
+      database
+        .prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entry_later'")
+        .get()
+    ).toBeDefined()
+  })
+
+  it('当前版本的备份缺了稍后看表时不会被当成可恢复的备份', async () => {
+    const file = backupFile('missing-later.db')
+    await createBackup(database, { file, now })
+    // 版本号写着最新、表却不齐：只看 setting 一张表就会把它当成好备份。
+    const copy = openDatabase(file)
+    try {
+      copy.exec('DROP TABLE entry_later')
+    } finally {
+      copy.close()
+    }
+
+    expect(inspectBackupFile(file)).toEqual({ ok: false, reason: 'not-a-library' })
+    expect(
+      await restoreBackup(database, {
+        file,
+        snapshotDirectory: snapshots(),
+        now: later
+      })
+    ).toEqual({ status: 'rejected', reason: 'not-a-library' })
   })
 
   it('版本高于当前程序的备份拒绝恢复，本机数据不动', async () => {

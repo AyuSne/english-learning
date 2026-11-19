@@ -7,6 +7,7 @@ import {
   LATEST_SCHEMA_VERSION,
   SchemaTooNewError,
   migrate,
+  migrations,
   readSchemaVersion,
   type Migration
 } from './migrations'
@@ -118,7 +119,11 @@ describe('migrate', () => {
   })
 
   it('把旧库的 article.position 换成 ordinal，已导入的文章一条不丢', () => {
-    migrate(database)
+    // 先造一份真正停在 8 版的旧库：只跑 1–8 的迁移，不能先升到最新再倒回版本号，
+    // 否则 9 / 10 的建表与改列会在已经升级过的 schema 上再跑一次。
+    migrate(database, {
+      migrations: migrations.filter((migration) => migration.version <= 8)
+    })
     // 还原早期构建留下的库：列名是 position，但 user_version 已经走到 8。
     database.exec('ALTER TABLE article RENAME COLUMN ordinal TO position')
     database.pragma('user_version = 8')
@@ -138,7 +143,7 @@ describe('migrate', () => {
 
     const outcome = migrate(database)
 
-    expect(outcome.applied).toEqual([9])
+    expect(outcome.applied).toEqual([9, 10])
     const columns = (database.pragma('table_info(article)') as { name: string }[]).map(
       (column) => column.name
     )
@@ -147,5 +152,37 @@ describe('migrate', () => {
     expect(
       database.prepare('SELECT id, ordinal FROM article').get()
     ).toEqual({ id: 'cet6-2023-06-s1-b', ordinal: 7 })
+  })
+
+  it('把停在 9 版的旧库升到 10：新建稍后看表，原有词条照常可读', () => {
+    // 版本 10 只加一张独立的「稍后看」表；老库升级后标记从空开始，旧数据不动。
+    migrate(database, {
+      migrations: migrations.filter((migration) => migration.version <= 9)
+    })
+    database
+      .prepare(
+        `INSERT INTO word_entry (id, main_form, normalized_key, created_at, last_collected_at)
+         VALUES ('entry-old', 'approach', 'approach', '2026-11-18T08:00:00.000Z', '2026-11-18T08:00:00.000Z')`
+      )
+      .run()
+    expect(readSchemaVersion(database)).toBe(9)
+    expect(
+      database
+        .prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entry_later'")
+        .get()
+    ).toBeUndefined()
+
+    const outcome = migrate(database)
+
+    expect(outcome.applied).toEqual([10])
+    expect(readSchemaVersion(database)).toBe(10)
+    // 新表默认是空的；旧的词条一条不丢。
+    expect(database.prepare('SELECT COUNT(*) AS count FROM entry_later').get()).toEqual({
+      count: 0
+    })
+    expect(database.prepare('SELECT id, main_form FROM word_entry').get()).toEqual({
+      id: 'entry-old',
+      main_form: 'approach'
+    })
   })
 })

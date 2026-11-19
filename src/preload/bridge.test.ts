@@ -75,6 +75,25 @@ describe('createBridge', () => {
     expect(calls).toEqual([{ channel: 'chat:delete', payload: { threadId: 'thread-1' } }])
   })
 
+  it('稍后看标记走同一份白名单', async () => {
+    const { ipc } = fakeRenderer()
+    const calls: unknown[] = []
+    const bridge = createBridge({
+      ...ipc,
+      async invoke(channel, payload) {
+        calls.push({ channel, payload })
+        return { status: 'marked', markedAt: '2026-11-18T08:10:00.000Z' }
+      }
+    })
+
+    await expect(
+      bridge.invoke('entries:later', { entryId: 'entry-1', later: true })
+    ).resolves.toEqual({ status: 'marked', markedAt: '2026-11-18T08:10:00.000Z' })
+    expect(calls).toEqual([
+      { channel: 'entries:later', payload: { entryId: 'entry-1', later: true } }
+    ])
+  })
+
   it('未知 channel 立即报错，且不发给主进程', async () => {
     const { ipc, invocations } = fakeRenderer()
     const bridge = createBridge(ipc)

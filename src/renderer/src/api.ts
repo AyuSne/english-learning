@@ -26,6 +26,8 @@ import type {
   PinLearningNoteRequest,
   ReselectEntrySentenceRequest,
   ReselectEntrySentenceResult,
+  SetEntryLaterRequest,
+  SetEntryLaterResult,
   UpdateLearningNoteRequest,
   WordEntryCard
 } from '../../shared/entries'
@@ -193,6 +195,13 @@ export function reselectEntrySentence(
   request: ReselectEntrySentenceRequest
 ): Promise<ReselectEntrySentenceResult> {
   return window.api.invoke('entries:reselect-sentence', request)
+}
+
+/** 标记或取消「稍后看」；只改独立标记，不新建词条、不动收集。 */
+export function setEntryLater(
+  request: SetEntryLaterRequest
+): Promise<SetEntryLaterResult> {
+  return window.api.invoke('entries:later', request)
 }
 
 export function createLearningNote(

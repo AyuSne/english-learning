@@ -22,7 +22,7 @@ test.describe('应用骨架', () => {
       page.getByText('还没有词条。读的时候圈一个词，它就会出现在这里。')
     ).toBeVisible()
     await expect(
-      page.getByText('空着。看到不想现在查的词，标一下会收到这里。')
+      page.getByText('还没有稍后看的词。在词条页或阅读词条卡上标一下，会收到这里。')
     ).toBeVisible()
   })
 
