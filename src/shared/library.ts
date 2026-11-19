@@ -81,9 +81,22 @@ export type ContinueReading = {
   lastReadPoint: ReadingPoint | null
 }
 
+/** 首页「最近收集」的一个词条 chip：只带点开词条与说明规模所需的最少字段。 */
+export type HomeEntryChip = {
+  id: string
+  /** 词条当前的主词形。 */
+  mainForm: string
+  sentenceCount: number
+  articleCount: number
+  /** 这个词条最近一次收词的时间，ISO 8601 UTC。 */
+  lastCollectedAt: string
+}
+
 export type HomeSummary = {
   library: LibrarySize
   continueReading: ContinueReading | null
+  /** 真实的词条按最近收集时间倒序；没有词条时为空数组。 */
+  recentEntries: HomeEntryChip[]
 }
 
 export type ImportFailure = {

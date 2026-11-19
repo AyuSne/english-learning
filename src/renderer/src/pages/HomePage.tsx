@@ -3,12 +3,12 @@ import type { HomeSummary } from '../../../shared/library'
 import { loadHomeSummary } from '../api'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
-import { readingPointText, progressText } from '../library/format'
+import { continueReadingDisplay, homeEntryMeta } from '../home/format'
+import { readingPointText } from '../library/format'
 import { navigate } from '../navigate'
 
 /**
- * 首页：读过一篇就把「继续阅读」放在最前，没读过仍是首屏空态。
- * 最近收集与稍后看随词条一起落地，这里先占位。
+ * 首页：继续阅读是最近读过的一篇；最近收集列出真实的词条，点一下进词条。
  */
 export function HomePage() {
   const [summary, setSummary] = useState<HomeSummary | null>(null)
@@ -32,10 +32,17 @@ export function HomePage() {
   }, [reloadToken])
 
   const current = summary?.continueReading ?? null
+  const display = current === null ? null : continueReadingDisplay(current.article)
 
   function continueReading(articleId: string): void {
     navigate('reading', { articleId, readingFrom: 'home' })
   }
+
+  function openEntry(entryId: string): void {
+    navigate('entries', { entryId })
+  }
+
+  const recentEntries = summary?.recentEntries ?? null
 
   return (
     <div className="page home">
@@ -59,12 +66,9 @@ export function HomePage() {
         </>
       ) : (
         <section className="home-continue" aria-label="继续阅读">
-          <p className="eyebrow">继续阅读</p>
-          <h1 className="home-title">{current.article.title}</h1>
-          <p className="home-meta">
-            {current.article.sessionLabel} · {current.article.kindLabel} ·{' '}
-            {current.article.wordCount} 词 · {progressText(current.article.progress)}
-          </p>
+          <p className="eyebrow">{display?.eyebrow}</p>
+          <h1 className="home-title">{display?.title}</h1>
+          <p className="home-meta">{display?.meta}</p>
           {current.lastReadPoint === null ? (
             <p className="home-position">还没读到下一句。</p>
           ) : (
@@ -94,7 +98,23 @@ export function HomePage() {
 
       <section className="home-section">
         <h2 className="section-label">最近收集</h2>
-        <p className="empty-line">还没有词条。读的时候圈一个词，它就会出现在这里。</p>
+        {recentEntries === null ? null : recentEntries.length === 0 ? (
+          <p className="empty-line">还没有词条。读的时候圈一个词，它就会出现在这里。</p>
+        ) : (
+          <div className="home-entries" aria-label="最近收集的词条">
+            {recentEntries.map((entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                className="home-entry"
+                onClick={() => openEntry(entry.id)}
+              >
+                <span className="home-entry-form">{entry.mainForm}</span>
+                <span className="home-entry-meta">{homeEntryMeta(entry)}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </section>
       <section className="home-section">
         <h2 className="section-label">稍后看</h2>

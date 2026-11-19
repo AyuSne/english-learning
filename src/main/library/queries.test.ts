@@ -180,7 +180,8 @@ describe('readHomeSummary', () => {
   it('还没有读过任何一篇时没有继续阅读，但给出文章库规模', () => {
     expect(readHomeSummary(database)).toEqual({
       library: { articleCount: 3, sessionCount: 2 },
-      continueReading: null
+      continueReading: null,
+      recentEntries: []
     })
   })
 

@@ -106,7 +106,8 @@ function libraryHandlers() {
   return {
     'home:summary': (): HomeSummary => ({
       library: { articleCount: 0, sessionCount: 0 },
-      continueReading: null
+      continueReading: null,
+      recentEntries: []
     }),
     'library:list': (): LibraryListing => ({ articleCount: 0, sessionCount: 0, sessions: [] }),
     'library:reimport': (): ImportReport => ({

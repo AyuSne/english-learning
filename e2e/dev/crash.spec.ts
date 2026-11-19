@@ -214,7 +214,12 @@ test.describe('收官验收 · 强杀重启', () => {
     const reopened = second.page
 
     // 首页继续阅读回到同一篇、同一句。
-    await expect(reopened.getByRole('heading', { name: articleTitle, level: 1 })).toBeVisible()
+    await expect(
+      reopened.getByRole('heading', {
+        name: articleTitle.split(' · ').at(-1) ?? articleTitle,
+        level: 1
+      })
+    ).toBeVisible()
     await expect(
       reopened.getByText(`上次停在 第 ${footerMatch?.[1]} 段 · 第 ${footerMatch?.[2]} 句`)
     ).toBeVisible()
