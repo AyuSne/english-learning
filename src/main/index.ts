@@ -44,6 +44,7 @@ import {
   updateLearningNote
 } from './entries/notes'
 import { readEntryList, readEntryPage } from './entries/page'
+import { readArticleWords } from './entries/article-words'
 import { setEntryLater } from './entries/later'
 import {
   collectSelection,
@@ -53,6 +54,11 @@ import {
 } from './entries/queries'
 import { registerIpcHandlers } from './ipc/register'
 import { fileStamp } from './file-stamp'
+import {
+  deleteArticle,
+  readArticleDeletionPreview,
+  renameArticle
+} from './library/articles'
 import {
   readArticleDetail,
   readHomeSummary,
@@ -196,7 +202,12 @@ function start(): void {
     'library:reimport': () => importCorpus(opened, { directory: corpusDirectory() }),
     'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
     'library:search': (payload) => searchLibrary(opened, payload.query),
+    'library:rename': (payload) => renameArticle(opened, payload),
+    'library:delete-preview': (payload) =>
+      readArticleDeletionPreview(opened, payload.articleId),
+    'library:delete': (payload) => deleteArticle(opened, payload),
     'reading:open': (payload) => openReadingView(opened, payload.articleId),
+    'reading:words': (payload) => readArticleWords(opened, payload.articleId),
     'reading:progress': (payload) => saveReadingPoint(opened, payload),
     'reading:settings': (payload) => saveReadingSettings(opened, payload),
     'reading:collect': (payload) =>

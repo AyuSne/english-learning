@@ -33,7 +33,7 @@ import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
 import { laterMarkedNotice, laterUnmarkedNotice } from '../later/format'
 import { readingPointText } from '../library/format'
-import { goBack, navigate } from '../navigate'
+import { forgetLibraryArticle, goBack, navigate, replaceRoute } from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
 import {
   CollectedPanelView,
@@ -129,7 +129,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
       (value) => {
         if (!active) return
         if (value === null) {
-          setLoadError('这篇文章已经不在库里了。')
+          // 文章可能刚在文章库里被删掉；清掉最近文章并回到文章库，不把阅读页停在死地址上。
+          forgetLibraryArticle(articleId)
+          replaceRoute('library')
           return
         }
         setView(value)
@@ -652,6 +654,16 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
     setActiveSelection(null)
   }
 
+  /**
+   * 进入本篇选词。子视图与正文共用同一篇的文章地址（`#/reading/<id>/words`），
+   * 刷新或直接打开都能回到这里，也不写阅读位置与本篇阅读设置。
+   * 「进入即读完」的完成时间由 #54 在这里接。
+   */
+  function openArticleWords(): void {
+    if (!view) return
+    navigate('reading', { articleId: view.article.id, words: true, readingFrom })
+  }
+
   async function openReadingThread(
     main: CreateThreadRequest['main'],
     forceNew = false
@@ -894,6 +906,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
               ))}
               <footer className="reading-foot">
                 <span>{position ? `读到 ${readingPointText(position)}` : '还没开始读'}</span>
+                <button type="button" className="reading-foot-words" onClick={openArticleWords}>
+                  进入本篇选词
+                </button>
                 <span>位置自动记住</span>
               </footer>
             </div>

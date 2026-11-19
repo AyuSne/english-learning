@@ -16,11 +16,14 @@ import type {
   WordEntryCard
 } from '../../shared/entries'
 import type {
+  ArticleDeletionPreview,
   ArticleDetail,
+  DeleteArticleResult,
   HomeSummary,
   ImportReport,
   LibraryListing,
-  LibrarySearchResults
+  LibrarySearchResults,
+  RenameArticleResult
 } from '../../shared/library'
 import type {
   CreatePinResult,
@@ -49,6 +52,7 @@ import type {
   UpdateThreadContextResult
 } from '../../shared/threads'
 import type { AppBootstrap } from '../../shared/types'
+import type { ArticleWordsView } from '../../shared/article-words'
 import { IPC_CHANNELS } from '../../shared/ipc-contract'
 import {
   registerIpcHandlers,
@@ -122,13 +126,21 @@ function libraryHandlers() {
     'library:search': (payload: { query: string }): LibrarySearchResults => ({
       query: payload.query,
       results: []
-    })
+    }),
+    'library:rename': (payload: { articleId: string; title: string }): RenameArticleResult => ({
+      status: 'renamed',
+      articleId: payload.articleId,
+      title: payload.title
+    }),
+    'library:delete-preview': (): ArticleDeletionPreview | null => null,
+    'library:delete': (): DeleteArticleResult => ({ status: 'missing' })
   }
 }
 
 function readingHandlers() {
   return {
     'reading:open': (): ReadingView | null => null,
+    'reading:words': (): ArticleWordsView | null => null,
     'reading:progress': (): ReadingProgressResult => ({ saved: false }),
     'reading:settings': (): ReadingSettingsResult | null => null,
     'reading:collect': (): CollectSelectionResult => ({

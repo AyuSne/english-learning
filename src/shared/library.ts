@@ -60,9 +60,57 @@ export type LibrarySearchResults = {
 export type ArticleDetail = LibraryArticle & {
   paragraphCount: number
   sentenceCount: number
+  /** 这一篇收下的不同词条数（不是原句条数）。 */
+  wordEntryCount: number
+  /** 这一篇收下的原句条数。 */
+  collectedSentenceCount: number
   /** 形如「第 7–8 页」；没有页码时为空串。 */
   pages: string
 }
+
+/**
+ * 删除一篇文章前的影响面。原句数指该篇的 entry_sentence 关联条数；
+ * 受影响词条按去重后的词条计，并区分删完仍有其他原句的与真正会消失的。
+ * 只有会消失的词条才连带删除学习内容；挂在本篇的钉住全部保留为未归档。
+ */
+export type ArticleDeletionPreview = {
+  articleId: string
+  /** 该篇的已收集原句关联条数。 */
+  sentenceAssociationCount: number
+  /** 这些原句涉及的、去重后的词条总数（含存活与消失）。 */
+  affectedEntryCount: number
+  /** 删除后一条原句都不剩、词条连同学习内容一起消失的数量。 */
+  disappearingEntryCount: number
+  /** 删除后仍有其他文章原句、继续保留的数量。 */
+  survivingEntryCount: number
+  /** 随消失词条一起删除的学习内容条数。 */
+  disappearingLearningNoteCount: number
+  /** 落点正是这篇文章的钉住数；删除后保留快照并转为未归档。 */
+  articlePinCount: number
+}
+
+export type RenameArticleRequest = {
+  articleId: string
+  title: string
+}
+
+export type RenameArticleResult =
+  | { status: 'renamed'; articleId: string; title: string }
+  | { status: 'missing' }
+  | { status: 'rejected'; reason: 'empty' | 'too-long' }
+
+export type DeleteArticleRequest = {
+  articleId: string
+}
+
+export type DeleteArticleResult =
+  | {
+      status: 'deleted'
+      articleId: string
+      /** 删除前算的影响面，与确认弹层看到的是同一份。 */
+      preview: ArticleDeletionPreview
+    }
+  | { status: 'missing' }
 
 /** 上次停下的那一句：段与句都从 1 数，方便直接写进界面。 */
 export type ReadingPoint = {

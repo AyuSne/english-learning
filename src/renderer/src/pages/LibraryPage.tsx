@@ -14,8 +14,10 @@ import {
 import { failureText } from '../errors'
 import { ErrorBlock } from '../components/error-block'
 import { getChatStore, openThreadForMain } from '../chat/store'
+import { LibraryArticleActions } from '../library/article-actions'
+import { ArticleCollectedSection } from '../library/article-collected'
 import { formatDay, progressText } from '../library/format'
-import { navigate, replaceRoute } from '../navigate'
+import { forgetLibraryArticle, navigate, replaceRoute } from '../navigate'
 import { parseView } from '../routes'
 import { libraryViewState, updateLibraryViewState } from '../view-state'
 
@@ -41,6 +43,7 @@ export function LibraryPage({
   const [detail, setDetail] = useState<ArticleDetail | null>(null)
   const [reimporting, setReimporting] = useState(false)
   const [importMessage, setImportMessage] = useState<string | null>(null)
+  const [hint, setHint] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const restoredScroll = useRef(false)
 
@@ -75,10 +78,17 @@ export function LibraryPage({
         setListing(value)
         const firstId = value.sessions[0]?.articles[0]?.id ?? null
         const current = parseView(window.location.hash)
-        if (current.route === 'library' && current.articleId === null && firstId !== null) {
-          replaceRoute('library', { articleId: firstId })
+        const routeId = current.route === 'library' ? current.articleId : null
+        const routeStillExists =
+          routeId !== null &&
+          value.sessions.some((session) =>
+            session.articles.some((article) => article.id === routeId)
+          )
+        const resolved = routeStillExists ? routeId : firstId
+        setSelectedId(resolved)
+        if (resolved !== routeId) {
+          replaceRoute('library', resolved === null ? {} : { articleId: resolved })
         }
-        setSelectedId((current) => current ?? firstId)
       },
       (error: unknown) => {
         if (active) setLoadError(failureText(error, '文章库没有读出来。'))
@@ -139,6 +149,12 @@ export function LibraryPage({
     return () => window.clearTimeout(timer)
   }, [importMessage])
 
+  useEffect(() => {
+    if (hint === null) return
+    const timer = window.setTimeout(() => setHint(null), 5000)
+    return () => window.clearTimeout(timer)
+  }, [hint])
+
   function select(articleId: string): void {
     setSelectedId(articleId)
     replaceRoute('library', { articleId })
@@ -157,6 +173,30 @@ export function LibraryPage({
 
   function retryLoad(): void {
     setLoadError(null)
+    setReloadToken((token) => token + 1)
+  }
+
+  /** 删掉当前这篇后，优先接上列表里的下一篇；没有就退回上一篇。 */
+  function nextArticleId(articleId: string): string | null {
+    if (listing === null) return null
+    const ids = listing.sessions.flatMap((session) => session.articles.map((article) => article.id))
+    const index = ids.indexOf(articleId)
+    if (index < 0) return ids[0] ?? null
+    return ids[index + 1] ?? ids[index - 1] ?? null
+  }
+
+  function articleRenamed(title: string): void {
+    setHint(`篇名已改为「${title}」。`)
+    setReloadToken((token) => token + 1)
+  }
+
+  function articleDeleted(articleId: string): void {
+    forgetLibraryArticle(articleId)
+    setDetail(null)
+    const next = nextArticleId(articleId)
+    setSelectedId(next)
+    replaceRoute('library', next === null ? {} : { articleId: next })
+    setHint('文章已删除。')
     setReloadToken((token) => token + 1)
   }
 
@@ -273,9 +313,9 @@ export function LibraryPage({
                         aria-current={article.id === selectedId ? 'true' : undefined}
                         onClick={() => select(article.id)}
                       >
-                        <span className="library-row-name">{article.kindLabel}</span>
+                        <span className="library-row-name">{article.title}</span>
                         <span className="library-row-meta">
-                          {article.setLabel} · {article.wordCount} 词
+                          {article.setLabel} · {article.kindLabel} · {article.wordCount} 词
                         </span>
                         <span className="library-row-progress">
                           {progressText(article.progress)}
@@ -351,6 +391,13 @@ export function LibraryPage({
                   新开一条
                 </button>
               </div>
+              <ArticleCollectedSection article={detail} />
+              <LibraryArticleActions
+                detail={detail}
+                onRenamed={articleRenamed}
+                onDeleted={articleDeleted}
+                onError={(message) => setLoadError(message)}
+              />
             </>
           )}
         </aside>
@@ -359,6 +406,11 @@ export function LibraryPage({
       {importMessage === null ? null : (
         <p className="toast" role="status">
           {importMessage}
+        </p>
+      )}
+      {hint === null ? null : (
+        <p className="toast" role="status">
+          {hint}
         </p>
       )}
     </div>
@@ -394,10 +446,10 @@ function SearchResults({
                 aria-current={result.article.id === selectedId ? 'true' : undefined}
                 onClick={() => onSelect(result.article.id)}
               >
-                <span className="library-row-name">{result.article.kindLabel}</span>
+                <span className="library-row-name">{result.article.title}</span>
                 <span className="library-row-meta">
                   {result.article.sessionLabel} · {result.article.setLabel} ·{' '}
-                  {result.article.wordCount} 词
+                  {result.article.kindLabel} · {result.article.wordCount} 词
                 </span>
                 <span className="library-row-progress">
                   {progressText(result.article.progress)}
