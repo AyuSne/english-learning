@@ -51,13 +51,19 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   }, [])
 
   useLayoutEffect(() => {
-    if (restoredScroll.current || listing === null) return
+    if (restoredScroll.current) return
     if (selectedId !== null && page?.entry.id !== selectedId) return
+    // 带原句的跳转应定位该句，不能让稍后返回的列表再覆盖这个位置。
+    if (selectedId === entryId && entrySentenceId !== null) {
+      restoredScroll.current = true
+      return
+    }
+    if (listing === null) return
     const node = rootRef.current?.closest('main')
     if (!node) return
     node.scrollTop = entriesViewState().scrollTop
     restoredScroll.current = true
-  }, [listing, page, selectedId])
+  }, [entryId, entrySentenceId, listing, page, selectedId])
 
   useEffect(() => {
     if (entryId !== null) {

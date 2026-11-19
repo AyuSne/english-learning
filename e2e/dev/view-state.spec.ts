@@ -136,6 +136,35 @@ test('词条搜索、排序、筛选和两处滚动在切页后保持', async ({
   await expect.poll(() => main.evaluate((node) => node.scrollTop)).toBe(mainTop)
 })
 
+test('从原句线程返回词条时，指定的原句优先于上次滚动位置', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, {
+    picks: words.map((_, paragraphIndex) => ({
+      entry: longArticle, paragraphIndex, needle: 'context'
+    }))
+  })
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  const nav = page.getByRole('navigation', { name: '全局导航' })
+  await nav.getByRole('button', { name: '词条' }).click()
+  await page.locator('.entries-row').filter({ hasText: 'context' }).click()
+  const sentence = page.locator('.entry-sentence').filter({ hasText: 'Vocabulary includes feather' })
+  await sentence.hover()
+  await sentence.getByRole('button', { name: '用这句提问' }).click()
+  await expect(page.locator('.chat-subtitle button')).toBeVisible()
+
+  await nav.getByRole('button', { name: '词条' }).click()
+  await expect(page.locator('.entry-sentence')).toHaveCount(30)
+  const main = page.locator('main')
+  await main.evaluate((node) => { node.scrollTop = 0 })
+  await expect.poll(() => main.evaluate((node) => node.scrollTop)).toBe(0)
+  await nav.getByRole('button', { name: '对话' }).click()
+  await page.locator('.chat-subtitle button').click()
+  await expect(sentence).toHaveAttribute('data-focused', 'true')
+  await expect(sentence).toBeInViewport()
+})
+
 test('文章库切页后保留所选文章与滚动位置', async ({ launch }) => {
   const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
   const nav = page.getByRole('navigation', { name: '全局导航' })
