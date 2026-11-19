@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { parseView, type View } from './routes'
+import { currentView, restoreCurrentView } from './navigate'
+import type { View } from './routes'
 
 export function useView(): View {
-  const [view, setView] = useState<View>(() => parseView(window.location.hash))
+  const [view, setView] = useState<View>(restoreCurrentView)
 
   useEffect(() => {
-    const syncFromHash = (): void => setView(parseView(window.location.hash))
+    const syncFromHash = (): void => setView(currentView())
     window.addEventListener('hashchange', syncFromHash)
     return () => window.removeEventListener('hashchange', syncFromHash)
   }, [])

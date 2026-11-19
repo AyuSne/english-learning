@@ -248,13 +248,11 @@ test.describe('回答版本与分支', () => {
     await expect(first.page.getByText('第二版。')).toHaveCount(0)
     await first.close()
 
-    // 重启后旧版仍在，切到哪一版也还在。
+    // 重启后仍在原线程，旧版与选中的版本都保留。
     const second = await launch({ userDataDirectory, env: chatEnvironment(stub.baseUrl) })
-    await openBlankChat(second.page)
     await expect(second.page.getByRole('complementary', { name: '线程列表' })).toContainText(
       '给我两个例句'
     )
-    await second.page.getByRole('button', { name: '给我两个例句' }).click()
     await expect(second.page.getByText('第一版。')).toBeVisible()
     const reloaded = second.page.getByRole('group', { name: '回答版本' })
     await expect(reloaded.getByRole('button', { name: '版本 1' })).toHaveAttribute(

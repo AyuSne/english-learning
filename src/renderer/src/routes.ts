@@ -9,7 +9,7 @@ export type Route = (typeof ROUTES)[number]
  */
 export type View = {
   route: Route
-  /** 阅读页打开的文章；没有指定时为空，阅读页显示空态。 */
+  /** 阅读页打开或文章库选中的文章；没有指定时为空。 */
   articleId: string | null
   /** 词条页打开的词条；没有指定时为空，词条页显示「在左边选一个词条」。 */
   entryId: string | null
@@ -107,6 +107,14 @@ export function parseView(hash: string): View {
     }
   }
 
+  if (route === 'library') {
+    if (segments.length > 2) return blankView('home')
+    return {
+      ...blankView('library'),
+      articleId: segments.length === 2 ? decodeSegment(segments[1] as string) : null
+    }
+  }
+
   if (route === 'entries') {
     if (segments.length > 2) {
       return blankView('home')
@@ -152,6 +160,9 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
   }
   if (route === 'entries' && options.entryId) {
     return `#/entries/${encodeURIComponent(options.entryId)}`
+  }
+  if (route === 'library' && options.articleId) {
+    return `#/library/${encodeURIComponent(options.articleId)}`
   }
   if (route === 'chat' && options.threadId) {
     let hash = `#/chat/${encodeURIComponent(options.threadId)}`

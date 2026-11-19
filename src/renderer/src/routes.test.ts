@@ -31,7 +31,7 @@ describe('parseView', () => {
 
   it('不认识的路径回到首页', () => {
     expect(parseView('#/nope')).toEqual(view('home'))
-    expect(parseView('#/library/extra')).toEqual(view('home'))
+    expect(parseView('#/library/extra/more')).toEqual(view('home'))
   })
 
   it('容忍缺少斜杠的写法', () => {
@@ -65,6 +65,11 @@ describe('parseView', () => {
     expect(parseView('#/entries/entry-1')).toEqual(view('entries', { entryId: 'entry-1' }))
     expect(parseView('#/entries/%E0%A4%A')).toEqual(view('entries'))
     expect(parseView('#/entries/a/b')).toEqual(view('home'))
+  })
+
+  it('文章库的选中项可以从地址恢复', () => {
+    expect(parseView('#/library/a%20b')).toEqual(view('library', { articleId: 'a b' }))
+    expect(routeHash('library', { articleId: 'a b' })).toBe('#/library/a%20b')
   })
 
   it('对话页带要打开的线程，空白线程不带', () => {
@@ -110,7 +115,7 @@ describe('routeHash', () => {
   it('阅读页把文章 id 编进 hash', () => {
     expect(routeHash('reading', { articleId: 'a b' })).toBe('#/reading/a%20b')
     expect(routeHash('reading')).toBe('#/reading')
-    expect(routeHash('library', { articleId: 'ignored' })).toBe('#/library')
+    expect(routeHash('home', { articleId: 'ignored' })).toBe('#/home')
   })
 
   it('阅读页带上要定位的原句与重新圈定', () => {

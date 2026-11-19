@@ -99,6 +99,8 @@ test.describe('语料导入与文章库', () => {
     await first.close()
 
     const second = await launch({ userDataDirectory })
+    await expect(second.page.locator('[data-reading-page="true"]')).toBeVisible()
+    await second.page.keyboard.press('Escape')
     await expect(second.page.getByText('上次停在 第 1 段 · 第 1 句')).toBeVisible()
     const bootstrap = await readBootstrap(second.page)
     expect(bootstrap.corpusImport).toMatchObject({ imported: 0, updated: 0, skipped: 63 })
