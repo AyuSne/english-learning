@@ -882,7 +882,23 @@ export function openThreadForMain(
     }
     if (!request.forceNew) {
       const existing = findRecentThreadForMain(database, request.main)
-      if (existing) return { status: 'reused', thread: existing } as const
+      if (existing) {
+        if (request.ensureSentenceContext && existing.main.kind === 'sentence') {
+          const present = new Set(existing.context.map((item) => item.id))
+          const missing = defaultContext(database, existing.main).filter((item) => !present.has(item.id))
+          if (missing.length > 0) {
+            if (existing.context.length + missing.length > CONTEXT_LIMIT) {
+              return { status: 'rejected', reason: 'context-full' } as const
+            }
+            const result = updateThreadContext(database, {
+              threadId: existing.id,
+              items: [...existing.context, ...missing]
+            }, options)
+            if (result.status === 'saved') return { status: 'reused', thread: result.thread } as const
+          }
+        }
+        return { status: 'reused', thread: existing } as const
+      }
     }
     return createThread(database, request, options)
   }).immediate()

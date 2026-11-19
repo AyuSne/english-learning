@@ -101,18 +101,27 @@ export function navigateFromGlobal(route: Route): void {
  * 不新增浏览历史的视图切换：词条页换选中项时用，免得「后退」在词条之间打转。
  */
 export function replaceRoute(route: Route, options: NavigateOptions = {}): void {
-  window.history.replaceState(null, '', routeHash(route, options))
+  const target = routeHash(route, options)
+  if (target === window.location.hash) return
+  window.history.replaceState(null, '', target)
   rememberObject(window.location.hash)
+  // replaceState 不触发 hashchange，通知当前视图同步但不新增历史记录。
+  window.dispatchEvent(new Event('route-replaced'))
 }
 
 /**
  * 退回上一层视图。hash 路由也进浏览历史，所以能用 history.back；
  * 直接从某篇阅读页启动（没有上一页）时退到首页。
  */
-export function goBack(fallback: Route = 'home'): void {
+export function goBack(fallback: Route = 'home', options: NavigateOptions = {}): void {
   if (window.history.length > 1) {
     window.history.back()
   } else {
-    navigate(fallback)
+    const recent = fallback === 'entries'
+      ? { entryId: recentEntryId }
+      : fallback === 'library'
+        ? { articleId: recentLibraryArticleId }
+        : {}
+    navigate(fallback, { ...recent, ...options })
   }
 }

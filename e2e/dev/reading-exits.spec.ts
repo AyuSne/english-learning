@@ -60,6 +60,51 @@ test('阅读页返回按钮标明来源，缺省时仍可返回', async ({ launc
   await expect(page.getByRole('button', { name: '返回搜索结果' })).toBeVisible()
 })
 
+test('重启后从阅读回到原词条并定位所选原句', async ({ launch, userDataDirectory }) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, {
+    picks: [{ entry: article, paragraphIndex: 0, needle: 'approach' }]
+  })
+  const first = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await first.page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '词条' }).click()
+  await first.page.locator('.entries-row').filter({ hasText: 'approach' }).click()
+  const sentence = first.page.locator('.entry-sentence')
+    .filter({ hasText: 'Employers approach hiring differently.' })
+  await sentence.getByRole('button', { name: '回到原文' }).click()
+  await expect(first.page.getByRole('button', { name: '返回词条' })).toBeVisible()
+  await first.close()
+
+  const second = await launch({ userDataDirectory, env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await second.page.getByRole('button', { name: '返回词条' }).click()
+  await expect(second.page.getByRole('heading', { name: 'approach', level: 2 })).toBeVisible()
+  const restored = second.page.locator('.entry-sentence')
+    .filter({ hasText: 'Employers approach hiring differently.' })
+  await expect(restored).toHaveAttribute('data-focused', 'true')
+  await expect(restored).toBeInViewport()
+})
+
+test('没有读过文章时从首页进入空阅读页，仍标明首页来源', async ({ launch }) => {
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '阅读' }).click()
+  await expect(page.getByRole('button', { name: '返回首页' })).toBeVisible()
+  await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('#/reading?from=home')
+  await page.getByRole('button', { name: '返回首页' }).click()
+  await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
+})
+
+test('重启后没有来源的阅读页仍可返回首页', async ({ launch, userDataDirectory }) => {
+  const first = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await first.page.evaluate((id) => { window.location.hash = `#/reading/${id}` }, article.id)
+  await expect(first.page.getByRole('button', { name: '返回', exact: true })).toBeVisible()
+  await first.close()
+  const second = await launch({ userDataDirectory, env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await second.page.getByRole('button', { name: '返回', exact: true }).click()
+  await expect(second.page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '首页' })).toHaveAttribute('aria-current', 'page')
+  await expect(second.page.getByRole('region', { name: '继续阅读' })).toBeVisible()
+})
+
 test('刚收下与已收集的词都能直接打开选中的词条', async ({ launch }) => {
   const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
   await page.getByRole('navigation', { name: '全局导航' })
@@ -113,9 +158,50 @@ test('就正文里点中的词提问时带上该词与那条原句', async ({ la
     await page.getByRole('textbox', { name: '输入问题' }).fill('这句怎么理解？')
     await page.getByRole('button', { name: '发送' }).click()
     await expect(page.getByText('好的。')).toBeVisible()
+    await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
     const messages = (stub.requests[0]?.body.messages ?? []) as { role: string; content: string }[]
     expect(messages[0]?.content).toContain('[原句] Employers approach hiring differently.')
     expect(messages[0]?.content).not.toContain('Approaching a new desk takes patience.')
+
+    const firstThread = await page.evaluate(() => window.location.hash)
+    await page.getByRole('button', { name: '添加上下文' }).click()
+    await page.getByRole('group', { name: '可加入的上下文' })
+      .locator('.context-candidate[data-context-kind="sentence"]')
+      .filter({ hasText: 'Approaching a new desk takes patience.' }).click()
+    await page.getByRole('button', { name: '添加上下文' }).click()
+    await page.getByRole('button', { name: '移除上下文：approach', exact: true }).first().click()
+    await page.getByRole('button', { name: '移除上下文：approach', exact: true }).click()
+    await expect(page.locator('.context-chip-label')).toHaveText(['Approaching'])
+    await page.reload()
+    await expect(page.locator('.context-chip-label')).toHaveText(['Approaching'])
+
+    await page.goBack()
+    await page.locator('.reading-collected').filter({ hasText: 'approach' }).first().click()
+    await page.getByRole('complementary', { name: '词条' })
+      .getByRole('button', { name: '就这个词提问' }).click()
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(firstThread)
+    await expect(page.locator('.context-chip-label')).toHaveText(['Approaching', 'approach', 'approach'])
+    await page.reload()
+    await expect(page.locator('.context-chip-label')).toHaveText(['Approaching', 'approach', 'approach'])
+    await page.goBack()
+    await page.locator('.reading-collected').filter({ hasText: 'approach' }).first().click()
+    await page.getByRole('complementary', { name: '词条' })
+      .getByRole('button', { name: '就这个词提问' }).click()
+    await expect(page.locator('.context-chip-label')).toHaveText(['Approaching', 'approach', 'approach'])
+
+    await page.goBack()
+    await page.locator('.reading-collected').filter({ hasText: 'approach' }).first().click()
+    await page.getByRole('complementary', { name: '词条' })
+      .getByRole('button', { name: '为这句新建线程' }).click()
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+    expect(await page.evaluate(() => window.location.hash)).not.toBe(firstThread)
+    await expect(page.getByText('这句怎么理解？')).toHaveCount(0)
+    await page.getByRole('textbox', { name: '输入问题' }).fill('新线程的问题')
+    await page.getByRole('button', { name: '发送' }).click()
+    await expect.poll(() => stub.requests.length).toBe(2)
+    await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
+    const newMessages = (stub.requests[1]?.body.messages ?? []) as { role: string; content: string }[]
+    expect(newMessages[0]?.content).toContain('[原句] Employers approach hiring differently.')
   } finally {
     await stub.close()
   }
@@ -132,6 +218,47 @@ test('阅读页顶部可以围绕当前文章对话', async ({ launch }) => {
   await page.getByRole('button', { name: '与这篇文章对话' }).click()
   await expect(page.getByRole('heading', { name: title, level: 1 })).toBeVisible()
   await expect(page.getByTestId('context-summary')).toHaveText(/^0 条原句 · 约 \d+ 字$/)
+})
+
+test('旧线程上下文已满时保留原内容，提示可以新开线程', async ({ launch, userDataDirectory }) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, {
+    picks: [{ entry: article, paragraphIndex: 0, needle: 'approach' }]
+  })
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '文章库' }).click()
+  await page.getByRole('complementary', { name: '文章详情' })
+    .getByRole('button', { name: '继续阅读' }).click()
+  await page.locator('.reading-collected').first().click()
+  await page.getByRole('complementary', { name: '词条' })
+    .getByRole('button', { name: '就这个词提问' }).click()
+  const firstHash = await page.evaluate(() => window.location.hash)
+  const threadId = decodeURIComponent(firstHash.slice('#/chat/'.length))
+  await page.evaluate(async (id) => {
+    const api = (window as unknown as { api: { invoke(channel: string, payload: unknown): Promise<unknown> } }).api
+    const items = Array.from({ length: 100 }, (_, index) => ({
+      id: `note:${index}`, kind: 'note', label: `内容 ${index}`, text: `内容 ${index}`, source: ''
+    }))
+    await api.invoke('chat:context', { threadId: id, items })
+  }, threadId)
+  await page.goBack()
+  await page.locator('.reading-collected').first().click()
+  const panel = page.getByRole('complementary', { name: '词条' })
+  await panel.getByRole('button', { name: '就这个词提问' }).click()
+  await expect(page.getByRole('alert')).toContainText('上下文已满')
+  await expect(page.getByRole('alert')).toContainText('新开一条')
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
+  const remaining = await page.evaluate(async (id) => {
+    const api = (window as unknown as { api: { invoke(channel: string, payload: unknown): Promise<unknown> } }).api
+    return api.invoke('chat:thread', { threadId: id }) as Promise<{ context: { id: string }[] }>
+  }, threadId)
+  expect(remaining.context).toHaveLength(100)
+  expect(remaining.context.map((item) => item.id)).toEqual(
+    Array.from({ length: 100 }, (_, index) => `note:${index}`)
+  )
+  await panel.getByRole('button', { name: '为这句新建线程' }).click()
+  await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+  expect(await page.evaluate(() => window.location.hash)).not.toBe(firstHash)
 })
 
 test('注释开关显示当前状态，并与正文的注释一致', async ({ launch }) => {

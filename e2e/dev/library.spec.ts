@@ -90,7 +90,13 @@ test.describe('语料导入与文章库', () => {
   test('二次启动不重复导入，继续阅读仍在', async ({ launch, userDataDirectory }) => {
     const first = await launch()
     await openLibrary(first.page)
-    await first.page.locator('.library-row').first().click()
+    const detailTitle = first.page.locator('.library-detail-title')
+    await expect(detailTitle).toBeVisible()
+    const previousTitle = await detailTitle.innerText()
+    await first.page.locator('.library-row').nth(2).click()
+    await expect(detailTitle).not.toHaveText(previousTitle)
+    const selectedTitle = await detailTitle.innerText()
+    const selectedHash = await first.page.evaluate(() => window.location.hash)
     await first.page
       .getByRole('complementary', { name: '文章详情' })
       .getByRole('button', { name: '继续阅读' })
@@ -101,13 +107,20 @@ test.describe('语料导入与文章库', () => {
     const second = await launch({ userDataDirectory })
     await expect(second.page.locator('[data-reading-page="true"]')).toBeVisible()
     await second.page.keyboard.press('Escape')
+    await expect(second.page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+    await expect(second.page.getByText('63 篇 · 7 个场次')).toBeVisible()
+    await expect(second.page.locator('.library-row')).toHaveCount(63)
+    await expect(second.page.locator('.library-detail-title')).toHaveText(selectedTitle)
+    await expect(second.page.locator('.library-row[aria-current="true"]')).toHaveCount(1)
+    await expect.poll(() => second.page.evaluate(() => window.location.hash)).toBe(selectedHash)
+
+    await second.page
+      .getByRole('navigation', { name: '全局导航' })
+      .getByRole('button', { name: '首页' })
+      .click()
     await expect(second.page.getByText('上次停在 第 1 段 · 第 1 句')).toBeVisible()
     const bootstrap = await readBootstrap(second.page)
     expect(bootstrap.corpusImport).toMatchObject({ imported: 0, updated: 0, skipped: 63 })
-
-    await openLibrary(second.page)
-    await expect(second.page.getByText('63 篇 · 7 个场次')).toBeVisible()
-    await expect(second.page.locator('.library-row')).toHaveCount(63)
   })
 
   test('导入有坏篇时其余篇照常入库并在文章库提示', async ({ launch }) => {

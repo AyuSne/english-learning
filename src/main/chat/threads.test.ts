@@ -152,6 +152,58 @@ describe('按主对象打开线程', () => {
     expect(listThreads(database).threads).toHaveLength(1)
   })
 
+  it('从阅读页重新提问时补回所点的词和原句，同时保留用户加入的其他上下文', () => {
+    const seeded = seed()
+    const main = { kind: 'sentence' as const, entrySentenceId: seeded.approachSentenceIds[0] as string }
+    const first = openThreadForMain(database, { main }, { now: T0 })
+    if (first.status === 'rejected') throw new Error('open failed')
+    const extra = readContextCandidates(database, first.thread.id).items.find(
+      (item) => item.id === `sentence:${seeded.approachSentenceIds[1]}`
+    )
+    if (!extra) throw new Error('missing extra context')
+    updateThreadContext(database, { threadId: first.thread.id, items: [extra] }, { now: T1 })
+
+    const ordinary = openThreadForMain(database, { main }, { now: T2 })
+    if (ordinary.status === 'rejected') throw new Error('open failed')
+    expect(itemIds(ordinary.thread.context)).toEqual([extra.id])
+
+    const restored = openThreadForMain(database, { main, ensureSentenceContext: true }, { now: T3 })
+    if (restored.status === 'rejected') throw new Error('open failed')
+    expect(restored.status).toBe('reused')
+    expect(restored.thread.id).toBe(first.thread.id)
+    expect(itemIds(restored.thread.context)).toEqual([
+      extra.id, `word:${seeded.approachEntryId}`, `sentence:${main.entrySentenceId}`
+    ])
+    expect(readThreadView(database, first.thread.id)?.context).toEqual(restored.thread.context)
+    const again = openThreadForMain(database, { main, ensureSentenceContext: true }, { now: T4 })
+    if (again.status === 'rejected') throw new Error('open failed')
+    expect(again.thread.context).toEqual(restored.thread.context)
+  })
+
+  it('上下文装不下词和原句时拒绝复用并保留已有内容，刚好装下时正常复用', () => {
+    const seeded = seed()
+    const main = { kind: 'sentence' as const, entrySentenceId: seeded.approachSentenceIds[0] as string }
+    const first = openThreadForMain(database, { main }, { now: T0 })
+    if (first.status === 'rejected') throw new Error('open failed')
+    const extras: ThreadContextItem[] = Array.from({ length: 99 }, (_, index) => ({
+      id: `note:${index}`, kind: 'note', label: `内容 ${index}`, text: `内容 ${index}`, source: ''
+    }))
+    updateThreadContext(database, { threadId: first.thread.id, items: extras }, { now: T1 })
+    expect(openThreadForMain(database, { main, ensureSentenceContext: true }, { now: T2 }))
+      .toEqual({ status: 'rejected', reason: 'context-full' })
+    expect(readThreadView(database, first.thread.id)?.context).toEqual(extras)
+
+    updateThreadContext(database, { threadId: first.thread.id, items: extras.slice(0, 98) }, { now: T3 })
+    const filled = openThreadForMain(database, { main, ensureSentenceContext: true }, { now: T4 })
+    if (filled.status === 'rejected') throw new Error('open failed')
+    expect(filled.thread.context).toHaveLength(100)
+    expect(itemIds(filled.thread.context)).toContain(`word:${seeded.approachEntryId}`)
+    expect(itemIds(filled.thread.context)).toContain(`sentence:${main.entrySentenceId}`)
+    const reopened = openThreadForMain(database, { main, ensureSentenceContext: true }, { now: T4 })
+    if (reopened.status === 'rejected') throw new Error('open failed')
+    expect(reopened.thread.context).toEqual(filled.thread.context)
+  })
+
   it('按完整主对象区分线程，明确新开后按最近更新复用', () => {
     const seeded = seed()
     const main = { kind: 'entry' as const, entryId: seeded.approachEntryId }

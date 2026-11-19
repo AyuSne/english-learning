@@ -90,21 +90,21 @@ export function parseView(hash: string): View {
     if (segments.length > 2) {
       return blankView('home')
     }
-    if (segments.length === 1) {
-      return blankView('reading')
-    }
-    const articleId = decodeSegment(segments[1] as string)
-    if (articleId === null) {
-      return blankView('reading')
-    }
     const params = new URLSearchParams(query)
-    const sentence = params.get('sentence')
-    const entrySentenceId = sentence === null ? null : decodeSegment(sentence)
     const from = params.get('from')
     const readingFrom =
       from === 'library' || from === 'home' || from === 'entries' || from === 'search'
         ? from
         : null
+    if (segments.length === 1) {
+      return { ...blankView('reading'), readingFrom }
+    }
+    const articleId = decodeSegment(segments[1] as string)
+    if (articleId === null) {
+      return blankView('reading')
+    }
+    const sentence = params.get('sentence')
+    const entrySentenceId = sentence === null ? null : decodeSegment(sentence)
     return {
       route,
       articleId,
@@ -162,10 +162,10 @@ export function parseView(hash: string): View {
 }
 
 export function routeHash(route: Route, options: RouteHashOptions = {}): string {
-  if (route === 'reading' && options.articleId) {
-    let hash = `#/reading/${encodeURIComponent(options.articleId)}`
+  if (route === 'reading') {
+    let hash = options.articleId ? `#/reading/${encodeURIComponent(options.articleId)}` : '#/reading'
     const params: string[] = []
-    if (options.entrySentenceId) {
+    if (options.articleId && options.entrySentenceId) {
       params.push(`sentence=${encodeURIComponent(options.entrySentenceId)}`)
       if (options.reselect) {
         params.push('reselect=1')

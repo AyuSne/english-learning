@@ -60,25 +60,30 @@ async function resizeTo(
   width: number
 ): Promise<number> {
   if (electronApp !== null) {
-    await electronApp.evaluate(
+    const minimum = await electronApp.evaluate(
       ({ BrowserWindow }, size) => {
         const window = BrowserWindow.getAllWindows()[0]
         if (window === undefined) throw new Error('没有主窗口')
+        const minimum = window.getMinimumSize()
         window.setContentSize(size.width, size.height)
+        return minimum
       },
       { width, height: 820 }
     )
+    expect(minimum[0]).toBe(900)
   } else {
     await page.setViewportSize({ width, height: 820 })
   }
-  // Windows 的窗口边框会把奇数宽度舍入 1px；落在目标或目标 +1 都算到达。
+  // Windows 在某些 DPI 下会把内容宽度舍入 1px；先等真实窗口缩到目标附近。
   await expect
     .poll(() => page.evaluate(() => window.innerWidth), { timeout: 5_000 })
-    .toBeGreaterThanOrEqual(width)
-  const actual = await page.evaluate(() => window.innerWidth)
-  expect(actual).toBeLessThanOrEqual(width + 1)
+    .toBeLessThanOrEqual(width + 1)
   // 让媒体查询与 React 布局按新宽度重排完再断言。
   await page.waitForTimeout(150)
+  // innerWidth 是整数，DPI 缩放下媒体查询实际比较的视口宽度可能带小数。
+  const actual = await page.evaluate(() => window.visualViewport?.width ?? window.innerWidth)
+  expect(actual).toBeGreaterThanOrEqual(width - 1)
+  expect(actual).toBeLessThanOrEqual(width + 2)
   return actual
 }
 
@@ -127,9 +132,18 @@ async function expectInsideViewport(page: Page, selector: string): Promise<void>
   expect(box!.x + box!.width, `${selector} 右边超出窗口`).toBeLessThanOrEqual(inner + 1)
 }
 
-async function walkPages(handle: AppHandle, width: number): Promise<void> {
+async function walkPages(handle: AppHandle, breakpoint: number): Promise<void> {
   const { page, electronApp } = handle
-  await resizeTo(page, electronApp, width)
+  // 阅读注释使用 max-width:999px；1000 处多预留 1px，避免小数宽度卡在线外。
+  const actualWidth = await resizeTo(page, electronApp, breakpoint - (breakpoint === 1000 ? 3 : 2))
+  expect(actualWidth).toBeGreaterThanOrEqual(breakpoint - 4)
+  expect(actualWidth).toBeLessThanOrEqual(breakpoint)
+  expect(await page.evaluate((width) => window.matchMedia(`(max-width: ${width}px)`).matches, breakpoint))
+    .toBe(true)
+  if (breakpoint === 1000) {
+    expect(actualWidth).toBeLessThanOrEqual(999)
+    expect(await page.evaluate(() => window.matchMedia('(max-width: 999px)').matches)).toBe(true)
+  }
 
   // 首页。
   await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
@@ -146,7 +160,7 @@ async function walkPages(handle: AppHandle, width: number): Promise<void> {
   expect(await gridTracks(page, '.library-columns')).toHaveLength(1)
   await expectInsideViewport(page, '.library-row')
 
-  // 阅读：620 列在任何断点都放得下；≤1000 页边注改行内。
+  // 阅读：620 列在任何断点都放得下；≤999 页边注改行内。
   await page.locator('.library-row').first().click()
   await page
     .getByRole('complementary', { name: '文章详情' })
@@ -158,7 +172,7 @@ async function walkPages(handle: AppHandle, width: number): Promise<void> {
   const paragraphBox = await paragraph.boundingBox()
   expect(Math.round(paragraphBox?.width ?? 0)).toBe(620)
   await expectInsideViewport(page, '.reading-bar-title')
-  if (width < 1000) {
+  if (actualWidth <= 999) {
     await expect(page.locator('.reading-notes').first()).toBeHidden()
     const inlineGloss = await page
       .locator('.reading-annotated')
@@ -183,19 +197,25 @@ async function walkPages(handle: AppHandle, width: number): Promise<void> {
 
   await page.getByRole('button', { name: /^学习内容/ }).click()
   await expect(page.locator('.entries-rail-open')).toBeVisible()
+  expect(
+    await page.locator('.entries-rail-open').evaluate((element) => getComputedStyle(element).position)
+  ).toBe('fixed')
   const rail = await page.locator('.entries-rail-open').boundingBox()
   expect(Math.round(rail?.width ?? 0)).toBe(320)
   const inner = await page.evaluate(() => window.innerWidth)
   expect(Math.round((rail?.x ?? 0) + (rail?.width ?? 0))).toBeLessThanOrEqual(inner + 1)
   await page.getByRole('button', { name: '收起学习内容' }).click()
 
-  if (width <= 900) {
+  if (actualWidth <= 900) {
     const opacity = await page
       .locator('.entry-sentence-actions')
       .first()
       .evaluate((element) => getComputedStyle(element).opacity)
     expect(Number(opacity)).toBe(1)
     await expect(page.locator('.entry-action-label').first()).toBeHidden()
+  } else {
+    await page.locator('.entry-sentence').first().hover()
+    await expect(page.locator('.entry-action-label').first()).toBeVisible()
   }
 
   // 对话：900 以下线程栏改抽屉，顶栏出现「线程」开关。
@@ -203,7 +223,7 @@ async function walkPages(handle: AppHandle, width: number): Promise<void> {
   await expect(page.getByRole('heading', { name: '新的学习' })).toBeVisible()
   await expectNoHorizontalOverflow(page)
   const toggle = page.getByRole('button', { name: '线程列表' })
-  if (width <= 900) {
+  if (actualWidth <= 900) {
     await expect(toggle).toBeVisible()
     await expect(page.locator('.chat-rail')).toBeHidden()
     await toggle.click()
@@ -237,7 +257,7 @@ async function walkPages(handle: AppHandle, width: number): Promise<void> {
   await expect(page.getByRole('heading', { name: '设置', level: 1 })).toBeVisible()
   await expectNoHorizontalOverflow(page)
   const tracks = await gridTracks(page, '.settings')
-  if (width <= 900) {
+  if (actualWidth <= 900) {
     expect(tracks).toHaveLength(1)
     const direction = await page
       .locator('.settings-nav')
@@ -245,14 +265,16 @@ async function walkPages(handle: AppHandle, width: number): Promise<void> {
     expect(direction).toBe('row')
   } else {
     expect(tracks).toHaveLength(2)
-    expect(Math.round(Number.parseFloat(tracks[0] ?? '0'))).toBe(width <= 1000 ? 168 : 216)
+    expect(Math.round(Number.parseFloat(tracks[0] ?? '0'))).toBe(
+      actualWidth <= 1000 ? 168 : 216
+    )
   }
   await expectInsideViewport(page, '.settings-head')
 }
 
 test.describe('收官验收 · 断点', () => {
   for (const width of [1100, 1000, 900]) {
-    test(`${width}px 宽窗口六个页面不破版`, async ({ launch, userDataDirectory }) => {
+    test(`${width}px 断点上或紧邻下方的窗口六个页面不破版`, async ({ launch, userDataDirectory }) => {
       seedWordEntries(userDataDirectory, corpusDirectory, {
         picks: [{ entry: article, paragraphIndex: 0, needle: 'approach' }]
       })
@@ -270,7 +292,9 @@ test.describe('收官验收 · 断点', () => {
     })
     const handle = await launch({ env: environment() })
     const { page, electronApp } = handle
-    await resizeTo(page, electronApp, 1101)
+    const actualWidth = await resizeTo(page, electronApp, 1101)
+    expect(actualWidth).toBeGreaterThan(1100)
+    expect(await page.evaluate(() => window.matchMedia('(max-width: 1100px)').matches)).toBe(false)
 
     await nav(page, '文章库')
     await expect(page.locator('.library-detail')).toBeVisible()
@@ -283,6 +307,9 @@ test.describe('收官验收 · 断点', () => {
     await page.getByRole('button', { name: /^学习内容/ }).click()
     const rail = await page.locator('.entries-rail-open').boundingBox()
     expect(Math.round(rail?.width ?? 0)).toBe(320)
+    expect(
+      await page.locator('.entries-rail-open').evaluate((element) => getComputedStyle(element).position)
+    ).toBe('sticky')
     await page.getByRole('button', { name: '收起学习内容' }).click()
     await expectNoHorizontalOverflow(page)
 
