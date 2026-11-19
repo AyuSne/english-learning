@@ -1,10 +1,15 @@
 import type { DictionaryLookup } from '../../shared/dictionary'
 import type {
+  ArticleDeletionPreview,
   ArticleDetail,
+  DeleteArticleRequest,
+  DeleteArticleResult,
   HomeSummary,
   ImportReport,
   LibraryListing,
-  LibrarySearchResults
+  LibrarySearchResults,
+  RenameArticleRequest,
+  RenameArticleResult
 } from '../../shared/library'
 import type {
   ChangeMainFormRequest,
@@ -111,6 +116,23 @@ export function loadArticleDetail(articleId: string): Promise<ArticleDetail | nu
 
 export function searchLibrary(query: string): Promise<LibrarySearchResults> {
   return window.api.invoke('library:search', { query })
+}
+
+/** 只改文章显示名；语料刷新后仍沿用这个名字。 */
+export function renameArticle(request: RenameArticleRequest): Promise<RenameArticleResult> {
+  return window.api.invoke('library:rename', request)
+}
+
+/** 删除前的影响面：原句关联、受影响/消失词条、学习内容与挂在本篇的钉住。 */
+export function loadArticleDeletionPreview(
+  articleId: string
+): Promise<ArticleDeletionPreview | null> {
+  return window.api.invoke('library:delete-preview', { articleId })
+}
+
+/** 删除文章；连带规则与确认弹层看到的是同一份预览。 */
+export function deleteArticle(request: DeleteArticleRequest): Promise<DeleteArticleResult> {
+  return window.api.invoke('library:delete', request)
 }
 
 /** 打开一篇文章：换回正文、生效设置与上次读到的位置，同时记下「最近打开」。 */

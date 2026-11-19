@@ -1,6 +1,10 @@
 import type { ImportFailure, ImportReport } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
 import {
+  readArticleTitleOverride,
+  readDeletedArticleIds
+} from '../library/article-marks'
+import {
   readCorpusArticle,
   readCorpusManifest,
   reasonOf,
@@ -45,8 +49,15 @@ export function importCorpus(
   let updated = 0
   let skipped = 0
   const failed: ImportFailure[] = [...manifest.failed]
+  // 用户在文章库里删掉的随包文章不会再被启动导入带回来；生成文章不走这条导入。
+  const deleted = readDeletedArticleIds(database)
 
   for (const entry of manifest.entries) {
+    if (deleted.has(entry.id)) {
+      skipped += 1
+      continue
+    }
+
     let article: CorpusArticle
     try {
       article = readCorpusArticle(options.directory, entry)
@@ -116,6 +127,9 @@ function persist(
     return 'skipped'
   }
 
+  // 用户在文章库里改过显示名时，语料刷新仍沿用那个名字。
+  const title = readArticleTitleOverride(database, article.id) ?? article.title
+
   const write = database.transaction(() => {
     if (existing) {
       // 段落随文章级联删掉句子与注释。
@@ -131,7 +145,7 @@ function persist(
            WHERE id = ?`
         )
         .run(
-          article.title,
+          title,
           article.kind,
           article.kindLabel,
           article.sessionKey,
@@ -162,7 +176,7 @@ function persist(
         )
         .run(
           article.id,
-          article.title,
+          title,
           article.kind,
           article.kindLabel,
           article.sessionKey,

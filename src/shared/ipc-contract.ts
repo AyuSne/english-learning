@@ -30,11 +30,16 @@ import type {
   WordEntryCard
 } from './entries'
 import type {
+  ArticleDeletionPreview,
   ArticleDetail,
+  DeleteArticleRequest,
+  DeleteArticleResult,
   HomeSummary,
   ImportReport,
   LibraryListing,
-  LibrarySearchResults
+  LibrarySearchResults,
+  RenameArticleRequest,
+  RenameArticleResult
 } from './library'
 import type {
   CreatePinRequest,
@@ -108,6 +113,12 @@ export interface IpcContract {
   'library:reimport': { payload: undefined; result: ImportReport }
   'library:detail': { payload: { articleId: string }; result: ArticleDetail | null }
   'library:search': { payload: { query: string }; result: LibrarySearchResults }
+  'library:rename': { payload: RenameArticleRequest; result: RenameArticleResult }
+  'library:delete-preview': {
+    payload: { articleId: string }
+    result: ArticleDeletionPreview | null
+  }
+  'library:delete': { payload: DeleteArticleRequest; result: DeleteArticleResult }
   'reading:open': { payload: { articleId: string }; result: ReadingView | null }
   'reading:progress': { payload: ReadingProgressRequest; result: ReadingProgressResult }
   'reading:settings': { payload: ReadingSettingsRequest; result: ReadingSettingsResult | null }
@@ -224,6 +235,9 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'library:reimport': true,
   'library:detail': true,
   'library:search': true,
+  'library:rename': true,
+  'library:delete-preview': true,
+  'library:delete': true,
   'reading:open': true,
   'reading:progress': true,
   'reading:settings': true,

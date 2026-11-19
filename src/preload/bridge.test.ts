@@ -75,6 +75,21 @@ describe('createBridge', () => {
     expect(calls).toEqual([{ channel: 'chat:delete', payload: { threadId: 'thread-1' } }])
   })
 
+  it('文章重命名与删除的请求和结果穿过 preload 白名单', async () => {
+    const { ipc, invocations } = fakeRenderer()
+    const bridge = createBridge(ipc)
+
+    await bridge.invoke('library:rename', { articleId: 'article-1', title: '我的文章' })
+    await bridge.invoke('library:delete-preview', { articleId: 'article-1' })
+    await bridge.invoke('library:delete', { articleId: 'article-1' })
+
+    expect(JSON.parse(JSON.stringify(invocations))).toEqual([
+      { channel: 'library:rename', payload: { articleId: 'article-1', title: '我的文章' } },
+      { channel: 'library:delete-preview', payload: { articleId: 'article-1' } },
+      { channel: 'library:delete', payload: { articleId: 'article-1' } }
+    ])
+  })
+
   it('未知 channel 立即报错，且不发给主进程', async () => {
     const { ipc, invocations } = fakeRenderer()
     const bridge = createBridge(ipc)

@@ -31,7 +31,7 @@ import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
 import { readingPointText } from '../library/format'
-import { goBack, navigate } from '../navigate'
+import { forgetLibraryArticle, goBack, navigate, replaceRoute } from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
 import {
   CollectedPanelView,
@@ -127,7 +127,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
       (value) => {
         if (!active) return
         if (value === null) {
-          setLoadError('这篇文章已经不在库里了。')
+          // 文章可能刚在文章库里被删掉；清掉最近文章并回到文章库，不把阅读页停在死地址上。
+          forgetLibraryArticle(articleId)
+          replaceRoute('library')
           return
         }
         setView(value)
