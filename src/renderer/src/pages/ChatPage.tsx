@@ -18,6 +18,7 @@ import {
   fileAllUnfiled,
   loadPinBoard,
   loadPinSource,
+  loadThread,
   loadThreadContextCandidates,
   movePin,
   restorePins
@@ -156,6 +157,7 @@ export function ChatPage({
   const [busyPinId, setBusyPinId] = useState<string | null>(null)
   const [source, setSource] = useState<PinSource | null>(null)
   const [sourceHitPinId, setSourceHitPinId] = useState<string | null>(null)
+  const [mainLinkError, setMainLinkError] = useState<string | null>(null)
   /** 源对话已删的快照要再点一次才丢弃。 */
   const [confirmDiscardId, setConfirmDiscardId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -208,6 +210,7 @@ export function ChatPage({
     setPinDialog(null)
     setSource(null)
     setSourceHitPinId(null)
+    setMainLinkError(null)
     sourceDone.current = null
     refreshBoard(threadId)
   }, [threadId])
@@ -779,6 +782,32 @@ export function ChatPage({
   const editing = store.editing
   const title = current === null ? '新的学习' : current.title
   const subtitle = current === null ? BLANK_THREAD_SUBTITLE : threadHeaderText(current)
+  const missingMain = current?.missingMain ?? null
+  const missingArticle = missingMain === 'article' || current?.main.kind === 'article'
+  const blankMain = current === null || (current.main.kind === 'none' && !current.missingMain)
+
+  async function openMainObject(): Promise<void> {
+    if (current === null || current.main.kind === 'none') return
+    try {
+      const refreshed = await loadThread(current.id)
+      if (refreshed === null) {
+        setMainLinkError('这条线程已经不在了，请从线程列表选择另一条。')
+        return
+      }
+      if (refreshed.missingMain || refreshed.main.kind === 'none') {
+        setMainLinkError('主对象已经不在了，请选择其他词条或文章。')
+        return
+      }
+      const main = refreshed.main
+      if (main.kind === 'article') navigate('reading', { articleId: main.articleId })
+      else navigate('entries', {
+        entryId: main.entryId,
+        entrySentenceId: main.kind === 'sentence' ? main.entrySentenceId : null
+      })
+    } catch (error) {
+      setMainLinkError(failureText(error, '主对象没有读出来，请再试一次。'))
+    }
+  }
   /** 线程已经不在了：重试只会再失败，改成回到一条空白学习。 */
   const threadGone = store.error === '这条线程已经不在了。'
   const canSend = draft.trim() !== '' && !store.busy && generation === null
@@ -862,8 +891,28 @@ export function ChatPage({
             </button>
             <div className="chat-header-row">
               <div className="chat-header-text">
-                <h1 className="chat-title">{title}</h1>
-                <p className="chat-subtitle">{subtitle}</p>
+                <h1 className="chat-title">
+                  {current !== null && current.main.kind !== 'none' ? (
+                    <button type="button" className="chat-main-link chat-title-link" onClick={() => void openMainObject()}>
+                      {title}
+                    </button>
+                  ) : title}
+                </h1>
+                <p className="chat-subtitle">
+                  {current !== null && current.main.kind !== 'none' ? (
+                    <button type="button" className="chat-main-link" onClick={() => void openMainObject()}>
+                      {subtitle}
+                    </button>
+                  ) : subtitle}
+                </p>
+                {missingMain || mainLinkError ? (
+                  <p className="chat-main-missing" role="alert">
+                    {mainLinkError ?? '主对象已经不在了。'}{' '}
+                    <button type="button" className="chat-main-link" onClick={() => navigate(missingArticle ? 'library' : 'entries')}>
+                      {missingArticle ? '选择文章' : '选择词条'}
+                    </button>
+                  </p>
+                ) : null}
               </div>
               <button
                 type="button"
@@ -943,16 +992,16 @@ export function ChatPage({
             ) : current === null || current.turns.length === 0 ? (
               <div className="chat-empty">
                 <h2 className="chat-empty-title">
-                  {current === null || current.main.kind === 'none'
+                  {blankMain
                     ? '今天学点什么？'
                     : '从这条线索问起'}
                 </h2>
                 <p className="chat-empty-lede">
-                  {current === null || current.main.kind === 'none'
+                  {blankMain
                     ? '这是一条还没有挂对象的线程：聊完把满意的段落钉住，再决定它归到哪个词条。'
                     : '上下文已经放在输入框上方，直接问就行；问完可以把满意的段落钉到这条线索上。'}
                 </p>
-                {current === null || current.main.kind === 'none' ? (
+                {blankMain ? (
                   <div className="chat-starters">
                     <button
                       type="button"

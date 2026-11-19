@@ -90,7 +90,7 @@ export function App() {
         {view.route === 'home' ? (
           <HomePage />
         ) : view.route === 'entries' ? (
-          <EntriesPage entryId={view.entryId} />
+          <EntriesPage entryId={view.entryId} entrySentenceId={view.entrySentenceId} />
         ) : view.route === 'chat' ? (
           <ChatPage
             threadId={view.threadId}

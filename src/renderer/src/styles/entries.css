@@ -292,6 +292,12 @@
   border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
 }
 
+.entry-sentence[data-focused='true'] {
+  background: var(--bed-select);
+  outline: 8px solid var(--bed-select);
+  border-radius: 4px;
+}
+
 .entry-sentence:last-child {
   border-bottom: 0;
 }

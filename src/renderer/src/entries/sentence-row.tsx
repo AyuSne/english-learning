@@ -9,6 +9,7 @@ import { sentenceSourceText } from './format'
  */
 export function SentenceRow({
   sentence,
+  focused = false,
   busy,
   onBack,
   onReselect,
@@ -16,6 +17,7 @@ export function SentenceRow({
   onRequestDelete
 }: {
   sentence: EntrySentence
+  focused?: boolean
   busy: boolean
   onBack: () => void
   onReselect: () => void
@@ -26,7 +28,7 @@ export function SentenceRow({
   const hasNeighbors = sentence.previousSentence !== null || sentence.nextSentence !== null
 
   return (
-    <li className="entry-sentence" data-entry-sentence-id={sentence.id}>
+    <li className="entry-sentence" data-entry-sentence-id={sentence.id} data-focused={focused ? 'true' : undefined}>
       <blockquote className="entry-sentence-text">
         <SentenceText sentence={sentence} />
       </blockquote>

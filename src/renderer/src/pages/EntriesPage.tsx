@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
 import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
-import { openThreadForMain } from '../chat/store'
+import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
 import { entryHeadlineText } from '../entries/format'
@@ -14,7 +14,7 @@ import { navigate, replaceRoute } from '../navigate'
  * 词条页：左列表、中原句、右学习内容。打开词条先看到原句，右栏默认收窄。
  * 原句按文章分组，组内按句序；每条能回到原文、重新圈定、拆到别的词条或删除。
  */
-export function EntriesPage({ entryId }: { entryId: string | null }) {
+export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | null; entrySentenceId: string | null }) {
   const [listing, setListing] = useState<EntryListResult | null>(null)
   const [allEntries, setAllEntries] = useState<EntryListResult | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(entryId)
@@ -79,7 +79,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
       replaceRoute('entries')
       return
     }
-    replaceRoute('entries', { entryId: selectedId })
+    replaceRoute('entries', { entryId: selectedId, entrySentenceId: selectedId === entryId ? entrySentenceId : null })
     const sequence = pageRequest.current + 1
     pageRequest.current = sequence
     setPageError(null)
@@ -100,7 +100,17 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
         }
       }
     )
-  }, [selectedId, reloadToken])
+  }, [selectedId, reloadToken, entryId, entrySentenceId])
+
+  useEffect(() => {
+    if (page === null || page.entry.id !== entryId || entrySentenceId === null) return
+    const frame = window.requestAnimationFrame(() => {
+      const row = Array.from(document.querySelectorAll<HTMLElement>('.entry-sentence'))
+        .find((item) => item.dataset.entrySentenceId === entrySentenceId)
+      row?.scrollIntoView({ block: 'center' })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [page, entryId, entrySentenceId])
 
   useEffect(() => {
     if (hint === null) return
@@ -174,6 +184,13 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
     refresh()
   }
 
+  async function askAboutEntry(forceNew = false): Promise<void> {
+    if (page === null) return
+    setActionError(null)
+    const opened = await openThreadForMain({ kind: 'entry', entryId: page.entry.id }, { forceNew })
+    if (opened === null) setActionError(getChatStore().error ?? '没能打开线程，请刷新词条后再试。')
+  }
+
   return (
     <div className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
       <EntryList
@@ -205,11 +222,12 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
                 <button
                   type="button"
                   className="button"
-                  onClick={() =>
-                    void openThreadForMain({ kind: 'entry', entryId: page.entry.id })
-                  }
+                  onClick={() => void askAboutEntry()}
                 >
                   开始对话
+                </button>
+                <button type="button" className="button" onClick={() => void askAboutEntry(true)}>
+                  新开一条
                 </button>
                 <button
                   type="button"
@@ -248,15 +266,19 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
                       <SentenceRow
                         key={sentence.id}
                         sentence={sentence}
+                        focused={page.entry.id === entryId && sentence.id === entrySentenceId}
                         busy={deleting}
                         onBack={() => openReading(sentence, false)}
                         onReselect={() => openReading(sentence, true)}
-                        onAsk={() =>
+                        onAsk={() => {
+                          setActionError(null)
                           void openThreadForMain({
                             kind: 'sentence',
                             entrySentenceId: sentence.id
+                          }).then((opened) => {
+                            if (opened === null) setActionError(getChatStore().error ?? '没能打开线程，请刷新词条后再试。')
                           })
-                        }
+                        }}
                         onRequestDelete={() => requestDelete(sentence)}
                       />
                     ))}

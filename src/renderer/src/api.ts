@@ -71,6 +71,8 @@ import type {
   CreateThreadResult,
   EditQuestionRequest,
   ExportThreadResult,
+  OpenThreadForMainRequest,
+  OpenThreadForMainResult,
   QuestionResult,
   SaveAnswerRequest,
   SaveAnswerResult,
@@ -229,6 +231,11 @@ export function loadThread(threadId: string): Promise<ChatThreadView | null> {
 /** 按主对象开一条线程：词条 / 原句 / 文章 / 不挂。 */
 export function createThread(request: CreateThreadRequest): Promise<CreateThreadResult> {
   return window.api.invoke('chat:create', request)
+}
+
+/** 按主对象复用最近线程，或明确新开一条。 */
+export function openThreadForMainRequest(request: OpenThreadForMainRequest): Promise<OpenThreadForMainResult> {
+  return window.api.invoke('chat:open-for-main', request)
 }
 
 /** 提一个新问题，回答稍后由 chat:answer 落库。 */
