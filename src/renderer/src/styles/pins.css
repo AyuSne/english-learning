@@ -37,32 +37,27 @@
 
 /* ---------- 钉住标记 ---------- */
 
-.assistant-paragraph {
+.assistant-text .is-pinned {
   position: relative;
 }
 
-.assistant-paragraph-text {
-  margin: 0 0 8px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.assistant-paragraph:last-child .assistant-paragraph-text {
-  margin-bottom: 0;
-}
-
-.assistant-paragraph.is-pinned::before {
+.assistant-text .is-pinned::before {
   content: "";
   position: absolute;
   top: 3px;
-  bottom: 9px;
+  bottom: 3px;
   left: -12px;
   width: 2px;
   border-radius: 4px;
   background: var(--line-pin);
 }
 
-.assistant-paragraph.is-source-hit {
+.assistant-text li.is-pinned::before {
+  /* Draw the bar to the left of the list marker (24px list indent). */
+  left: -36px;
+}
+
+.assistant-text .is-source-hit {
   border-radius: 4px;
   background: var(--bed-pin);
 }

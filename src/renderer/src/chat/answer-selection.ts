@@ -1,8 +1,3 @@
-/**
- * 把浏览器里的选区换算成回答正文的字符区间。回答按段落渲染，
- * 每段带 `data-para-start`，所以跨段选区也能落到同一版正文的 [start, end) 上。
- */
-
 export type AnswerSelection = {
   answerId: string
   start: number
@@ -11,65 +6,42 @@ export type AnswerSelection = {
   rect: DOMRect
 }
 
-function elementOf(node: Node | null): Element | null {
-  if (node === null) return null
-  return node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
+function answerBodyOf(node: Node): HTMLElement | null {
+  const element = node instanceof Element ? node : node.parentElement
+  if (!element || element.closest('.pin-badge')) return null
+  return element.closest<HTMLElement>('.assistant-text[data-answer-id]')
 }
 
-function offsetWithin(root: HTMLElement, node: Node, offset: number): number {
-  const range = document.createRange()
-  range.selectNodeContents(root)
-  try {
-    range.setEnd(node, offset)
-  } catch {
-    return root.textContent?.length ?? 0
-  }
-  return range.toString().length
-}
-
-/** 只有落在一条回答正文里的非空选区才算可钉；其余返回 null。 */
+/** 选区两端必须在同一条已保存的回答正文；活动流不带回答 ID。 */
 export function readAnswerSelection(container: HTMLElement): AnswerSelection | null {
   const selection = window.getSelection()
-  if (selection === null || selection.isCollapsed || selection.rangeCount === 0) {
-    return null
-  }
+  if (!selection || selection.isCollapsed || selection.rangeCount === 0) return null
+
+  // Range is already in DOM order, including for backwards selections.
   const range = selection.getRangeAt(0)
-  if (!container.contains(range.commonAncestorContainer)) {
-    return null
+  const body = answerBodyOf(range.startContainer)
+  if (!body || !container.contains(body) || answerBodyOf(range.endContainer) !== body) return null
+  const answerId = body.dataset.answerId
+  if (!answerId) return null
+
+  let start: number | undefined
+  let end = 0
+  for (const leaf of body.querySelectorAll('[data-md-leaf][data-source-start][data-source-end]')) {
+    // A Markdown leaf's direct Text is the original UTF-16 slice. DOM element
+    // boundaries can only enclose or miss it; only a Text boundary can clip it.
+    const text = leaf.firstChild
+    if (!(text instanceof Text)) continue
+    if (range.comparePoint(text, 0) > 0) break
+    if (range.comparePoint(text, text.length) < 0) continue
+    const from = range.startContainer === text ? range.startOffset : 0
+    const to = range.endContainer === text ? range.endOffset : text.length
+    // A selection touching just the tail/head of a leaf contributes nothing.
+    if (from >= to) continue
+
+    start ??= Number(leaf.getAttribute('data-source-start')) + from
+    end = Number(leaf.getAttribute('data-source-end')) - (text.length - to)
   }
 
-  const startElement = elementOf(range.startContainer)
-  const endElement = elementOf(range.endContainer)
-  const startText = startElement?.closest<HTMLElement>('.assistant-paragraph-text')
-  const endText = endElement?.closest<HTMLElement>('.assistant-paragraph-text')
-  if (!startText || !endText) {
-    return null
-  }
-  const startParagraph = startText.closest<HTMLElement>('.assistant-paragraph')
-  const endParagraph = endText.closest<HTMLElement>('.assistant-paragraph')
-  const answerRoot = startText.closest<HTMLElement>('[data-answer-id]')
-  if (!startParagraph || !endParagraph || !answerRoot) {
-    return null
-  }
-  if (endText.closest<HTMLElement>('[data-answer-id]') !== answerRoot) {
-    return null
-  }
-  const answerId = answerRoot.dataset.answerId
-  if (answerId === undefined) {
-    return null
-  }
-
-  const startBase = Number(startParagraph.dataset.paraStart)
-  const endBase = Number(endParagraph.dataset.paraStart)
-  if (!Number.isFinite(startBase) || !Number.isFinite(endBase)) {
-    return null
-  }
-
-  const start = startBase + offsetWithin(startText, range.startContainer, range.startOffset)
-  const end = endBase + offsetWithin(endText, range.endContainer, range.endOffset)
-  if (!(start < end)) {
-    return null
-  }
-  const rect = range.getBoundingClientRect()
-  return { answerId, start, end, rect }
+  if (start === undefined || !(start < end)) return null
+  return { answerId, start, end, rect: range.getBoundingClientRect() }
 }

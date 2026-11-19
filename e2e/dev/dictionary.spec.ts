@@ -6,6 +6,7 @@ import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-f
 import { writeDictionaryFixture } from '../../src/testing/dictionary-fixture'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
 import { expect, test } from '../fixtures/app'
+import { selectAnswerText } from '../fixtures/answer-selection'
 import { seedWordEntries } from '../fixtures/entries'
 import { clickAway, openArticle, selectText } from '../fixtures/reading'
 
@@ -215,24 +216,6 @@ test.describe('内置词典', () => {
 
 /** 在第一条回答里选中一小段文字，模拟鼠标松开后浮出划词卡。 */
 async function selectAnswerWord(page: Page, needle: string): Promise<void> {
-  await page.evaluate((text) => {
-    const paragraph = document.querySelector('.assistant-paragraph-text')
-    if (!paragraph) throw new Error('没有回答段落')
-    const node = paragraph.firstChild
-    if (!node) throw new Error('回答段落是空的')
-    const content = node.textContent ?? ''
-    const index = content.indexOf(text)
-    if (index < 0) throw new Error(`段落里没有 ${text}`)
-    const range = document.createRange()
-    range.setStart(node, index)
-    range.setEnd(node, index + text.length)
-    const selection = window.getSelection()
-    if (!selection) throw new Error('没有选区')
-    selection.removeAllRanges()
-    selection.addRange(range)
-    document
-      .querySelector('.chat-scroll')
-      ?.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
-  }, needle)
+  await selectAnswerText(page, needle)
   await expect(page.locator('.pin-selection-card')).toBeVisible()
 }
