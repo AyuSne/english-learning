@@ -258,7 +258,7 @@ test.describe('钉住与钉板', () => {
     )
     await dialog.getByRole('button', { name: '钉住', exact: true }).click()
     await expect(page.getByRole('status')).toContainText('已放进未归档')
-    await expect(page.getByRole('button', { name: '未归档 1', exact: true })).toBeVisible()
+    await expect(page.getByRole('complementary', { name: '钉板' }).getByRole('button', { name: '未归档 1', exact: true })).toBeVisible()
 
     // 未归档不算收集：词条里还没有学习内容。
     await openEntry(page, 'approach')
@@ -272,7 +272,7 @@ test.describe('钉住与钉板', () => {
     await expect(page.getByRole('heading', { name: '这句怎么理解？', level: 1 })).toBeVisible()
 
     // 钉板里归到词条。
-    await page.getByRole('button', { name: '未归档 1', exact: true }).click()
+    await page.getByRole('complementary', { name: '钉板' }).getByRole('button', { name: '未归档 1', exact: true }).click()
     await expect(page.getByRole('tab', { name: '未归档 1' })).toBeVisible()
     await expect(page.locator('.pin-card')).toContainText('approach 是接近')
     await page.getByRole('button', { name: '归到词条' }).click()
@@ -352,7 +352,8 @@ test.describe('钉住与钉板', () => {
     await openBlankChat(page)
     await page.locator('.thread-row').filter({ hasText: '这句怎么理解？' }).click()
     await expect(page.getByRole('heading', { name: '这句怎么理解？', level: 1 })).toBeVisible()
-    await page.getByRole('button', { name: '未归档 2', exact: true }).click()
+    await page.getByRole('complementary', { name: '钉板' })
+      .getByRole('button', { name: '未归档 2', exact: true }).click()
     await expect(page.locator('.pin-card')).toHaveCount(2)
 
     await page.getByRole('button', { name: '全部归位' }).click()
@@ -379,7 +380,8 @@ test.describe('钉住与钉板', () => {
       .getByRole('button', { name: '对话' })
       .click()
     await page.locator('.thread-row').filter({ hasText: '这句怎么理解？' }).click()
-    await page.getByRole('button', { name: '未归档 2', exact: true }).click()
+    await page.getByRole('complementary', { name: '钉板' })
+      .getByRole('button', { name: '未归档 2', exact: true }).click()
     await page.locator('.pin-card').first().getByRole('button', { name: '丢弃' }).click()
     await expect(page.getByRole('status')).toContainText('已丢弃')
     await expect(page.locator('.pin-card')).toHaveCount(1)

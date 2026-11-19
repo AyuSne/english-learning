@@ -209,7 +209,7 @@ test.describe('线程主对象与上下文', () => {
     await openEntry(page, 'approach')
     const sentence = page.locator('.entry-sentence').filter({ hasText: 'Employers approach hiring differently.' })
     await sentence.getByRole('button', { name: '用这句提问' }).click()
-    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'Employers approach hiring differently.'])
     await ask(page, '原线程的问题')
     await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
     const firstHash = await page.evaluate(() => window.location.hash)
@@ -220,7 +220,7 @@ test.describe('线程主对象与上下文', () => {
     await expect(page.locator('.chat-scroll').getByText('原线程的问题')).toBeVisible()
     await page.locator('.chat-subtitle button').click()
     await sentence.getByRole('button', { name: '为这句新建线程' }).click()
-    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'Employers approach hiring differently.'])
     await expect(page.locator('.chat-scroll').getByText('原线程的问题')).toHaveCount(0)
     expect(await page.evaluate(() => window.location.hash)).not.toBe(firstHash)
     await ask(page, '新线程的问题')
@@ -232,7 +232,7 @@ test.describe('线程主对象与上下文', () => {
     await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(firstHash)
     await expect(page.locator('.chat-scroll').getByText('原线程的问题')).toBeVisible()
     await expect(page.locator('.chat-scroll').getByText('新线程的问题')).toHaveCount(0)
-    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'Employers approach hiring differently.'])
   })
 
   test('文章连点复用线程，头部回阅读并可明确新开', async ({ launch, userDataDirectory }) => {
@@ -338,10 +338,11 @@ test.describe('线程主对象与上下文', () => {
 
     // 默认带主词形与最近收的那一句。
     await expect(page.getByTestId('context-summary')).toHaveText(/^1 条原句 · 约 \d+ 字$/)
-    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approaches'])
+    const originalSentence = 'Another passage approaches the same idea.'
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', originalSentence])
 
     // 每项可单独移除。
-    await page.getByRole('button', { name: '移除上下文：approaches' }).click()
+    await page.getByRole('button', { name: `移除上下文：${originalSentence}`, exact: true }).click()
     await expect(page.getByTestId('context-summary')).toHaveText('0 条原句 · 约 8 字')
 
     // 从候选里加回另一句。

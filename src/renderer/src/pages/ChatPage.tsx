@@ -970,7 +970,7 @@ export function ChatPage({
                 className="button button-small chat-board-button"
                 onClick={() => openBoard('thread')}
               >
-                钉板 {threadPinCount}
+                钉板 {threadPinCount} · 本线程
               </button>
             </div>
           </div>
@@ -1194,6 +1194,9 @@ export function ChatPage({
         </div>
       </div>
 
+      {boardOpen ? (
+        <div className="pin-board-scrim" aria-hidden="true" onClick={() => setBoardOpen(false)} />
+      ) : null}
       <PinBoardPanel
         board={board}
         open={boardOpen}
@@ -1201,7 +1204,8 @@ export function ChatPage({
         threadEntryId={threadEntryId}
         busyPinId={busyPinId}
         freshPinIds={freshPinIds}
-        onToggle={() => setBoardOpen((open) => !open)}
+        onOpenUnfiled={() => openBoard('unfiled')}
+        onClose={() => setBoardOpen(false)}
         onSelectTab={setBoardTab}
         onOpenSource={openPinSource}
         onChangeTarget={openMoveDialog}
