@@ -4,6 +4,13 @@ export type Route = (typeof ROUTES)[number]
 export type ReadingSource = 'library' | 'home' | 'entries' | 'search'
 
 /**
+ * 本篇选词的直接上游：从阅读页页脚进来（`reader`）还是从文章库详情进来（`library`）。
+ * 它和 `readingFrom` 是两件事：`readingFrom` 是阅读页自己的来源，页脚进子视图后仍要带回
+ * 阅读页，让阅读页的返回目标不被改写；直接打开或刷新地址时没有值，按 `reader` 兜底。
+ */
+export type WordsSource = 'reader' | 'library'
+
+/**
  * 当前视图。阅读页要带上是哪一篇（可以再带一条要定位的原句），
  * 词条页要带上打开哪个词条，对话页可以带一条要从学习内容定位回来的钉住。
  * 刷新或重启后靠 hash 回到同一处。
@@ -28,6 +35,8 @@ export type View = {
   readingFrom: ReadingSource | null
   /** 阅读页正在看的是「本篇选词」子视图，而不是正文。 */
   readingWords: boolean
+  /** 本篇选词的直接上游；直接打开或刷新时为空，界面按 `reader` 兜底。 */
+  readingWordsFrom: WordsSource | null
 }
 
 export type RouteHashOptions = {
@@ -41,6 +50,8 @@ export type RouteHashOptions = {
   readingFrom?: ReadingSource | null
   /** 阅读页进入「本篇选词」；只有带文章 id 时才成立。 */
   words?: boolean
+  /** 本篇选词的直接上游：页脚进来是 reader，文章库详情进来是 library。 */
+  wordsFrom?: WordsSource | null
 }
 
 function routeOf(segment: string): Route | null {
@@ -71,7 +82,8 @@ function blankView(route: Route): View {
     pinId: null,
     fromEntryId: null,
     readingFrom: null,
-    readingWords: false
+    readingWords: false,
+    readingWordsFrom: null
   }
 }
 
@@ -107,6 +119,9 @@ export function parseView(hash: string): View {
       from === 'library' || from === 'home' || from === 'entries' || from === 'search'
         ? from
         : null
+    const wordsFromParam = params.get('wordsFrom')
+    const readingWordsFrom =
+      wordsFromParam === 'reader' || wordsFromParam === 'library' ? wordsFromParam : null
     if (segments.length === 1) {
       return { ...blankView('reading'), readingFrom }
     }
@@ -126,7 +141,8 @@ export function parseView(hash: string): View {
       pinId: null,
       fromEntryId: null,
       readingFrom,
-      readingWords
+      readingWords,
+      readingWordsFrom: readingWords ? readingWordsFrom : null
     }
   }
 
@@ -187,6 +203,9 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
       }
     }
     if (options.readingFrom) params.push(`from=${options.readingFrom}`)
+    if (words && (options.wordsFrom === 'reader' || options.wordsFrom === 'library')) {
+      params.push(`wordsFrom=${options.wordsFrom}`)
+    }
     if (params.length > 0) hash += `?${params.join('&')}`
     return hash
   }

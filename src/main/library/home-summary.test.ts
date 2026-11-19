@@ -11,6 +11,8 @@ import {
 import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
+import { setEntryLater } from '../entries/later'
+import { readEntryList } from '../entries/page'
 import { collectSelection } from '../entries/queries'
 import { readHomeSummary } from './queries'
 
@@ -152,8 +154,7 @@ describe('首页最近收集', () => {
     expect(entries.map((entry) => entry.mainForm)).toEqual(['approach', 'Patience', 'habit'])
   })
 
-  it('未归档的钉住不算词条，不会出现在最近收集里', () => {
-    collect(firstArticle, 0, 'approach', T0)
+  it('未归档的钉住不算词条，不会出现在最近收集里', () => {    collect(firstArticle, 0, 'approach', T0)
 
     database
       .prepare(
@@ -184,5 +185,60 @@ describe('首页最近收集', () => {
 
     expect(entries.map((entry) => entry.mainForm)).toEqual(['approach'])
     expect(entries.map((entry) => entry.mainForm)).not.toContain('lament')
+  })
+
+  it('最多 8 个 chip，按最近收集倒序，与词条列表读同一份字段', () => {
+    const words = [
+      'Employers',
+      'approach',
+      'hiring',
+      'differently',
+      'Context',
+      'keeps',
+      'skill',
+      'alive',
+      'steady',
+      'habit'
+    ]
+    words.forEach((word, index) => {
+      const now = `2026-11-18T08:${String(index).padStart(2, '0')}:00.000Z`
+      collect(firstArticle, index < 8 ? 0 : 1, word, now)
+    })
+
+    const summary = readHomeSummary(database)
+    expect(summary.recentEntries).toHaveLength(8)
+    expect(summary.recentEntries.map((entry) => entry.mainForm)).toEqual(
+      ['habit', 'steady', 'alive', 'skill', 'keeps', 'Context', 'differently', 'hiring']
+    )
+
+    // chip 的字段就是词条列表那一行，不再另拼一套计数。
+    const listed = readEntryList(database, {}).entries[0]
+    if (!listed) throw new Error('词条列表为空')
+    expect(summary.recentEntries[0]).toEqual({
+      id: listed.id,
+      mainForm: listed.mainForm,
+      sentenceCount: listed.sentenceCount,
+      articleCount: listed.articleCount,
+      lastCollectedAt: listed.lastCollectedAt
+    })
+    expect(listed.noteCount).toEqual(expect.any(Number))
+    expect(summary.recentEntries[0]).not.toHaveProperty('noteCount')
+  })
+
+  it('稍后看标记不改变最近收集的顺序与计数', () => {
+    const recentId = collect(firstArticle, 0, 'approach', T0)
+    collect(firstArticle, 1, 'habit', T1)
+    const before = readHomeSummary(database).recentEntries
+
+    expect(setEntryLater(database, { entryId: recentId, later: true }, { now: T3 })).toEqual({
+      status: 'marked',
+      markedAt: T3
+    })
+
+    const after = readHomeSummary(database)
+    expect(after.recentEntries).toEqual(before)
+    expect(after.laterEntries).toEqual([
+      { entryId: recentId, mainForm: 'approach', markedAt: T3 }
+    ])
   })
 })

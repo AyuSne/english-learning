@@ -23,6 +23,7 @@ import type {
   ImportReport,
   LibraryListing,
   LibrarySearchResults,
+  MarkArticleCompletedResult,
   RenameArticleResult
 } from '../../shared/library'
 import type {
@@ -142,6 +143,7 @@ function readingHandlers() {
   return {
     'reading:open': (): ReadingView | null => null,
     'reading:words': (): ArticleWordsView | null => null,
+    'reading:complete': (): MarkArticleCompletedResult => ({ status: 'missing' }),
     'reading:progress': (): ReadingProgressResult => ({ saved: false }),
     'reading:settings': (): ReadingSettingsResult | null => null,
     'reading:collect': (): CollectSelectionResult => ({

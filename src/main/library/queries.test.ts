@@ -264,6 +264,24 @@ describe('markArticleCompleted', () => {
     expect(second).toMatchObject({ changed: false, completedAt: '2026-11-18T08:00:00.000Z' })
   })
 
+  it('只写完成时间：阅读位置、最近打开与本篇阅读设置都不动', () => {
+    openArticle(database, carefulReading.id, { now: '2026-11-18T08:00:00.000Z' })
+    const rowQuery = `SELECT last_opened_at, last_paragraph_id, last_sentence_index
+                        FROM article WHERE id = ?`
+    const settingsQuery = `SELECT font_size, line_height_tenths, annotations_visible, weak_highlight
+                             FROM article_reading_setting WHERE article_id = ?`
+    const rowBefore = database.prepare(rowQuery).get(carefulReading.id)
+    const settingsBefore = database.prepare(settingsQuery).get(carefulReading.id)
+
+    markArticleCompleted(database, carefulReading.id, { now: '2026-11-18T09:00:00.000Z' })
+
+    expect(database.prepare(rowQuery).get(carefulReading.id)).toEqual(rowBefore)
+    expect(database.prepare(settingsQuery).get(carefulReading.id)).toEqual(settingsBefore)
+    expect(
+      database.prepare('SELECT completed_at FROM article WHERE id = ?').get(carefulReading.id)
+    ).toEqual({ completed_at: '2026-11-18T09:00:00.000Z' })
+  })
+
   it('文章不存在时返回 missing，库里的文章一篇不动', () => {
     expect(markArticleCompleted(database, 'nope', { now: '2026-11-18T08:00:00.000Z' })).toEqual({
       status: 'missing'

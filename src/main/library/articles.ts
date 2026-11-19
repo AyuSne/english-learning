@@ -5,6 +5,7 @@ import type {
   RenameArticleRequest,
   RenameArticleResult
 } from '../../shared/library'
+import { ARTICLE_TITLE_MAX_LENGTH } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
 import { refreshLastCollected } from '../entries/entry-state'
 import { reassignPinsFromEntry } from '../pins/pins'
@@ -19,8 +20,6 @@ import {
  * 再按「删最后一条原句」的规则清理词条，并在同一笔事务里把挂在本篇的钉住转为未归档。
  * 语料导入会再跑，所以删掉的 id 也要在同一笔事务里记下，免得重启后文章复活。
  */
-
-const MAX_TITLE_LENGTH = 200
 
 type AffectedEntryRow = {
   entry_id: string
@@ -108,7 +107,7 @@ export function renameArticle(
   if (title === '') {
     return { status: 'rejected', reason: 'empty' }
   }
-  if (title.length > MAX_TITLE_LENGTH) {
+  if (title.length > ARTICLE_TITLE_MAX_LENGTH) {
     return { status: 'rejected', reason: 'too-long' }
   }
   const exists = database
@@ -126,18 +125,43 @@ export function renameArticle(
 }
 
 /**
+ * 确认弹层看到的那份影响面是否仍然成立。逐项比较，不只比总数：
+ * 原句、词条、学习内容与钉住任何一项变了都算变了，删除必须重新确认。
+ */
+function sameDeletionPreview(
+  confirmed: ArticleDeletionPreview,
+  current: ArticleDeletionPreview
+): boolean {
+  return (
+    confirmed.articleId === current.articleId &&
+    confirmed.sentenceAssociationCount === current.sentenceAssociationCount &&
+    confirmed.affectedEntryCount === current.affectedEntryCount &&
+    confirmed.disappearingEntryCount === current.disappearingEntryCount &&
+    confirmed.survivingEntryCount === current.survivingEntryCount &&
+    confirmed.disappearingLearningNoteCount === current.disappearingLearningNoteCount &&
+    confirmed.articlePinCount === current.articlePinCount
+  )
+}
+
+/**
  * 删除一篇文章：文章、段落、句子与 entry_sentence 由外键级联；
  * 受影响词条若已无原句，按「删最后一条原句」的规则连同学习内容一起删；
  * 挂在本篇的钉住只改落点为未归档，快照、出处与来源原句一个字不动。
+ *
+ * 删除前在事务里重新算影响面，和用户确认的那份对不上就整体回滚、返回 `stale`：
+ * 界面拿最新一份重新确认，绝不按旧数字悄悄删掉刚收下的原句或钉住。
  */
 export function deleteArticle(
   database: AppDatabase,
   request: DeleteArticleRequest
 ): DeleteArticleResult {
-  const preview = database.transaction((): ArticleDeletionPreview | null => {
+  const outcome = database.transaction((): DeleteArticleResult | null => {
     const current = readArticleDeletionPreview(database, request.articleId)
     if (current === null) {
       return null
+    }
+    if (!sameDeletionPreview(request.confirmed, current)) {
+      return { status: 'stale', articleId: request.articleId, preview: current }
     }
 
     const affected = readAffectedEntries(database, request.articleId)
@@ -162,10 +186,8 @@ export function deleteArticle(
 
     markArticleDeleted(database, request.articleId)
     forgetArticleTitleOverride(database, request.articleId)
-    return current
+    return { status: 'deleted', articleId: request.articleId, preview: current }
   })()
 
-  return preview === null
-    ? { status: 'missing' }
-    : { status: 'deleted', articleId: request.articleId, preview }
+  return outcome ?? { status: 'missing' }
 }

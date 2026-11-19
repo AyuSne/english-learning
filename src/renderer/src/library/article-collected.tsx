@@ -26,7 +26,8 @@ export function ArticleCollectedSection({
           navigate('reading', {
             articleId: article.id,
             words: true,
-            readingFrom: 'library'
+            readingFrom: 'library',
+            wordsFrom: 'library'
           })
         }
       >

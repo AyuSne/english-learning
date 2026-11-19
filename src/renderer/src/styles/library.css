@@ -319,6 +319,37 @@
   line-height: 16px;
 }
 
+.library-impact-stale {
+  margin: 8px 0 0;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* ---------- 文章详情：本篇收过 ---------- */
+
+.library-collected {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.library-collected-title {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.library-collected-count {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
 /* ---------- 首页：继续阅读 ---------- */
 
 .home-continue {

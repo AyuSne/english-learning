@@ -60,6 +60,7 @@ import {
   renameArticle
 } from './library/articles'
 import {
+  markArticleCompleted,
   readArticleDetail,
   readHomeSummary,
   readLibrary,
@@ -208,6 +209,7 @@ function start(): void {
     'library:delete': (payload) => deleteArticle(opened, payload),
     'reading:open': (payload) => openReadingView(opened, payload.articleId),
     'reading:words': (payload) => readArticleWords(opened, payload.articleId),
+    'reading:complete': (payload) => markArticleCompleted(opened, payload.articleId),
     'reading:progress': (payload) => saveReadingPoint(opened, payload),
     'reading:settings': (payload) => saveReadingSettings(opened, payload),
     'reading:collect': (payload) =>

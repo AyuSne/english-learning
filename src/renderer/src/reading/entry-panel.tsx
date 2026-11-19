@@ -33,8 +33,7 @@ export type EntryPanel = {
   /** 删最后一条原句前先确认，会连词条一起删。 */
   confirmingDelete: boolean
   deleting: boolean
-  /** 稍后看标记的写入状态与刚给的反馈。 */
-  laterBusy: boolean
+  /** 稍后看写入成功后的那句反馈；在途状态由页面传进来。 */
   laterNotice: string | null
 }
 
@@ -88,6 +87,7 @@ export function EntryPanelView({
   onAsk,
   onAskNew,
   openingThread,
+  laterBusy,
   onToggleLater,
   onDelete,
   onConfirmDeleteLast,
@@ -100,6 +100,7 @@ export function EntryPanelView({
   onAsk: () => void
   onAskNew: () => void
   openingThread: boolean
+  laterBusy: boolean
   onToggleLater: () => void
   onDelete: (entrySentenceId: string) => void
   onConfirmDeleteLast: () => void
@@ -162,7 +163,7 @@ export function EntryPanelView({
               type="button"
               className="button"
               aria-pressed={panel.card.entry.laterMarkedAt !== null}
-              disabled={panel.laterBusy}
+              disabled={laterBusy}
               onClick={onToggleLater}
             >
               {laterToggleLabel(panel.card.entry.laterMarkedAt !== null)}

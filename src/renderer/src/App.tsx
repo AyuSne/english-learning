@@ -70,7 +70,11 @@ export function App() {
   // 「本篇选词」是同一篇文章下的只读子视图，同样不显示全局栏。
   if (view.route === 'reading') {
     return view.readingWords ? (
-      <ArticleWordsPage articleId={view.articleId} readingFrom={view.readingFrom} />
+      <ArticleWordsPage
+        articleId={view.articleId}
+        readingFrom={view.readingFrom}
+        wordsFrom={view.readingWordsFrom}
+      />
     ) : (
       <ReadingPage
         articleId={view.articleId}

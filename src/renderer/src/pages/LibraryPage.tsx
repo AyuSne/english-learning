@@ -16,6 +16,7 @@ import { ErrorBlock } from '../components/error-block'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { LibraryArticleActions } from '../library/article-actions'
 import { ArticleCollectedSection } from '../library/article-collected'
+import { libraryArticleMetaParts } from '../library/display'
 import { formatDay, progressText } from '../library/format'
 import { forgetLibraryArticle, navigate, replaceRoute } from '../navigate'
 import { parseView } from '../routes'
@@ -315,7 +316,7 @@ export function LibraryPage({
                       >
                         <span className="library-row-name">{article.title}</span>
                         <span className="library-row-meta">
-                          {article.setLabel} · {article.kindLabel} · {article.wordCount} 词
+                          {libraryArticleMetaParts(article).join(' · ')}
                         </span>
                         <span className="library-row-progress">
                           {progressText(article.progress)}
@@ -448,8 +449,7 @@ function SearchResults({
               >
                 <span className="library-row-name">{result.article.title}</span>
                 <span className="library-row-meta">
-                  {result.article.sessionLabel} · {result.article.setLabel} ·{' '}
-                  {result.article.kindLabel} · {result.article.wordCount} 词
+                  {libraryArticleMetaParts(result.article, { includeSession: true }).join(' · ')}
                 </span>
                 <span className="library-row-progress">
                   {progressText(result.article.progress)}

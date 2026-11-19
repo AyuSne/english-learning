@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
-import { deleteEntrySentence, loadEntryList, loadEntryPage, setEntryLater } from '../api'
+import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
@@ -8,7 +8,8 @@ import { entryHeadlineText } from '../entries/format'
 import { NoteRail } from '../entries/note-rail'
 import { SentenceRow } from '../entries/sentence-row'
 import { failureText } from '../errors'
-import { laterMarkedNotice, laterToggleLabel, laterUnmarkedNotice } from '../later/format'
+import { laterToggleLabel } from '../later/format'
+import { useLaterMark } from '../later/use-later-mark'
 import { navigate, replaceRoute } from '../navigate'
 import {
   entriesViewState,
@@ -35,14 +36,16 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const [actionError, setActionError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<EntrySentence | null>(null)
   const [deleting, setDeleting] = useState(false)
-  const [laterBusy, setLaterBusy] = useState(false)
   const [hint, setHint] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
+  const later = useLaterMark()
 
   const listRequest = useRef(0)
   const pageRequest = useRef(0)
   const rootRef = useRef<HTMLDivElement>(null)
   const restoredScroll = useRef(false)
+  const selectedIdRef = useRef(selectedId)
+  selectedIdRef.current = selectedId
 
   useLayoutEffect(() => {
     const node = rootRef.current?.closest('main')
@@ -225,36 +228,33 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   }
 
   /** 词条页上的「稍后看」：状态只改独立标记，原句、学习内容与收集时间都不动。 */
-  async function toggleLater(): Promise<void> {
-    if (page === null || laterBusy) return
+  function toggleLater(): void {
+    if (page === null) return
     const { id, mainForm, laterMarkedAt } = page.entry
     const next = laterMarkedAt === null
-    setLaterBusy(true)
-    setActionError(null)
-    try {
-      const result = await setEntryLater({ entryId: id, later: next })
-      if (result.status === 'missing') {
-        setActionError('这个词条已经不在了。')
-        refresh()
-        return
+    void later.setLater(
+      { entryId: id, mainForm, later: next },
+      {
+        failureMessage: '稍后看没有改成功，再试一次。',
+        onSettled: ({ entryId, markedAt, notice }) => {
+          setPage((current) =>
+            current !== null && current.entry.id === entryId
+              ? { ...current, entry: { ...current.entry, laterMarkedAt: markedAt } }
+              : current
+          )
+          // 只在用户还停在这条词条上时给反馈；切走后晚到的结果不打扰当前页。
+          if (selectedIdRef.current === entryId) setHint(notice)
+        },
+        onMissing: (entryId) => {
+          if (selectedIdRef.current !== entryId) return
+          refresh()
+          setActionError('这个词条已经不在了。')
+        },
+        onError: ({ entryId, message }) => {
+          if (selectedIdRef.current === entryId) setActionError(message)
+        }
       }
-      setPage((current) =>
-        current === null
-          ? current
-          : {
-              ...current,
-              entry: {
-                ...current.entry,
-                laterMarkedAt: result.status === 'marked' ? result.markedAt : null
-              }
-            }
-      )
-      setHint(next ? laterMarkedNotice(mainForm) : laterUnmarkedNotice(mainForm))
-    } catch (error) {
-      setActionError(failureText(error, '稍后看没有改成功，再试一次。'))
-    } finally {
-      setLaterBusy(false)
-    }
+    )
   }
 
   async function askAboutEntry(forceNew = false): Promise<void> {
@@ -324,8 +324,8 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
                   type="button"
                   className="button"
                   aria-pressed={page.entry.laterMarkedAt !== null}
-                  disabled={laterBusy}
-                  onClick={() => void toggleLater()}
+                  disabled={later.busyEntryId !== null}
+                  onClick={toggleLater}
                 >
                   {laterToggleLabel(page.entry.laterMarkedAt !== null)}
                 </button>

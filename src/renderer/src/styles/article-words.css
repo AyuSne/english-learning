@@ -1,4 +1,4 @@
-﻿/* ---------- 鏈瘒閫夎瘝锛堥槄璇诲瓙瑙嗗浘锛変笌鏂囩珷搴撱€屾湰绡囨敹杩囥€?---------- */
+/* ---------- 本篇选词（阅读子视图） ---------- */
 
 .reading-words .reading-sheet {
   max-width: 820px;
@@ -42,7 +42,7 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 8px;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -50,7 +50,7 @@
   color: var(--ink-2);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   line-height: 16px;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .article-words-entry {
-  padding: 10px 14px;
+  padding: 12px 16px;
   border: 1px solid var(--rule);
   border-radius: 10px;
   background: var(--panel);
@@ -94,7 +94,7 @@
 .article-words-entry-form {
   color: var(--ink);
   font-family: var(--font-serif);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 24px;
 }
@@ -108,7 +108,7 @@
 .article-words-sentences {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
@@ -118,11 +118,11 @@
   color: var(--ink-2);
   font-family: var(--font-serif);
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 27px;
 }
 
 .article-words-surface {
-  border-radius: 3px;
+  border-radius: 4px;
   background: var(--bed-select);
   color: var(--ink);
   font-weight: 600;
@@ -139,31 +139,7 @@
 .article-words-empty-title {
   color: var(--ink);
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
-  line-height: 30px;
-}
-
-/* ---------- 鏂囩珷搴撹鎯呯殑銆屾湰绡囨敹杩囥€?---------- */
-
-.library-collected {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--rule);
-}
-
-.library-collected-title {
-  margin: 0 0 6px;
-  color: var(--ink-2);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 16px;
-}
-
-.library-collected-count {
-  margin: 0 0 10px;
-  color: var(--ink-2);
-  font-size: 13px;
-  line-height: 18px;
+  line-height: 28px;
 }

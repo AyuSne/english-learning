@@ -58,7 +58,7 @@ test('从阅读页页脚进入本篇选词，按段落列出词条与原句，�
   await expect(page.getByRole('heading', { name: TITLE, level: 1 })).toBeVisible()
   await expect(page.locator('.article-words-summary')).toHaveText('2 个词条 · 3 条原句')
   await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(
-    `#/reading/${article.id}/words?from=library`
+    `#/reading/${article.id}/words?from=library&wordsFrom=reader`
   )
 
   // 没有收词的段落不出现，段落仍按文章顺序。
@@ -84,6 +84,69 @@ test('从阅读页页脚进入本篇选词，按段落列出词条与原句，�
   await expect.poll(() => page.evaluate(() => window.location.hash)).toMatch(/^#\/entries\//)
 })
 
+test('页脚进入本篇选词后，左上返回指向阅读页而不是文章库', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, {
+    picks: [{ entry: article, paragraphIndex: 0, needle: 'approach' }]
+  })
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await openArticle(page, TITLE)
+
+  await page.getByRole('button', { name: '进入本篇选词' }).click()
+  await expect(page.locator('[data-article-words="true"]')).toBeVisible()
+
+  // 页脚是直接上游：说「返回阅读」，回阅读页，且阅读页自己的「返回文章库」没被改写。
+  const back = page.getByRole('button', { name: '返回阅读' })
+  await expect(back).toContainText('阅读')
+  await back.click()
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
+  await expect(page.getByRole('heading', { name: TITLE, level: 1 })).toBeVisible()
+  const readingBack = page.getByRole('button', { name: '返回文章库' })
+  await expect(readingBack).toBeVisible()
+  await readingBack.click()
+  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+})
+
+test('阅读页原本来自词条或首页时，经本篇选词回来仍回到原处', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, {
+    picks: [{ entry: article, paragraphIndex: 0, needle: 'approach' }]
+  })
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+
+  // 首页 → 继续阅读 → 本篇选词 → 返回阅读 → 返回首页。先走这条：它会把本篇标成
+  // 已读完，必须在首页还有「继续阅读」时做。
+  await openArticle(page, TITLE)
+  await page.keyboard.press('Escape')
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '首页' }).click()
+  await page.getByRole('button', { name: '继续阅读' }).click()
+  await expect(page.getByRole('button', { name: '返回首页' })).toBeVisible()
+  await page.getByRole('button', { name: '进入本篇选词' }).click()
+  await expect(page.getByRole('button', { name: '返回阅读' })).toBeVisible()
+  await page.getByRole('button', { name: '返回阅读' }).click()
+  await expect(page.getByRole('button', { name: '返回首页' })).toBeVisible()
+  await page.getByRole('button', { name: '返回首页' }).click()
+  await expect(page.getByRole('button', { name: '从文章库挑一篇' })).toBeVisible()
+
+  // 词条 → 原文 → 本篇选词 → 返回阅读 → 返回词条。
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '词条' }).click()
+  await page.locator('.entries-row').filter({ hasText: 'approach' }).click()
+  await page.getByRole('button', { name: '回到原文' }).first().click()
+  await expect(page.getByRole('button', { name: '返回词条' })).toBeVisible()
+  await page.getByRole('button', { name: '进入本篇选词' }).click()
+  await expect(page.getByRole('button', { name: '返回阅读' })).toBeVisible()
+  await page.getByRole('button', { name: '返回阅读' }).click()
+  await expect(page.getByRole('button', { name: '返回词条' })).toBeVisible()
+  await page.getByRole('button', { name: '返回词条' }).click()
+  await expect(page.getByRole('heading', { name: '词条', level: 1 })).toBeVisible()
+})
+
 test('文章库详情显示收词条数，并能从「本篇收过」打开本篇选词', async ({
   launch,
   userDataDirectory
@@ -107,6 +170,13 @@ test('文章库详情显示收词条数，并能从「本篇收过」打开本�
   await collected.getByRole('button', { name: '打开本篇选词' }).click()
   await expect(page.locator('[data-article-words="true"]')).toBeVisible()
   await expect(page.locator('.article-words-summary')).toHaveText('2 个词条 · 3 条原句')
+
+  // 文章库详情是直接上游：返回目标就是文章库，并且仍选中这一篇。
+  await page.getByRole('button', { name: '返回文章库' }).click()
+  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+  await expect(
+    page.getByRole('complementary', { name: '文章详情' }).locator('.library-detail-title')
+  ).toHaveText(TITLE)
 })
 
 test('本篇还没收词时有空态，并给出回到阅读的入口', async ({ launch }) => {
@@ -190,5 +260,8 @@ test('直接打开本篇选词地址也能读，且不把阅读设置带跑', as
   await expect(page.locator('[data-article-words="true"]')).toBeVisible()
   await expect(page.getByRole('heading', { name: TITLE, level: 1 })).toBeVisible()
   await expect(page.locator('.article-words-empty')).toBeVisible()
-  await expect(page.getByRole('button', { name: '返回阅读' })).toBeVisible()
+  // 直接打开地址没有上游信息：左上固定说「返回阅读」，点下去也确定回阅读页。
+  await page.getByRole('button', { name: '返回阅读' }).click()
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
+  await expect(page.getByRole('heading', { name: TITLE, level: 1 })).toBeVisible()
 })

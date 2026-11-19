@@ -6,6 +6,7 @@ import type {
   EntrySentence,
   EntrySentenceGroup
 } from '../../shared/entries'
+import type { HomeEntryChip } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
 import type { Dictionary } from '../dictionary/dictionary'
 import { resolveEntryKey } from './key'
@@ -33,6 +34,54 @@ type EntryListRow = {
 }
 
 /**
+ * 词条列表与首页「最近收集」共用同一份列：计数口径只有一处，
+ * 首页不必再拼一套 SQL，也就不会和词条页漂移。
+ */
+export const ENTRY_LIST_COLUMNS = `we.id, we.main_form, we.last_collected_at,
+  (SELECT COUNT(*) FROM entry_sentence es WHERE es.entry_id = we.id) AS sentence_count,
+  (SELECT COUNT(DISTINCT es.article_id) FROM entry_sentence es
+    WHERE es.entry_id = we.id) AS article_count,
+  (SELECT COUNT(*) FROM learning_note ln WHERE ln.entry_id = we.id) AS note_count`
+
+function toEntryListItem(row: EntryListRow): EntryListItem {
+  return {
+    id: row.id,
+    mainForm: row.main_form,
+    sentenceCount: row.sentence_count,
+    articleCount: row.article_count,
+    noteCount: row.note_count,
+    lastCollectedAt: row.last_collected_at
+  }
+}
+
+/** 首页最多摆几个词条 chip；再多就交给词条页。 */
+export const HOME_RECENT_ENTRY_LIMIT = 8
+
+/**
+ * 首页「最近收集」：只数真实收下的词条（至少一条原句），排序与词条列表默认一致，
+ * 最近收词的排前面；上限固定，稍后看标记与钉住都不参与。
+ */
+export function readRecentEntryChips(
+  database: AppDatabase,
+  limit: number = HOME_RECENT_ENTRY_LIMIT
+): HomeEntryChip[] {
+  const rows = database
+    .prepare(
+      `SELECT ${ENTRY_LIST_COLUMNS}
+         FROM word_entry we
+        WHERE EXISTS (SELECT 1 FROM entry_sentence es WHERE es.entry_id = we.id)
+        ORDER BY we.last_collected_at DESC, we.id DESC
+        LIMIT ?`
+    )
+    .all(limit) as EntryListRow[]
+
+  return rows.map((row) => {
+    const { id, mainForm, sentenceCount, articleCount, lastCollectedAt } = toEntryListItem(row)
+    return { id, mainForm, sentenceCount, articleCount, lastCollectedAt }
+  })
+}
+
+/**
  * 左栏列表。搜索匹配主词形与已收原句正文；`total` 始终是库里的词条总数，
  * 搜索与筛选只改 `entries`。
  */
@@ -46,11 +95,7 @@ export function readEntryList(
 
   const rows = database
     .prepare(
-      `SELECT we.id, we.main_form, we.last_collected_at,
-              (SELECT COUNT(*) FROM entry_sentence es WHERE es.entry_id = we.id) AS sentence_count,
-              (SELECT COUNT(DISTINCT es.article_id) FROM entry_sentence es
-                WHERE es.entry_id = we.id) AS article_count,
-              (SELECT COUNT(*) FROM learning_note ln WHERE ln.entry_id = we.id) AS note_count
+      `SELECT ${ENTRY_LIST_COLUMNS}
          FROM word_entry we
         WHERE ? = ''
            OR instr(lower(we.main_form), ?) > 0
@@ -80,14 +125,7 @@ export function readEntryList(
       if (filter === 'no-notes') return row.note_count === 0
       return true
     })
-    .map((row) => ({
-      id: row.id,
-      mainForm: row.main_form,
-      sentenceCount: row.sentence_count,
-      articleCount: row.article_count,
-      noteCount: row.note_count,
-      lastCollectedAt: row.last_collected_at
-    }))
+    .map(toEntryListItem)
 
   return { total, entries }
 }

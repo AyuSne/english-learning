@@ -16,6 +16,7 @@ function view(route: Route, overrides: Partial<View> = {}): View {
     fromEntryId: null,
     readingFrom: null,
     readingWords: false,
+    readingWordsFrom: null,
     ...overrides
   }
 }
@@ -69,6 +70,25 @@ describe('parseView', () => {
     )
     expect(parseView('#/reading/a/words?from=library')).toEqual(
       view('reading', { articleId: 'a', readingWords: true, readingFrom: 'library' })
+    )
+    // 直接上游单独记：页脚进来是 reader，文章库详情进来是 library；认不出时为空。
+    expect(parseView('#/reading/a/words?from=library&wordsFrom=reader')).toEqual(
+      view('reading', {
+        articleId: 'a',
+        readingWords: true,
+        readingFrom: 'library',
+        readingWordsFrom: 'reader'
+      })
+    )
+    expect(parseView('#/reading/a/words?wordsFrom=library')).toEqual(
+      view('reading', { articleId: 'a', readingWords: true, readingWordsFrom: 'library' })
+    )
+    expect(parseView('#/reading/a/words?wordsFrom=nope')).toEqual(
+      view('reading', { articleId: 'a', readingWords: true })
+    )
+    // 正文页不认 wordsFrom，别把子视图的上游带到正文上。
+    expect(parseView('#/reading/a?wordsFrom=reader')).toEqual(
+      view('reading', { articleId: 'a' })
     )
     // 子视图段认不出时不当成文章，回首页。
     expect(parseView('#/reading/a/other')).toEqual(view('home'))
@@ -153,13 +173,24 @@ describe('routeHash', () => {
     expect(routeHash('home', { articleId: 'ignored' })).toBe('#/home')
   })
 
-  it('阅读页的本篇选词把 words 段与来源一起编进 hash', () => {
+  it('阅读页的本篇选词把 words 段、来源与直接上游一起编进 hash', () => {
     expect(routeHash('reading', { articleId: 'a b', words: true })).toBe(
       '#/reading/a%20b/words'
     )
     expect(
       routeHash('reading', { articleId: 'a', words: true, readingFrom: 'library' })
     ).toBe('#/reading/a/words?from=library')
+    expect(
+      routeHash('reading', {
+        articleId: 'a',
+        words: true,
+        readingFrom: 'library',
+        wordsFrom: 'reader'
+      })
+    ).toBe('#/reading/a/words?from=library&wordsFrom=reader')
+    expect(
+      routeHash('reading', { articleId: 'a', words: true, wordsFrom: 'library' })
+    ).toBe('#/reading/a/words?wordsFrom=library')
     // 没有文章就没有本篇选词，退回普通阅读页。
     expect(routeHash('reading', { words: true })).toBe('#/reading')
   })
