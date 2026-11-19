@@ -9,6 +9,7 @@ import { AppearanceSection } from '../settings/appearance-section'
 import { DataSection } from '../settings/data-section'
 import { ModelSection } from '../settings/model-section'
 import { ReadingDefaultsSection } from '../settings/reading-defaults-section'
+import { settingsViewSection, updateSettingsViewSection } from '../view-state'
 
 const SECTIONS = [
   { id: 'model', label: '模型服务' },
@@ -22,7 +23,7 @@ type SectionId = (typeof SECTIONS)[number]['id']
 
 /** 设置页：左导航五分区，右侧单列表单；每处改动都直接写本机。 */
 export function SettingsPage() {
-  const [section, setSection] = useState<SectionId>('model')
+  const [section, setSection] = useState<SectionId>(settingsViewSection)
   const [overview, setOverview] = useState<SettingsOverview | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
@@ -84,7 +85,10 @@ export function SettingsPage() {
             type="button"
             className="settings-nav-item"
             aria-current={section === item.id ? 'location' : undefined}
-            onClick={() => setSection(item.id)}
+            onClick={() => {
+              setSection(item.id)
+              updateSettingsViewSection(item.id)
+            }}
           >
             {item.label}
           </button>

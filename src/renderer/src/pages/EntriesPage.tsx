@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
 import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
 import { getChatStore, openThreadForMain } from '../chat/store'
@@ -9,6 +9,7 @@ import { NoteRail } from '../entries/note-rail'
 import { SentenceRow } from '../entries/sentence-row'
 import { failureText } from '../errors'
 import { navigate, replaceRoute } from '../navigate'
+import { entriesViewState, updateEntriesViewState } from '../view-state'
 
 /**
  * 词条页：左列表、中原句、右学习内容。打开词条先看到原句，右栏默认收窄。
@@ -19,9 +20,9 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const [allEntries, setAllEntries] = useState<EntryListResult | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(entryId)
   const [page, setPage] = useState<EntryPage | null>(null)
-  const [query, setQuery] = useState('')
-  const [sort, setSort] = useState<EntrySort>('recent')
-  const [filter, setFilter] = useState<EntryFilter>('all')
+  const [query, setQuery] = useState(() => entriesViewState().query)
+  const [sort, setSort] = useState<EntrySort>(() => entriesViewState().sort)
+  const [filter, setFilter] = useState<EntryFilter>(() => entriesViewState().filter)
   const [railOpen, setRailOpen] = useState(false)
   const [listError, setListError] = useState<string | null>(null)
   const [pageError, setPageError] = useState<string | null>(null)
@@ -33,6 +34,36 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
 
   const listRequest = useRef(0)
   const pageRequest = useRef(0)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const restoredScroll = useRef(false)
+
+  useLayoutEffect(() => {
+    const node = rootRef.current?.closest('main')
+    if (!node) return
+    const remember = (): void => {
+      if (restoredScroll.current) updateEntriesViewState({ scrollTop: node.scrollTop })
+    }
+    node.addEventListener('scroll', remember)
+    return () => {
+      remember()
+      node.removeEventListener('scroll', remember)
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    if (restoredScroll.current) return
+    if (selectedId !== null && page?.entry.id !== selectedId) return
+    // 带原句的跳转应定位该句，不能让稍后返回的列表再覆盖这个位置。
+    if (selectedId === entryId && entrySentenceId !== null) {
+      restoredScroll.current = true
+      return
+    }
+    if (listing === null) return
+    const node = rootRef.current?.closest('main')
+    if (!node) return
+    node.scrollTop = entriesViewState().scrollTop
+    restoredScroll.current = true
+  }, [entryId, entrySentenceId, listing, page, selectedId])
 
   useEffect(() => {
     if (entryId !== null) {
@@ -192,16 +223,25 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   }
 
   return (
-    <div className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
+    <div ref={rootRef} className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
       <EntryList
         listing={listing}
         selectedId={selectedId}
         query={query}
         sort={sort}
         filter={filter}
-        onQuery={setQuery}
-        onSort={setSort}
-        onFilter={setFilter}
+        onQuery={(value) => {
+          setQuery(value)
+          updateEntriesViewState({ query: value })
+        }}
+        onSort={(value) => {
+          setSort(value)
+          updateEntriesViewState({ sort: value })
+        }}
+        onFilter={(value) => {
+          setFilter(value)
+          updateEntriesViewState({ filter: value })
+        }}
         onSelect={selectEntry}
       />
 
