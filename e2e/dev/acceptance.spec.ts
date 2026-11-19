@@ -107,14 +107,20 @@ test.describe('收官验收 · 整条学习链路', () => {
     await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
 
     await nav(page, '首页').click()
-    await expect(page.getByRole('heading', { name: articleTitle, level: 1 })).toBeVisible()
-    await expect(page.locator('.home-continue .eyebrow')).toHaveText('继续阅读')
+    // 继续阅读：场次在 eyebrow，标题只留篇名，meta 不重复场次与题型。
+    const titleParts = articleTitle.split(' · ')
+    const displayTitle = titleParts[titleParts.length - 1] ?? articleTitle
+    await expect(page.getByRole('heading', { name: displayTitle, level: 1 })).toBeVisible()
+    await expect(page.locator('.home-continue .eyebrow')).toHaveText(
+      titleParts.slice(0, 2).join(' · ')
+    )
+    await expect(page.locator('.home-meta')).toHaveText(/\d+ 词 · 读到 \d+%/)
     await expect(page.getByText(/上次停在 第 \d+ 段 · 第 \d+ 句/)).toBeVisible()
 
     await page.getByRole('button', { name: '继续阅读' }).click()
     await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
     await page.keyboard.press('Escape')
-    await expect(page.getByRole('heading', { name: articleTitle, level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: displayTitle, level: 1 })).toBeVisible()
 
     // 5. 词条：原句已按文章分组收进来。
     await nav(page, '词条').click()

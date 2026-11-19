@@ -82,7 +82,9 @@ test.describe('语料导入与文章库', () => {
       .getByRole('navigation', { name: '全局导航' })
       .getByRole('button', { name: '首页' })
       .click()
-    await expect(page.getByRole('heading', { name: title ?? '' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: title ?? '' })).toHaveCount(0)
+    const homeTitle = title?.split(' · ').at(-1) ?? ''
+    await expect(page.getByRole('heading', { name: homeTitle })).toBeVisible()
     await expect(page.getByText('上次停在 第 1 段 · 第 1 句')).toBeVisible()
     await expect(page.getByText(/读到 \d+%/)).toBeVisible()
   })
