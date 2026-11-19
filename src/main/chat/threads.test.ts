@@ -9,12 +9,14 @@ import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
 import { createLearningNote } from '../entries/notes'
-import { collectSelection } from '../entries/queries'
+import { collectSelection, deleteEntrySentence } from '../entries/queries'
 import {
   askQuestion,
   createThread,
   editQuestion,
   listThreads,
+  findRecentThreadForMain,
+  openThreadForMain,
   readContextCandidates,
   readThreadView,
   saveAnswer,
@@ -136,6 +138,67 @@ function seed(): {
 function itemIds(items: readonly ThreadContextItem[]): string[] {
   return items.map((item) => item.id)
 }
+
+describe('按主对象打开线程', () => {
+  it('重复打开同一词条复用原线程', () => {
+    const seeded = seed()
+    const main = { kind: 'entry' as const, entryId: seeded.approachEntryId }
+    const first = openThreadForMain(database, { main }, { now: T1 })
+    const second = openThreadForMain(database, { main }, { now: T2 })
+    expect(first.status).toBe('created')
+    expect(second.status).toBe('reused')
+    if (first.status === 'rejected' || second.status === 'rejected') return
+    expect(second.thread.id).toBe(first.thread.id)
+    expect(listThreads(database).threads).toHaveLength(1)
+  })
+
+  it('按完整主对象区分线程，明确新开后按最近更新复用', () => {
+    const seeded = seed()
+    const main = { kind: 'entry' as const, entryId: seeded.approachEntryId }
+    const first = openThreadForMain(database, { main }, { now: T0 })
+    const second = openThreadForMain(database, { main, forceNew: true }, { now: T1 })
+    const sentence = openThreadForMain(database, {
+      main: { kind: 'sentence', entrySentenceId: seeded.approachSentenceIds[0] as string }
+    }, { now: T3 })
+    const article = openThreadForMain(database, {
+      main: { kind: 'article', articleId: firstArticle.id }
+    }, { now: T4 })
+    if (first.status === 'rejected' || second.status === 'rejected' ||
+        sentence.status === 'rejected' || article.status === 'rejected') throw new Error('open failed')
+    expect(new Set([first.thread.id, second.thread.id, sentence.thread.id, article.thread.id]).size).toBe(4)
+    expect(findRecentThreadForMain(database, main)?.id).toBe(second.thread.id)
+    askQuestion(database, { threadId: first.thread.id, text: '继续这个问题' }, { now: T2 })
+    expect(findRecentThreadForMain(database, main)?.id).toBe(first.thread.id)
+    expect(openThreadForMain(database, { main }, { now: T4 })).toMatchObject({
+      status: 'reused', thread: { id: first.thread.id }
+    })
+  })
+
+  it('空白线程每次新建，不把缺失的对象当作空白线程', () => {
+    const seeded = seed()
+    const main = { kind: 'sentence' as const, entrySentenceId: seeded.approachSentenceIds[0] as string }
+    const existing = openThreadForMain(database, { main }, { now: T0 })
+    if (existing.status === 'rejected') throw new Error('open failed')
+    deleteEntrySentence(database, main.entrySentenceId)
+    expect(findRecentThreadForMain(database, main)).toBeNull()
+    expect(openThreadForMain(database, { main })).toEqual({ status: 'rejected', reason: 'missing-main' })
+    expect(readThreadView(database, existing.thread.id)?.missingMain).toBe('sentence')
+    const firstBlank = openThreadForMain(database, { main: { kind: 'none' } })
+    const secondBlank = openThreadForMain(database, { main: { kind: 'none' } })
+    if (firstBlank.status === 'rejected' || secondBlank.status === 'rejected') throw new Error('open failed')
+    expect(firstBlank.thread.id).not.toBe(secondBlank.thread.id)
+    expect(findRecentThreadForMain(database, { kind: 'none' })).toBeNull()
+  })
+
+  it('同时刻新开的两条线程以后一条作为最近线程', () => {
+    const main = { kind: 'article' as const, articleId: firstArticle.id }
+    const first = openThreadForMain(database, { main, forceNew: true }, { now: T4 })
+    const second = openThreadForMain(database, { main, forceNew: true }, { now: T4 })
+    if (first.status === 'rejected' || second.status === 'rejected') throw new Error('open failed')
+    expect(second.thread.id).not.toBe(first.thread.id)
+    expect(findRecentThreadForMain(database, main)?.id).toBe(second.thread.id)
+  })
+})
 
 describe('createThread', () => {
   it('挂词条时预填主词形与最近收的原句，标题用主词形', () => {

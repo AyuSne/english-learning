@@ -123,6 +123,7 @@ export function buildMessages(view: ChatThreadView, mode: GenerationMode): ChatT
 
 /** 页头副标题：挂什么对象就说清是什么，空白线程给一句说明。 */
 export function threadHeaderText(view: ChatThreadView): string {
+  if (view.missingMain) return '主对象已不存在'
   const main = view.main
   switch (main.kind) {
     case 'none':

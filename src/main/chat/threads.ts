@@ -6,6 +6,8 @@ import type {
   CreateThreadRequest,
   CreateThreadResult,
   EditQuestionRequest,
+  OpenThreadForMainRequest,
+  OpenThreadForMainResult,
   QuestionResult,
   SaveAnswerRequest,
   SaveAnswerResult,
@@ -747,6 +749,9 @@ export function readThreadView(database: AppDatabase, threadId: string): ChatThr
     id: thread.id,
     title: thread.title,
     main,
+    ...(main.kind === 'none' && thread.main_kind !== 'none'
+      ? { missingMain: thread.main_kind as Exclude<ThreadMainKind, 'none'> }
+      : {}),
     context,
     contextSummary: summarizeContext(context),
     turns: buildTurns(rows, pathToLeaf(rows, thread.leaf_entry_id)),
@@ -783,8 +788,8 @@ export function listThreads(database: AppDatabase): ThreadListResult {
     return {
       id: row.id,
       title: row.title,
-      mainKind: main.kind,
-      mainLabel: mainLabelOf(main),
+      mainKind: row.main_kind as ThreadMainKind,
+      mainLabel: main.kind === 'none' && row.main_kind !== 'none' ? '主对象已删除' : mainLabelOf(main),
       turnCount: row.turn_count,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -846,6 +851,41 @@ export function createThread(
     return { status: 'rejected', reason: 'missing-main' }
   }
   return { status: 'created', thread }
+}
+
+/** 查找与主对象完全相同、最近更新的线程；空白线程不复用。 */
+export function findRecentThreadForMain(
+  database: AppDatabase,
+  main: CreateThreadRequest['main']
+): ChatThreadView | null {
+  const mainId = mainIdOf(main)
+  if (mainId === null || describeMain(database, main.kind, mainId).kind === 'none') return null
+  const row = database
+    .prepare(
+      `SELECT id FROM thread WHERE main_kind = ? AND main_id = ?
+       ORDER BY updated_at DESC, created_at DESC, rowid DESC LIMIT 1`
+    )
+    .get(main.kind, mainId) as { id: string } | undefined
+  return row ? readThreadView(database, row.id) : null
+}
+
+/** 查找与创建在同一写事务里，连续请求不会各自创建一条。 */
+export function openThreadForMain(
+  database: AppDatabase,
+  request: OpenThreadForMainRequest,
+  options: { now?: string } = {}
+): OpenThreadForMainResult {
+  return database.transaction(() => {
+    const mainId = mainIdOf(request.main)
+    if (request.main.kind !== 'none' && describeMain(database, request.main.kind, mainId).kind === 'none') {
+      return { status: 'rejected', reason: 'missing-main' } as const
+    }
+    if (!request.forceNew) {
+      const existing = findRecentThreadForMain(database, request.main)
+      if (existing) return { status: 'reused', thread: existing } as const
+    }
+    return createThread(database, request, options)
+  }).immediate()
 }
 
 export function updateThreadContext(

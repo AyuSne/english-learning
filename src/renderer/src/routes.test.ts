@@ -67,6 +67,12 @@ describe('parseView', () => {
     expect(parseView('#/entries/a/b')).toEqual(view('home'))
   })
 
+  it('词条页可带一条原句定位并从地址恢复', () => {
+    const hash = routeHash('entries', { entryId: 'entry 1', entrySentenceId: 'sentence 1' })
+    expect(hash).toBe('#/entries/entry%201?sentence=sentence%201')
+    expect(parseView(hash)).toEqual(view('entries', { entryId: 'entry 1', entrySentenceId: 'sentence 1' }))
+  })
+
   it('文章库的选中项可以从地址恢复', () => {
     expect(parseView('#/library/a%20b')).toEqual(view('library', { articleId: 'a b' }))
     expect(routeHash('library', { articleId: 'a b' })).toBe('#/library/a%20b')

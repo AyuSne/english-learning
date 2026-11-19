@@ -12,6 +12,7 @@ import {
   editThreadQuestion,
   loadThread,
   loadThreads,
+  openThreadForMainRequest,
   saveThreadAnswer,
   saveThreadContinuation,
   switchThreadAnswer,
@@ -213,17 +214,34 @@ export function refreshThreads(): Promise<void> {
   )
 }
 
-/** 从词条、原句或文章页开一条挂好对象的线程，并切过去。 */
-export async function openThreadForMain(
-  main: CreateThreadRequest['main']
+const openingThreads = new Map<string, Promise<string | null>>()
+
+/** 从词条、原句或文章打开最近线程；明确要求时新开一条。 */
+export function openThreadForMain(
+  main: CreateThreadRequest['main'],
+  options: { forceNew?: boolean } = {}
+): Promise<string | null> {
+  if (main.kind === 'none') return openMainThread(main, options)
+  const key = JSON.stringify({ main, forceNew: options.forceNew === true })
+  const pending = openingThreads.get(key)
+  if (pending) return pending
+  const operation = openMainThread(main, options).finally(() => openingThreads.delete(key))
+  openingThreads.set(key, operation)
+  return operation
+}
+
+async function openMainThread(
+  main: CreateThreadRequest['main'],
+  options: { forceNew?: boolean }
 ): Promise<string | null> {
   try {
-    const result = await createThread({ main })
-    if (result.status !== 'created') {
+    const result = await openThreadForMainRequest({ main, forceNew: options.forceNew })
+    if (result.status === 'rejected') {
       fail('这个对象已经不在了，没能开线程。', '这个对象已经不在了，没能开线程。', null)
       return null
     }
     retryAction = null
+    const sameThread = state.currentId === result.thread.id
     state = {
       ...state,
       currentId: result.thread.id,
@@ -231,14 +249,14 @@ export async function openThreadForMain(
       loading: false,
       error: null,
       canRetry: false,
-      session: { ...state.session, thinkingOpen: null }
+      session: sameThread ? state.session : { ...state.session, thinkingOpen: null }
     }
     emit()
     navigate('chat', { threadId: result.thread.id })
     return result.thread.id
   } catch (error) {
     fail(error, '没能开线程，再试一次。', () => {
-      void openThreadForMain(main)
+      void openThreadForMain(main, options)
     })
     return null
   }
