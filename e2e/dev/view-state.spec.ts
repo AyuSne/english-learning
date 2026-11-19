@@ -136,6 +136,45 @@ test('词条搜索、排序、筛选和两处滚动在切页后保持', async ({
   await expect.poll(() => main.evaluate((node) => node.scrollTop)).toBe(mainTop)
 })
 
+test('不同词条分别记住正文滚动位置', async ({ launch, userDataDirectory }) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, {
+    picks: words.flatMap((_, paragraphIndex) => [
+      { entry: longArticle, paragraphIndex, needle: 'Vocabulary' },
+      { entry: longArticle, paragraphIndex, needle: 'context' }
+    ])
+  })
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '词条' }).click()
+  const main = page.locator('main')
+  const vocabulary = page.locator('.entries-row').filter({ hasText: 'Vocabulary' })
+  const context = page.locator('.entries-row').filter({ hasText: 'context' })
+
+  await vocabulary.click()
+  await expect(page.locator('.entry-sentence')).toHaveCount(30)
+  await main.evaluate((node) => { node.scrollTop = 350 })
+  await expect.poll(() => main.evaluate((node) => Math.round(node.scrollTop))).toBe(350)
+  const vocabularyTop = await main.evaluate((node) => node.scrollTop)
+
+  await context.click()
+  await expect(page.getByRole('heading', { name: 'context', level: 2 })).toBeVisible()
+  await expect(page.locator('.entry-sentence')).toHaveCount(30)
+  await expect.poll(() => main.evaluate((node) => node.scrollTop)).toBe(0)
+  await main.evaluate((node) => { node.scrollTop = 700 })
+  await expect.poll(() => main.evaluate((node) => Math.round(node.scrollTop))).toBe(700)
+  const contextTop = await main.evaluate((node) => node.scrollTop)
+  expect(contextTop).toBeGreaterThan(vocabularyTop + 300)
+
+  await vocabulary.click()
+  await expect(page.getByRole('heading', { name: 'Vocabulary', level: 2 })).toBeVisible()
+  await expect.poll(async () => Math.abs(await main.evaluate((node) => node.scrollTop) - vocabularyTop))
+    .toBeLessThanOrEqual(1)
+  await context.click()
+  await expect(page.getByRole('heading', { name: 'context', level: 2 })).toBeVisible()
+  await expect.poll(async () => Math.abs(await main.evaluate((node) => node.scrollTop) - contextTop))
+    .toBeLessThanOrEqual(1)
+})
+
 test('从原句线程返回词条时，指定的原句优先于上次滚动位置', async ({
   launch,
   userDataDirectory

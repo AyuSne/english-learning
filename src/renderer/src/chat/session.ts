@@ -35,13 +35,10 @@ export type LiveGeneration = {
 
 export type ChatSessionState = {
   generation: LiveGeneration | null
-  /** 学习者手动展开/折起思维链的选择；null 表示按当前阶段自动。 */
-  thinkingOpen: boolean | null
 }
 
 export const initialChatSession: ChatSessionState = {
-  generation: null,
-  thinkingOpen: null
+  generation: null
 }
 
 export type ChatSessionAction =
@@ -60,7 +57,6 @@ export type ChatSessionAction =
   | { type: 'stream'; streamId: string; event: ChatStreamEvent; now: number }
   | { type: 'stop'; now: number }
   | { type: 'clear'; streamId?: string }
-  | { type: 'toggle-thinking'; open: boolean }
 
 export function chatSessionReducer(
   state: ChatSessionState,
@@ -120,8 +116,6 @@ export function chatSessionReducer(
       }
       return { ...state, generation: null }
 
-    case 'toggle-thinking':
-      return { ...state, thinkingOpen: action.open }
   }
 }
 
@@ -227,14 +221,14 @@ export function liveThinkingSeconds(generation: LiveGeneration, now: number): nu
 }
 
 export function thinkingExpandedFor(
-  state: ChatSessionState,
+  thinkingOpen: boolean | null,
   options: { hasThinking: boolean; active: boolean }
 ): boolean {
   if (!options.hasThinking) {
     return false
   }
-  if (state.thinkingOpen !== null) {
-    return state.thinkingOpen
+  if (thinkingOpen !== null) {
+    return thinkingOpen
   }
   return options.active
 }
@@ -244,10 +238,10 @@ export function thinkingExpandedFor(
  * 这个选择在本线程内一直有效。
  */
 export function thinkingExpanded(
-  state: ChatSessionState,
+  thinkingOpen: boolean | null,
   generation: LiveGeneration
 ): boolean {
-  return thinkingExpandedFor(state, {
+  return thinkingExpandedFor(thinkingOpen, {
     hasThinking: generation.thinkingStartedAt !== null || generation.baseThinking !== '',
     active: generation.phase === 'thinking'
   })

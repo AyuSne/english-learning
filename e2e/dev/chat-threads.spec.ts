@@ -137,6 +137,31 @@ function requestMessages(stub: SseStub, index: number): { role: string; content:
 }
 
 test.describe('线程主对象与上下文', () => {
+  test('空白线程首问后新开学习，第二问进入另一条线程', async ({ launch }) => {
+    const stub = await createStub({ kind: 'stream', text: ['好的。'] })
+    const page = await launchApp(launch, { env: seededEnvironment(stub.baseUrl) })
+    await openBlankChat(page)
+    await ask(page, '第一条线程的问题')
+    await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
+    const firstHash = await page.evaluate(() => window.location.hash)
+    expect(firstHash).toMatch(/^#\/chat\/.+/)
+
+    await page.getByRole('complementary', { name: '线程列表' })
+      .getByRole('button', { name: '新的学习' }).click()
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('#/chat')
+    await expect(page.getByRole('heading', { name: '新的学习', level: 1 })).toBeVisible()
+    await expect(page.locator('.chat-scroll').getByText('第一条线程的问题')).toHaveCount(0)
+
+    await ask(page, '第二条线程的问题')
+    await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
+    await expect.poll(() => stub.requests.length).toBe(2)
+    const secondHash = await page.evaluate(() => window.location.hash)
+    expect(secondHash).toMatch(/^#\/chat\/.+/)
+    expect(secondHash).not.toBe(firstHash)
+    expect(requestMessages(stub, 1)).toEqual([{ role: 'user', content: '第二条线程的问题' }])
+    await expect(page.locator('.thread-row')).toHaveCount(2)
+  })
+
   test('词条连点复用线程，头部回词条并可明确新开', async ({ launch, userDataDirectory }) => {
     seed(userDataDirectory)
     const page = await launchApp(launch, { env: { CORPUS_DIRECTORY: corpusDirectory } })
@@ -168,6 +193,46 @@ test.describe('线程主对象与上下文', () => {
     await expect(sentence).toHaveAttribute('data-focused', 'true')
     await expect(sentence).toBeInViewport()
     expect(page.url()).toContain('?sentence=')
+  })
+
+  test('词条原句可以复用已有线程或另开线程，各自保留对话和原句上下文', async ({ launch, userDataDirectory }) => {
+    seed(userDataDirectory)
+    const stub = await createStub({ kind: 'stream', text: ['好的。'] })
+    const { page, electronApp } = await launch({ env: seededEnvironment(stub.baseUrl) })
+    if (electronApp === null) throw new Error('需要开发版 Electron 进程')
+    await electronApp.evaluate(({ BrowserWindow }) => {
+      const window = BrowserWindow.getAllWindows()[0]
+      if (!window) throw new Error('没有主窗口')
+      window.setContentSize(898, 820)
+    })
+    await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeLessThanOrEqual(900)
+    await openEntry(page, 'approach')
+    const sentence = page.locator('.entry-sentence').filter({ hasText: 'Employers approach hiring differently.' })
+    await sentence.getByRole('button', { name: '用这句提问' }).click()
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+    await ask(page, '原线程的问题')
+    await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
+    const firstHash = await page.evaluate(() => window.location.hash)
+
+    await page.locator('.chat-subtitle button').click()
+    await sentence.getByRole('button', { name: '用这句提问' }).click()
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(firstHash)
+    await expect(page.locator('.chat-scroll').getByText('原线程的问题')).toBeVisible()
+    await page.locator('.chat-subtitle button').click()
+    await sentence.getByRole('button', { name: '为这句新建线程' }).click()
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
+    await expect(page.locator('.chat-scroll').getByText('原线程的问题')).toHaveCount(0)
+    expect(await page.evaluate(() => window.location.hash)).not.toBe(firstHash)
+    await ask(page, '新线程的问题')
+    await expect(page.getByRole('button', { name: '重新生成' })).toBeVisible()
+    await expect.poll(() => stub.requests.length).toBe(2)
+    expect(requestMessages(stub, 1)[0]?.content).toContain('[原句] Employers approach hiring differently.')
+    await page.goBack()
+    await page.goBack()
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(firstHash)
+    await expect(page.locator('.chat-scroll').getByText('原线程的问题')).toBeVisible()
+    await expect(page.locator('.chat-scroll').getByText('新线程的问题')).toHaveCount(0)
+    await expect(page.locator('.context-chip-label')).toHaveText(['approach', 'approach'])
   })
 
   test('文章连点复用线程，头部回阅读并可明确新开', async ({ launch, userDataDirectory }) => {

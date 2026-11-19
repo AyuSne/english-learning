@@ -9,7 +9,12 @@ import { NoteRail } from '../entries/note-rail'
 import { SentenceRow } from '../entries/sentence-row'
 import { failureText } from '../errors'
 import { navigate, replaceRoute } from '../navigate'
-import { entriesViewState, updateEntriesViewState } from '../view-state'
+import {
+  entriesViewState,
+  entryScrollTop,
+  updateEntriesViewState,
+  updateEntryScrollTop
+} from '../view-state'
 
 /**
  * 词条页：左列表、中原句、右学习内容。打开词条先看到原句，右栏默认收窄。
@@ -40,15 +45,16 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   useLayoutEffect(() => {
     const node = rootRef.current?.closest('main')
     if (!node) return
+    restoredScroll.current = false
     const remember = (): void => {
-      if (restoredScroll.current) updateEntriesViewState({ scrollTop: node.scrollTop })
+      if (restoredScroll.current) updateEntryScrollTop(selectedId, node.scrollTop)
     }
     node.addEventListener('scroll', remember)
     return () => {
       remember()
       node.removeEventListener('scroll', remember)
     }
-  }, [])
+  }, [selectedId])
 
   useLayoutEffect(() => {
     if (restoredScroll.current) return
@@ -61,7 +67,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     if (listing === null) return
     const node = rootRef.current?.closest('main')
     if (!node) return
-    node.scrollTop = entriesViewState().scrollTop
+    node.scrollTop = entryScrollTop(selectedId)
     restoredScroll.current = true
   }, [entryId, entrySentenceId, listing, page, selectedId])
 
@@ -223,6 +229,15 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     if (opened === null) setActionError(getChatStore().error ?? '没能打开线程，请刷新词条后再试。')
   }
 
+  async function askAboutSentence(sentence: EntrySentence, forceNew = false): Promise<void> {
+    setActionError(null)
+    const opened = await openThreadForMain({
+      kind: 'sentence',
+      entrySentenceId: sentence.id
+    }, { forceNew })
+    if (opened === null) setActionError(getChatStore().error ?? '没能打开线程，请刷新词条后再试。')
+  }
+
   return (
     <div ref={rootRef} className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
       <EntryList
@@ -311,15 +326,8 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
                         busy={deleting}
                         onBack={() => openReading(sentence, false)}
                         onReselect={() => openReading(sentence, true)}
-                        onAsk={() => {
-                          setActionError(null)
-                          void openThreadForMain({
-                            kind: 'sentence',
-                            entrySentenceId: sentence.id
-                          }).then((opened) => {
-                            if (opened === null) setActionError(getChatStore().error ?? '没能打开线程，请刷新词条后再试。')
-                          })
-                        }}
+                        onAsk={() => void askAboutSentence(sentence)}
+                        onAskNew={() => void askAboutSentence(sentence, true)}
                         onRequestDelete={() => requestDelete(sentence)}
                       />
                     ))}

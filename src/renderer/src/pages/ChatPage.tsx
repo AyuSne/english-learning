@@ -45,7 +45,6 @@ import {
   liveThinkingSeconds,
   thinkingExpanded,
   thinkingExpandedFor,
-  type ChatSessionState,
   type LiveGeneration
 } from '../chat/session'
 import {
@@ -1078,7 +1077,7 @@ export function ChatPage({
                   key={turn.question.id}
                   turn={turn}
                   isLast={index === current.turns.length - 1}
-                  session={{ ...store.session, thinkingOpen }}
+                  thinkingOpen={thinkingOpen}
                   live={
                     liveHere && generation !== null && index === current.turns.length - 1
                       ? generation
@@ -1315,7 +1314,7 @@ export function ChatPage({
 function ChatTurnView({
   turn,
   isLast,
-  session,
+  thinkingOpen,
   live,
   now,
   disabled,
@@ -1331,7 +1330,7 @@ function ChatTurnView({
 }: {
   turn: ThreadTurn
   isLast: boolean
-  session: ChatSessionState
+  thinkingOpen: boolean | null
   live: LiveGeneration | null
   now: number
   disabled: boolean
@@ -1358,7 +1357,7 @@ function ChatTurnView({
       {live !== null ? (
         <LiveAnswer
           generation={live}
-          session={session}
+          thinkingOpen={thinkingOpen}
           now={now}
           onToggleThinking={onToggleThinking}
         />
@@ -1366,7 +1365,7 @@ function ChatTurnView({
         <AnswerCard
           answer={turn.answer}
           isLast={isLast}
-          session={session}
+          thinkingOpen={thinkingOpen}
           disabled={disabled}
           marks={marks}
           onPinAnswer={onPinAnswer}
@@ -1473,7 +1472,7 @@ function VersionNav({
 function AnswerCard({
   answer,
   isLast,
-  session,
+  thinkingOpen,
   disabled,
   marks,
   onPinAnswer,
@@ -1485,7 +1484,7 @@ function AnswerCard({
 }: {
   answer: ThreadAnswer
   isLast: boolean
-  session: ChatSessionState
+  thinkingOpen: boolean | null
   disabled: boolean
   marks: PinMarks
   onPinAnswer: (answer: ThreadAnswer) => void
@@ -1495,7 +1494,7 @@ function AnswerCard({
   onRetry: () => void
   onToggleThinking: (open: boolean) => void
 }) {
-  const expanded = thinkingExpandedFor(session, {
+  const expanded = thinkingExpandedFor(thinkingOpen, {
     hasThinking: answer.thinking !== '',
     active: false
   })
@@ -1600,18 +1599,18 @@ function AnswerCard({
 
 function LiveAnswer({
   generation,
-  session,
+  thinkingOpen,
   now,
   onToggleThinking
 }: {
   generation: LiveGeneration
-  session: ChatSessionState
+  thinkingOpen: boolean | null
   now: number
   onToggleThinking: (open: boolean) => void
 }) {
   const text = liveAnswerText(generation)
   const thinking = liveAnswerThinking(generation)
-  const expanded = thinkingExpanded(session, generation)
+  const expanded = thinkingExpanded(thinkingOpen, generation)
   const seconds = liveThinkingSeconds(generation, now)
   const waiting = generation.phase === 'waiting' && text === ''
 

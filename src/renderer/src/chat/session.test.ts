@@ -215,7 +215,7 @@ describe('思维链的展开', () => {
       event: { type: 'thinking', text: '想' },
       now: 1_500
     })
-    expect(thinkingExpanded(state, generation(state))).toBe(true)
+    expect(thinkingExpanded(null, generation(state))).toBe(true)
 
     state = chatSessionReducer(state, {
       type: 'stream',
@@ -223,14 +223,13 @@ describe('思维链的展开', () => {
       event: { type: 'text', text: '正文' },
       now: 1_600
     })
-    expect(thinkingExpanded(state, generation(state))).toBe(false)
+    expect(thinkingExpanded(null, generation(state))).toBe(false)
 
-    const opened = chatSessionReducer(state, { type: 'toggle-thinking', open: true })
-    expect(thinkingExpanded(opened, generation(opened))).toBe(true)
+    expect(thinkingExpanded(true, generation(state))).toBe(true)
   })
 
   it('没有思维链时不展开', () => {
     const state = begun()
-    expect(thinkingExpanded(state, generation(state))).toBe(false)
+    expect(thinkingExpanded(null, generation(state))).toBe(false)
   })
 })

@@ -14,6 +14,7 @@ export function SentenceRow({
   onBack,
   onReselect,
   onAsk,
+  onAskNew,
   onRequestDelete
 }: {
   sentence: EntrySentence
@@ -22,6 +23,7 @@ export function SentenceRow({
   onBack: () => void
   onReselect: () => void
   onAsk: () => void
+  onAskNew: () => void
   onRequestDelete: () => void
 }) {
   const [neighborsOpen, setNeighborsOpen] = useState(false)
@@ -52,6 +54,10 @@ export function SentenceRow({
             ✎
           </span>
           <span className="entry-action-label">提问</span>
+        </button>
+        <button type="button" className="entry-action" aria-label="为这句新建线程" title="为这句新建线程" onClick={onAskNew}>
+          <span className="entry-action-icon" aria-hidden="true">＋</span>
+          <span className="entry-action-label">新建线程</span>
         </button>
         <button
           type="button"

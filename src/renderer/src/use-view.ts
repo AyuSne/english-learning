@@ -8,7 +8,11 @@ export function useView(): View {
   useEffect(() => {
     const syncFromHash = (): void => setView(currentView())
     window.addEventListener('hashchange', syncFromHash)
-    return () => window.removeEventListener('hashchange', syncFromHash)
+    window.addEventListener('route-replaced', syncFromHash)
+    return () => {
+      window.removeEventListener('hashchange', syncFromHash)
+      window.removeEventListener('route-replaced', syncFromHash)
+    }
   }, [])
 
   return view

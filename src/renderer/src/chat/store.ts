@@ -176,8 +176,7 @@ export function openChatThread(threadId: string | null): void {
     editing: null,
     error: null,
     canRetry: false,
-    loading: threadId !== null,
-    session: { ...state.session, thinkingOpen: null }
+    loading: threadId !== null
   }
   contextSequence += 1
   emit()
@@ -215,14 +214,19 @@ export function refreshThreads(): Promise<void> {
 }
 
 const openingThreads = new Map<string, Promise<string | null>>()
+type OpenThreadOptions = { forceNew?: boolean; ensureSentenceContext?: boolean }
 
 /** 从词条、原句或文章打开最近线程；明确要求时新开一条。 */
 export function openThreadForMain(
   main: CreateThreadRequest['main'],
-  options: { forceNew?: boolean } = {}
+  options: OpenThreadOptions = {}
 ): Promise<string | null> {
   if (main.kind === 'none') return openMainThread(main, options)
-  const key = JSON.stringify({ main, forceNew: options.forceNew === true })
+  const key = JSON.stringify({
+    main,
+    forceNew: options.forceNew === true,
+    ensureSentenceContext: options.ensureSentenceContext === true
+  })
   const pending = openingThreads.get(key)
   if (pending) return pending
   const operation = openMainThread(main, options).finally(() => openingThreads.delete(key))
@@ -232,24 +236,25 @@ export function openThreadForMain(
 
 async function openMainThread(
   main: CreateThreadRequest['main'],
-  options: { forceNew?: boolean }
+  options: OpenThreadOptions
 ): Promise<string | null> {
   try {
-    const result = await openThreadForMainRequest({ main, forceNew: options.forceNew })
+    const result = await openThreadForMainRequest({ main, ...options })
     if (result.status === 'rejected') {
-      fail('这个对象已经不在了，没能开线程。', '这个对象已经不在了，没能开线程。', null)
+      const message = result.reason === 'context-full'
+        ? '这条线程的上下文已满。请新开一条，或先到对话页移除部分上下文。'
+        : '这个对象已经不在了，没能开线程。'
+      fail(message, message, null)
       return null
     }
     retryAction = null
-    const sameThread = state.currentId === result.thread.id
     state = {
       ...state,
       currentId: result.thread.id,
       current: result.thread,
       loading: false,
       error: null,
-      canRetry: false,
-      session: sameThread ? state.session : { ...state.session, thinkingOpen: null }
+      canRetry: false
     }
     emit()
     navigate('chat', { threadId: result.thread.id })
@@ -659,10 +664,6 @@ function changeContext(view: ChatThreadView, items: ThreadContextItem[]): void {
       }
     }
   )
-}
-
-export function setThinkingOpen(open: boolean): void {
-  dispatchSession({ type: 'toggle-thinking', open })
 }
 
 function newId(): string {

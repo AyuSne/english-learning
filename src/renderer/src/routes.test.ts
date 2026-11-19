@@ -124,7 +124,11 @@ describe('routeHash', () => {
       const hash = routeHash('reading', { articleId: 'a', readingFrom })
       expect(hash).toBe(`#/reading/a?from=${readingFrom}`)
       expect(parseView(hash)).toEqual(expect.objectContaining({ readingFrom }))
+      const emptyHash = routeHash('reading', { readingFrom })
+      expect(emptyHash).toBe(`#/reading?from=${readingFrom}`)
+      expect(parseView(emptyHash)).toEqual(view('reading', { readingFrom }))
     }
+    expect(parseView('#/reading?from=unknown')).toEqual(view('reading'))
     expect(parseView('#/reading/a?from=unknown')).toEqual(
       expect.objectContaining({ readingFrom: null })
     )

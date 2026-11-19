@@ -13,16 +13,15 @@ type EntriesViewState = {
   sort: EntrySort
   filter: EntryFilter
   listScrollTop: number
-  scrollTop: number
 }
 
 let entriesState: EntriesViewState = {
   query: '',
   sort: 'recent',
   filter: 'all',
-  listScrollTop: 0,
-  scrollTop: 0
+  listScrollTop: 0
 }
+const entryScrollTops = new Map<string | null, number>()
 let libraryState = { query: '', scrollTop: 0 }
 export type SettingsSection = 'model' | 'reading' | 'appearance' | 'data' | 'about'
 let settingsSection: SettingsSection = 'model'
@@ -44,6 +43,14 @@ export function entriesViewState(): EntriesViewState {
 
 export function updateEntriesViewState(patch: Partial<EntriesViewState>): void {
   entriesState = { ...entriesState, ...patch }
+}
+
+export function entryScrollTop(entryId: string | null): number {
+  return entryScrollTops.get(entryId) ?? 0
+}
+
+export function updateEntryScrollTop(entryId: string | null, scrollTop: number): void {
+  entryScrollTops.set(entryId, scrollTop)
 }
 
 export function libraryViewState(): Readonly<typeof libraryState> {

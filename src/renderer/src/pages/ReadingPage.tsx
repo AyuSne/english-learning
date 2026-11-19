@@ -202,11 +202,13 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
         setSettingsOpen(false)
         return
       }
-      goBack(readingFrom === 'library' || readingFrom === 'entries' ? readingFrom : 'home')
+      goBack(readingFrom === 'library' || readingFrom === 'entries' ? readingFrom : 'home', {
+        entrySentenceId: readingFrom === 'entries' ? entrySentenceId : null
+      })
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [focus, panel, settingsOpen, readingFrom])
+  }, [focus, panel, settingsOpen, readingFrom, entrySentenceId])
 
   useEffect(() => {
     if (!settingsOpen) return
@@ -606,7 +608,10 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
     if (openingThread) return
     setOpeningThread(true)
     setCollectError(null)
-    const threadId = await openThreadForMain(main, { forceNew })
+    const threadId = await openThreadForMain(main, {
+      forceNew,
+      ensureSentenceContext: main.kind === 'sentence'
+    })
     if (threadId === null) {
       setCollectError(getChatStore().error ?? '没能开线程，再试一次。')
       setOpeningThread(false)
@@ -678,7 +683,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
           type="button"
           className="reading-back"
           aria-label={`返回${backLabel}`}
-          onClick={() => goBack(backFallback)}
+          onClick={() => goBack(backFallback, {
+            entrySentenceId: readingFrom === 'entries' ? entrySentenceId : null
+          })}
         >
           <span aria-hidden="true">←</span> {backLabel || '返回'}
         </button>
@@ -859,6 +866,11 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
           onAsk={() => {
             if (panel.entrySentenceId !== null) {
               void openReadingThread({ kind: 'sentence', entrySentenceId: panel.entrySentenceId })
+            }
+          }}
+          onAskNew={() => {
+            if (panel.entrySentenceId !== null) {
+              void openReadingThread({ kind: 'sentence', entrySentenceId: panel.entrySentenceId }, true)
             }
           }}
           openingThread={openingThread}

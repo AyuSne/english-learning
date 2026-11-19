@@ -82,6 +82,7 @@ export function EntryPanelView({
   onClose,
   onOpenEntry,
   onAsk,
+  onAskNew,
   openingThread,
   onDelete,
   onConfirmDeleteLast,
@@ -92,6 +93,7 @@ export function EntryPanelView({
   onClose: () => void
   onOpenEntry: () => void
   onAsk: () => void
+  onAskNew: () => void
   openingThread: boolean
   onDelete: (entrySentenceId: string) => void
   onConfirmDeleteLast: () => void
@@ -140,6 +142,15 @@ export function EntryPanelView({
               onClick={onAsk}
             >
               就这个词提问
+            </button>
+            <button
+              type="button"
+              className="button"
+              aria-label="为这句新建线程"
+              disabled={openingThread || panel.entrySentenceId === null}
+              onClick={onAskNew}
+            >
+              新建线程
             </button>
           </div>
 

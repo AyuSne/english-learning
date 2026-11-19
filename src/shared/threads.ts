@@ -147,11 +147,15 @@ export type CreateThreadResult =
   | { status: 'created'; thread: ChatThreadView }
   | { status: 'rejected'; reason: 'missing-main' }
 
-export type OpenThreadForMainRequest = CreateThreadRequest & { forceNew?: boolean }
+export type OpenThreadForMainRequest = CreateThreadRequest & {
+  forceNew?: boolean
+  /** 阅读页主动就所点词提问时，复用线程也应带上该词及原句。 */
+  ensureSentenceContext?: boolean
+}
 
 export type OpenThreadForMainResult =
   | { status: 'created' | 'reused'; thread: ChatThreadView }
-  | { status: 'rejected'; reason: 'missing-main' }
+  | { status: 'rejected'; reason: 'missing-main' | 'context-full' }
 
 export type AskThreadRequest = {
   threadId: string
