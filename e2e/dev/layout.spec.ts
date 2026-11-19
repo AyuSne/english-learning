@@ -249,7 +249,7 @@ async function walkPages(handle: AppHandle, breakpoint: number): Promise<void> {
   expect(Math.round((boardBox?.x ?? 0) + (boardBox?.width ?? 0))).toBeLessThanOrEqual(
     viewport + 1
   )
-  await page.getByRole('button', { name: '收起钉板' }).click()
+  await page.getByRole('button', { name: '关闭钉板' }).click()
   await expect(page.locator('.pin-board-open')).toHaveCount(0)
 
   // 设置：1000 以下导航收窄到 168；900 以下改为顶部横排。

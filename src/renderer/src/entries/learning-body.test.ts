@@ -1,75 +1,37 @@
-import { describe, expect, it } from 'vitest'
-import { parseInline, parseLearningBody } from './learning-body'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { expect, it } from 'vitest'
+import { LearningBody } from './learning-body'
 
-describe('parseInline', () => {
-  it('没有标记时是一段文字', () => {
-    expect(parseInline('approach = 接近')).toEqual([{ kind: 'text', text: 'approach = 接近' }])
-  })
+function renderBody(body: string): string {
+  return renderToStaticMarkup(createElement(LearningBody, { body }))
+}
 
-  it('认出粗体、斜体与行内代码', () => {
-    expect(parseInline('是 **做法** 不是 *途径*，看 `approach`')).toEqual([
-      { kind: 'text', text: '是 ' },
-      { kind: 'strong', text: '做法' },
-      { kind: 'text', text: ' 不是 ' },
-      { kind: 'em', text: '途径' },
-      { kind: 'text', text: '，看 ' },
-      { kind: 'code', text: 'approach' }
-    ])
-  })
+function withoutSourceMarks(html: string): string {
+  return html.replace(/<\/?span\b[^>]*>| data-(?:md-block|source-start|source-end)="[^"]*"/g, '')
+}
 
-  it('不配对或像乘法一样的光杆星号原样留着', () => {
-    expect(parseInline('2 * 3 = 6，**没闭合')).toEqual([
-      { kind: 'text', text: '2 * 3 = 6，**没闭合' }
-    ])
-  })
+it('学习内容保留语义排版，原始换行可定位，不把正文当成 HTML', () => {
+  const body = '# 同\r\n### 同\n\n**粗 *斜* `码`**\r\n<small>字</small>\n\n- 同\n\n1. 同'
+  const html = renderBody(body)
+
+  expect(withoutSourceMarks(html)).toBe(
+    '<div class="entry-note-body"><h3>同</h3><h4>同</h4>' +
+      '<p><strong>粗 <em>斜</em> <code>码</code></strong>\r\n&lt;small&gt;字&lt;/small&gt;</p>' +
+      '<ul><li>同</li></ul><ol><li>同</li></ol></div>'
+  )
+  expect(html).toContain('<h3 data-md-block="heading" data-source-start="0" data-source-end="3">')
+  expect(html).toContain(
+    '<span data-md-leaf="" data-source-start="25" data-source-end="27" style="white-space:pre-wrap">\r\n</span>'
+  )
+  expect(html).toContain('<span data-md-leaf="" data-source-start="2" data-source-end="3">同</span>')
 })
 
-describe('parseLearningBody', () => {
-  it('空行分段，段内换行留着', () => {
-    expect(parseLearningBody('第一行\n第二行\n\n下一段')).toEqual([
-      {
-        kind: 'paragraph',
-        lines: [
-          [{ kind: 'text', text: '第一行' }],
-          [{ kind: 'text', text: '第二行' }]
-        ]
-      },
-      { kind: 'paragraph', lines: [[{ kind: 'text', text: '下一段' }]] }
-    ])
-  })
-
-  it('标题按级别落到三、四级', () => {
-    expect(parseLearningBody('# 词义\n### 辨析')).toEqual([
-      { kind: 'heading', level: 3, spans: [{ kind: 'text', text: '词义' }] },
-      { kind: 'heading', level: 4, spans: [{ kind: 'text', text: '辨析' }] }
-    ])
-  })
-
-  it('无序与有序列表各自成块', () => {
-    expect(parseLearningBody('- 做法\n- 途径\n\n1. 先读\n2. 再查')).toEqual([
-      {
-        kind: 'list',
-        ordered: false,
-        items: [[{ kind: 'text', text: '做法' }], [{ kind: 'text', text: '途径' }]]
-      },
-      {
-        kind: 'list',
-        ordered: true,
-        items: [[{ kind: 'text', text: '先读' }], [{ kind: 'text', text: '再查' }]]
-      }
-    ])
-  })
-
-  it('空内容没有块', () => {
-    expect(parseLearningBody('  \n \n')).toEqual([])
-  })
-
-  it('Windows 换行也能分块', () => {
-    expect(parseLearningBody('一\r\n二')).toEqual([
-      {
-        kind: 'paragraph',
-        lines: [[{ kind: 'text', text: '一' }], [{ kind: 'text', text: '二' }]]
-      }
-    ])
-  })
+it.each([
+  ['approach = 接近', '<p>approach = 接近</p>'],
+  ['是 **做法** 不是 *途径*，看 `approach`', '<p>是 <strong>做法</strong> 不是 <em>途径</em>，看 <code>approach</code></p>'],
+  ['2 * 3 = 6，**没闭合', '<p>2 * 3 = 6，**没闭合</p>'],
+  ['  \n \n', '']
+])('学习内容 %j 按原有规则渲染', (body, markup) => {
+  expect(withoutSourceMarks(renderBody(body))).toBe(`<div class="entry-note-body">${markup}</div>`)
 })
