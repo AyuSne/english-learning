@@ -6,6 +6,22 @@ import type { EntryListItem } from './entries'
 
 export type ArticleKind = 'long_match' | 'careful_reading'
 
+/**
+ * 文章来源：随包真题与保存下来的生成文章。它与 `ArticleKind` 是两个概念——
+ * 生成文章仍然是一种阅读文章（kind 按正文形态取仔细阅读，因此不显示段字母），
+ * 来源只决定分组、标识与详情里显不显示来源词。旧库里的文章没有来源列，读作真题。
+ */
+export type ArticleSourceType = 'exam' | 'ai'
+
+/**
+ * 生成文章的一条来源词。`mainForm` 是读详情时词条的当前主词形；
+ * 词条后来被删掉时为 null——界面显示成不可点的「词条已删除」，不做死链接。
+ */
+export type ArticleSourceWord = {
+  entryId: string
+  mainForm: string | null
+}
+
 /** 篇名上限：服务端校验与输入框的 maxLength 共用这一份。 */
 export const ARTICLE_TITLE_MAX_LENGTH = 200
 
@@ -33,7 +49,9 @@ export type LibraryArticle = {
   /** 完整篇名，形如「2024年6月 · 第1套 · 仔细阅读 Passage One」。 */
   title: string
   kind: ArticleKind
-  /** 题型文字：长篇匹配 / 仔细阅读 Passage One / 仔细阅读 Passage Two。 */
+  /** 真题还是保存下来的生成文章。 */
+  sourceType: ArticleSourceType
+  /** 题型文字：长篇匹配 / 仔细阅读 Passage One / 仔细阅读 Passage Two / AI 生成。 */
   kindLabel: string
   sessionLabel: string
   setLabel: string
@@ -56,7 +74,10 @@ export type LibrarySize = {
 }
 
 export type LibraryListing = LibrarySize & {
+  /** 真题按场次分组；生成文章不占场次。 */
   sessions: LibrarySession[]
+  /** 保存下来的生成文章，最近保存的在前；不进入 sessions，也不增加场次数。 */
+  aiArticles: LibraryArticle[]
 }
 
 export type LibrarySearchResult = {
@@ -80,7 +101,31 @@ export type ArticleDetail = LibraryArticle & {
   collectedSentenceCount: number
   /** 形如「第 7–8 页」；没有页码时为空串。 */
   pages: string
+  /** 生成文章保存时的来源词；真题为空数组。词条删掉后 mainForm 为 null。 */
+  sourceWords: ArticleSourceWord[]
 }
+
+/**
+ * 「存为文章」：只传线程、当前显示的回答版本与可选篇名，正文与来源都由主进程
+ * 从已存条目日志读，不接受渲染层传来的任意正文。保存整次回答（根回答 + 继续生成），
+ * 不含思维链；重复保存每次新建一篇。
+ */
+export type SaveGeneratedArticleRequest = {
+  threadId: string
+  /** 用户眼前这一版回答的根条目 id；继续生成接在它后面。 */
+  answerId: string
+  /** 不传时按来源词起一个默认篇名。 */
+  title?: string
+}
+
+export type SaveGeneratedArticleResult =
+  | { status: 'saved'; article: ArticleDetail }
+  | { status: 'missing' }
+  | {
+      status: 'rejected'
+      /** incomplete：回答未完成（停止/出错）；empty：正文为空；no-word-context：这一问没带词。 */
+      reason: 'incomplete' | 'empty' | 'no-word-context' | 'too-long'
+    }
 
 /**
  * 删除一篇文章前的影响面。原句数指该篇的 entry_sentence 关联条数；

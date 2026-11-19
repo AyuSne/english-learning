@@ -11,7 +11,9 @@ import type {
   LibrarySearchResults,
   MarkArticleCompletedResult,
   RenameArticleRequest,
-  RenameArticleResult
+  RenameArticleResult,
+  SaveGeneratedArticleRequest,
+  SaveGeneratedArticleResult
 } from '../../shared/library'
 import type {
   CopyLearningInstructionRequest,
@@ -149,6 +151,13 @@ export function loadArticleDeletionPreview(
 /** 删除文章；请求带上确认弹层看到的那份影响面，变了主进程会拒绝并带回最新一份。 */
 export function deleteArticle(request: DeleteArticleRequest): Promise<DeleteArticleResult> {
   return window.api.invoke('library:delete', request)
+}
+
+/** 存为文章：把当前这一版已完成的回答存成生成文章，正文与来源由主进程读。 */
+export function saveGeneratedArticle(
+  request: SaveGeneratedArticleRequest
+): Promise<SaveGeneratedArticleResult> {
+  return window.api.invoke('library:save-generated', request)
 }
 
 /** 打开一篇文章：换回正文、生效设置与上次读到的位置，同时记下「最近打开」。 */

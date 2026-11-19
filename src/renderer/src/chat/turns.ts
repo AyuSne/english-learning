@@ -125,6 +125,24 @@ export function buildMessages(view: ChatThreadView, mode: GenerationMode): ChatT
   return messages
 }
 
+/**
+ * 「存为文章」按钮的显示条件：这一问带词上下文、当前这版回答已完成且有正文，
+ * 并且此刻没有在生成 / 忙别的。生成中不把保存旧回答的按钮留在眼前。
+ */
+export function canSaveAnswerAsArticle(
+  question: ThreadTurn['question'],
+  answer: ThreadAnswer | null,
+  disabled: boolean
+): boolean {
+  return (
+    !disabled &&
+    answer !== null &&
+    answer.phase === 'done' &&
+    answer.text.trim() !== '' &&
+    question.wordCount > 0
+  )
+}
+
 /** 页头副标题：挂什么对象就说清是什么，空白线程给一句说明。 */
 export function threadHeaderText(view: ChatThreadView): string {
   if (view.missingMain) return '主对象已不存在'
@@ -138,7 +156,15 @@ export function threadHeaderText(view: ChatThreadView): string {
       return `${main.articleTitle} · 段 ${main.paragraphLetter ?? main.paragraphOrdinal} · 第 ${
         main.sentenceOrdinal + 1
       } 句`
-    case 'article':
-      return `${main.sessionLabel} · ${main.setLabel} · ${main.kindLabel} · ${main.wordCount} 词`
+    case 'article': {
+      // 生成文章没有场次与套数：空的那几项不拼进去，绝不编年份。
+      const parts = [
+        main.sessionLabel,
+        main.setLabel,
+        main.kindLabel,
+        `${main.wordCount} 词`
+      ].filter((part) => part.trim() !== '')
+      return parts.join(' · ')
+    }
   }
 }

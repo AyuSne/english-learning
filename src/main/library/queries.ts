@@ -1,6 +1,7 @@
 import type {
   ArticleDetail,
   ArticleKind,
+  ArticleSourceWord,
   HomeSummary,
   LibraryArticle,
   LibraryListing,
@@ -15,9 +16,12 @@ import { readRecentEntryChips } from '../entries/page'
 import { readLaterEntries } from '../entries/later'
 
 type ArticleRow = {
+  row_id: number
   id: string
   title: string
   kind: ArticleKind
+  source_type: string | null
+  source_entry_ids: string | null
   kind_label: string
   session_key: string
   session_label: string
@@ -33,9 +37,15 @@ type ArticleRow = {
   completed_at: string | null
 }
 
-const ARTICLE_COLUMNS = `id, title, kind, kind_label, session_key, session_label, set_label,
+const ARTICLE_COLUMNS = `rowid AS row_id, id, title, kind, source_type, source_entry_ids,
+  kind_label, session_key, session_label, set_label,
   word_count, body_text, page_start, page_end, ordinal,
   last_opened_at, last_paragraph_id, last_sentence_index, completed_at`
+
+/** 生成文章在库里记 `source_type = 'ai'`；旧文章与随包语料这一列是 NULL，按真题读。 */
+function sourceTypeOf(row: ArticleRow): LibraryArticle['sourceType'] {
+  return row.source_type === 'ai' ? 'ai' : 'exam'
+}
 
 /**
  * 打开过的文章才有进度：按最后到的句子在全文里排第几算百分比。
@@ -89,6 +99,7 @@ function toArticle(database: AppDatabase, row: ArticleRow): LibraryArticle {
     id: row.id,
     title: row.title,
     kind: row.kind,
+    sourceType: sourceTypeOf(row),
     kindLabel: row.kind_label,
     sessionLabel: row.session_label,
     setLabel: row.set_label,
@@ -105,7 +116,8 @@ function readArticleRow(database: AppDatabase, articleId: string): ArticleRow | 
 }
 
 /**
- * 文章库：按场次从新到旧分组，组内打开过的按最近打开排前，其余按库内顺序。
+ * 文章库：真题按场次从新到旧分组，组内打开过的按最近打开排前，其余按库内顺序；
+ * 生成文章单独一列，按保存顺序从新到旧，不占场次、也不混进真题分组。
  */
 export function readLibrary(database: AppDatabase): LibraryListing {
   const rows = database
@@ -123,6 +135,7 @@ export function readLibrary(database: AppDatabase): LibraryListing {
   const sessions: LibrarySession[] = []
   let current: LibrarySession | null = null
   for (const row of rows) {
+    if (sourceTypeOf(row) === 'ai') continue
     if (current === null || current.id !== row.session_key) {
       current = { id: row.session_key, label: row.session_label, articles: [] }
       sessions.push(current)
@@ -130,7 +143,46 @@ export function readLibrary(database: AppDatabase): LibraryListing {
     current.articles.push(toArticle(database, row))
   }
 
-  return { articleCount: rows.length, sessionCount: sessions.length, sessions }
+  const aiArticles = rows
+    .filter((row) => sourceTypeOf(row) === 'ai')
+    .sort((left, right) => right.row_id - left.row_id)
+    .map((row) => toArticle(database, row))
+
+  return {
+    articleCount: rows.length,
+    sessionCount: sessions.length,
+    sessions,
+    aiArticles
+  }
+}
+
+/** `source_entry_ids` 是保存时的来源词条 id 列表；读详情时按当前词条补主词形。 */
+function readSourceWords(database: AppDatabase, raw: string | null): ArticleSourceWord[] {
+  if (raw === null) {
+    return []
+  }
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    return []
+  }
+  if (!Array.isArray(parsed)) {
+    return []
+  }
+  const ids: string[] = []
+  const seen = new Set<string>()
+  for (const value of parsed) {
+    if (typeof value !== 'string' || value === '' || seen.has(value)) continue
+    seen.add(value)
+    ids.push(value)
+  }
+  return ids.map((entryId) => {
+    const entry = database
+      .prepare('SELECT main_form FROM word_entry WHERE id = ?')
+      .get(entryId) as { main_form: string } | undefined
+    return { entryId, mainForm: entry?.main_form ?? null }
+  })
 }
 
 export function readArticleDetail(
@@ -164,7 +216,8 @@ export function readArticleDetail(
     sentenceCount: counted.sentences,
     wordEntryCount: counted.word_entries,
     collectedSentenceCount: counted.collected_sentences,
-    pages: formatPages(row.page_start, row.page_end)
+    pages: formatPages(row.page_start, row.page_end),
+    sourceWords: readSourceWords(database, row.source_entry_ids)
   }
 }
 
@@ -375,7 +428,7 @@ export function readHomeSummary(database: AppDatabase): HomeSummary {
   const totals = database
     .prepare(
       `SELECT COUNT(*) AS articles,
-              COUNT(DISTINCT session_key) AS sessions,
+              COUNT(DISTINCT CASE WHEN source_type = 'ai' THEN NULL ELSE session_key END) AS sessions,
               (SELECT COUNT(*) FROM article WHERE completed_at IS NOT NULL) AS completed
          FROM article`
     )

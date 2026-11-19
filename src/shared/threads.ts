@@ -103,6 +103,11 @@ export type ThreadTurn = {
     id: string
     text: string
     createdAt: string
+    /**
+     * 提这一问时上下文里带的词条数（保存回答那一刻的快照）。线程之后增删上下文
+     * 不会改写它；「存为文章」只看这一份，界面也据此决定要不要给这个回答存文章。
+     */
+    wordCount: number
     /** 这一问的全部提问版本（改口产生）；按提出时间排。 */
     versions: ThreadVersion[]
   }

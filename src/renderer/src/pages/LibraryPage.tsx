@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import type {
   ArticleDetail,
   ImportReport,
+  LibraryArticle,
   LibraryListing,
   LibrarySearchResults
 } from '../../../shared/library'
@@ -77,14 +78,16 @@ export function LibraryPage({
       (value) => {
         if (!active) return
         setListing(value)
-        const firstId = value.sessions[0]?.articles[0]?.id ?? null
+        // 只有 AI 文章时也要有默认选中：先取真题第一行，没有就取生成文章第一篇。
+        const firstId = value.sessions[0]?.articles[0]?.id ?? value.aiArticles[0]?.id ?? null
         const current = parseView(window.location.hash)
         const routeId = current.route === 'library' ? current.articleId : null
         const routeStillExists =
           routeId !== null &&
-          value.sessions.some((session) =>
+          (value.sessions.some((session) =>
             session.articles.some((article) => article.id === routeId)
-          )
+          ) ||
+            value.aiArticles.some((article) => article.id === routeId))
         const resolved = routeStillExists ? routeId : firstId
         setSelectedId(resolved)
         if (resolved !== routeId) {
@@ -180,7 +183,10 @@ export function LibraryPage({
   /** 删掉当前这篇后，优先接上列表里的下一篇；没有就退回上一篇。 */
   function nextArticleId(articleId: string): string | null {
     if (listing === null) return null
-    const ids = listing.sessions.flatMap((session) => session.articles.map((article) => article.id))
+    const ids = [
+      ...listing.sessions.flatMap((session) => session.articles.map((article) => article.id)),
+      ...listing.aiArticles.map((article) => article.id)
+    ]
     const index = ids.indexOf(articleId)
     if (index < 0) return ids[0] ?? null
     return ids[index + 1] ?? ids[index - 1] ?? null
@@ -237,7 +243,9 @@ export function LibraryPage({
           <p className="library-count">
             {listing === null
               ? '正在读取本机资料库…'
-              : `${listing.articleCount} 篇 · ${listing.sessionCount} 个场次`}
+              : listing.sessionCount === 0
+                ? `${listing.articleCount} 篇`
+                : `${listing.articleCount} 篇 · ${listing.sessionCount} 个场次`}
           </p>
         </div>
         <label className="library-search">
@@ -299,34 +307,45 @@ export function LibraryPage({
               onSelect={select}
             />
           ) : listing !== null ? (
-            listing.sessions.map((session) => (
-              <section key={session.id} className="library-session" aria-label={session.label}>
-                <h2 className="library-session-head">
-                  <span>{session.label}</span>
-                  <span className="library-session-count">{session.articles.length} 篇</span>
+            <>
+              {listing.sessions.map((session) => (
+                <section key={session.id} className="library-session" aria-label={session.label}>
+                  <h2 className="library-session-head">
+                    <span>{session.label}</span>
+                    <span className="library-session-count">{session.articles.length} 篇</span>
+                  </h2>
+                  <ArticleRowList
+                    articles={session.articles}
+                    selectedId={selectedId}
+                    onSelect={select}
+                  />
+                </section>
+              ))}
+              <section className="library-ai-section" aria-label="AI 生成">
+                <h2 className="library-ai-head">
+                  <span>AI 生成</span>
+                  <span className="library-session-count">{listing.aiArticles.length} 篇</span>
                 </h2>
-                <ul className="library-rows">
-                  {session.articles.map((article) => (
-                    <li key={article.id}>
-                      <button
-                        type="button"
-                        className="library-row"
-                        aria-current={article.id === selectedId ? 'true' : undefined}
-                        onClick={() => select(article.id)}
-                      >
-                        <span className="library-row-name">{article.title}</span>
-                        <span className="library-row-meta">
-                          {libraryArticleMetaParts(article).join(' · ')}
-                        </span>
-                        <span className="library-row-progress">
-                          {progressText(article.progress)}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                {listing.aiArticles.length === 0 ? (
+                  <div className="library-ai-empty">
+                    <p className="empty-line">用一组词生成第一篇</p>
+                    <button
+                      type="button"
+                      className="button button-small"
+                      onClick={() => navigate('entries')}
+                    >
+                      去词条页选词
+                    </button>
+                  </div>
+                ) : (
+                  <ArticleRowList
+                    articles={listing.aiArticles}
+                    selectedId={selectedId}
+                    onSelect={select}
+                  />
+                )}
               </section>
-            ))
+            </>
           ) : null}
         </div>
 
@@ -335,15 +354,19 @@ export function LibraryPage({
             <p className="empty-line">在左边选一篇。</p>
           ) : (
             <>
-              <p className="eyebrow">这篇</p>
+              <p className="eyebrow">{detail.sourceType === 'ai' ? '生成文章' : '这篇'}</p>
               <h2 className="library-detail-title">{detail.title}</h2>
               <dl className="library-meta">
-                <div>
-                  <dt>场次</dt>
-                  <dd>
-                    {detail.sessionLabel} · {detail.setLabel}
-                  </dd>
-                </div>
+                {detail.sessionLabel === '' && detail.setLabel === '' ? null : (
+                  <div>
+                    <dt>场次</dt>
+                    <dd>
+                      {[detail.sessionLabel, detail.setLabel]
+                        .filter((part) => part.trim() !== '')
+                        .join(' · ')}
+                    </dd>
+                  </div>
+                )}
                 <div>
                   <dt>题型</dt>
                   <dd>{detail.kindLabel}</dd>
@@ -373,6 +396,29 @@ export function LibraryPage({
                   </div>
                 )}
               </dl>
+              {detail.sourceWords.length === 0 ? null : (
+                <section className="library-source-words" aria-label="来源词">
+                  <h3 className="library-collected-title">来源词</h3>
+                  <ul className="library-source-word-list">
+                    {detail.sourceWords.map((word) => (
+                      <li key={word.entryId}>
+                        {word.mainForm === null ? (
+                          // 词条后来被删掉了：保留「这是来源」的事实，但不做成可点的死链接。
+                          <span className="library-source-missing">词条已删除</span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="chat-main-link"
+                            onClick={() => navigate('entries', { entryId: word.entryId })}
+                          >
+                            {word.mainForm}
+                          </button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
               <div className="library-detail-actions">
                 <button
                   type="button"
@@ -415,6 +461,38 @@ export function LibraryPage({
         </p>
       )}
     </div>
+  )
+}
+
+/** 真题分组与 AI 段共用同一行：篇名、meta（含 AI 生成与词数）与进度。 */
+function ArticleRowList({
+  articles,
+  selectedId,
+  onSelect
+}: {
+  articles: readonly LibraryArticle[]
+  selectedId: string | null
+  onSelect: (articleId: string) => void
+}) {
+  return (
+    <ul className="library-rows">
+      {articles.map((article) => (
+        <li key={article.id}>
+          <button
+            type="button"
+            className="library-row"
+            aria-current={article.id === selectedId ? 'true' : undefined}
+            onClick={() => onSelect(article.id)}
+          >
+            <span className="library-row-name">{article.title}</span>
+            <span className="library-row-meta">
+              {libraryArticleMetaParts(article).join(' · ')}
+            </span>
+            <span className="library-row-progress">{progressText(article.progress)}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
   )
 }
 

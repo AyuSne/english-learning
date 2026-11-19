@@ -3,6 +3,7 @@ import type { ChatThreadView, ThreadAnswer, ThreadContextItem, ThreadTurn } from
 import {
   CONTINUE_INSTRUCTION,
   buildMessages,
+  canSaveAnswerAsArticle,
   contextSummaryText,
   lastTurn,
   selectedVersionIndex,
@@ -42,6 +43,7 @@ function turn(
   return {
     question: {
       createdAt: '2026-11-18T09:00:00.000Z',
+      wordCount: 0,
       versions: [{ id: question.id, selected: true }],
       ...question
     },
@@ -258,6 +260,47 @@ describe('版本与页头', () => {
         })
       )
     ).toBe('2026年6月 · 第1套 · 长篇匹配 · 1200 词')
+  })
+
+  it('生成文章没有场次与套数：对话头只列 AI 生成与词数，不编年份', () => {
+    expect(
+      threadHeaderText(
+        view({
+          main: {
+            kind: 'article',
+            articleId: 'ai-1',
+            title: 'approach、Context',
+            sessionLabel: '',
+            setLabel: '',
+            kindLabel: 'AI 生成',
+            wordCount: 120
+          }
+        })
+      )
+    ).toBe('AI 生成 · 120 词')
+  })
+
+  it('只有带词上下文且完成的回答才出现「存为文章」', () => {
+    const question = turn({ id: 'q-1', text: '问', wordCount: 2 }).question
+    const done = answer({ phase: 'done', text: '写好的回答。' })
+    expect(canSaveAnswerAsArticle(question, done, false)).toBe(true)
+
+    // 生成中（disabled）、停止/出错、空正文都没有这个动作。
+    expect(canSaveAnswerAsArticle(question, done, true)).toBe(false)
+    expect(canSaveAnswerAsArticle(question, answer({ phase: 'stopped', text: '半截' }), false)).toBe(
+      false
+    )
+    expect(canSaveAnswerAsArticle(question, answer({ phase: 'error', text: '半截' }), false)).toBe(
+      false
+    )
+    expect(canSaveAnswerAsArticle(question, answer({ phase: 'done', text: '   ' }), false)).toBe(
+      false
+    )
+    // 这一问没有带词：不出现存文章，避免保存出没有来源的文章。
+    expect(canSaveAnswerAsArticle(turn({ id: 'q-2', text: '问' }).question, done, false)).toBe(
+      false
+    )
+    expect(canSaveAnswerAsArticle(question, null, false)).toBe(false)
   })
 
   it('最后一轮与它的回答是重生成和继续生成的前提', () => {

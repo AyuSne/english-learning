@@ -53,7 +53,11 @@ export function PinTargetDialog({
     loadLibrary().then(
       (listing) => {
         if (active) {
-          setArticles(listing.sessions.flatMap((session) => session.articles))
+          // 钉住的「文章」落点包含生成文章：AI 文章同样能钉、能回链、能按删除规则退未归档。
+          setArticles([
+            ...listing.sessions.flatMap((session) => session.articles),
+            ...listing.aiArticles
+          ])
         }
       },
       (reason: unknown) => {

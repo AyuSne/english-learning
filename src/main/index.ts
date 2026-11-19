@@ -67,6 +67,7 @@ import {
   readArticleDeletionPreview,
   renameArticle
 } from './library/articles'
+import { saveGeneratedArticle } from './library/generated-articles'
 import {
   markArticleCompleted,
   readArticleDetail,
@@ -215,6 +216,8 @@ function start(): void {
     'library:delete-preview': (payload) =>
       readArticleDeletionPreview(opened, payload.articleId),
     'library:delete': (payload) => deleteArticle(opened, payload),
+    // 存为文章：正文与来源都由主进程从已存回答读，请求里只有线程、回答版本与可选篇名。
+    'library:save-generated': (payload) => saveGeneratedArticle(opened, payload),
     'reading:open': (payload) => openReadingView(opened, payload.articleId),
     'reading:words': (payload) => readArticleWords(opened, payload.articleId),
     'reading:complete': (payload) => markArticleCompleted(opened, payload.articleId),
