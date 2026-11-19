@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
 import { expect, test } from '../fixtures/app'
+import { selectAnswerText } from '../fixtures/answer-selection'
 import { clickAway, selectText } from '../fixtures/reading'
 
 /**
@@ -51,32 +52,6 @@ async function pickWord(page: Page): Promise<{ word: string; paragraphIndex: num
     throw new Error('正文里没有可选的英文词')
   })
   return picked
-}
-
-/** 在回答的第一段里选中一段文字，等浮卡出现。 */
-async function selectAnswerText(page: Page, needle: string): Promise<void> {
-  await expect(page.locator('.assistant-paragraph-text').first()).toContainText(needle)
-  await page.evaluate((text) => {
-    const paragraph = document.querySelector('.assistant-paragraph-text')
-    if (paragraph === null) throw new Error('没有回答段落')
-    const walker = document.createTreeWalker(paragraph, NodeFilter.SHOW_TEXT)
-    const node = walker.nextNode()
-    if (node === null) throw new Error('回答段落没有文字')
-    const content = node.textContent ?? ''
-    const index = content.indexOf(text)
-    if (index < 0) throw new Error(`段落里没有 ${text}`)
-    const range = document.createRange()
-    range.setStart(node, index)
-    range.setEnd(node, index + text.length)
-    const selection = window.getSelection()
-    if (selection === null) throw new Error('没有选区')
-    selection.removeAllRanges()
-    selection.addRange(range)
-    document
-      .querySelector('.chat-scroll')
-      ?.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
-  }, needle)
-  await expect(page.locator('.pin-selection-card')).toBeVisible()
 }
 
 async function ask(page: Page, text: string): Promise<void> {
@@ -218,8 +193,8 @@ test.describe('收官验收 · 整条学习链路', () => {
     await page.getByRole('button', { name: '看原对话' }).click()
 
     await expect(page.getByRole('status')).toContainText(`来自词条 ${entryName} · 学习内容`)
-    await expect(page.locator('.assistant-paragraph.is-source-hit')).toHaveCount(1)
-    await expect(page.locator('.assistant-paragraph.is-pinned')).toHaveCount(1)
+    await expect(page.locator('.assistant-text [data-md-block].is-source-hit')).toHaveCount(1)
+    await expect(page.locator('.assistant-text [data-md-block].is-pinned')).toHaveCount(1)
     await expect(page.locator('.assistant-text')).toContainText(PINNED)
   })
 })

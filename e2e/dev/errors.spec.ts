@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
 import { expect, test } from '../fixtures/app'
+import { selectAnswerText } from '../fixtures/answer-selection'
 import { seedWordEntries } from '../fixtures/entries'
 import { selectText } from '../fixtures/reading'
 
@@ -321,22 +322,7 @@ test.describe('收官验收 · 错误态', () => {
 
     const entryList = await invoke(page, 'entries:list', {})
     await removeHandler(electronApp, 'entries:list')
-    await page.evaluate(() => {
-      const paragraph = document.querySelector('.assistant-paragraph-text')
-      if (paragraph === null) throw new Error('没有回答段落')
-      const node = paragraph.firstChild
-      if (node === null) throw new Error('回答段落没有文字')
-      const range = document.createRange()
-      range.setStart(node, 0)
-      range.setEnd(node, 6)
-      const selection = window.getSelection()
-      if (selection === null) throw new Error('没有选区')
-      selection.removeAllRanges()
-      selection.addRange(range)
-      document
-        .querySelector('.chat-scroll')
-        ?.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
-    })
+    await selectAnswerText(page, '这段可以钉住')
     await page
       .locator('.pin-selection-card')
       .getByRole('button', { name: '钉住', exact: true })

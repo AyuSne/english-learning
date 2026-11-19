@@ -7,6 +7,7 @@ import { migrate } from '../../src/main/db/migrations'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
 import { expect, test } from '../fixtures/app'
+import { selectAnswerText } from '../fixtures/answer-selection'
 import {
   expectReadableText,
   hexContrast,
@@ -296,21 +297,7 @@ test.describe('收官验收 · 深色对比度', () => {
     await expectReadableText(page, [{ label: '思维链正文', selector: '.thinking-body' }])
 
     // 钉住一段到词条：角标、钉板卡片两种状态。
-    await page.evaluate((needle) => {
-      const paragraph = document.querySelector('.assistant-paragraph-text')
-      if (paragraph === null) throw new Error('没有回答段落')
-      const node = paragraph.firstChild
-      if (node === null) throw new Error('回答段落没有文字')
-      const index = (node.textContent ?? '').indexOf(needle)
-      const range = document.createRange()
-      range.setStart(node, index)
-      range.setEnd(node, index + needle.length)
-      const selection = window.getSelection()
-      if (selection === null) throw new Error('没有选区')
-      selection.removeAllRanges()
-      selection.addRange(range)
-      document.querySelector('.chat-scroll')?.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
-    }, 'approach 指接近')
+    await selectAnswerText(page, 'approach 指接近')
     await page
       .locator('.pin-selection-card')
       .getByRole('button', { name: '钉住', exact: true })
@@ -321,7 +308,7 @@ test.describe('收官验收 · 深色对比度', () => {
     await expect(page.locator('.pin-badge')).toContainText('已钉 · approach')
     await expectReadableText(page, [
       { label: '钉住角标', selector: '.pin-badge' },
-      { label: '被钉段落底色上的正文', selector: '.assistant-paragraph.is-pinned .assistant-paragraph-text' }
+      { label: '被钉段落底色上的正文', selector: '.assistant-text p.is-pinned' }
     ])
 
     await page.getByRole('button', { name: /^钉板 / }).click()
@@ -366,7 +353,7 @@ test.describe('收官验收 · 深色对比度', () => {
       { label: '来源提示', selector: '.pin-source-hint' },
       {
         label: '被回跳高亮段落里的正文',
-        selector: '.assistant-paragraph.is-source-hit .assistant-paragraph-text'
+        selector: '.assistant-text p.is-source-hit'
       }
     ])
 

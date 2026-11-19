@@ -262,8 +262,35 @@
 .assistant-text {
   font-size: 15px;
   line-height: 27px;
-  white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.assistant-text > * + * {
+  margin-top: 8px;
+}
+
+.assistant-text h3,
+.assistant-text h4 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.assistant-text ul,
+.assistant-text ol {
+  padding-left: 24px;
+}
+
+.assistant-text li + li {
+  margin-top: 2px;
+}
+
+.assistant-text code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--sunken);
+  font-family: Consolas, "Cascadia Mono", monospace;
+  font-size: 14px;
 }
 
 .waiting-dots {

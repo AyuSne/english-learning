@@ -1,65 +1,55 @@
 import type { Pin } from '../../../shared/pins'
-import type { ThreadAnswer } from '../../../shared/threads'
-import { splitAnswerParagraphs, targetLabel, pinTouchesParagraph } from './pin-text'
+import { Markdown, MarkdownBlock } from '../markdown/markdown'
+import { parseMarkdown, type SourceRange } from '../markdown/parse-markdown'
+import { targetLabel } from './pin-text'
 
-/**
- * 回答正文按段落渲染：被钉住的段落左侧常驻琥珀竖条，刚钉的那条在段尾闪一次角标。
- * 段落带上整版正文里的起始位置，选区据此换算成主进程认识的字符区间。
- */
 export type PinMarks = {
   pins: readonly Pin[]
   freshPinIds: readonly string[]
   sourceHitPinId: string | null
 }
 
-export function AnswerText({
-  answer,
-  marks
-}: {
-  answer: ThreadAnswer
-  marks: PinMarks
-}) {
-  const paragraphs = splitAnswerParagraphs(answer.text)
-  const answerPins = marks.pins.filter((pin) => pin.provenance.answerId === answer.id)
-  /** 跨段钉住只在第一段闪一次角标。 */
-  const firstParagraph = new Map<string, number>()
-  paragraphs.forEach((paragraph, index) => {
-    for (const pin of answerPins) {
-      if (!firstParagraph.has(pin.id) && pinTouchesParagraph(pin, paragraph)) {
-        firstParagraph.set(pin.id, index)
+type SavedAnswer = { id: string; marks: PinMarks }
+
+export function AnswerText({ text, saved }: { text: string; saved?: SavedAnswer }) {
+  const blocks = parseMarkdown(text)
+  if (!saved) return <Markdown className="assistant-text" blocks={blocks} />
+
+  const { id, marks } = saved
+  const answerPins = marks.pins.filter((pin) => pin.provenance.answerId === id)
+  const badged = new Set<string>()
+  const decorations = new Map<SourceRange, { className: string; fresh: Pin[] }>()
+  for (const block of blocks) {
+    for (const range of block.kind === 'list' ? block.items : [block]) {
+      const hits = answerPins.filter((pin) => pin.start < range.end && pin.end > range.start)
+      if (hits.length === 0) continue
+      const fresh: Pin[] = []
+      for (const pin of hits) {
+        if (marks.freshPinIds.includes(pin.id) && !badged.has(pin.id)) {
+          badged.add(pin.id)
+          fresh.push(pin)
+        }
       }
+      decorations.set(range, {
+        className: hits.some((pin) => pin.id === marks.sourceHitPinId) ? 'is-pinned is-source-hit' : 'is-pinned',
+        fresh
+      })
     }
-  })
+  }
 
   return (
-    <div className="assistant-text" data-answer-id={answer.id}>
-      {paragraphs.map((paragraph, index) => {
-        const hits = answerPins.filter((pin) => pinTouchesParagraph(pin, paragraph))
-        const fresh =
-          hits.find(
-            (pin) =>
-              marks.freshPinIds.includes(pin.id) && firstParagraph.get(pin.id) === index
-          ) ?? null
-        const sourceHit = hits.some((pin) => pin.id === marks.sourceHitPinId)
-        return (
-          <div
-            key={index}
-            className={[
-              'assistant-paragraph',
-              hits.length > 0 ? 'is-pinned' : '',
-              sourceHit ? 'is-source-hit' : ''
-            ]
-              .filter((name) => name !== '')
-              .join(' ')}
-            data-para-start={paragraph.start}
-          >
-            <p className="assistant-paragraph-text">{paragraph.text}</p>
-            {fresh === null ? null : (
-              <span className="pin-badge">已钉 · {targetLabel(fresh.target)}</span>
-            )}
-          </div>
-        )
-      })}
+    <div className="assistant-text" data-answer-id={id}>
+      {blocks.map((block) => (
+        <MarkdownBlock key={block.start} block={block} decorate={(range) => {
+          const mark = decorations.get(range)
+          return mark ? {
+            className: mark.className,
+            suffix: mark.fresh.map((pin) => (
+              <span key={pin.id} className="pin-badge">已钉 · {targetLabel(pin.target)}</span>
+            ))
+          } : undefined
+        }} />
+      ))}
     </div>
   )
 }

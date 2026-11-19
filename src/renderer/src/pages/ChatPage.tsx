@@ -831,7 +831,7 @@ export function ChatPage({
     }
   }
 
-  const copySelection = (text: string): void => {
+  const copyText = (text: string): void => {
     void navigator.clipboard.writeText(text).then(
       () => showToast('已复制'),
       () => showToast('复制失败，改用键盘复制。')
@@ -1137,6 +1137,7 @@ export function ChatPage({
                   onContinue={continueLastAnswer}
                   onRetry={regenerateLastAnswer}
                   onToggleThinking={setThinkingOpen}
+                  onCopy={copyText}
                   onPinAnswer={(answer) =>
                     openCreateDialog({
                       answerId: answer.id,
@@ -1285,7 +1286,7 @@ export function ChatPage({
             <button
               type="button"
               className="button button-small"
-              onClick={() => copySelection(selection.text)}
+              onClick={() => copyText(selection.text)}
             >
               复制
             </button>
@@ -1370,6 +1371,7 @@ function ChatTurnView({
   onContinue,
   onRetry,
   onToggleThinking,
+  onCopy,
   onPinAnswer
 }: {
   turn: ThreadTurn
@@ -1386,6 +1388,7 @@ function ChatTurnView({
   onContinue: () => void
   onRetry: () => void
   onToggleThinking: (open: boolean) => void
+  onCopy: (text: string) => void
   onPinAnswer: (answer: ThreadAnswer) => void
 }) {
   return (
@@ -1413,6 +1416,7 @@ function ChatTurnView({
           disabled={disabled}
           marks={marks}
           onPinAnswer={onPinAnswer}
+          onCopy={onCopy}
           onSwitchVersion={(answerId) => onSwitchAnswer(turn.question.id, answerId)}
           onRegenerate={onRegenerate}
           onContinue={onContinue}
@@ -1520,6 +1524,7 @@ function AnswerCard({
   disabled,
   marks,
   onPinAnswer,
+  onCopy,
   onSwitchVersion,
   onRegenerate,
   onContinue,
@@ -1532,6 +1537,7 @@ function AnswerCard({
   disabled: boolean
   marks: PinMarks
   onPinAnswer: (answer: ThreadAnswer) => void
+  onCopy: (text: string) => void
   onSwitchVersion: (answerId: string) => void
   onRegenerate: () => void
   onContinue: () => void
@@ -1581,7 +1587,7 @@ function AnswerCard({
         />
       ) : null}
 
-      {answer.text !== '' ? <AnswerText answer={answer} marks={marks} /> : null}
+      {answer.text !== '' ? <AnswerText text={answer.text} saved={{ id: answer.id, marks }} /> : null}
       {badge ? <span className="status-chip">{badge}</span> : null}
 
       {presentation ? (
@@ -1624,6 +1630,9 @@ function AnswerCard({
             onClick={() => onPinAnswer(answer)}
           >
             钉住
+          </button>
+          <button type="button" className="chat-action" onClick={() => onCopy(answer.text)}>
+            复制
           </button>
           {isLast && !disabled ? (
             <>
@@ -1683,7 +1692,7 @@ function LiveAnswer({
         />
       )}
 
-      {text === '' ? null : <div className="assistant-text">{text}</div>}
+      {text === '' ? null : <AnswerText text={text} />}
     </article>
   )
 }

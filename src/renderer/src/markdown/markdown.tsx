@@ -28,26 +28,32 @@ function renderSpans(spans: readonly MarkdownSpan[]): ReactNode[] {
   })
 }
 
-/** Render a single block, e.g. when the caller needs its own block decoration. */
-export function MarkdownBlock({ block }: { block: Block }) {
+type BlockDecoration = { className?: string; suffix?: ReactNode }
+
+/** Decorate individual paragraphs, headings or list items, not an entire list. */
+export function MarkdownBlock({ block, decorate }: {
+  block: Block
+  decorate?: (range: SourceRange) => BlockDecoration | undefined
+}) {
   const attributes = { 'data-md-block': block.kind, ...sourceAttributes(block) }
-  if (block.kind === 'heading') {
-    const Heading = block.level === 3 ? 'h3' : 'h4'
-    return <Heading {...attributes}>{renderSpans(block.spans)}</Heading>
-  }
   if (block.kind === 'list') {
     const List = block.ordered ? 'ol' : 'ul'
     return (
       <List {...attributes}>
-        {block.items.map((item) => (
-          <li key={item.start} data-md-block="list-item" {...sourceAttributes(item)}>
-            {renderSpans(item.spans)}
-          </li>
-        ))}
+        {block.items.map((item) => {
+          const decoration = decorate?.(item)
+          return (
+            <li key={item.start} data-md-block="list-item" {...sourceAttributes(item)} className={decoration?.className}>
+              {renderSpans(item.spans)}{decoration?.suffix}
+            </li>
+          )
+        })}
       </List>
     )
   }
-  return <p {...attributes}>{renderSpans(block.spans)}</p>
+  const Tag = block.kind === 'paragraph' ? 'p' : block.level === 3 ? 'h3' : 'h4'
+  const decoration = decorate?.(block)
+  return <Tag {...attributes} className={decoration?.className}>{renderSpans(block.spans)}{decoration?.suffix}</Tag>
 }
 
 export function Markdown({ blocks, className }: { blocks: readonly Block[]; className?: string }) {

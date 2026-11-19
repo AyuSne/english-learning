@@ -8,6 +8,7 @@ import { createPin } from '../../src/main/pins/pins'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
 import { expect, test, type AppHandle, type LaunchOptions } from '../fixtures/app'
+import { selectAnswerText } from '../fixtures/answer-selection'
 import { databasePath } from '../fixtures/database'
 import { seedWordEntries } from '../fixtures/entries'
 
@@ -191,31 +192,6 @@ async function ask(page: Page, text: string): Promise<void> {
   await page.getByRole('button', { name: '发送' }).click()
 }
 
-/** 在第一条回答里选中一段文字，模拟鼠标松开后浮出钉住卡。 */
-async function selectAnswerText(page: Page, needle: string): Promise<void> {
-  await expect(page.getByText(ANSWER.split('\n\n')[0] as string)).toBeVisible()
-  await page.evaluate((text) => {
-    const paragraph = document.querySelector('.assistant-paragraph-text')
-    if (!paragraph) throw new Error('没有回答段落')
-    const node = paragraph.firstChild
-    if (!node) throw new Error('回答段落是空的')
-    const content = node.textContent ?? ''
-    const index = content.indexOf(text)
-    if (index < 0) throw new Error(`段落里没有 ${text}`)
-    const range = document.createRange()
-    range.setStart(node, index)
-    range.setEnd(node, index + text.length)
-    const selection = window.getSelection()
-    if (!selection) throw new Error('没有选区')
-    selection.removeAllRanges()
-    selection.addRange(range)
-    document
-      .querySelector('.chat-scroll')
-      ?.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
-  }, needle)
-  await expect(page.locator('.pin-selection-card')).toBeVisible()
-}
-
 async function openEntry(page: Page, name: string): Promise<void> {
   await page
     .getByRole('navigation', { name: '全局导航' })
@@ -294,8 +270,8 @@ test.describe('钉住与钉板', () => {
     await page.getByRole('button', { name: '看原对话' }).click()
 
     await expect(page.getByRole('status')).toContainText('来自词条 approach · 学习内容')
-    await expect(page.locator('.assistant-paragraph.is-source-hit')).toHaveCount(1)
-    await expect(page.locator('.assistant-paragraph.is-pinned')).toHaveCount(1)
+    await expect(page.locator('.assistant-text [data-md-block].is-source-hit')).toHaveCount(1)
+    await expect(page.locator('.assistant-text [data-md-block].is-pinned')).toHaveCount(1)
     await expect(page.locator('.assistant-text')).toContainText('approach 是接近')
   })
 
@@ -326,7 +302,7 @@ test.describe('钉住与钉板', () => {
     await dialog.getByRole('button', { name: '钉住', exact: true }).click()
 
     await expect(page.getByRole('status')).toContainText('已钉到词条 approach')
-    await expect(page.locator('.assistant-paragraph.is-pinned')).toHaveCount(1)
+    await expect(page.locator('.assistant-text [data-md-block].is-pinned')).toHaveCount(1)
     await expect(page.locator('.pin-badge')).toContainText('已钉 · approach')
 
     // 钉住瞬间不自动打开钉板；从顶栏打开能看到这条。
