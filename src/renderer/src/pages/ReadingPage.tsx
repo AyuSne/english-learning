@@ -24,12 +24,14 @@ import {
   loadWordEntryCard,
   openReadingView,
   reselectEntrySentence,
-  saveReadingSettings
+  saveReadingSettings,
+  setEntryLater
 } from '../api'
 import { lookupDictionaryOrUnavailable } from '../dictionary/lookup'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
+import { laterMarkedNotice, laterUnmarkedNotice } from '../later/format'
 import { readingPointText } from '../library/format'
 import { forgetLibraryArticle, goBack, navigate, replaceRoute } from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
@@ -381,7 +383,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
       card: null,
       error: null,
       confirmingDelete: false,
-      deleting: false
+      deleting: false,
+      laterBusy: false,
+      laterNotice: null
     })
     loadWordEntryCard(entryId).then(
       (card) => {
@@ -590,6 +594,53 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
       return
     }
     removeSentence(entrySentenceId)
+  }
+
+  /** 阅读词条卡上的「稍后看」：只写独立标记，卡片与首页共享同一份持久状态。 */
+  function togglePanelLater(): void {
+    if (panel === null || panel.kind !== 'entry' || panel.card === null || panel.laterBusy) {
+      return
+    }
+    const entry = panel.card.entry
+    const next = entry.laterMarkedAt === null
+    updateEntryPanel((current) => ({ ...current, laterBusy: true, laterNotice: null }))
+    setEntryLater({ entryId: entry.id, later: next }).then(
+      (result) => {
+        if (result.status === 'missing') {
+          updateEntryPanel((current) => ({
+            ...current,
+            laterBusy: false,
+            error: '这个词条已经不在了。'
+          }))
+          return
+        }
+        updateEntryPanel((current) =>
+          current.card === null
+            ? current
+            : {
+                ...current,
+                laterBusy: false,
+                laterNotice: next
+                  ? laterMarkedNotice(entry.mainForm)
+                  : laterUnmarkedNotice(entry.mainForm),
+                card: {
+                  ...current.card,
+                  entry: {
+                    ...current.card.entry,
+                    laterMarkedAt: result.status === 'marked' ? result.markedAt : null
+                  }
+                }
+              }
+        )
+      },
+      (error: unknown) => {
+        updateEntryPanel((current) => ({
+          ...current,
+          laterBusy: false,
+          error: failureText(error, '稍后看没有改成功，再试一次。')
+        }))
+      }
+    )
   }
 
   function confirmDeleteLast(): void {
@@ -889,6 +940,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
             }
           }}
           openingThread={openingThread}
+          onToggleLater={togglePanelLater}
           onDelete={requestDeleteSentence}
           onConfirmDeleteLast={confirmDeleteLast}
           onCancelConfirm={() =>

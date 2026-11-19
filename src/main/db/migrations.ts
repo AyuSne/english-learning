@@ -270,6 +270,22 @@ export const migrations: readonly Migration[] = [
         database.exec('ALTER TABLE article RENAME COLUMN position TO ordinal')
       }
     }
+  },
+  {
+    version: 10,
+    up: (database) => {
+      // 「稍后看」是按词条的一条独立标记，只记标记时间：不算进已收集，
+      // 也不参看原句数、学习内容或收集时间。词条删掉（例如删最后一条原句）时
+      // 标记随外键级联消失；反向不成立——标记不会凭空建出词条。
+      database.exec(`
+        CREATE TABLE entry_later (
+          entry_id  TEXT PRIMARY KEY REFERENCES word_entry(id) ON DELETE CASCADE,
+          marked_at TEXT NOT NULL
+        );
+
+        CREATE INDEX entry_later_marked ON entry_later (marked_at DESC);
+      `)
+    }
   }
 ]
 

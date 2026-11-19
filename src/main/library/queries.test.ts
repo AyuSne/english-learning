@@ -181,7 +181,8 @@ describe('readHomeSummary', () => {
     expect(readHomeSummary(database)).toEqual({
       library: { articleCount: 3, sessionCount: 2 },
       continueReading: null,
-      recentEntries: []
+      recentEntries: [],
+      laterEntries: []
     })
   })
 

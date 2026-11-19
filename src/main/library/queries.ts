@@ -11,6 +11,7 @@ import type {
   ReadingProgress
 } from '../../shared/library'
 import type { AppDatabase } from '../db/database'
+import { readLaterEntries } from '../entries/later'
 
 type ArticleRow = {
   id: string
@@ -339,7 +340,8 @@ export function readHomeSummary(database: AppDatabase): HomeSummary {
           lastReadPoint: readReadingPoint(database, recent.id)
         }
       : null,
-    recentEntries: readRecentEntries(database)
+    recentEntries: readRecentEntries(database),
+    laterEntries: readLaterEntries(database)
   }
 }
 
