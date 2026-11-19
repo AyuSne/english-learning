@@ -75,3 +75,17 @@ export function entryHeadlineText(
   const day = formatDay(entry.lastCollectedAt)
   return day === '' ? base : `${base} · 最近 ${day}`
 }
+
+/** 右栏没有学习内容时的空态：手写与钉住两条路都写在一句里。 */
+export const EMPTY_LEARNING_NOTES_TEXT = '可以手写，也可以从对话里钉一段进来'
+
+/**
+ * 删最后一条原句的确认文案。没有学习内容时不能写「连同 0 条学习内容」，
+ * 只说词条一起删除；有学习内容时说明连带删掉几条。
+ */
+export function deleteLastSentenceText(mainForm: string, noteCount: number): string {
+  if (noteCount <= 0) {
+    return `这是最后一条原句。删掉后「${mainForm}」词条也会一起删除。`
+  }
+  return `这是最后一条原句。删掉后「${mainForm}」词条连同 ${noteCount} 条学习内容也会一起删除。`
+}

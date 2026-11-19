@@ -159,7 +159,7 @@ test.describe('内置词典', () => {
     await page.locator('.entries-row').first().click()
     await page.getByRole('button', { name: '展开学习内容' }).click()
 
-    const rail = page.getByRole('complementary', { name: '学习内容' })
+    const rail = page.locator('.entries-rail-open')
     const block = rail.getByRole('group', { name: '词典' })
     await expect(block.locator('.dictionary-word')).toHaveText('approach')
     await expect(block.locator('.dictionary-phonetic')).toHaveText('/əˈprəutʃ/')
@@ -170,7 +170,7 @@ test.describe('内置词典', () => {
 
     // 只是草稿：还没有学习内容，也没有替用户点保存。
     await expect(rail.locator('.entry-note')).toHaveCount(0)
-    await expect(rail.getByText('还没有学习内容 · 从对话里钉一段进来')).toBeVisible()
+    await expect(rail.getByText('可以手写，也可以从对话里钉一段进来')).toBeVisible()
 
     // 学习者显式保存后才入库。
     await rail.getByRole('button', { name: '保存学习内容' }).click()

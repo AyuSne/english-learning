@@ -1,10 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EntryListResult, EntryPage, EntrySentence } from '../../../shared/entries'
 import { deleteEntrySentence, loadEntryList, loadEntryPage } from '../api'
 import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { EntryList, type EntryFilter, type EntrySort } from '../entries/entry-list'
-import { entryHeadlineText } from '../entries/format'
+import { deleteLastSentenceText, entryHeadlineText } from '../entries/format'
+import { entryLayoutForWidth, type EntryLayout } from '../entries/layout'
 import { NoteRail } from '../entries/note-rail'
 import { SentenceRow } from '../entries/sentence-row'
 import { failureText } from '../errors'
@@ -17,6 +18,8 @@ import {
   updateEntriesViewState,
   updateEntryScrollTop
 } from '../view-state'
+
+const LEARNING_RAIL_ID = 'entries-learning-rail'
 
 /**
  * 词条页：左列表、中原句、右学习内容。打开词条先看到原句，右栏默认收窄。
@@ -31,6 +34,8 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const [sort, setSort] = useState<EntrySort>(() => entriesViewState().sort)
   const [filter, setFilter] = useState<EntryFilter>(() => entriesViewState().filter)
   const [railOpen, setRailOpen] = useState(false)
+  // 先按抽屉渲染；首帧布局后按真实容器宽度决定是否内联，避免宽窗口闪一下覆盖层。
+  const [layout, setLayout] = useState<EntryLayout>('drawer')
   const [listError, setListError] = useState<string | null>(null)
   const [pageError, setPageError] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
@@ -46,6 +51,31 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const restoredScroll = useRef(false)
   const selectedIdRef = useRef(selectedId)
   selectedIdRef.current = selectedId
+
+  // 只看这一页真实拿到的容器宽度：全局栏、页面留白与滚动条都已经扣掉。
+  // 容器变宽到三栏预算才内联，否则右栏是覆盖抽屉，绝不再把中栏挤窄。
+  useLayoutEffect(() => {
+    const node = rootRef.current
+    if (node === null) return
+    const apply = (availableWidth: number): void => {
+      setLayout(entryLayoutForWidth(availableWidth))
+    }
+    apply(node.clientWidth)
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry !== undefined) apply(entry.contentRect.width)
+    })
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
+  const toggleRail = useCallback((): void => {
+    setRailOpen((open) => !open)
+  }, [])
+  const closeRail = useCallback((): void => {
+    setRailOpen(false)
+  }, [])
 
   useLayoutEffect(() => {
     const node = rootRef.current?.closest('main')
@@ -201,6 +231,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
         setHint(`原句与「${page?.entry.mainForm ?? '这个词条'}」已删除。`)
         setPage(null)
         setSelectedId(null)
+        setRailOpen(false)
         refresh()
         return
       }
@@ -224,6 +255,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   function entryGone(): void {
     setPage(null)
     setSelectedId(null)
+    setRailOpen(false)
     refresh()
   }
 
@@ -273,8 +305,15 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     if (opened === null) setActionError(getChatStore().error ?? '没能打开线程，请刷新词条后再试。')
   }
 
+  const overlay = layout === 'drawer' && railOpen && page !== null
+
   return (
-    <div ref={rootRef} className="entries-page" data-rail={railOpen ? 'open' : 'closed'}>
+    <div
+      ref={rootRef}
+      className="entries-page"
+      data-rail={railOpen ? 'open' : 'closed'}
+      data-layout={layout}
+    >
       <EntryList
         listing={listing}
         selectedId={selectedId}
@@ -333,6 +372,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
                   type="button"
                   className="button"
                   aria-expanded={railOpen}
+                  aria-controls={LEARNING_RAIL_ID}
                   onClick={() => setRailOpen(true)}
                 >
                   学习内容 {page.entry.noteCount}
@@ -382,10 +422,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
 
             {confirmDelete === null ? null : (
               <div className="entry-confirm" role="alertdialog" aria-label="删除最后一条原句">
-                <p>
-                  这是最后一条原句。删掉后「{page.entry.mainForm}」词条连同{' '}
-                  {page.entry.noteCount} 条学习内容也会一起删除。
-                </p>
+                <p>{deleteLastSentenceText(page.entry.mainForm, page.entry.noteCount)}</p>
                 <div className="entries-main-actions">
                   <button
                     type="button"
@@ -427,13 +464,24 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
         )}
       </section>
 
+      {overlay ? (
+        <div
+          className="entries-rail-backdrop"
+          aria-hidden="true"
+          onClick={closeRail}
+        />
+      ) : null}
+
       {page === null ? null : (
         <NoteRail
           key={page.entry.id}
+          id={LEARNING_RAIL_ID}
           page={page}
           entries={allEntries?.entries ?? []}
           open={railOpen}
-          onToggle={() => setRailOpen((open) => !open)}
+          overlay={overlay}
+          onToggle={toggleRail}
+          onClose={closeRail}
           onChanged={(message) => refresh(message)}
           onEntryGone={entryGone}
         />

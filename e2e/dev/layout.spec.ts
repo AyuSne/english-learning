@@ -283,7 +283,7 @@ test.describe('收官验收 · 断点', () => {
     })
   }
 
-  test('1101px 是断点上沿：文章库两栏、词条右栏 320、对话线程栏常驻', async ({
+  test('1101px 是断点上沿：文章库两栏、词条右栏按容器宽度改覆盖抽屉、对话线程栏常驻', async ({
     launch,
     userDataDirectory
   }) => {
@@ -303,13 +303,17 @@ test.describe('收官验收 · 断点', () => {
 
     await nav(page, '词条')
     await page.locator('.entries-row').first().click()
+    // 1101 的容器只有约 799：三栏预算不够，右栏收起仍留 44 入口，打开是覆盖抽屉。
     expect(await gridTracks(page, '.entries-page')).toHaveLength(3)
+    await expect(page.locator('.entries-page')).toHaveAttribute('data-layout', 'drawer')
     await page.getByRole('button', { name: /^学习内容/ }).click()
     const rail = await page.locator('.entries-rail-open').boundingBox()
     expect(Math.round(rail?.width ?? 0)).toBe(320)
     expect(
       await page.locator('.entries-rail-open').evaluate((element) => getComputedStyle(element).position)
-    ).toBe('sticky')
+    ).toBe('fixed')
+    const middle = await page.getByRole('region', { name: '词条内容' }).boundingBox()
+    expect(middle?.width ?? 0).toBeGreaterThanOrEqual(419)
     await page.getByRole('button', { name: '收起学习内容' }).click()
     await expectNoHorizontalOverflow(page)
 

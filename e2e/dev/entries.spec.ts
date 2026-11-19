@@ -180,8 +180,8 @@ test.describe('词条页', () => {
     await entryRow(page, 'approach').click()
     await page.getByRole('button', { name: '展开学习内容' }).click()
 
-    const rail = page.getByRole('complementary', { name: '学习内容' })
-    await expect(rail.getByText('还没有学习内容 · 从对话里钉一段进来')).toBeVisible()
+    const rail = page.locator('.entries-rail-open')
+    await expect(rail.getByText('可以手写，也可以从对话里钉一段进来')).toBeVisible()
 
     // 写一条。
     await rail.getByRole('textbox', { name: '写学习内容' }).fill('记：approach 是「做法、途径」。')
@@ -224,16 +224,18 @@ test.describe('词条页', () => {
       '记：approach 在原文是「做法」。'
     ])
 
+    // 覆盖抽屉挡住后面的列表，先收起再换词条。
+    await page.getByRole('button', { name: '收起学习内容' }).click()
     await entryRow(page, 'Context').click()
     await page.getByRole('button', { name: '展开学习内容' }).click()
-    const contextRail = page.getByRole('complementary', { name: '学习内容' })
+    const contextRail = page.locator('.entries-rail-open')
     await expect(contextRail.locator('.entry-note-body')).toHaveText([
       '第二条：approach to training'
     ])
 
     // 删掉它。
     await contextRail.locator('.entry-note').first().getByRole('button', { name: '删除' }).click()
-    await expect(contextRail.getByText('还没有学习内容 · 从对话里钉一段进来')).toBeVisible()
+    await expect(contextRail.getByText('可以手写，也可以从对话里钉一段进来')).toBeVisible()
   })
 
   test('换主词形与合并词条后计数和归属都对', async ({ launch, userDataDirectory }) => {
@@ -243,7 +245,7 @@ test.describe('词条页', () => {
     await entryRow(page, 'approach').click()
     await page.getByRole('button', { name: '展开学习内容' }).click()
 
-    const rail = page.getByRole('complementary', { name: '学习内容' })
+    const rail = page.locator('.entries-rail-open')
     await rail.getByRole('button', { name: '换主词形…' }).click()
     await rail.getByRole('combobox', { name: '新的主词形' }).selectOption({ label: 'Approaching' })
     await rail.getByRole('button', { name: '换主词形', exact: true }).click()
@@ -276,7 +278,7 @@ test.describe('词条页', () => {
     await entryRow(page, 'Context').click()
     await page.getByRole('button', { name: '展开学习内容' }).click()
 
-    const rail = page.getByRole('complementary', { name: '学习内容' })
+    const rail = page.locator('.entries-rail-open')
     await rail.getByRole('button', { name: '拆分原句…' }).click()
     await rail.getByRole('combobox', { name: '拆到哪个词条' }).selectOption({ label: 'approach' })
     await expect(rail.getByText('这是最后一条原句')).toBeVisible()
@@ -378,6 +380,26 @@ test.describe('词条页', () => {
     ).toHaveText('approach')
   })
 
+  test('删最后一条原句且没有学习内容时，提示不提「0 条学习内容」', async ({
+    launch,
+    userDataDirectory
+  }) => {
+    seed(userDataDirectory, [{ entry: firstArticle, paragraphIndex: 0, needle: 'approach' }])
+    const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+    await openEntries(page)
+    await entryRow(page, 'approach').click()
+
+    const sentence = page.getByRole('region', { name: '词条内容' }).locator('.entry-sentence').first()
+    await sentence.hover()
+    await sentence.getByRole('button', { name: '删除' }).click()
+
+    const dialog = page.getByRole('alertdialog', { name: '删除最后一条原句' })
+    await expect(dialog).toContainText('这是最后一条原句。')
+    await expect(dialog).toContainText('「approach」词条也会一起删除')
+    await expect(dialog).not.toContainText('学习内容')
+    await expect(dialog).not.toContainText('0 条')
+  })
+
   test('删最后一条原句先确认，删完词条与学习内容一起消失', async ({ launch, userDataDirectory }) => {
     seed(
       userDataDirectory,
@@ -389,6 +411,9 @@ test.describe('词条页', () => {
     await entryRow(page, 'Context').click()
     await page.getByRole('button', { name: '展开学习内容' }).click()
     await expect(page.locator('.entry-note-body')).toHaveText(['跟着词条一起删'])
+
+    // 覆盖抽屉挡住原句列；先收起再删原句。
+    await page.getByRole('button', { name: '收起学习内容' }).click()
 
     const main = page.getByRole('region', { name: '词条内容' })
     const sentence = main.locator('.entry-sentence').first()
