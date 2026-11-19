@@ -1,4 +1,6 @@
+import { useLayoutEffect, useRef } from 'react'
 import type { EntryListResult } from '../../../shared/entries'
+import { entriesViewState, updateEntriesViewState } from '../view-state'
 import { entryListMetaText } from './format'
 
 export type EntrySort = 'recent' | 'alpha'
@@ -32,6 +34,22 @@ export function EntryList({
   onFilter: (filter: EntryFilter) => void
   onSelect: (entryId: string) => void
 }) {
+  const listRef = useRef<HTMLUListElement>(null)
+  const restoredScroll = useRef(false)
+
+  useLayoutEffect(() => {
+    if (restoredScroll.current || listing === null || listRef.current === null) return
+    const node = listRef.current
+    node.scrollTop = entriesViewState().listScrollTop
+    restoredScroll.current = true
+  }, [listing])
+
+  useLayoutEffect(() => () => {
+    if (restoredScroll.current && listRef.current !== null) {
+      updateEntriesViewState({ listScrollTop: listRef.current.scrollTop })
+    }
+  }, [])
+
   return (
     <aside className="entries-list" aria-label="词条列表">
       <header className="entries-list-head">
@@ -91,7 +109,15 @@ export function EntryList({
             : '没有对上的词条。换个词，或把筛选放回全部。'}
         </p>
       ) : (
-        <ul className="entries-rows">
+        <ul
+          className="entries-rows"
+          ref={listRef}
+          onScroll={(event) => {
+            if (restoredScroll.current) {
+              updateEntriesViewState({ listScrollTop: event.currentTarget.scrollTop })
+            }
+          }}
+        >
           {(listing?.entries ?? []).map((entry) => (
             <li key={entry.id}>
               <button
