@@ -669,6 +669,230 @@
   white-space: nowrap;
 }
 
+/* ---------- 学习指令 ---------- */
+
+.instruction-panel {
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.instruction-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.instruction-label {
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.instruction-count {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.instruction-toggle {
+  margin-left: auto;
+  color: var(--amber);
+}
+
+.instruction-save-open:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.instruction-body {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+}
+
+.instruction-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.instruction-subhead {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.instruction-example-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.instruction-example {
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--sunken);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 16px;
+  transition: background 150ms ease-out;
+}
+
+.instruction-example:hover {
+  background: var(--hover);
+}
+
+.instruction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.instruction-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.instruction-row + .instruction-row {
+  border-top: 1px dashed var(--rule);
+}
+
+.instruction-apply {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  text-align: left;
+}
+
+.instruction-name {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.instruction-time {
+  flex: none;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.instruction-actions {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+
+.instruction-form {
+  display: flex;
+  flex: 1 0 100%;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--sunken);
+}
+
+.instruction-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.instruction-input,
+.instruction-textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.instruction-input:focus,
+.instruction-textarea:focus {
+  border-color: var(--ink-2);
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
+}
+
+.instruction-textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+
+.instruction-preview,
+.instruction-empty,
+.instruction-error,
+.instruction-notice {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.instruction-error {
+  color: var(--danger);
+}
+
+.instruction-notice {
+  margin-bottom: 8px;
+}
+
+.instruction-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.instruction-confirm {
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  background: var(--danger-bed);
+}
+
+.instruction-confirm p {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.instruction-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 /* ---------- 改口与版本 ---------- */
 
 .edit-banner {

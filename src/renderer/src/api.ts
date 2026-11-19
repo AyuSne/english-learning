@@ -14,6 +14,14 @@ import type {
   RenameArticleResult
 } from '../../shared/library'
 import type {
+  CopyLearningInstructionRequest,
+  CreateLearningInstructionRequest,
+  DeleteLearningInstructionRequest,
+  LearningInstructionList,
+  LearningInstructionResult,
+  UpdateLearningInstructionRequest
+} from '../../shared/learning-instructions'
+import type {
   ChangeMainFormRequest,
   ChangeMainFormResult,
   CollectSelectionRequest,
@@ -268,6 +276,39 @@ export function deleteLearningNote(noteId: string): Promise<LearningNoteResult> 
 
 export function moveLearningNote(request: MoveLearningNoteRequest): Promise<LearningNoteResult> {
   return window.api.invoke('entries:move-note', request)
+}
+
+/** 已保存的学习指令，按更新时间倒序；六条内置示例不走这张表。 */
+export function loadLearningInstructions(): Promise<LearningInstructionList> {
+  return window.api.invoke('instructions:list')
+}
+
+/** 把当前输入存成一条命名指令。 */
+export function createLearningInstruction(
+  request: CreateLearningInstructionRequest
+): Promise<LearningInstructionResult> {
+  return window.api.invoke('instructions:create', request)
+}
+
+/** 同时改名称与正文；创建时间不动。 */
+export function updateLearningInstruction(
+  request: UpdateLearningInstructionRequest
+): Promise<LearningInstructionResult> {
+  return window.api.invoke('instructions:update', request)
+}
+
+/** 复制成一条独立的新指令，之后互不影响。 */
+export function copyLearningInstruction(
+  request: CopyLearningInstructionRequest
+): Promise<LearningInstructionResult> {
+  return window.api.invoke('instructions:copy', request)
+}
+
+/** 真删一条自己保存的指令。 */
+export function deleteLearningInstruction(
+  request: DeleteLearningInstructionRequest
+): Promise<LearningInstructionResult> {
+  return window.api.invoke('instructions:delete', request)
 }
 
 /** 左栏线程列表。 */
