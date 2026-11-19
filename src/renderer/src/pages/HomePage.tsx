@@ -34,7 +34,7 @@ export function HomePage() {
   const current = summary?.continueReading ?? null
 
   function continueReading(articleId: string): void {
-    navigate('reading', { articleId })
+    navigate('reading', { articleId, readingFrom: 'home' })
   }
 
   return (

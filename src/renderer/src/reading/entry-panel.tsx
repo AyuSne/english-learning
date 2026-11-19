@@ -25,6 +25,8 @@ export type CollectedPanel = {
 export type EntryPanel = {
   kind: 'entry'
   entryId: string
+  /** 正文中点开的这一处，而非词条里最新收集的原句。 */
+  entrySentenceId: string | null
   card: WordEntryCard | null
   error: string | null
   /** 删最后一条原句前先确认，会连词条一起删。 */
@@ -78,6 +80,9 @@ export function EntryPanelView({
   panel,
   panelRef,
   onClose,
+  onOpenEntry,
+  onAsk,
+  openingThread,
   onDelete,
   onConfirmDeleteLast,
   onCancelConfirm
@@ -85,6 +90,9 @@ export function EntryPanelView({
   panel: EntryPanel
   panelRef: RefObject<HTMLElement | null>
   onClose: () => void
+  onOpenEntry: () => void
+  onAsk: () => void
+  openingThread: boolean
   onDelete: (entrySentenceId: string) => void
   onConfirmDeleteLast: () => void
   onCancelConfirm: () => void
@@ -120,6 +128,20 @@ export function EntryPanelView({
               变体：{panel.card.entry.variants.join('、')}
             </p>
           )}
+
+          <div className="reading-panel-actions">
+            <button type="button" className="button" onClick={onOpenEntry}>
+              打开词条
+            </button>
+            <button
+              type="button"
+              className="button"
+              disabled={openingThread || panel.entrySentenceId === null}
+              onClick={onAsk}
+            >
+              就这个词提问
+            </button>
+          </div>
 
           <ul className="reading-panel-sentences">
             {panel.card.sentences.map((sentence) => (

@@ -72,6 +72,7 @@ export function App() {
         articleId={view.articleId}
         entrySentenceId={view.entrySentenceId}
         reselect={view.reselect}
+        readingFrom={view.readingFrom}
       />
     )
   }

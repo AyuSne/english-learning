@@ -9,6 +9,7 @@ import {
 } from 'react'
 import type { EntrySentence, ReadingCollectionMark } from '../../../shared/entries'
 import type { DictionaryLookup } from '../../../shared/dictionary'
+import type { CreateThreadRequest } from '../../../shared/threads'
 import type {
   ReadingPreferences,
   ReadingSettings,
@@ -26,6 +27,7 @@ import {
   saveReadingSettings
 } from '../api'
 import { lookupDictionaryOrUnavailable } from '../dictionary/lookup'
+import { getChatStore, openThreadForMain } from '../chat/store'
 import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
 import { readingPointText } from '../library/format'
@@ -41,6 +43,7 @@ import { ReadingParagraphView } from '../reading/paragraph'
 import { readParagraphSelection, type ReadingSelection } from '../reading/selection'
 import { ReadingSettingsPanel } from '../reading/settings-panel'
 import { useReadingPosition } from '../reading/use-reading-position'
+import type { ReadingSource } from '../routes'
 
 type ReadingPageProps = {
   articleId: string | null
@@ -48,6 +51,7 @@ type ReadingPageProps = {
   entrySentenceId: string | null
   /** 定位的同时就把这条原句的范围换掉。 */
   reselect: boolean
+  readingFrom: ReadingSource | null
 }
 
 /** 本次圈下的表达：先画麦色底，收下后再补上词条 id，点它可以打开词条卡。 */
@@ -77,7 +81,7 @@ function entryIdOf(target: EventTarget | null): string | null {
  * 圈选一个词或短语就完成选词：当场麦色高亮，落成词条下的一条原句；
  * 已收集的表达在重读时弱高亮，点一下打开词条卡，可从卡里删原句。
  */
-export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPageProps) {
+export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom }: ReadingPageProps) {
   const [view, setView] = useState<ReadingView | null>(null)
   const [settings, setSettings] = useState<ReadingSettings | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -89,6 +93,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
   const [focus, setFocus] = useState<FocusTarget | null>(null)
   const [hint, setHint] = useState<string | null>(null)
   const [collectError, setCollectError] = useState<string | null>(null)
+  const [openingThread, setOpeningThread] = useState(false)
 
   const { scrollRef, position, writeError, retryWrite } = useReadingPosition(view)
   const settingsRequest = useRef(0)
@@ -197,11 +202,11 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
         setSettingsOpen(false)
         return
       }
-      goBack()
+      goBack(readingFrom === 'library' || readingFrom === 'entries' ? readingFrom : 'home')
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [focus, panel, settingsOpen])
+  }, [focus, panel, settingsOpen, readingFrom])
 
   useEffect(() => {
     if (!settingsOpen) return
@@ -362,12 +367,13 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
     )
   }
 
-  function openEntryCard(entryId: string): void {
+  function openEntryCard(entryId: string, entrySentenceId: string | null): void {
     setActiveSelection(null)
     setHint(null)
     setPanel({
       kind: 'entry',
       entryId,
+      entrySentenceId,
       card: null,
       error: null,
       confirmingDelete: false,
@@ -549,6 +555,8 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
             : {
                 ...current,
                 entryId: entry.id,
+                entrySentenceId:
+                  current.entrySentenceId === entrySentenceId ? null : current.entrySentenceId,
                 deleting: false,
                 error: null,
                 confirmingDelete: false,
@@ -591,9 +599,36 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
     setActiveSelection(null)
   }
 
+  async function openReadingThread(
+    main: CreateThreadRequest['main'],
+    forceNew = false
+  ): Promise<void> {
+    if (openingThread) return
+    setOpeningThread(true)
+    setCollectError(null)
+    const threadId = await openThreadForMain(main, { forceNew })
+    if (threadId === null) {
+      setCollectError(getChatStore().error ?? '没能开线程，再试一次。')
+      setOpeningThread(false)
+    }
+  }
+
+  function sentenceIdOf(target: EventTarget | null, entryId: string): string | null {
+    const sentence = (target as Element | null)?.closest<HTMLElement>('.reading-sentence')
+    if (!sentence) return null
+    return (
+      collected.find(
+        (mark) =>
+          mark.entryId === entryId &&
+          mark.paragraphId === sentence.dataset.paragraphId &&
+          String(mark.sentenceOrdinal) === sentence.dataset.sentenceOrdinal
+      )?.id ?? null
+    )
+  }
+
   const handleBodyClick = (event: ReactMouseEvent<HTMLDivElement>): void => {
     const entryId = entryIdOf(event.target)
-    if (entryId !== null) openEntryCard(entryId)
+    if (entryId !== null) openEntryCard(entryId, sentenceIdOf(event.target, entryId))
   }
 
   const handleBodyKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>): void => {
@@ -601,7 +636,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
     const entryId = entryIdOf(event.target)
     if (entryId === null) return
     event.preventDefault()
-    openEntryCard(entryId)
+    openEntryCard(entryId, sentenceIdOf(event.target, entryId))
   }
 
   const hasLetters = view?.article.kind === 'long_match'
@@ -615,6 +650,15 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
   ]
     .filter(Boolean)
     .join(' ')
+
+  const backLabels: Record<ReadingSource, string> = {
+    library: '文章库',
+    home: '首页',
+    entries: '词条',
+    search: '搜索结果'
+  }
+  const backLabel = readingFrom === null ? '' : backLabels[readingFrom]
+  const backFallback = readingFrom === 'library' || readingFrom === 'entries' ? readingFrom : 'home'
 
   return (
     <div
@@ -630,8 +674,13 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
       }
     >
       <header className="reading-bar">
-        <button type="button" className="reading-back" aria-label="返回" onClick={() => goBack()}>
-          ←
+        <button
+          type="button"
+          className="reading-back"
+          aria-label={`返回${backLabel}`}
+          onClick={() => goBack(backFallback)}
+        >
+          <span aria-hidden="true">←</span> {backLabel || '返回'}
         </button>
         <div className="reading-bar-text">
           <h1 className="reading-bar-title">{view?.article.title ?? '阅读'}</h1>
@@ -642,13 +691,34 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
               <button
                 type="button"
                 className="reading-tool"
+                disabled={openingThread}
+                onClick={() =>
+                  void openReadingThread({ kind: 'article', articleId: view.article.id })
+                }
+              >
+                与这篇文章对话
+              </button>
+              <button
+                type="button"
+                className="reading-tool"
+                aria-label="新开一条文章线程"
+                disabled={openingThread}
+                onClick={() =>
+                  void openReadingThread({ kind: 'article', articleId: view.article.id }, true)
+                }
+              >
+                新开一条
+              </button>
+              <button
+                type="button"
+                className="reading-tool"
                 aria-pressed={settings.annotationsVisible}
                 aria-label={settings.annotationsVisible ? '隐藏原文注释' : '显示原文注释'}
                 onClick={() =>
                   updatePreferences({ annotationsVisible: !settings.annotationsVisible })
                 }
               >
-                注释
+                注释：{settings.annotationsVisible ? '开' : '关'}
               </button>
               <div className="reading-settings-anchor" ref={settingsButtonRef}>
                 <button
@@ -777,7 +847,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
         <CollectedPanelView
           panel={panel}
           panelRef={panelRef}
-          onOpenEntry={() => openEntryCard(panel.entryId)}
+          onOpenEntry={() => navigate('entries', { entryId: panel.entryId })}
           onClose={closePanel}
         />
       ) : (
@@ -785,6 +855,13 @@ export function ReadingPage({ articleId, entrySentenceId, reselect }: ReadingPag
           panel={panel}
           panelRef={panelRef}
           onClose={closePanel}
+          onOpenEntry={() => navigate('entries', { entryId: panel.entryId })}
+          onAsk={() => {
+            if (panel.entrySentenceId !== null) {
+              void openReadingThread({ kind: 'sentence', entrySentenceId: panel.entrySentenceId })
+            }
+          }}
+          openingThread={openingThread}
           onDelete={requestDeleteSentence}
           onConfirmDeleteLast={confirmDeleteLast}
           onCancelConfirm={() =>

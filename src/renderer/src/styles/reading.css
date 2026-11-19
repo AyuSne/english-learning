@@ -19,14 +19,15 @@
 }
 
 .reading-back {
-  display: grid;
+  display: flex;
   flex: none;
-  place-items: center;
-  width: 32px;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
   height: 32px;
   border-radius: 8px;
   color: var(--ink-2);
-  font-size: 18px;
+  font-size: 13px;
   line-height: 1;
   transition:
     background 150ms ease-out,

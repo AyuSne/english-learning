@@ -14,6 +14,7 @@ function view(route: Route, overrides: Partial<View> = {}): View {
     threadId: null,
     pinId: null,
     fromEntryId: null,
+    readingFrom: null,
     ...overrides
   }
 }
@@ -112,6 +113,17 @@ describe('parseView', () => {
 })
 
 describe('routeHash', () => {
+  it('阅读页保留来源，刷新后仍能知道返回哪里', () => {
+    for (const readingFrom of ['library', 'home', 'entries', 'search'] as const) {
+      const hash = routeHash('reading', { articleId: 'a', readingFrom })
+      expect(hash).toBe(`#/reading/a?from=${readingFrom}`)
+      expect(parseView(hash)).toEqual(expect.objectContaining({ readingFrom }))
+    }
+    expect(parseView('#/reading/a?from=unknown')).toEqual(
+      expect.objectContaining({ readingFrom: null })
+    )
+  })
+
   it('阅读页把文章 id 编进 hash', () => {
     expect(routeHash('reading', { articleId: 'a b' })).toBe('#/reading/a%20b')
     expect(routeHash('reading')).toBe('#/reading')

@@ -127,6 +127,7 @@ export function EntriesPage({ entryId }: { entryId: string | null }) {
     navigate('reading', {
       articleId: sentence.articleId,
       entrySentenceId: sentence.id,
+      readingFrom: 'entries',
       reselect
     })
   }
