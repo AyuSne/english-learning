@@ -75,6 +75,21 @@ export function forgetChatThread(threadId: string): boolean {
   return false
 }
 
+/**
+ * 文章被删后清掉「最近文章库对象」：下次点文章库不再指向一篇不存在的文章。
+ * 当前地址由调用方决定是否替换，这里只清记忆，不把用户从别的页面拉回来。
+ */
+export function forgetLibraryArticle(articleId: string): void {
+  if (recentLibraryArticleId === articleId) {
+    recentLibraryArticleId = null
+    try {
+      window.localStorage.removeItem(RECENT_LIBRARY_ARTICLE_KEY)
+    } catch {
+      // 存储不可用时仍清理当前窗口里的最近文章。
+    }
+  }
+}
+
 export function navigate(route: Route, options: NavigateOptions = {}): void {
   rememberObject(window.location.hash)
   const target = routeHash(route, options)

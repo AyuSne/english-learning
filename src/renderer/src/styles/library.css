@@ -254,6 +254,71 @@
   gap: 8px;
 }
 
+.library-manage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.library-manage-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.library-manage-row .button {
+  flex: 1 1 0;
+  width: auto;
+}
+
+.library-rename {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--hover);
+}
+
+.library-rename-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.library-rename-field input {
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.library-rename-field input:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.library-impact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding-left: 16px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
 /* ---------- 首页：继续阅读 ---------- */
 
 .home-continue {

@@ -53,6 +53,11 @@ import {
 import { registerIpcHandlers } from './ipc/register'
 import { fileStamp } from './file-stamp'
 import {
+  deleteArticle,
+  readArticleDeletionPreview,
+  renameArticle
+} from './library/articles'
+import {
   readArticleDetail,
   readHomeSummary,
   readLibrary,
@@ -195,6 +200,10 @@ function start(): void {
     'library:reimport': () => importCorpus(opened, { directory: corpusDirectory() }),
     'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
     'library:search': (payload) => searchLibrary(opened, payload.query),
+    'library:rename': (payload) => renameArticle(opened, payload),
+    'library:delete-preview': (payload) =>
+      readArticleDeletionPreview(opened, payload.articleId),
+    'library:delete': (payload) => deleteArticle(opened, payload),
     'reading:open': (payload) => openReadingView(opened, payload.articleId),
     'reading:progress': (payload) => saveReadingPoint(opened, payload),
     'reading:settings': (payload) => saveReadingSettings(opened, payload),

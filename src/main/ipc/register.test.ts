@@ -15,11 +15,14 @@ import type {
   WordEntryCard
 } from '../../shared/entries'
 import type {
+  ArticleDeletionPreview,
   ArticleDetail,
+  DeleteArticleResult,
   HomeSummary,
   ImportReport,
   LibraryListing,
-  LibrarySearchResults
+  LibrarySearchResults,
+  RenameArticleResult
 } from '../../shared/library'
 import type {
   CreatePinResult,
@@ -119,7 +122,14 @@ function libraryHandlers() {
     'library:search': (payload: { query: string }): LibrarySearchResults => ({
       query: payload.query,
       results: []
-    })
+    }),
+    'library:rename': (payload: { articleId: string; title: string }): RenameArticleResult => ({
+      status: 'renamed',
+      articleId: payload.articleId,
+      title: payload.title
+    }),
+    'library:delete-preview': (): ArticleDeletionPreview | null => null,
+    'library:delete': (): DeleteArticleResult => ({ status: 'missing' })
   }
 }
 
