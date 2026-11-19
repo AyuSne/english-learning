@@ -333,7 +333,7 @@ test.describe('收官验收 · 深色对比度', () => {
       { label: '钉板卡片动作', selector: '.pin-card-action' },
       { label: '钉板页脚', selector: '.pin-board-foot-text' }
     ])
-    await page.getByRole('button', { name: '收起钉板' }).click()
+    await page.getByRole('button', { name: '关闭钉板' }).click()
 
     // 错误块：401 的标题、说明与下一步。
     stub.setScript({ kind: 'status', status: 401 })

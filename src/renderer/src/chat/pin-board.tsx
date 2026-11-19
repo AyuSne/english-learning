@@ -15,7 +15,8 @@ export function PinBoardPanel({
   threadEntryId,
   busyPinId,
   freshPinIds,
-  onToggle,
+  onOpenUnfiled,
+  onClose,
   onSelectTab,
   onOpenSource,
   onChangeTarget,
@@ -31,7 +32,8 @@ export function PinBoardPanel({
   threadEntryId: string | null
   busyPinId: string | null
   freshPinIds: readonly string[]
-  onToggle: () => void
+  onOpenUnfiled: () => void
+  onClose: () => void
   onSelectTab: (tab: PinTab) => void
   onOpenSource: (pin: Pin) => void
   onChangeTarget: (pin: Pin) => void
@@ -46,12 +48,12 @@ export function PinBoardPanel({
         <button
           type="button"
           className="pin-board-handle"
-          aria-label={`打开钉板，未归档 ${board.unfiledCount} 条`}
+          aria-label={`未归档 ${board.unfiledCount}`}
           aria-expanded={false}
-          onClick={onToggle}
+          onClick={onOpenUnfiled}
         >
           <span className="pin-board-count">{board.unfiledCount}</span>
-          <span className="pin-board-label">钉板</span>
+          <span className="pin-board-label">未归档</span>
         </button>
       </aside>
     )
@@ -74,7 +76,7 @@ export function PinBoardPanel({
             aria-selected={tab === 'thread'}
             onClick={() => onSelectTab('thread')}
           >
-            这条线程
+            这条线程 {board.threadPins.length}
           </button>
           <button
             type="button"
@@ -89,11 +91,10 @@ export function PinBoardPanel({
         <button
           type="button"
           className="pin-board-fold"
-          aria-label="收起钉板"
-          aria-expanded
-          onClick={onToggle}
+          aria-label="关闭钉板"
+          onClick={onClose}
         >
-          →
+          关闭
         </button>
       </header>
 
@@ -119,33 +120,32 @@ export function PinBoardPanel({
         )}
       </div>
 
-      <footer className="pin-board-foot">
-        <span className="pin-board-foot-text">
-          {tab === 'thread'
-            ? `这条线程已钉 ${board.threadPins.length} 条`
-            : `未归档 ${board.unfiledCount} 条 · 不计入收集`}
-        </span>
-        {tab === 'thread' ? (
-          viewEntryId === null ? null : (
-            <button
-              type="button"
-              className="button button-small"
-              onClick={() => onViewEntry(viewEntryId)}
-            >
-              在词条中查看
+      {pins.length > 0 || (tab === 'thread' && viewEntryId !== null) ? (
+        <footer className="pin-board-foot">
+          {pins.length === 0 ? null : (
+            <span className="pin-board-foot-text">
+              {tab === 'thread'
+                ? `这条线程已钉 ${board.threadPins.length} 条`
+                : `未归档 ${board.unfiledCount} 条 · 不计入收集`}
+            </span>
+          )}
+          {tab === 'thread' ? (
+            viewEntryId === null ? null : (
+              <button
+                type="button"
+                className="button button-small"
+                onClick={() => onViewEntry(viewEntryId)}
+              >
+                在词条中查看
+              </button>
+            )
+          ) : (
+            <button type="button" className="button button-small" onClick={onFileAll}>
+              全部归位
             </button>
-          )
-        ) : (
-          <button
-            type="button"
-            className="button button-small"
-            disabled={board.unfiledCount === 0}
-            onClick={onFileAll}
-          >
-            全部归位
-          </button>
-        )}
-      </footer>
+          )}
+        </footer>
+      ) : null}
     </aside>
   )
 }

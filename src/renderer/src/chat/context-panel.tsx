@@ -43,22 +43,26 @@ export function ContextPanel({
         <p className="context-empty">还没有带上上下文</p>
       ) : (
         <ul className="context-chips">
-          {items.map((item) => (
-            <li key={item.id} className="context-chip" data-context-id={item.id}>
-              <span className="context-kind">{CONTEXT_KIND_LABEL[item.kind]}</span>
-              <span className="context-chip-label" title={item.source === '' ? item.text : item.source}>
-                {item.label === '' ? item.text : item.label}
-              </span>
-              <button
-                type="button"
-                className="context-remove"
-                aria-label={`移除上下文：${item.label === '' ? item.text : item.label}`}
-                onClick={() => onRemove(item.id)}
-              >
-                ×
-              </button>
-            </li>
-          ))}
+          {items.map((item) => {
+            const isSentence = item.kind === 'sentence'
+            const label = isSentence || item.label === '' ? item.text : item.label
+            return (
+              <li key={item.id} className="context-chip" data-context-id={item.id}>
+                <span className="context-kind">{CONTEXT_KIND_LABEL[item.kind]}</span>
+                <span className="context-chip-label" title={isSentence || item.source === '' ? item.text : item.source}>
+                  {label}
+                </span>
+                <button
+                  type="button"
+                  className="context-remove"
+                  aria-label={`移除上下文：${label}`}
+                  onClick={() => onRemove(item.id)}
+                >
+                  ×
+                </button>
+              </li>
+            )
+          })}
         </ul>
       )}
 

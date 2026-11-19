@@ -181,10 +181,12 @@ test.describe('收官验收 · 整条学习链路', () => {
     await pinDialog.getByRole('button', { name: '未归档' }).click()
     await pinDialog.getByRole('button', { name: '钉住', exact: true }).click()
     await expect(page.getByRole('status')).toContainText('已放进未归档')
-    await expect(page.getByRole('button', { name: '未归档 1', exact: true })).toBeVisible()
+    const pinBoard = page.getByRole('complementary', { name: '钉板' })
+    const pinBoardHandle = pinBoard.getByRole('button', { name: '未归档 1', exact: true })
+    await expect(pinBoardHandle).toBeVisible()
 
     // 8. 钉板归位：从钉板把这条未归档归到词条。
-    await page.getByRole('button', { name: '未归档 1', exact: true }).click()
+    await pinBoardHandle.click()
     await expect(page.getByRole('tab', { name: '未归档 1' })).toBeVisible()
     await expect(page.locator('.pin-card')).toContainText(PINNED)
     await page.getByRole('button', { name: '归到词条' }).click()

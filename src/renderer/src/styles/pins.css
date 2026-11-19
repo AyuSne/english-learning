@@ -295,6 +295,11 @@
 
 .pin-board-open {
   width: 336px;
+  max-width: 100%;
+}
+
+.pin-board-scrim {
+  display: none;
 }
 
 .pin-board-head {
@@ -510,6 +515,18 @@
 }
 
 @media (max-width: 1100px) {
+  .pin-board-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    display: block;
+    background: rgba(26, 26, 23, 0.2);
+  }
+
+  [data-theme="dark"] .pin-board-scrim {
+    background: rgba(0, 0, 0, 0.45);
+  }
+
   .pin-board {
     position: fixed;
     top: 0;
