@@ -49,6 +49,18 @@ describe('createBridge', () => {
     expect(invocations).toEqual([{ channel: 'app:bootstrap', payload: undefined }])
   })
 
+  it('按主对象查询及打开线程的请求可以经过白名单', async () => {
+    const { ipc, invocations } = fakeRenderer()
+    const bridge = createBridge(ipc)
+    const main = { kind: 'entry', entryId: 'entry-1' } as const
+    await bridge.invoke('chat:find-for-main', { main })
+    await bridge.invoke('chat:open-for-main', { main, forceNew: true })
+    expect(JSON.parse(JSON.stringify(invocations))).toEqual([
+      { channel: 'chat:find-for-main', payload: { main } },
+      { channel: 'chat:open-for-main', payload: { main, forceNew: true } }
+    ])
+  })
+
   it('未知 channel 立即报错，且不发给主进程', async () => {
     const { ipc, invocations } = fakeRenderer()
     const bridge = createBridge(ipc)

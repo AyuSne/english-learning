@@ -124,6 +124,22 @@
   line-height: 18px;
 }
 
+.chat-main-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.chat-title-link { text-decoration: none; }
+.chat-title-link:hover { text-decoration: underline; }
+.chat-main-missing { margin-top: 4px; color: var(--ink-2); font-size: 13px; }
+
 .chat-scroll {
   flex: 1;
   min-height: 0;

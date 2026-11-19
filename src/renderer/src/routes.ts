@@ -15,7 +15,7 @@ export type View = {
   entryId: string | null
   /** 对话页打开的线程；没有指定时为空，对话页是一张新的空白线程。 */
   threadId: string | null
-  /** 阅读页要从词条跳到的原句。 */
+  /** 阅读页或词条页要定位的原句。 */
   entrySentenceId: string | null
   /** 阅读页要把这条原句的范围换掉（重新圈定）。 */
   reselect: boolean
@@ -122,9 +122,12 @@ export function parseView(hash: string): View {
     if (segments.length === 1) {
       return blankView('entries')
     }
+    const entryId = decodeSegment(segments[1] as string)
+    const params = new URLSearchParams(query)
     return {
       ...blankView('entries'),
-      entryId: decodeSegment(segments[1] as string)
+      entryId,
+      entrySentenceId: entryId === null ? null : params.get('sentence') || null
     }
   }
 
@@ -159,7 +162,10 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
     return hash
   }
   if (route === 'entries' && options.entryId) {
-    return `#/entries/${encodeURIComponent(options.entryId)}`
+    const hash = `#/entries/${encodeURIComponent(options.entryId)}`
+    return options.entrySentenceId
+      ? `${hash}?sentence=${encodeURIComponent(options.entrySentenceId)}`
+      : hash
   }
   if (route === 'library' && options.articleId) {
     return `#/library/${encodeURIComponent(options.articleId)}`
