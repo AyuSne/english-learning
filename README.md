@@ -1,50 +1,139 @@
 # 素读
 
-面向六级备考的 Windows 桌面应用：读真题文章、圈出想学的词，把原句与出处收进词条，再用对话和钉住补充学习内容。
+**一本长在自己读过的文章里的克制单词本。**
 
-当前进度是**应用骨架**（#26）、**对话骨架**（#27）、**语料导入与文章库**（#28）、**阅读页与阅读设置**（#29）与**选词与原句**（#30）：左侧全局栏、首页首屏空态、首次启动建本机 SQLite 库并写 schema 版本、渲染层只经一份带白名单的 bridge 访问主进程；空白线程可发消息，思维链流式流出、正文抵达后折起，可随时停止，错误按类型给文案与动作；首次启动把首批 63 篇真题从随包语料导入本机库，文章库按 7 个场次分组、可按篇名与正文搜索、右侧看详情，首页「继续阅读」指向最近打开的一篇与上次位置；阅读页按 620 列排版，字号行距、原文注释与已收集词的弱高亮按篇记住，滚动位置写回；圈一个词或短语当场高亮并收成词条下的一条原句，同篇同句只留一条，常见词形归到同一词条，点弱高亮的词能看词条卡并删原句；随包一份裁剪后的 ECDICT 离线词典（#34），阅读划词卡、词条右栏与对话浮卡都能查音标与按词性分条的中文释义，查不到时明说「没收录」，一条释义可起草进学习内容编辑框但不自动保存。词条页与学习内容、对话上下文与回答版本、钉住与钉板（#31–#33）也已经在分支上落地。
+不背孤立单词表，不做刷题软件，也不堆砌打卡与记忆曲线；你可以在纸质试卷或其他软件里安心刷题，做完后再打开它，从刚才读过的文章里圈出想学的词、连同原句收进本子，用词典与大模型整理理解，在日后重读文章时再次遇见。
 
-设置页（#35）也已经接上：模型服务可保存多套并随时切换，切换只影响之后的调用；密钥用系统密钥库加密，界面只显示掩码，保存前发一次最小请求校验，被拒时保留原密钥，断网时先存为「未验证」、成功调用后自动转「已验证」；外观可选浅色 / 深色 / 跟随系统；阅读默认值在这里统一改，阅读页里按篇改的覆盖值不受影响。
+> 最新版本：[**v0.1.0 · 首个可用版本**](https://github.com/AyuSne/english-learning/releases/latest)（Windows x64）
 
-收官验收（#37）把整条链路与发布前的不变量纳入了 Playwright：一条端到端用例从首页空态走到「来源回跳」，覆盖文章库、阅读选词、词条、对话、钉住与钉板归位；深色下从真实 computed style 逐项实测 WCAG 对比度；1100 / 1000 / 900 三个断点用真实窗口内容宽度验页面不横向溢出、该折的栏都折；强杀进程（不走退出收尾）后重启，阅读位置、词条、对话与钉住逐项与重启前一致；加载、导入、保存与模型错误都给出文案与下一步动作，并能在原地重试。
+<!-- 建议在这里放 1～2 张实际界面截图：阅读页圈词高亮 / 词条页多篇原句与回到原文 -->
 
-## 开发
+---
 
-需要 Node.js 22.12 或更新版本（Electron 45 内置 Node 24）。
+## 为什么做「素读」
+
+市面上的背单词软件大多把词从文章里抽出来，做成脱离语境的词表和卡片，靠遗忘曲线推着人一遍遍刷。
+
+但真正有效、也让人愿意学下去的体验往往相反：
+
+- **自己挑出来的词，才真的想记住。** 读书或做阅读时，把不认识的、或者虽然认识但觉得表达很好的词圈出来——选择权在自己手里，学习才是主动的。
+- **记忆靠的是“亲身经历过的语境”。** 单词本里留下的不是词典编的陌生例句，而是当时亲眼读过、甚至费过一番功夫才看懂的那句原话。以后看到这句原句，整段阅读记忆都会跟着浮出来。
+- **重读文章本身就是复习。** 读过的材料本来就要回头重读、培养语感；重新读一遍文章，顺眼撞见之前收过的词，不用刻意翻卡片，自然就又复习了一遍。
+
+**素读**做的，就是把高中时「在纸质卷子上做完题 → 翻开单词本集中查词典 → 把词连带卷子上的原句记进本子 → 以后重读原文复习」这套习惯搬到电脑上——**只是不用再一笔一划手抄原句**，再把大模型作为一个听你指挥的助教接进来。
+
+---
+
+## 它是什么，以及它刻意不做什么
+
+素读的定位很单纯：**专心做好一本语境单词本，不做 All-in-One。**
+
+- **它专注做好一件事**：把你读过的文章、选出的词、当时的原句与句锚点、以及你整理下来的学习内容连成一张可来回跳转的网。
+- **它刻意不做**：
+  - **不做刷题、选项作答、判分与错题本** — 刷题交给纸质试卷或市面上已经很成熟的开源刷题项目，不重复造轮子，也不让做题焦虑抢走注意力；做完题再回到素读收词整理，就像高中时放在手边的专用单词本。
+  - **不做艾宾浩斯排程、卡片翻转、每日打卡与时长仪表盘** — 怎么复习、何时重读，由你自己的节奏决定。
+  - **不让 AI 替你决定记什么** — 模型的回复再长，也不会自动灌进词库；只有你亲手选中并**钉住**的片段，才会留在词条里。
+
+---
+
+## 四步学习链路
+
+1. **打开读过的文章**
+   你可以直接在素读里安静读全文，也可以在纸质试卷或其他软件刷完题后，再回来打开对应的干净原文。文章去掉了题干、选项与说明干扰，以单栏呈现；原卷自带的中文夹注默认浅色显示、可一键隐藏。
+
+2. **圈词，连带原句收进词条**
+   划选单个词或短语，正文当场高亮，常见词形变化自动归并到同一词条，并连同**逐字原句、所在文章及句锚点**一起保存；同一个词在不同文章里再次遇到，原句会按文章攒在下面，支持重新圈定与合并/拆分词条。
+
+3. **查离线词典，按需问 LLM 并“钉住”**
+   读完或刷完题后集中整理：内置离线词典（ECDICT 裁剪版）用来快速查音标与基本释义；需要结合原句追问语境词义、近义辨析或助记时，可以带上选好的上下文问你的模型（支持流式输出、思维链折叠、回答版本与改口分支），把真正有帮助的片段**钉住**进词条，或先放进右侧钉板稍后归位。
+
+4. **翻本子，或者重读原文**
+   打开词条按文章查看自己攒下的多条原句，点一下就能**回到原文**那句话并高亮定位；学习内容也附带出处，随时可以回跳原对话；重读文章时，收过的词带弱高亮，在原本的语境里再次遇见它们。
+
+---
+
+## 下载与开始使用
+
+前往 [Releases 页面](https://github.com/AyuSne/english-learning/releases/latest) 下载 Windows x64 版本（校验值见同页 `SHA256SUMS.txt`）：
+
+- **安装包（推荐）**：`sudu-0.1.0-x64.exe` — NSIS 安装程序，按当前用户安装、无需管理员权限。
+- **免安装版**：`sudu-0.1.0-x64.zip` — 解压后直接运行 `素读.exe`。
+
+> 安装包暂未做代码签名，Windows 可能提示「未知发布者」，点击「更多信息 → 仍要运行」即可；介意的话可直接使用免安装压缩包。
+
+**首次打开**：
+
+1. 启动后会自动导入随包的 63 篇六级阅读真题，无需手动准备文件。
+2. 阅读、圈词、查离线词典、整理学习内容与备份恢复均**完全离线可用**。
+3. 如需使用 AI 对话辅助，到「设置 → 模型服务」填入 OpenAI 兼容接口地址、模型名与 API 密钥即可（密钥通过 Windows DPAPI 加密保存，明文不落库、不进备份）。
+
+---
+
+## 为什么这套方式有效
+
+这套学习流程贴合二语习得（SLA）与认知心理学里的几项核心研究结论：
+
+| 学习动作 | 对应的认知与习得机制 | 为什么有效 |
+| --- | --- | --- |
+| 自己边读边圈词 | **词汇自我收集策略（VSS）** & **注意假说（Noticing）** | 把选词主动权还给学习者，提高内在动机；有意识的“注意”是将阅读输入（Input）转化为真正吸收（Intake）的前提。 |
+| 先做/先读后查、对照原句整理 | **投入量假说（Involvement Load Hypothesis）** | 一次完整的 *Need（内生需要）+ Search（检索）+ Evaluation（语境评估）* 过程，比脱离语境的被动刷词留痕更深。 |
+| 保留原句并回到原文 | **情景记忆** & **编码特异性原则** | 将抽象词义挂在“自己读过、做过那篇文章”的个人情景记忆上，检索时用原句与上下文作线索，提取成功率更高。 |
+| 跨文章攒原句、重读与多语境再遇 | **语境学习** & **重读（Repeated Reading）** | 同一词在不同文章下积累多个真实锚点，既避免单一语境依赖，又通过重读降低理解负荷，把注意力留给词形搭配与语感。 |
+
+### 参考文献
+
+- Haggard, M. R. (1982). The vocabulary self-collection strategy: An active approach to word learning. *Journal of Reading*, 26(3), 203–207.
+- Haggard, M. R. (1986). The vocabulary self-collection strategy: Using student interest and world knowledge to enhance vocabulary growth. *Journal of Reading*, 29(7), 634–642.
+- Ruddell, M. R., & Shearer, B. A. (2002). “Extraordinary,” “Tremendous,” “Exhilarating,” “Magnificent”: Middle school at-risk students become avid word learners with the Vocabulary Self-Collection Strategy (VSS). *Journal of Adolescent & Adult Literacy*, 45(5), 352–363.
+- Laufer, B., & Hulstijn, J. (2001). Incidental vocabulary acquisition in a second language: The construct of task-induced involvement. *Applied Linguistics*, 22(1), 1–26.
+- Schmidt, R. W. (1990). The role of consciousness in second language learning. *Applied Linguistics*, 11(2), 129–158.
+- Tulving, E. (1972). Episodic and semantic memory. In E. Tulving & W. Donaldson (Eds.), *Organization of Memory*. Academic Press.
+- Tulving, E., & Thomson, D. M. (1973). Encoding specificity and retrieval processes in episodic memory. *Psychological Review*, 80(5), 352–373.
+- Nation, I. S. P. (2001 / 2013 / 2022). *Learning Vocabulary in Another Language*. Cambridge University Press.
+
+---
+
+## 现在与之后
+
+- **现在（v0.1.0）**：随包内置 **2023—2026 年 21 套英语六级（CET-6）真题的 63 篇阅读正文**（长篇匹配与仔细阅读），先打通从阅读、选词、词典/对话到钉住、回查的完整闭环。
+- **近期补齐**：原 PDF 对照抽屉、常用学习指令保存、用已收词汇生成新阅读文章、全文/笔记检索等（当前缺口见 issue #25）。
+- **更远（不止于六级）**：六级只是第一批材料，软件底层的「文章 ↔ 原句 ↔ 词条」结构并不绑定特定考试。后续会逐步支持导入自己平时读的任意英文文章、外刊或论文，让它成为通用的个人语境单词本。
+
+---
+
+## 数据主权与隐私
+
+- **单库本地存储**：文章、词条、原句、笔记、对话树与钉住全部存在本机 SQLite 数据库中（`userData/english-learning.db`）。
+- **密钥隔离**：支持配置并切换多套模型服务，API 密钥通过 Windows `safeStorage`（DPAPI）加密，默认不进入任何备份。
+- **随时带走**：支持全库快照备份、恢复（恢复前自动留一份快照）以及单条线程导出为 JSONL。
+
+---
+
+## 本地运行与开发
+
+需要 **Node.js >= 22.12.0**（Windows）。
 
 ```bash
-npm install          # 安装依赖（会下载 Electron 二进制）
-npm run dev          # 开发模式启动（Vite + Electron）
-npm run build        # 构建到 out/
-npm run typecheck    # 主进程、渲染层、E2E 三套 tsconfig
-npm run test:unit    # Vitest：迁移、设置、IPC 注册、preload bridge、路由、语料导入、文章库与阅读查询、选词与词形归并、内置词典、对话流与状态、模型配置与密钥校验
-npm run test:e2e     # Playwright：构建后用临时 userData 启动开发产物
-npm run package      # 打包到 release/（@electron/packager）
-npm run test:e2e:packaged  # 打包后启动打包产物
-npm run verify       # 以上检查全跑一遍
+npm install                # 安装依赖
+npm run dev                # 启动开发模式（Electron + Vite）
+npm run test               # 类型检查 + Vitest 单元测试
+npm run test:e2e           # Playwright 端到端测试（开发产物）
+npm run package:installer  # 构建 Windows 安装包（输出至 release-installer/）
+npm run verify             # 运行完整检查链路（类型、单测、E2E 与打包产物验证）
 ```
 
-`test:e2e` 与 `test:e2e:packaged` 会各自先跑构建/打包，不需要手动准备产物。E2E 用 `--user-data-dir` 指向临时目录，退出后删除，不碰真实资料库。
+<details>
+<summary>开发环境变量与 Electron 下载镜像说明</summary>
 
-## 模型配置
-
-对话以设置页里「使用中」的那套模型服务为准，每套存接口地址、模型名与密钥；切换只影响之后的调用，不动历史消息。设置页没有配置时退回环境变量（开发与 E2E 用），两边都没有就提示先配一套。
-
-密钥在 Windows 上走 Electron `safeStorage`（DPAPI）加密后存本机库，明文不落库、也不进备份；界面只显示掩码，点「编辑」才出现输入框。填了新密钥会先发一次最小请求校验：通过才存为「已验证」；被拒（401 / 403）不落库，原密钥保留；断网或服务暂时不可用时允许保存为「未验证」，下一次成功调用自动转「已验证」。
-
-开发时也可以把 `.env.example` 复制成 `.env` 并填值；开发态启动会读取仓库根目录的 `.env`，已存在的环境变量优先。打包产物只读系统环境变量，不读 `.env`。
+尚未在应用「设置」页配置模型服务时，开发模式会读取仓库根目录 `.env`（参考 [`.env.example`](./.env.example)）：
 
 | 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `DEEPSEEK_API_KEY` | 无 | 没有本机配置时用它；缺失时发送会提示“还没有配置模型服务” |
+| `DEEPSEEK_API_KEY` | 无 | 开发调试用的 API 密钥 |
 | `DEEPSEEK_BASE_URL` | `https://api.deepseek.com` | OpenAI 兼容接口地址 |
-| `DEEPSEEK_MODEL` | `deepseek-flash` | 模型名，自由文本 |
+| `DEEPSEEK_MODEL` | `deepseek-flash` | 模型名称 |
 
-思考强度固定传 `high`，不在界面暴露；漏传会让服务端关闭思考，所以适配层把它作为必填参数。
-
-模型适配层跑 `@earendil-works/pi-ai@1.5.2`，把服务商的流归一成 `thinking` / `text` / `done` / `error` 事件。pi-ai 只导出 ESM，而主进程产物是 CJS，所以用动态 `import()` 加载；electron-vite 的 `dynamicImportInCjs` 保证这个 `import()` 不被改写成 `require()`。
-
-如果 `npm install` 卡在下载 Electron 二进制，可以先设镜像再装：
+若 `npm install` 在下载 Electron 二进制时卡住，可先设置镜像再安装：
 
 ```powershell
 $env:ELECTRON_MIRROR = 'https://npmmirror.com/mirrors/electron/'
@@ -52,31 +141,30 @@ $env:ELECTRON_CUSTOM_DIR = '{{ version }}'
 npm install
 ```
 
-## 语料
+</details>
 
-首批 63 篇真题正文在 `docs/corpus/`（manifest 加每篇一个 JSON）。构建时把其中的 JSON 复制到 `out/main/corpus/`，主进程按 `__dirname/corpus` 读，所以打包只带 `out/` 也能离线导入。
-
-启动时与清单对一遍：以文章 id 判重，内容哈希没变就跳过；哈希变了说明源 PDF 被替换，按新内容重写这篇的段落与句子，阅读位置保留（原来的段落不在了就清空）。单篇不过（清单项不合法、句区间与正文对不上、混进中文、统计不一致等）只丢这一篇，其余照常入库，失败原因在文章库顶部列出，不静默跳过。
-
-E2E 用 `CORPUS_DIRECTORY` 指向临时构造的语料目录，验证部分导入与提示，不碰真实语料。
-
-## 词典
-
-内置词典是从 [ECDICT](https://github.com/skywind3000/ECDICT)（MIT）裁出的只读 SQLite，放在 `assets/dictionary/`：两万核心词、四六级标签词与 63 篇语料里出现的词，另加一份词形变化到原形的 lemma 表（约 2.4 万条词头、2.3 万条映射，3.6 MB）。查询先按词形精确匹配，再按 lemma 回退到原形（approached → approach），都没有就是「没收录」；不联网，也不调用模型。
-
-构建时复制到 `out/main/dictionary/`；打包时整个目录放进 `resources/dictionary/`（SQLite 文件不能被 native 驱动从 asar 里读，所以留在 asar 外）。E2E 用 `DICTIONARY_DIRECTORY` 指向 fixture 词典。裁剪脚本、收录范围与重新生成步骤见 [`assets/dictionary/README.md`](./assets/dictionary/README.md)，分发物带着 ECDICT 的版权声明。
-
-## 结构
+### 结构与文档导航
 
 ```text
 src/
-├── main/      主进程：窗口、SQLite 建库与迁移、语料导入、文章库与阅读查询、选词与词条查询、内置词典、设置与密钥、IPC 注册、对话流与模型适配、启动失败处理
-├── preload/   contextBridge，唯一 bridge 与 channel 白名单
-├── renderer/  React 界面（全局栏、首页、文章库、阅读页、词条页、对话页、设置页）
-├── shared/    IPC 契约、词典查询结果与跨层类型
-└── testing/   测试用的语料构造器、词典 fixture 与 SSE stub
-e2e/           Playwright：dev 产物用 Electron 启动器，打包产物走 CDP；对话用本地 SSE stub
-docs/          产品范围、界面 token、ADR、语料
+├── main/      主进程（SQLite 迁移、语料导入、离线词典、模型调用、DPAPI 密钥、IPC）
+├── preload/   受白名单约束的 contextBridge
+├── renderer/  React 界面（首页、阅读、词条、对话与钉板、文章库、设置）
+└── shared/    跨层类型与唯一 IPC 契约
+docs/          领域术语、产品范围、架构决策（ADR）与语料
+assets/        随包离线词典及版权声明
+e2e/           Playwright 端到端测试
 ```
 
-本机资料库在 `app.getPath('userData')/english-learning.db`，schema 版本走 `PRAGMA user_version` 与显式迁移（见 `src/main/db/migrations.ts`）。文章、句子、阅读位置、阅读设置、词条与原句都存在这一本库里；渲染层不直接碰数据库与网络，只调用 `window.api.invoke(channel, payload)`；对话流事件通过 `window.api.subscribe('chat:event', handler)` 回到渲染层。未知 channel 在调用时由 preload 立即拒绝，主进程启动时也会校验处理函数与契约是否一一对应，缺一个或多一个都不开窗口。
+- 领域术语表：[GLOSSARY.md](./GLOSSARY.md)
+- 首版产品范围：[docs/product-scope.md](./docs/product-scope.md)
+- 架构决策记录（桌面技术栈 / 首批语料 / 会话存储）：[docs/adr/](./docs/adr)
+- 首批 63 篇真题语料说明：[docs/corpus/README.md](./docs/corpus/README.md)
+- 随包离线词典说明：[assets/dictionary/README.md](./assets/dictionary/README.md)
+
+---
+
+## 开源致谢
+
+- 内置离线词典基于 [ECDICT](https://github.com/skywind3000/ECDICT)（MIT License）裁剪构建，许可声明随包保留于 [`assets/dictionary/LICENSE-ECDICT`](./assets/dictionary/LICENSE-ECDICT)。
+- 模型调用适配层使用 [`@earendil-works/pi-ai`](https://www.npmjs.com/package/@earendil-works/pi-ai)。
