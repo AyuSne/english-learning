@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import type {
   ArticleDetail,
   ImportReport,
@@ -17,6 +17,7 @@ import { openThreadForMain } from '../chat/store'
 import { formatDay, progressText } from '../library/format'
 import { navigate, replaceRoute } from '../navigate'
 import { parseView } from '../routes'
+import { libraryViewState, updateLibraryViewState } from '../view-state'
 
 /**
  * 文章库：左边按场次分组的列表（搜索时换成命中结果），右边是选中一篇的详情。
@@ -34,12 +35,36 @@ export function LibraryPage({
   const [listing, setListing] = useState<LibraryListing | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(() => libraryViewState().query)
   const [found, setFound] = useState<LibrarySearchResults | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(articleId)
   const [detail, setDetail] = useState<ArticleDetail | null>(null)
   const [reimporting, setReimporting] = useState(false)
   const [importMessage, setImportMessage] = useState<string | null>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const restoredScroll = useRef(false)
+
+  useLayoutEffect(() => {
+    const node = rootRef.current?.closest('main')
+    if (!node) return
+    const remember = (): void => {
+      if (restoredScroll.current) updateLibraryViewState({ scrollTop: node.scrollTop })
+    }
+    node.addEventListener('scroll', remember)
+    return () => {
+      remember()
+      node.removeEventListener('scroll', remember)
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    if (restoredScroll.current || listing === null) return
+    if (query.trim() !== '' && found?.query !== query.trim()) return
+    const node = rootRef.current?.closest('main')
+    if (!node) return
+    node.scrollTop = libraryViewState().scrollTop
+    restoredScroll.current = true
+  }, [found, listing, query])
 
   useEffect(() => {
     let active = true
@@ -157,7 +182,7 @@ export function LibraryPage({
     corpusImport.imported + corpusImport.updated + corpusImport.skipped
 
   return (
-    <div className="page page-wide library">
+    <div ref={rootRef} className="page page-wide library">
       <header className="library-head">
         <div>
           <h1 className="page-title">文章库</h1>
@@ -173,7 +198,10 @@ export function LibraryPage({
             aria-label="搜篇名或正文"
             placeholder="搜篇名或正文"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              updateLibraryViewState({ query: event.target.value })
+            }}
           />
         </label>
       </header>

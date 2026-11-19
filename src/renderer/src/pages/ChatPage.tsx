@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
 import type {
   Pin,
   PinBoard,
@@ -58,7 +58,6 @@ import {
   removeContextItem,
   retryChat,
   sendChatMessage,
-  setThinkingOpen,
   stopChat,
   submitEdit,
   switchAnswerVersion,
@@ -72,6 +71,7 @@ import {
 } from '../chat/turns'
 import { failureText } from '../errors'
 import { navigate } from '../navigate'
+import { threadViewState, updateThreadViewState } from '../view-state'
 
 type PinSelection = AnswerSelection & { text: string }
 
@@ -137,7 +137,12 @@ export function ChatPage({
   fromEntryId: string | null
 }) {
   const store = useChatStore()
-  const [draft, setDraft] = useState('')
+  // 空白学习的第一问会先生成线程，再以 replaceState 更新地址；此时路由 prop 仍为空。
+  const viewThreadId = threadId ?? store.current?.id ?? null
+  const [draft, setDraftState] = useState(() => threadViewState(viewThreadId).draft)
+  const [thinkingOpen, setThinkingOpenState] = useState(
+    () => threadViewState(viewThreadId).thinkingOpen
+  )
   const [now, setNow] = useState(() => Date.now())
   const [pickerOpen, setPickerOpen] = useState(false)
   const [railOpen, setRailOpen] = useState(false)
@@ -159,12 +164,51 @@ export function ChatPage({
   /** 源对话已删的快照要再点一次才丢弃。 */
   const [confirmDiscardId, setConfirmDiscardId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const restoredScroll = useRef(false)
+  const skipAutoScroll = useRef(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const selectionCardRef = useRef<HTMLDivElement>(null)
   const boardRequest = useRef(0)
   const sourceDone = useRef<string | null>(null)
   /** 用户手动改过的落点，记到本次会话里的这条线程结束。 */
   const targetOverrides = useRef(new Map<string, PinTargetView>())
+
+  function setDraft(value: string): void {
+    updateThreadViewState(viewThreadId, { draft: value })
+    setDraftState(value)
+  }
+
+  function setThinkingOpen(open: boolean): void {
+    updateThreadViewState(viewThreadId, { thinkingOpen: open })
+    setThinkingOpenState(open)
+  }
+
+  useLayoutEffect(() => {
+    const node = scrollRef.current
+    if (!node) return
+    restoredScroll.current = false
+    const remember = (): void => {
+      if (restoredScroll.current) {
+        updateThreadViewState(viewThreadId, { scrollTop: node.scrollTop })
+      }
+    }
+    node.addEventListener('scroll', remember)
+    return () => {
+      remember()
+      node.removeEventListener('scroll', remember)
+    }
+  }, [viewThreadId])
+
+  useLayoutEffect(() => {
+    if (restoredScroll.current || store.loading || store.currentId !== viewThreadId) return
+    if (viewThreadId !== null && store.current?.id !== viewThreadId) return
+    const node = scrollRef.current
+    if (!node) return
+    const saved = threadViewState(viewThreadId).scrollTop
+    if (saved !== null) node.scrollTop = saved
+    skipAutoScroll.current = saved !== null
+    restoredScroll.current = true
+  }, [viewThreadId, store.currentId, store.current, store.loading])
 
   const generation = store.session.generation
   const liveHere = generation !== null && generation.threadId === store.currentId
@@ -194,8 +238,12 @@ export function ChatPage({
   }, [])
 
   useEffect(() => {
+    setDraftState(threadViewState(viewThreadId).draft)
+    setThinkingOpenState(threadViewState(viewThreadId).thinkingOpen)
+  }, [viewThreadId])
+
+  useEffect(() => {
     openChatThread(threadId)
-    setDraft('')
     setPickerOpen(false)
     setRailOpen(false)
     setCandidates(null)
@@ -327,7 +375,11 @@ export function ChatPage({
 
   useEffect(() => {
     const node = scrollRef.current
-    if (!node) {
+    if (!node || !restoredScroll.current) {
+      return
+    }
+    if (skipAutoScroll.current) {
+      skipAutoScroll.current = false
       return
     }
     const distance = node.scrollHeight - node.scrollTop - node.clientHeight
@@ -977,7 +1029,7 @@ export function ChatPage({
                   key={turn.question.id}
                   turn={turn}
                   isLast={index === current.turns.length - 1}
-                  session={store.session}
+                  session={{ ...store.session, thinkingOpen }}
                   live={
                     liveHere && generation !== null && index === current.turns.length - 1
                       ? generation
