@@ -2,7 +2,8 @@
 
 /*
  * 三栏：左词条列表 240、中原句、右学习内容 320；右栏默认收成 44 的窄条。
- * <1100 时左右两栏收窄，右栏点开变成盖在上面的抽屉。
+ * 右栏内联还是覆盖抽屉只看真实容器宽度（见 data-layout，由 ResizeObserver 写入），
+ * 容器够 240 + 420 + 320 + 两处 24 才内联；窄了就退回两栏加 44 入口，抽屉盖在上面。
  */
 
 .entries-page {
@@ -16,6 +17,16 @@
 
 .entries-page[data-rail="closed"] {
   grid-template-columns: 240px minmax(0, 1fr) 44px;
+}
+
+.entries-page[data-layout="drawer"],
+.entries-page[data-layout="drawer"][data-rail="closed"] {
+  grid-template-columns: 240px minmax(0, 1fr) 44px;
+  gap: 16px;
+}
+
+.entries-page[data-layout="drawer"][data-rail="open"] {
+  grid-template-columns: 240px minmax(0, 1fr);
 }
 
 /* ---------- 左栏：词条列表 ---------- */
@@ -786,34 +797,40 @@
   z-index: 70;
 }
 
-/* 窗口收窄到 1100 以下：右栏铺开改成盖在右侧的抽屉，管理页退回两栏。 */
-@media (max-width: 1100px) {
-  .entries-page,
-  .entries-page[data-rail="closed"] {
-    grid-template-columns: 240px minmax(0, 1fr) 44px;
-    gap: 16px;
-  }
+/*
+ * 覆盖抽屉的遮罩：只盖正文区，全局导航仍可点着离开这一页（遮挡从全局栏右边开始）；
+ * 点正文区等于收起，抽屉本身在它上面。
+ */
+.entries-rail-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 238px;
+  z-index: 59;
+  background: rgba(26, 26, 23, 0.28);
+}
 
-  .entries-page[data-rail="open"] {
-    grid-template-columns: 240px minmax(0, 1fr);
-  }
+[data-theme="dark"] .entries-rail-backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
 
-  .entries-rail-open {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 60;
-    width: 320px;
-    max-height: none;
-    border-width: 0 0 0 1px;
-    border-radius: 0;
-    box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
-  }
+/* 容器不够三栏预算：右栏铺开时盖在右侧，不占网格列、不挤压中栏。 */
+.entries-page[data-layout="drawer"] .entries-rail-open {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  width: 320px;
+  max-height: none;
+  border-width: 0 0 0 1px;
+  border-radius: 0;
+  box-shadow: 0 6px 20px rgba(60, 48, 30, 0.06);
+}
 
-  [data-theme="dark"] .entries-rail-open {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
-  }
+[data-theme="dark"] .entries-page[data-layout="drawer"] .entries-rail-open {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 @media (max-width: 900px) {

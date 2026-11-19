@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DictionarySense } from '../../../shared/dictionary'
 import type { EntryListItem, EntryPage, LearningNote } from '../../../shared/entries'
 import {
@@ -13,7 +13,7 @@ import { useDictionaryLookup } from '../dictionary/lookup'
 import { draftFromSense } from '../dictionary/presentation'
 import { failureText } from '../errors'
 import { navigate } from '../navigate'
-import { entryHeadlineText, noteSourceText } from './format'
+import { entryHeadlineText, EMPTY_LEARNING_NOTES_TEXT, noteSourceText } from './format'
 import { LearningBody } from './learning-body'
 import { MoreActions } from './more-actions'
 
@@ -23,18 +23,25 @@ import { MoreActions } from './more-actions'
  * 置顶一条，其余按写下的时间排。
  */
 export function NoteRail({
+  id,
   page,
   entries,
   open,
+  overlay,
   onToggle,
+  onClose,
   onChanged,
   onEntryGone
 }: {
+  id: string
   page: EntryPage
   /** 全部词条，给「更多」里的合并、拆分与移动挑目标。 */
   entries: readonly EntryListItem[]
   open: boolean
+  /** 覆盖抽屉模式：有遮罩、焦点进入并限制在抽屉里、Esc 关闭。 */
+  overlay: boolean
   onToggle: () => void
+  onClose: () => void
   onChanged: (message: string) => void
   onEntryGone: () => void
 }) {
@@ -47,6 +54,53 @@ export function NoteRail({
   const [error, setError] = useState<string | null>(null)
   const [editError, setEditError] = useState<string | null>(null)
   const draftRef = useRef<HTMLTextAreaElement>(null)
+  const railRef = useRef<HTMLElement>(null)
+  const restoreFocusRef = useRef<HTMLElement | null>(null)
+
+  // 覆盖抽屉：打开时把焦点放到明确标了名的关闭按钮上，Tab 只在抽屉里循环，
+  // Esc 关闭并把焦点还给打开它的按钮。焦点行为只属于窄屏抽屉，内联栏不抢焦点。
+  useEffect(() => {
+    if (!open || !overlay) return
+    const node = railRef.current
+    restoreFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
+    node?.querySelector<HTMLElement>('.entries-rail-close')?.focus()
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+        return
+      }
+      if (event.key !== 'Tab' || node === null) return
+      const focusables = Array.from(
+        node.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => element.offsetParent !== null)
+      if (focusables.length === 0) return
+      const first = focusables[0] as HTMLElement
+      const last = focusables[focusables.length - 1] as HTMLElement
+      const active = document.activeElement
+      if (event.shiftKey) {
+        if (active === first || !node.contains(active)) {
+          event.preventDefault()
+          last.focus()
+        }
+      } else if (active === last || !node.contains(active)) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      const restore = restoreFocusRef.current
+      restoreFocusRef.current = null
+      if (restore !== null && restore.isConnected) restore.focus()
+    }
+  }, [open, overlay, onClose])
 
   // 右栏的词典只读：按主词形查一次；查不到就明说，不影响下面写学习内容。
   const { lookup: dictionaryLookup, loading: dictionaryLoading } = useDictionaryLookup(
@@ -69,12 +123,13 @@ export function NoteRail({
 
   if (!open) {
     return (
-      <aside className="entries-rail entries-rail-closed" aria-label="学习内容">
+      <aside id={id} className="entries-rail entries-rail-closed" aria-label="学习内容">
         <button
           type="button"
           className="entries-rail-tab"
           aria-label="展开学习内容"
           aria-expanded={false}
+          aria-controls={id}
           onClick={onToggle}
         >
           <span className="entries-rail-tab-label">学习内容</span>
@@ -171,14 +226,21 @@ export function NoteRail({
   }
 
   return (
-    <aside className="entries-rail entries-rail-open" aria-label="学习内容">
+    <aside
+      id={id}
+      ref={railRef}
+      className="entries-rail entries-rail-open"
+      role={overlay ? 'dialog' : 'complementary'}
+      aria-modal={overlay ? true : undefined}
+      aria-label="学习内容"
+    >
       <header className="entries-rail-head">
         <p className="section-label">学习内容</p>
         <button
           type="button"
           className="entries-rail-close"
           aria-label="收起学习内容"
-          onClick={onToggle}
+          onClick={onClose}
         >
           ×
         </button>
@@ -212,7 +274,7 @@ export function NoteRail({
 
       <section className="entries-rail-section" aria-label="学习内容">
         {page.notes.length === 0 ? (
-          <p className="empty-line">还没有学习内容 · 从对话里钉一段进来</p>
+          <p className="empty-line">{EMPTY_LEARNING_NOTES_TEXT}</p>
         ) : (
           <div className="entry-notes">
             {page.notes.map((note) => {

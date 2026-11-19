@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  EMPTY_LEARNING_NOTES_TEXT,
+  deleteLastSentenceText,
   entryHeadlineText,
   entryListMetaText,
   noteExcerpt,
@@ -84,5 +86,25 @@ describe('entryHeadlineText', () => {
     expect(entryHeadlineText({ sentenceCount: 6, articleCount: 3, lastCollectedAt })).toBe(
       '已收集 6 条原句 · 来自 3 篇 · 最近 2026-11-15'
     )
+  })
+})
+
+describe('deleteLastSentenceText', () => {
+  it('没有学习内容时只说词条一起删除，不出现 0 条学习内容', () => {
+    const text = deleteLastSentenceText('approach', 0)
+    expect(text).toBe('这是最后一条原句。删掉后「approach」词条也会一起删除。')
+    expect(text).not.toContain('0 条学习内容')
+  })
+
+  it('有学习内容时说明连带删除几条', () => {
+    expect(deleteLastSentenceText('approach', 2)).toBe(
+      '这是最后一条原句。删掉后「approach」词条连同 2 条学习内容也会一起删除。'
+    )
+  })
+})
+
+describe('EMPTY_LEARNING_NOTES_TEXT', () => {
+  it('学习内容空态是这一句，不加前缀也不写 0 条', () => {
+    expect(EMPTY_LEARNING_NOTES_TEXT).toBe('可以手写，也可以从对话里钉一段进来')
   })
 })
