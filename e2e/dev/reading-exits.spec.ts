@@ -155,7 +155,7 @@ test('注释开关显示当前状态，并与正文的注释一致', async ({ la
   await expect(page.locator('.reading-notes')).toBeVisible()
 })
 
-test('阅读页可以为同一篇文章明确新开一条线程', async ({ launch }) => {
+test('阅读页复用文章线程，也可以明确新开一条', async ({ launch }) => {
   const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
   await page.getByRole('navigation', { name: '全局导航' })
     .getByRole('button', { name: '文章库' }).click()
@@ -166,8 +166,64 @@ test('阅读页可以为同一篇文章明确新开一条线程', async ({ launc
   await expect.poll(() => page.evaluate(() => window.location.hash)).toMatch(/^#\/chat\//)
   const firstThread = await page.evaluate(() => window.location.hash)
   await page.goBack()
+  await page.getByRole('button', { name: '与这篇文章对话' }).click()
+  await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(firstThread)
+  await page.goBack()
   await expect(page.getByRole('button', { name: '新开一条文章线程' })).toBeVisible()
   await page.getByRole('button', { name: '新开一条文章线程' }).click()
   await expect.poll(() => page.evaluate(() => window.location.hash)).toMatch(/^#\/chat\//)
   expect(await page.evaluate(() => window.location.hash)).not.toBe(firstThread)
+})
+
+test('打开文章线程失败时留在阅读页并提示', async ({ launch }) => {
+  const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  if (electronApp === null) throw new Error('需要开发版 Electron 进程')
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '文章库' }).click()
+  await page.locator('.library-row').first().click()
+  await page.getByRole('complementary', { name: '文章详情' })
+    .getByRole('button', { name: '继续阅读' }).click()
+  await electronApp.evaluate(({ ipcMain }) => ipcMain.removeHandler('chat:open-for-main'))
+  const action = page.getByRole('button', { name: '与这篇文章对话' })
+  await action.click()
+  await expect(page.getByRole('alert')).toContainText('没能开线程')
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
+  await expect(action).toBeEnabled()
+})
+
+test('阅读顶栏在窄窗口仍可见且不横向溢出', async ({ launch }) => {
+  const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  if (electronApp === null) throw new Error('需要开发版 Electron 进程')
+  await page.getByRole('navigation', { name: '全局导航' })
+    .getByRole('button', { name: '文章库' }).click()
+  await page.locator('.library-row').first().click()
+  await page.getByRole('complementary', { name: '文章详情' })
+    .getByRole('button', { name: '继续阅读' }).click()
+  for (const requested of [900, 1000, 1100]) {
+    await electronApp.evaluate(({ BrowserWindow }, width) => {
+      const window = BrowserWindow.getAllWindows()[0]
+      if (!window) throw new Error('没有主窗口')
+      window.setContentSize(width, 820)
+    }, requested)
+    await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeGreaterThanOrEqual(requested)
+    const measurements = await page.evaluate(() => {
+      const reading = document.querySelector<HTMLElement>('.reading')!
+      const buttons = Array.from(document.querySelectorAll<HTMLElement>('.reading-bar button'))
+      return {
+        width: window.innerWidth,
+        scrollWidth: reading.scrollWidth,
+        clientWidth: reading.clientWidth,
+        buttons: buttons.map((button) => {
+          const box = button.getBoundingClientRect()
+          return { left: box.left, right: box.right, width: box.width }
+        })
+      }
+    })
+    expect(measurements.scrollWidth).toBeLessThanOrEqual(measurements.clientWidth + 1)
+    for (const button of measurements.buttons) {
+      expect(button.width).toBeGreaterThan(0)
+      expect(button.left).toBeGreaterThanOrEqual(0)
+      expect(button.right).toBeLessThanOrEqual(measurements.width + 1)
+    }
+  }
 })
