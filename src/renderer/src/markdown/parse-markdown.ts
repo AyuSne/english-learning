@@ -16,7 +16,8 @@ export type MarkdownSpan =
   | (SourceRange & { kind: 'strong' | 'em'; children: MarkdownSpan[] })
 
 type Paragraph = SourceRange & { kind: 'paragraph'; spans: MarkdownSpan[] }
-type List = SourceRange & { kind: 'list'; ordered: boolean; items: MarkdownListItem[] }
+type List = SourceRange & { kind: 'list'; items: MarkdownListItem[] } &
+  ({ ordered: false } | { ordered: true; firstNumber: number })
 
 /** A list item includes its marker, but not the newline after the item. */
 export type MarkdownListItem = SourceRange & { spans: MarkdownSpan[] }
@@ -92,8 +93,16 @@ function parseInline(source: string, start: number, end: number): MarkdownSpan[]
       })
     }
 
-    // Only one instance of each style can be open. A triple opens em around strong.
+    // A later opening-only run of the same width takes precedence over the
+    // earlier unmatched opener. Keep its text (including any completed children).
     const remaining = markEnd - markStart
+    if (canOpen && !canClose && (remaining === 1 || remaining === 2)) {
+      const previous = open.findLastIndex((frame) => frame.width === remaining)
+      if (previous !== -1) {
+        while (open.length > previous) discardUnclosed(open.pop()!)
+      }
+    }
+    // Only one instance of each style can be open. A triple opens em around strong.
     const widths: EmphasisWidth[] = remaining === 3 ? [1, 2] :
       remaining === 1 || remaining === 2 ? [remaining] : []
     if (canOpen && widths.every((width) => !open.some((frame) => frame.width === width))) {
@@ -131,12 +140,15 @@ export function parseMarkdown(source: string): MarkdownBlock[] {
 
     const heading = HEADING.exec(line)
     if (heading) {
+      const contentStart = heading[0].length
+      const closing = /[ \t]+#+[ \t]*$/.exec(line.slice(heading[1].length))
+      const contentEnd = closing ? Math.max(contentStart, heading[1].length + closing.index) : line.length
       blocks.push({
         kind: 'heading',
         level: heading[1].length <= 2 ? 3 : 4,
         start,
         end,
-        spans: parseInline(source, start + heading[0].length, end)
+        spans: parseInline(source, start + contentStart, start + contentEnd)
       })
       open = undefined
       continue
@@ -146,7 +158,10 @@ export function parseMarkdown(source: string): MarkdownBlock[] {
     if (marker) {
       const ordered = /\d/.test(marker[1][0])
       if (open?.kind !== 'list' || open.ordered !== ordered) {
-        open = { kind: 'list', ordered, start, end, items: [] }
+        const bounds = { kind: 'list' as const, start, end }
+        open = ordered
+          ? { ...bounds, ordered, firstNumber: Number.parseInt(marker[1], 10), items: [] }
+          : { ...bounds, ordered, items: [] }
         blocks.push(open)
       }
       open.end = end

@@ -7,8 +7,9 @@ import type {
   PinLearningNoteRequest,
   UpdateLearningNoteRequest
 } from '../../shared/entries'
+import type { PinSourceStatus } from '../../shared/pins'
 import type { AppDatabase } from '../db/database'
-import { PIN_SOURCE_EXISTS_SQL, removePinForNote, retargetPinForNote } from '../pins/pins'
+import { PIN_SOURCE_STATUS_SQL, removePinForNote, retargetPinForNote } from '../pins/pins'
 import { entryExists, hasPinnedNote } from './entry-state'
 
 /**
@@ -32,14 +33,14 @@ type NoteRow = {
   pin_turn_index: number | null
   pin_model: string | null
   pin_created_at: string | null
-  pin_thread_alive: number | null
+  pin_source_status: PinSourceStatus
 }
 
 const NOTE_COLUMNS = `ln.id, ln.entry_id, ln.body, ln.pinned, ln.source_kind,
   ln.source_pin_id, ln.created_at, ln.updated_at,
   p.id AS pin_id, p.thread_id AS pin_thread_id, p.thread_title AS pin_thread_title,
   p.turn_index AS pin_turn_index, p.model AS pin_model, p.created_at AS pin_created_at,
-  ${PIN_SOURCE_EXISTS_SQL} AS pin_thread_alive`
+  ${PIN_SOURCE_STATUS_SQL} AS pin_source_status`
 
 const NOTE_FROM = `FROM learning_note ln LEFT JOIN pin p ON p.id = ln.source_pin_id`
 
@@ -60,7 +61,7 @@ function toLearningNote(row: NoteRow): LearningNote {
             turnIndex: row.pin_turn_index ?? 0,
             model: row.pin_model ?? '',
             capturedAt: row.pin_created_at ?? '',
-            threadAlive: row.pin_thread_alive === 1
+            sourceStatus: row.pin_source_status
           }
         : null,
     createdAt: row.created_at,

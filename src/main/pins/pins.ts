@@ -10,6 +10,7 @@ import type {
   PinBoard,
   PinProvenance,
   PinSourceResult,
+  PinSourceStatus,
   PinTarget,
   PinTargetKind,
   PinTargetView,
@@ -25,7 +26,7 @@ import { hasPinnedNote } from '../entries/entry-state'
 /**
  * 钉住与钉板。一条钉住是 AI 回答里的一段连续文本的快照，带上出处与落点；
  * 落点是词条时同步写一条学习内容，落点变化时跟着搬，删钉住时连学习内容一起删。
- * 源线程被删不影响钉住本身：出处是抄下来的，入口按 threadAlive 置灰。
+ * 源线程或原回答缺失不影响钉住的快照；来源入口按实际状态置灰。
  */
 
 type PinRow = {
@@ -43,16 +44,19 @@ type PinRow = {
   target_kind: PinTargetKind
   target_id: string | null
   created_at: string
-  source_alive: number
+  source_status: PinSourceStatus
 }
 
-/** 来源是某条线程里的某版回答，而不只是仍能找到同名线程。p 是快照的表别名。 */
-export const PIN_SOURCE_EXISTS_SQL = `EXISTS (
-  SELECT 1 FROM thread_entry e JOIN thread t ON t.id = e.thread_id
-   WHERE t.id = p.thread_id AND e.id = p.answer_id AND e.kind = 'answer'
-)`
+/** 回答不必在当前分支；p 是快照的表别名。 */
+export const PIN_SOURCE_STATUS_SQL = `CASE
+  WHEN NOT EXISTS (SELECT 1 FROM thread t WHERE t.id = p.thread_id) THEN 'thread-deleted'
+  WHEN NOT EXISTS (
+    SELECT 1 FROM thread_entry e WHERE e.thread_id = p.thread_id AND e.id = p.answer_id AND e.kind = 'answer'
+  ) THEN 'answer-missing'
+  ELSE 'available'
+END`
 
-const PIN_COLUMNS = `p.*, ${PIN_SOURCE_EXISTS_SQL} AS source_alive`
+const PIN_COLUMNS = `p.*, ${PIN_SOURCE_STATUS_SQL} AS source_status`
 
 function readPinRow(database: AppDatabase, pinId: string): PinRow | undefined {
   return database
@@ -195,7 +199,7 @@ function toPin(database: AppDatabase, row: PinRow): Pin {
     target: readTargetView(database, row),
     defaultTarget: defaultTargetOf(database, thread),
     provenance: provenanceOf(row),
-    threadAlive: row.source_alive === 1,
+    sourceStatus: row.source_status,
     createdAt: row.created_at
   }
 }
@@ -620,14 +624,14 @@ export function readPinBoard(database: AppDatabase, threadId: string | null): Pi
   }
 }
 
-/** 学习内容卡上的来源行：钉住还在不在、源线程还在不在。 */
+/** 来源入口：只有原回答仍在才返回可跳转的线程和分支。 */
 export function readPinSource(database: AppDatabase, pinId: string): PinSourceResult {
   const row = readPinRow(database, pinId)
   if (!row) {
     return null
   }
   const pin = toPin(database, row)
-  const thread = pin.threadAlive ? readThreadView(database, row.thread_id) : null
+  const thread = pin.sourceStatus === 'available' ? readThreadView(database, row.thread_id) : null
   if (!thread) {
     return { pin, thread: null, onBranch: false, questionId: null }
   }

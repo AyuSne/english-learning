@@ -1,5 +1,5 @@
 import type { Pin, PinBoard, PinTargetKind } from '../../../shared/pins'
-import { pinExcerpt, pinProvenanceText, targetLabel } from './pin-text'
+import { pinExcerpt, pinProvenanceText, pinSourceIssueText, targetLabel } from './pin-text'
 
 export type PinTab = 'thread' | 'unfiled'
 type FileTargetKind = Exclude<PinTargetKind, 'unfiled'>
@@ -169,6 +169,7 @@ function PinCard({
   onDelete: (pin: Pin) => void
   onFile: (pin: Pin, kind: FileTargetKind) => void
 }) {
+  const sourceIssue = pinSourceIssueText(pin.sourceStatus)
   return (
     <article
       className="pin-card"
@@ -187,8 +188,8 @@ function PinCard({
           当时原句：{pin.provenance.sourceSentence.text}
         </p>
       )}
-      {pin.threadAlive ? null : (
-        <p className="pin-card-dead">源对话已删除 · 内容按快照保留</p>
+      {sourceIssue === null ? null : (
+        <p className="pin-card-dead">{sourceIssue} · 内容按快照保留</p>
       )}
       <div className="pin-card-actions">
         {tab === 'thread' ? (
@@ -196,8 +197,8 @@ function PinCard({
             <button
               type="button"
               className="pin-card-action"
-              disabled={busy || !pin.threadAlive}
-              title={pin.threadAlive ? undefined : '源对话已删除'}
+              disabled={busy || sourceIssue !== null}
+              title={sourceIssue ?? undefined}
               onClick={() => onOpenSource(pin)}
             >
               看原对话
@@ -221,8 +222,8 @@ function PinCard({
           </>
         ) : (
           <>
-            {!pin.threadAlive && (
-              <button type="button" className="pin-card-action" disabled title="源对话已删除">
+            {sourceIssue !== null && (
+              <button type="button" className="pin-card-action" disabled title={sourceIssue}>
                 看原对话
               </button>
             )}

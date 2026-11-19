@@ -1,14 +1,14 @@
 import type { Page } from '@playwright/test'
-import { askQuestion, createThread, saveAnswer } from '../../src/main/chat/threads'
 import { openDatabase } from '../../src/main/db/database'
 import { migrate } from '../../src/main/db/migrations'
 import { createPin } from '../../src/main/pins/pins'
 import { startSseStub, type SseStub } from '../../src/testing/sse-stub'
 import { expect, test, type LaunchOptions, type AppHandle } from '../fixtures/app'
 import { selectAnswerRange } from '../fixtures/answer-selection'
+import { seedAnsweredThread } from '../fixtures/chat'
 import { databasePath } from '../fixtures/database'
 
-const SOURCE = '## **用法**\r\n\r\n*开头* repeat 😀 **repeat**\r\n软换行 `a*b`\r\n\r\n最后一段。\r\n\r\n- **甲项**\r\n- *乙项*\r\n- 丙项\r\n\r\n1. 顺序一\r\n2. 顺序二'
+const SOURCE = '## **用法** #\r\n\r\n*开头* repeat 😀 **repeat**\r\n软换行 `a*b`\r\n\r\n最后一段。\r\n\r\n- **甲项**\r\n- *乙项*\r\n- 丙项\r\n\r\n3. 顺序一\r\n4. 顺序二'
 const THINKING = '这段思维链不属于回答正文。'
 
 let stub: SseStub
@@ -40,15 +40,18 @@ test('活动流和停止后保留 Markdown 结构、段内换行与块间距', a
   await ask(page, '请按结构解释')
   const answer = page.getByRole('article', { name: '学习助手' })
   const body = answer.locator('.assistant-text')
-  const heading = body.getByRole('heading', { name: '用法' })
+  const heading = body.getByRole('heading', { name: '用法', exact: true })
   await expect(heading).toBeVisible()
+  await expect(heading).toHaveCSS('line-height', '24px')
   await expect(heading.locator('strong')).toHaveText('用法')
   await expect(body.locator('p em')).toHaveText('开头')
   await expect(body.locator('p strong')).toHaveText('repeat')
   await expect(body.locator('code')).toHaveText('a*b')
   await expect(body.locator('ul > li')).toHaveText(['甲项', '乙项', '丙项'])
+  await expect(body.locator('ul > li').nth(1)).toHaveCSS('margin-top', '8px')
   await expect(body.locator('ol > li')).toHaveText(['顺序一', '顺序二'])
-  await expect(body).not.toContainText(/\*\*|## |^- |1\. /m)
+  await expect(body.locator('ol')).toHaveJSProperty('start', 3)
+  await expect(body).not.toContainText(/\*\*|## |^- |^[34]\. /m)
   const [firstLine, secondLine, paragraph, list] = await Promise.all([
     body.locator('p strong').boundingBox(), body.locator('code').boundingBox(),
     body.locator('p').last().boundingBox(), body.locator('ul').boundingBox()
@@ -131,16 +134,7 @@ function seedLegacyPin(userDataDirectory: string) {
   const database = openDatabase(databasePath(userDataDirectory))
   try {
     migrate(database)
-    const created = createThread(database, { main: { kind: 'none' } })
-    if (created.status !== 'created') throw new Error('线程没建起来')
-    const threadId = created.thread.id
-    const asked = askQuestion(database, { threadId, text: '旧版对话' })
-    if (asked.status !== 'asked') throw new Error('问题没写进去')
-    const saved = saveAnswer(database, {
-      threadId, questionId: asked.questionId, text: SOURCE, thinking: '', phase: 'done'
-    })
-    const answerId = saved.status === 'saved' ? saved.thread.turns[0]?.answer?.id : undefined
-    if (!answerId) throw new Error('没有保存回答')
+    const { threadId, answerId } = seedAnsweredThread(database, { question: '旧版对话', answer: SOURCE })
     const pinned = createPin(database, {
       threadId, answerId,
       start: SOURCE.indexOf('最后一段。'),
@@ -182,18 +176,17 @@ test('旧纯文本钉住只标相交的段与列表项，错误部分仍可单�
 
 test('回答复制按钮把原始 Markdown 正文写进剪贴板，不带思维链', async ({ launch }) => {
   stub = await startSseStub({ kind: 'stream', thinking: [THINKING], text: [SOURCE] })
-  const { page, electronApp } = await openChat(launch)
-  if (electronApp === null) throw new Error('开发态用例拿不到主进程句柄')
+  const { page } = await openChat(launch)
+  const writes = await page.evaluateHandle(() => {
+    const captured: string[] = []
+    navigator.clipboard.writeText = async (text) => { captured.push(text) }
+    return captured
+  })
   await ask(page, '这条回答要复制')
   const answer = page.getByRole('article', { name: '学习助手' })
   await answer.getByRole('button', { name: /已思考/ }).click()
   await expect(answer.getByTestId('thinking-body')).toHaveText(THINKING)
-  const previous = await electronApp.evaluate(({ clipboard }) => clipboard.readText())
-  try {
-    await answer.getByRole('button', { name: '复制', exact: true }).click()
-    await expect(page.getByRole('status')).toHaveText('已复制')
-    expect(await electronApp.evaluate(({ clipboard }) => clipboard.readText())).toBe(SOURCE)
-  } finally {
-    await electronApp.evaluate(({ clipboard }, text) => clipboard.writeText(text), previous)
-  }
+  await answer.getByRole('button', { name: '复制', exact: true }).click()
+  await expect(page.getByRole('status')).toHaveText('已复制')
+  expect(await writes.jsonValue()).toEqual([SOURCE])
 })

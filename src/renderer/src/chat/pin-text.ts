@@ -1,4 +1,4 @@
-import type { Pin, PinTarget, PinTargetView } from '../../../shared/pins'
+import type { Pin, PinSourceStatus, PinTarget, PinTargetView } from '../../../shared/pins'
 import type { ThreadMain } from '../../../shared/threads'
 
 /** 线程主对象决定默认落点：挂词条 / 原句 → 词条，挂文章 → 文章，空白 → 未归档。 */
@@ -71,6 +71,13 @@ export function pinProvenanceText(pin: Pick<Pin, 'provenance' | 'createdAt'>): s
     parts.push(clock)
   }
   return parts.join(' · ')
+}
+
+/** 只有不可跳转的来源需要说明。 */
+export function pinSourceIssueText(status: PinSourceStatus): string | null {
+  if (status === 'thread-deleted') return '源对话已删除'
+  if (status === 'answer-missing') return '原回答找不到'
+  return null
 }
 
 /** 卡片摘录：压掉换行，太长截断；完整的正文留在快照里。 */

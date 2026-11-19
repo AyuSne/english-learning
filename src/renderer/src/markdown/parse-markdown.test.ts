@@ -39,12 +39,40 @@ describe('parseMarkdown', () => {
         ]
       },
       {
-        kind: 'list', ordered: true, start: 19, end: 29, items: [
+        kind: 'list', ordered: true, firstNumber: 1, start: 19, end: 29, items: [
           { start: 19, end: 23, spans: [{ kind: 'text', text: '同', start: 22, end: 23 }] },
           { start: 24, end: 29, spans: [{ kind: 'text', text: '😀', start: 27, end: 29 }] }
         ]
       }
     ])
+  })
+
+  it('标题只吃空白分隔的尾标记，源区间仍包括整行', () => {
+    expect(parseMarkdown('# 用法 #\r\n## C#\n## 写法##\n## C# \t### \t')).toEqual([
+      { kind: 'heading', level: 3, start: 0, end: 6, spans: [{ kind: 'text', text: '用法', start: 2, end: 4 }] },
+      { kind: 'heading', level: 3, start: 8, end: 13, spans: [{ kind: 'text', text: 'C#', start: 11, end: 13 }] },
+      { kind: 'heading', level: 3, start: 14, end: 21, spans: [{ kind: 'text', text: '写法##', start: 17, end: 21 }] },
+      { kind: 'heading', level: 3, start: 22, end: 34, spans: [{ kind: 'text', text: 'C#', start: 25, end: 27 }] }
+    ])
+  })
+
+  it('较早的未闭合强调保留字面，不吞掉稍后闭合的同宽标记', () => {
+    const source = '**未闭合😀，后面 **正确粗体**\r\n*没结束 `*x*` *正确斜体*'
+    expect(parseMarkdown(source)).toEqual([{
+      kind: 'paragraph', start: 0, end: 38, spans: [
+        { kind: 'text', text: '**未闭合😀，后面 ', start: 0, end: 11 },
+        { kind: 'strong', start: 11, end: 19, children: [
+          { kind: 'text', text: '正确粗体', start: 13, end: 17 }
+        ] },
+        { kind: 'break', text: '\r\n', start: 19, end: 21 },
+        { kind: 'text', text: '*没结束 ', start: 21, end: 26 },
+        { kind: 'code', text: '*x*', start: 27, end: 30 },
+        { kind: 'text', text: ' ', start: 31, end: 32 },
+        { kind: 'em', start: 32, end: 38, children: [
+          { kind: 'text', text: '正确斜体', start: 33, end: 37 }
+        ] }
+      ]
+    }])
   })
 
   it('粗体、斜体可互相嵌套，代码中的星号仍是源文本', () => {

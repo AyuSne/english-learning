@@ -32,6 +32,7 @@ import { DeleteThreadDialog } from '../chat/delete-thread-dialog'
 import { PinBoardPanel, type PinTab } from '../chat/pin-board'
 import {
   defaultPinTarget,
+  pinSourceIssueText,
   samePinTarget,
   targetFromView,
   targetLabel
@@ -747,9 +748,14 @@ export function ChatPage({
   }
 
   const removePin = async (pin: Pin): Promise<void> => {
-    if (!pin.threadAlive && confirmDiscardId !== pin.id) {
+    const sourceIssue = pinSourceIssueText(pin.sourceStatus)
+    if (sourceIssue !== null && confirmDiscardId !== pin.id) {
       setConfirmDiscardId(pin.id)
-      showToast('这是对话被删后仅存的副本 · 再点一次丢弃')
+      const action = pin.target.kind === 'unfiled' ? '丢弃' : '删除'
+      const warning = pin.sourceStatus === 'thread-deleted'
+        ? '这是对话被删后仅存的副本'
+        : `${sourceIssue}，这是仅存的副本`
+      showToast(`${warning} · 再点一次${action}`)
       return
     }
     setConfirmDiscardId(null)
@@ -778,8 +784,9 @@ export function ChatPage({
   }
 
   const openPinSource = (pin: Pin): void => {
-    if (!pin.threadAlive) {
-      showToast('源对话已删除，内容按快照保留。')
+    const sourceIssue = pinSourceIssueText(pin.sourceStatus)
+    if (sourceIssue !== null) {
+      showToast(`${sourceIssue}，内容按快照保留。`)
       return
     }
     const fromHash = window.location.hash
@@ -788,8 +795,13 @@ export function ChatPage({
         if (window.location.hash !== fromHash) return
         const sourceThreadId = pin.provenance.threadId
         if (getChatStore().deletingThreadId === sourceThreadId) return
-        if (isDeletedChatThread(sourceThreadId) || result === null || result.thread === null) {
-          showToast('源对话已删除，内容按快照保留。')
+        if (result === null) {
+          showToast('这条钉住已经不在了。')
+          return
+        }
+        const issue = pinSourceIssueText(isDeletedChatThread(sourceThreadId) ? 'thread-deleted' : result.pin.sourceStatus)
+        if (issue !== null || result.thread === null) {
+          showToast(`${issue ?? '无法打开原回答'}，内容按快照保留。`)
           return
         }
         if (result.pin.provenance.threadId !== store.currentId) {
@@ -852,10 +864,14 @@ export function ChatPage({
 
   async function openMainObject(): Promise<void> {
     if (current === null || current.main.kind === 'none') return
+    const threadId = current.id
     const fromHash = window.location.hash
+    const canFollowLink = (): boolean => window.location.hash === fromHash &&
+      getChatStore().deletingThreadId !== threadId && !isDeletedChatThread(threadId)
+    if (!canFollowLink()) return
     try {
-      const refreshed = await loadThread(current.id)
-      if (window.location.hash !== fromHash || isDeletedChatThread(current.id)) return
+      const refreshed = await loadThread(threadId)
+      if (!canFollowLink()) return
       if (refreshed === null) {
         setMainLinkError('这条线程已经不在了，请从线程列表选择另一条。')
         return
@@ -871,7 +887,7 @@ export function ChatPage({
         entrySentenceId: main.kind === 'sentence' ? main.entrySentenceId : null
       })
     } catch (error) {
-      setMainLinkError(failureText(error, '主对象没有读出来，请再试一次。'))
+      if (canFollowLink()) setMainLinkError(failureText(error, '主对象没有读出来，请再试一次。'))
     }
   }
   /** 线程已经不在了：重试只会再失败，改成回到一条空白学习。 */
@@ -884,7 +900,12 @@ export function ChatPage({
       : current.main.kind === 'entry' || current.main.kind === 'sentence'
         ? current.main.entryId
         : null
-  const threadPinCount = board.threadPins.length
+  const threadPinCount = board.threadId === viewThreadId && viewThreadId !== null
+    ? new Set([
+        ...board.threadPins.map((pin) => pin.id),
+        ...board.unfiledPins.filter((pin) => pin.provenance.threadId === viewThreadId).map((pin) => pin.id)
+      ]).size
+    : 0
   const sourceEntryId =
     fromEntryId ??
     (source?.pin.target.kind === 'entry' ? source.pin.target.entryId : null)
@@ -1019,7 +1040,7 @@ export function ChatPage({
         {source === null ? null : (
           <div className="pin-source-banner" role="status">
             {source.thread === null ? (
-              <span>源对话已删除 · 内容按快照保留</span>
+              <span>{pinSourceIssueText(source.pin.sourceStatus) ?? '无法打开原回答'} · 内容按快照保留</span>
             ) : (
               <>
                 <span>

@@ -7,6 +7,7 @@ import {
   pinLearningNote,
   updateLearningNote
 } from '../api'
+import { pinSourceIssueText } from '../chat/pin-text'
 import { DictionaryView } from '../dictionary/dictionary-view'
 import { useDictionaryLookup } from '../dictionary/lookup'
 import { draftFromSense } from '../dictionary/presentation'
@@ -288,7 +289,7 @@ export function NoteRail({
 
                   <p className="entry-note-source">
                     <span>{noteSourceText(note)}</span>
-                    {sourcePin === null ? null : sourcePin.threadAlive ? (
+                    {sourcePin === null ? null : sourcePin.sourceStatus === 'available' ? (
                       <button
                         type="button"
                         className="entry-source-link"
@@ -308,7 +309,7 @@ export function NoteRail({
                         type="button"
                         className="entry-source-link"
                         aria-label="看原对话（来源）"
-                        title="源对话已删除，内容按快照保留"
+                        title={`${pinSourceIssueText(sourcePin.sourceStatus)}，内容按快照保留`}
                         disabled
                       >
                         来源

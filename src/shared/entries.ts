@@ -1,3 +1,5 @@
+import type { PinSourceStatus } from './pins'
+
 /**
  * 词条与已收集原句的跨层类型。阅读页只认这些结构：谁被收集了、落在哪一句、
  * 词条现在有几条原句；点开词条卡时再取整条词条的明细。
@@ -156,7 +158,7 @@ export type LearningNote = {
   updatedAt: string
 }
 
-/** 学习内容卡底部那行出处：线程、轮次、模型、时间，以及线程还在不在。 */
+/** 学习内容卡底部那行出处：线程、轮次、模型、时间，以及原回答能否跳转。 */
 export type LearningNoteSourcePin = {
   id: string
   threadId: string
@@ -165,8 +167,7 @@ export type LearningNoteSourcePin = {
   turnIndex: number
   model: string
   capturedAt: string
-  /** 源对话被删后为 false，入口置灰。 */
-  threadAlive: boolean
+  sourceStatus: PinSourceStatus
 }
 
 /** 词条页里按文章分组的一组原句。 */

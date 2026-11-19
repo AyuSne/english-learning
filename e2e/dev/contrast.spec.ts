@@ -155,6 +155,9 @@ test.describe('收官验收 · 深色对比度', () => {
 
     await nav(page, '文章库')
     await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+    await expect(page.locator('.library-detail-title')).toBeVisible()
+    await expect(page.locator('.library-meta dt').first()).toBeVisible()
+    await expect(page.locator('.library-meta dd').first()).toBeVisible()
     await expectReadableText(page, LIBRARY_SAMPLES)
 
     // 搜索结果里的命中高亮也是文字状态。

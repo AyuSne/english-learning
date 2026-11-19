@@ -223,7 +223,7 @@ function start(): void {
       if (typeof payload?.threadId !== 'string' || !threadExists(opened, payload.threadId)) {
         return { accepted: false }
       }
-      return chat.start(payload, (update) => event.sender.send('chat:event', update), payload.threadId)
+      return chat.start(payload, (update) => event.sender.send('chat:event', update))
     },
     'chat:stop': (payload) => chat.stop(payload.streamId),
     'chat:list': () => listThreads(opened),
