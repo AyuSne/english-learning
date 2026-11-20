@@ -8,12 +8,14 @@ import {
   updateLearningNote
 } from '../api'
 import { pinSourceIssueText } from '../chat/pin-text'
+import { focusablesIn, trapTabTarget } from '../components/focus-trap'
 import { DictionaryView } from '../dictionary/dictionary-view'
 import { useDictionaryLookup } from '../dictionary/lookup'
 import { draftFromSense } from '../dictionary/presentation'
 import { failureText } from '../errors'
 import { navigate } from '../navigate'
 import { entryHeadlineText, EMPTY_LEARNING_NOTES_TEXT, noteSourceText } from './format'
+import { searchUiOwns } from '../search/ownership'
 import { LearningBody } from './learning-body'
 import { MoreActions } from './more-actions'
 
@@ -71,36 +73,23 @@ export function NoteRail({
 
     const onKeyDown = (event: KeyboardEvent): void => {
       // 全局搜索盖在右栏上时焦点与 Tab 归搜索覆盖层管，抽屉不再抢。
-      if (
-        event.target instanceof Element &&
-        event.target.closest('.global-search') !== null
-      ) {
-        return
-      }
+      if (searchUiOwns(event.target)) return
       if (event.key === 'Escape') {
         event.preventDefault()
         onClose()
         return
       }
       if (event.key !== 'Tab' || node === null) return
-      const focusables = Array.from(
-        node.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter((element) => element.offsetParent !== null)
-      if (focusables.length === 0) return
-      const first = focusables[0] as HTMLElement
-      const last = focusables[focusables.length - 1] as HTMLElement
       const active = document.activeElement
-      if (event.shiftKey) {
-        if (active === first || !node.contains(active)) {
-          event.preventDefault()
-          last.focus()
-        }
-      } else if (active === last || !node.contains(active)) {
-        event.preventDefault()
-        first.focus()
-      }
+      const target = trapTabTarget(
+        focusablesIn(node),
+        active,
+        event.shiftKey,
+        node.contains(active)
+      )
+      if (target === null) return
+      event.preventDefault()
+      target.focus()
     }
 
     document.addEventListener('keydown', onKeyDown)

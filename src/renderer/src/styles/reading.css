@@ -250,6 +250,13 @@
   box-shadow: 0 0 0 4px var(--bed-select);
 }
 
+/* 搜索跨句命中：目标是一整段，整段铺底色；不与句子级定位混用。 */
+.reading-paragraph-focused {
+  border-radius: 4px;
+  background: var(--bed-select);
+  box-shadow: 0 0 0 4px var(--bed-select);
+}
+
 .reading-scroll {
   flex: 1;
   min-height: 0;

@@ -2,9 +2,13 @@ import type { ElectronApplication, Page } from '@playwright/test'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { askQuestion, createThread, saveAnswer } from '../../src/main/chat/threads'
+import { openDatabase } from '../../src/main/db/database'
+import { createPin } from '../../src/main/pins/pins'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { startSseStub, type SseStub, type StubScript } from '../../src/testing/sse-stub'
 import { expect, test } from '../fixtures/app'
+import { databasePath } from '../fixtures/database'
 import { seedWordEntries, type SeedNote, type SeedPick } from '../fixtures/entries'
 import { openArticle } from '../fixtures/reading'
 
@@ -28,6 +32,7 @@ const article = fixtureArticle({
 
 const picks: SeedPick[] = [
   { entry: article, paragraphIndex: 0, needle: 'approach', at: '2026-11-18T08:00:00.000Z' },
+  { entry: article, paragraphIndex: 0, needle: 'Approaching', at: '2026-11-18T08:02:00.000Z' },
   { entry: article, paragraphIndex: 1, needle: 'Context', at: '2026-11-18T08:05:00.000Z' }
 ]
 
@@ -76,6 +81,57 @@ function launchEnv(stub: SseStub | null = null): Record<string, string> {
 
 function seed(userDataDirectory: string): void {
   seedWordEntries(userDataDirectory, corpusDirectory, { picks, notes })
+}
+
+const SOURCE_ANSWER = '第一段：approach 是接近。\n\n第二段：complain 只是抱怨。'
+
+/** 钉一条到 approach，给对话页留下「看原对话」的来源回跳高亮。 */
+function seedSourcePin(userDataDirectory: string): void {
+  const database = openDatabase(databasePath(userDataDirectory))
+  try {
+    const entry = database
+      .prepare("SELECT id FROM word_entry WHERE main_form = 'approach'")
+      .get() as { id: string }
+    const created = createThread(database, { main: { kind: 'entry', entryId: entry.id } }, {
+      now: '2026-11-18T09:00:00.000Z'
+    })
+    if (created.status !== 'created') throw new Error('线程没建起来')
+    const asked = askQuestion(
+      database,
+      { threadId: created.thread.id, text: 'approach 怎么用？' },
+      { now: '2026-11-18T09:01:00.000Z' }
+    )
+    if (asked.status !== 'asked') throw new Error('问题没写进去')
+    const saved = saveAnswer(
+      database,
+      {
+        threadId: created.thread.id,
+        questionId: asked.questionId,
+        text: SOURCE_ANSWER,
+        thinking: '',
+        phase: 'done'
+      },
+      { now: '2026-11-18T09:02:00.000Z' }
+    )
+    if (saved.status !== 'saved') throw new Error('回答没写进去')
+    const answerId = saved.thread.turns[0]?.answer?.id
+    if (!answerId) throw new Error('没有回答')
+    const start = SOURCE_ANSWER.indexOf('approach 是接近')
+    const pinned = createPin(
+      database,
+      {
+        threadId: created.thread.id,
+        answerId,
+        start,
+        end: start + 'approach 是接近'.length,
+        target: { kind: 'entry', entryId: entry.id }
+      },
+      { now: '2026-11-18T09:03:00.000Z', model: 'deepseek-flash' }
+    )
+    if (pinned.status !== 'pinned') throw new Error('没钉上')
+  } finally {
+    database.close()
+  }
 }
 
 function nav(page: Page) {
@@ -201,6 +257,97 @@ test('词条原句命中：进入词条页并定位高亮那一句', async ({ la
   await expect.poll(() => page.evaluate(() => window.location.hash)).toContain('sentence=')
 })
 
+test('已挂载词条页内搜另一个词条：主词形/原句/学习内容都落到目标，hash 稳定且左栏选择仍不加历史', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seed(userDataDirectory)
+  const { page } = await launch({ env: launchEnv() })
+
+  await openEntries(page)
+  const row = (name: string) => page.locator('.entries-row').filter({ hasText: name })
+  const mainHeading = () =>
+    page.getByRole('region', { name: '词条内容' }).getByRole('heading', { level: 2 })
+  const entryResults = () =>
+    page.getByRole('region', { name: '词条' }).locator('.global-search-entry')
+  const hash = () => page.evaluate(() => window.location.hash)
+
+  // 先挂载 A=approach，再搜 B=Context 的主词形。
+  await row('approach').click()
+  await expect(mainHeading()).toHaveText('approach')
+  const historyBeforeSearch = await page.evaluate(() => window.history.length)
+  await openSearch(page)
+  await searchInput(page).fill('Context')
+  await entryResults().click()
+  await expect(mainHeading()).toHaveText('Context')
+  // 页面级搜索跳转保留自己的历史，浏览器后退能回到搜索前的位置。
+  expect(await page.evaluate(() => window.history.length)).toBe(historyBeforeSearch + 1)
+  const contextHash = await hash()
+  expect(contextHash).toContain('#/entries/')
+  expect(contextHash).not.toContain('note=')
+  // 旧代码会在两个 effect 之间把 hash 写回 A：等一会儿仍必须是 B。
+  await page.waitForTimeout(600)
+  expect(await hash()).toBe(contextHash)
+  await expect(mainHeading()).toHaveText('Context')
+
+  // 从 B 搜 A 的原句命中：落到 A，并高亮那条原句。
+  await openSearch(page)
+  await searchInput(page).fill('hiring')
+  await entryResults().click()
+  await expect(mainHeading()).toHaveText('approach')
+  await expect(page.locator('.entry-sentence[data-focused="true"]')).toContainText(
+    'Employers approach hiring differently.'
+  )
+  await expect.poll(hash).toContain('sentence=')
+
+  // 同一个 A 再搜它的学习内容命中：落到同一条词条的学习内容，hash 带 note。
+  await openSearch(page)
+  await searchInput(page).fill('途径')
+  await entryResults().click()
+  await expect(mainHeading()).toHaveText('approach')
+  await expect(page.locator('.entry-note[data-focused="true"]')).toContainText('做法、途径')
+  await expect.poll(hash).toContain('note=')
+
+  // 同一个 A 换成另一条原句命中：仍定位到新的一句，而不是停在刚才那条。
+  await openSearch(page)
+  await searchInput(page).fill('Approaching')
+  await entryResults().click()
+  await expect(
+    page.locator('.entry-sentence[data-focused="true"]')
+  ).toContainText('Approaching a new desk takes patience.')
+  const secondSentenceHash = await hash()
+  expect(secondSentenceHash).toContain('sentence=')
+  expect(secondSentenceHash).not.toContain('note=')
+
+  // 搜索词与筛选还停在上一次内容时，也不能挡住选中的 B 打开。
+  await page.getByRole('searchbox', { name: '搜词条名、原句或学习内容' }).fill('zzzz-no-entry')
+  await page.getByRole('combobox', { name: '按学习内容筛选' }).selectOption('no-notes')
+  await openSearch(page)
+  await searchInput(page).fill('hiring')
+  await entryResults().click()
+  await expect(mainHeading()).toHaveText('approach')
+  await expect.poll(hash).toContain('sentence=')
+
+  // 重复搜索到同一目标：仍停在 B，hash 不再抖动。
+  await openSearch(page)
+  await searchInput(page).fill('Context')
+  await entryResults().click()
+  await expect(mainHeading()).toHaveText('Context')
+  const repeatedHash = await hash()
+  await page.waitForTimeout(600)
+  expect(await hash()).toBe(repeatedHash)
+
+  // 正常左栏 A→B 仍然工作，而且只替换地址、不新增历史。
+  const collapseRail = page.getByRole('button', { name: '收起学习内容' })
+  if ((await collapseRail.count()) > 0) await collapseRail.click()
+  await page.getByRole('button', { name: '清空搜索' }).click()
+  await page.getByRole('combobox', { name: '按学习内容筛选' }).selectOption('all')
+  const historyBefore = await page.evaluate(() => window.history.length)
+  await row('approach').click()
+  await expect(mainHeading()).toHaveText('approach')
+  expect(await page.evaluate(() => window.history.length)).toBe(historyBefore)
+})
+
 test('词条学习内容命中：自动展开学习内容并定位高亮（窄屏抽屉也可见）', async ({
   launch,
   userDataDirectory
@@ -269,6 +416,47 @@ test('文章正文命中：普通未收集句也能进入真实阅读、滚到�
   await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(originHash)
   await page.keyboard.press('Escape')
   await expect(searchDialog(page)).toHaveCount(0)
+})
+
+test('跨句正文命中：落到真实段落并整段可视高亮，刷新后仍定位', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seed(userDataDirectory)
+  const { page } = await launch({ env: launchEnv() })
+
+  // 查询跨过同一段里的两句：任何单独一句都不含整条查询，但段落正文含。
+  const crossSentence = 'differently. Approaching'
+  await openSearch(page)
+  await searchInput(page).fill(crossSentence)
+  const articleGroup = page.getByRole('region', { name: '文章' })
+  await expect(articleGroup.locator('.global-search-article')).toHaveCount(1)
+  const row = articleGroup.locator('.global-search-article')
+  await expect(row).toHaveAttribute('data-match', 'body')
+  await expect(row.locator('.global-search-snippet mark')).toHaveText(crossSentence)
+
+  await row.click()
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
+  const focusedParagraph = page.locator('.reading-paragraph-focused')
+  await expect(focusedParagraph).toBeVisible()
+  await expect(focusedParagraph).toHaveAttribute('data-paragraph-id', '1')
+  await expect(focusedParagraph).toContainText(
+    'Employers approach hiring differently. Approaching a new desk takes patience.'
+  )
+  await expect(focusedParagraph).toBeInViewport()
+  // 跨句命中不伪造原句焦点：段落整段标出，句子级高亮仍是 0。
+  await expect(page.locator('.reading-sentence-focused')).toHaveCount(0)
+  await expect(page.locator('.reading-context')).toContainText('命中正文这一段')
+  expect(await page.evaluate(() => window.location.hash)).toContain('search=1')
+
+  // 刷新后 hash 仍带这次搜索定位，段落高亮与滚动目标都还在。
+  await page.reload()
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
+  const refreshedParagraph = page.locator('.reading-paragraph-focused')
+  await expect(refreshedParagraph).toBeVisible()
+  await expect(refreshedParagraph).toBeInViewport()
+  await expect(page.locator('.reading-sentence-focused')).toHaveCount(0)
+  await expect(page.locator('.reading-context')).toContainText('来自搜索')
 })
 
 test('文章篇名命中：进入文章本身，不伪造正文句定位', async ({ launch, userDataDirectory }) => {
@@ -409,6 +597,96 @@ test('Esc 与点外部关闭：词条的选中、草稿、搜索与排序、滚�
   expect(await page.evaluate(() => document.querySelector('main')?.scrollTop ?? 0)).toBe(scrollBefore)
 })
 
+test('阅读页顶栏开搜索：词条卡、设置与定位高亮在 Esc/点外部后原样保留', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seed(userDataDirectory)
+  const { page } = await launch({ env: launchEnv() })
+  await openArticle(page, '2026年6月 · 第1套 · 仔细阅读 Passage One')
+
+  const searchTrigger = page.getByRole('button', { name: '全局搜索' })
+
+  // 阅读设置开着时打开搜索：入口本身的 pointerdown 不能先关掉设置。
+  await page.getByRole('button', { name: '阅读设置' }).click()
+  await expect(page.locator('.reading-settings')).toBeVisible()
+  await searchTrigger.click()
+  await expect(searchDialog(page)).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(searchDialog(page)).toHaveCount(0)
+  await expect(page.locator('.reading-settings')).toBeVisible()
+  await page.getByRole('button', { name: '阅读设置' }).click()
+
+  // 已收词卡片开着时打开搜索：Esc 与点外部都只关搜索。
+  await page.locator('.reading-collected').filter({ hasText: 'approach' }).first().click()
+  const panel = page.getByRole('complementary', { name: '词条' })
+  await expect(panel).toBeVisible()
+  await searchTrigger.click()
+  await expect(searchDialog(page)).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(searchDialog(page)).toHaveCount(0)
+  await expect(panel).toBeVisible()
+
+  await searchTrigger.click()
+  await expect(searchDialog(page)).toBeVisible()
+  await page.mouse.click(6, 300)
+  await expect(searchDialog(page)).toHaveCount(0)
+  await expect(panel).toBeVisible()
+
+  // 从学习内容回跳的定位高亮同理：开关搜索不撤这句。
+  await page.getByRole('button', { name: '关闭' }).click()
+  await page.getByRole('button', { name: '返回文章库' }).click()
+  await page.getByRole('navigation', { name: '全局导航' }).getByRole('button', { name: '词条' }).click()
+  await page.locator('.entries-row').filter({ hasText: 'approach' }).click()
+  await page
+    .getByRole('region', { name: '词条内容' })
+    .getByRole('button', { name: '回到原文' })
+    .first()
+    .click()
+  await expect(page.locator('.reading-sentence-focused')).toBeVisible()
+  await expect(page.locator('.reading-context')).toContainText('来自词条')
+  await searchTrigger.click()
+  await expect(searchDialog(page)).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.locator('.reading-sentence-focused')).toBeVisible()
+  await expect(page.locator('.reading-context')).toContainText('来自词条')
+
+  // 搜索仍然可以正常点结果导航。
+  await searchTrigger.click()
+  await searchInput(page).fill('hiring')
+  await page.getByRole('region', { name: '词条' }).locator('.global-search-entry').click()
+  await expect(
+    page.getByRole('region', { name: '词条内容' }).getByRole('heading', { name: 'approach', level: 2 })
+  ).toBeVisible()
+})
+
+test('对话页从来源回跳后打开搜索：来源横条与被高亮段落都不丢', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seed(userDataDirectory)
+  seedSourcePin(userDataDirectory)
+  const { page } = await launch({ env: launchEnv() })
+
+  await openEntries(page)
+  await page.locator('.entries-row').filter({ hasText: 'approach' }).click()
+  await page.getByRole('button', { name: /^学习内容/ }).click()
+  await page
+    .locator('.entry-note')
+    .filter({ hasText: 'approach 是接近' })
+    .getByRole('button', { name: '看原对话' })
+    .click()
+  await expect(page.locator('.pin-source-banner')).toBeVisible()
+  await expect(page.locator('.assistant-text [data-md-block].is-source-hit')).toHaveCount(1)
+
+  // 从全局栏入口开搜索：入口的 mousedown 不能先清掉来源高亮。
+  await openSearch(page)
+  await page.keyboard.press('Escape')
+  await expect(searchDialog(page)).toHaveCount(0)
+  await expect(page.locator('.pin-source-banner')).toBeVisible()
+  await expect(page.locator('.assistant-text [data-md-block].is-source-hit')).toHaveCount(1)
+})
+
 test('阅读页 Esc：只关搜索，不退出阅读、不改变滚动位置', async ({ launch, userDataDirectory }) => {
   seed(userDataDirectory)
   const { page } = await launch({ env: launchEnv() })
@@ -526,18 +804,72 @@ test('焦点与输入法：Tab 不跑出覆盖层，组合态的 Esc 不关闭�
   const { page } = await launch({ env: launchEnv() })
 
   await openSearch(page)
+  // 打开后自动聚焦的输入框必须有可见焦点框：2px 琥珀、外扩 2px，不是默认蓝框也不是没有。
+  const focusedInput = await page.evaluate(() => {
+    const active = document.activeElement as HTMLElement | null
+    if (active === null) return null
+    const style = getComputedStyle(active)
+    const probe = document.createElement('span')
+    probe.style.color = 'var(--amber)'
+    document.body.append(probe)
+    const amber = getComputedStyle(probe).color
+    probe.remove()
+    // 用一条内联的 2px/2px 焦点样式做基准：不同显示缩放下浏览器会把
+    // 计算值统一缩放，但作者声明的值仍应与 ui-tokens 的 2px 一致。
+    const reference = document.createElement('span')
+    reference.style.cssText =
+      'position:absolute;visibility:hidden;outline:2px solid transparent;outline-offset:2px'
+    document.body.append(reference)
+    const referenceStyle = getComputedStyle(reference)
+    const referenceWidth = referenceStyle.outlineWidth
+    const referenceOffset = referenceStyle.outlineOffset
+    reference.remove()
+    return {
+      className: active.className,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+      outlineOffset: style.outlineOffset,
+      outlineColor: style.outlineColor,
+      amber,
+      referenceWidth,
+      referenceOffset
+    }
+  })
+  expect(focusedInput?.className).toContain('global-search-input')
+  expect(focusedInput?.outlineStyle).toBe('solid')
+  expect(focusedInput?.outlineColor).toBe(focusedInput?.amber)
+  expect(focusedInput?.outlineWidth).toBe(focusedInput?.referenceWidth)
+  expect(focusedInput?.outlineOffset).toBe(focusedInput?.referenceOffset)
+  expect(Number.parseFloat(focusedInput?.outlineWidth ?? '0')).toBeGreaterThan(0)
+
   await searchInput(page).fill('hiring')
   await expect(page.getByRole('region', { name: '词条' }).locator('.global-search-entry')).toHaveCount(1)
 
-  // 从输入框往前 Tab 到关闭按钮，再 Tab 一圈仍留在覆盖层里。
+  // 从输入框往前 Tab 到关闭按钮与结果行，再 Tab 一圈仍留在覆盖层里。
+  let sawResultFocus = false
   for (let index = 0; index < 8; index += 1) {
     await page.keyboard.press('Tab')
-    expect(
-      await page.evaluate(() =>
-        Boolean(document.querySelector('.global-search')?.contains(document.activeElement))
-      )
-    ).toBe(true)
+    const active = await page.evaluate(() => {
+      const element = document.activeElement as HTMLElement | null
+      if (element === null) return null
+      const style = getComputedStyle(element)
+      return {
+        inside: Boolean(document.querySelector('.global-search')?.contains(element)),
+        className: element.className,
+        outlineStyle: style.outlineStyle,
+        outlineWidth: style.outlineWidth,
+        outlineOffset: style.outlineOffset
+      }
+    })
+    expect(active?.inside).toBe(true)
+    if (active?.className.includes('global-search-entry')) {
+      sawResultFocus = true
+      expect(active.outlineStyle).toBe('solid')
+      expect(active.outlineWidth).toBe(focusedInput?.referenceWidth)
+      expect(active.outlineOffset).toBe(focusedInput?.referenceOffset)
+    }
   }
+  expect(sawResultFocus).toBe(true)
 
   // 输入法组合态里的 Esc 交给输入法，不关闭搜索。
   await page.evaluate(() => {

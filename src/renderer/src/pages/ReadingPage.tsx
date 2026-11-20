@@ -41,6 +41,7 @@ import {
 } from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
 import { readingBackTarget } from '../reading/back-target'
+import { searchUiOwns } from '../search/ownership'
 import { readSearchSession } from '../search/session'
 import {
   CollectedPanelView,
@@ -49,6 +50,7 @@ import {
   type PanelState
 } from '../reading/entry-panel'
 import { ReadingParagraphView } from '../reading/paragraph'
+import { scrollTargetIntoReading } from '../reading/scroll'
 import { readParagraphSelection, type ReadingSelection } from '../reading/selection'
 import { ReadingSettingsPanel } from '../reading/settings-panel'
 import { useReadingPosition } from '../reading/use-reading-position'
@@ -206,11 +208,7 @@ export function ReadingPage({
         element.dataset.sentenceOrdinal === String(focus.sentence.sentenceOrdinal)
     )
     if (!target) return
-    const offset =
-      target.getBoundingClientRect().top -
-      container.getBoundingClientRect().top -
-      container.clientHeight / 3
-    container.scrollTop = Math.max(0, container.scrollTop + offset)
+    scrollTargetIntoReading(container, target)
   }, [view, focus, scrollRef])
 
   // 全局搜索的正文定位：等正文渲染、上次读到的位置恢复之后再滚，
@@ -233,11 +231,7 @@ export function ReadingPage({
               element.dataset.sentenceOrdinal === String(searchSentenceOrdinal)
           )
     if (!target) return
-    const offset =
-      target.getBoundingClientRect().top -
-      container.getBoundingClientRect().top -
-      container.clientHeight / 3
-    container.scrollTop = Math.max(0, container.scrollTop + offset)
+    scrollTargetIntoReading(container, target)
   }, [view, searchParagraphId, searchSentenceOrdinal, scrollRef])
 
   /**
@@ -283,8 +277,8 @@ export function ReadingPage({
     const onPointerDown = (event: PointerEvent): void => {
       const target = event.target as Element | null
       if (target === null) return
-      // 全局搜索覆盖层上的点击不归阅读页处理，别顺手收掉前面的选中态。
-      if (target.closest('.global-search') !== null) return
+      // 搜索覆盖层与它的入口都不归阅读页处理，别顺手收掉前面的选中态。
+      if (searchUiOwns(target)) return
       if (settingsPanelRef.current?.contains(target)) return
       if (settingsButtonRef.current?.contains(target)) return
       setSettingsOpen(false)
@@ -299,7 +293,7 @@ export function ReadingPage({
     const onPointerDown = (event: PointerEvent): void => {
       const target = event.target as Element | null
       if (target === null) return
-      if (target.closest('.global-search') !== null) return
+      if (searchUiOwns(target)) return
       if (panelRef.current?.contains(target)) return
       if (target.closest('.reading-settings') !== null) return
       if (settingsButtonRef.current?.contains(target)) return
@@ -817,6 +811,7 @@ export function ReadingPage({
             type="button"
             className="reading-tool reading-search-trigger"
             aria-label="全局搜索"
+            data-search-trigger="true"
             onClick={() => onOpenSearch()}
           >
             搜索
@@ -983,6 +978,9 @@ export function ReadingPage({
                       : searchParagraphId === paragraph.id
                         ? searchSentenceOrdinal
                         : null
+                  }
+                  focusedParagraph={
+                    searchParagraphId === paragraph.id && searchSentenceOrdinal === null
                   }
                 />
               ))}

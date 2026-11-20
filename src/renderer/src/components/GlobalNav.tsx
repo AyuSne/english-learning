@@ -1,7 +1,18 @@
+import type { NavCountKey } from '../../../shared/counts'
 import { navigateFromGlobal } from '../navigate'
 import { NAV_ITEMS } from '../navigation'
 import { useNavCounts } from '../nav-counts/use-nav-counts'
 import type { Route } from '../routes'
+
+/**
+ * 计数说明用词各按对象来：对话页那个数字是未归档的钉住，不是线程数。
+ * 单词写清楚，读屏与悬停都用同一句，不把「对话 N 个」拼给用户。
+ */
+const COUNT_TEXT: Record<NavCountKey, (value: number) => string> = {
+  entries: (value) => `词条 ${value} 个`,
+  articles: (value) => `文章 ${value} 篇`,
+  unfiled: (value) => `未归档 ${value} 条`
+}
 
 export function GlobalNav({
   route,
@@ -23,6 +34,7 @@ export function GlobalNav({
         type="button"
         className="nav-item nav-search"
         aria-label="全局搜索"
+        data-search-trigger="true"
         onClick={onOpenSearch}
       >
         搜索
@@ -30,12 +42,16 @@ export function GlobalNav({
       <nav className="nav" aria-label="全局导航">
         {NAV_ITEMS.map((item) => {
           const value = item.count === undefined || counts === null ? null : counts[item.count]
+          const countText = item.count === undefined || value === null
+            ? null
+            : COUNT_TEXT[item.count](value)
           return (
             <button
               key={item.route}
               type="button"
               className="nav-item"
               aria-label={item.label}
+              title={countText ?? undefined}
               aria-current={item.route === route ? 'page' : undefined}
               aria-describedby={value === null ? undefined : `nav-count-${item.count}`}
               onClick={() => navigateFromGlobal(item.route)}
@@ -58,7 +74,7 @@ export function GlobalNav({
               id={`nav-count-${item.count}`}
               className="visually-hidden"
             >
-              {`${item.label} ${counts[item.count]} 个`}
+              {COUNT_TEXT[item.count](counts[item.count])}
             </span>
           )
         })}

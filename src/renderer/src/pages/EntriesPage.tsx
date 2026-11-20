@@ -41,7 +41,9 @@ export function EntriesPage({
 }) {
   const [listing, setListing] = useState<EntryListResult | null>(null)
   const [allEntries, setAllEntries] = useState<EntryListResult | null>(null)
-  const [selectedId, setSelectedId] = useState<string | null>(entryId)
+  // 选中的词条只有路由这一个真源：左栏点击与全局搜索跳转都先改地址，
+  // 再由 entryId 决定打开哪一条，避免页面内再维护一份会互相写回的 selectedId。
+  const selectedId = entryId
   const [page, setPage] = useState<EntryPage | null>(null)
   const [query, setQuery] = useState(() => entriesViewState().query)
   const [sort, setSort] = useState<EntrySort>(() => entriesViewState().sort)
@@ -127,12 +129,6 @@ export function EntriesPage({
     restoredScroll.current = true
   }, [entryId, entrySentenceId, listing, page, selectedId])
 
-  useEffect(() => {
-    if (entryId !== null) {
-      setSelectedId(entryId)
-    }
-  }, [entryId])
-
   // 从全局搜索点学习内容命中：右栏（窄屏是覆盖抽屉）自动打开并定位到那一条。
   useEffect(() => {
     if (noteId === null) {
@@ -177,19 +173,15 @@ export function EntriesPage({
     }
   }, [reloadToken])
 
+  // 打开当前路由指向的词条。地址是唯一真源，这里不再回写路由：
+  // 左栏点击先 replace 到新词条，页面级搜索跳转保留自己的历史，两边都不会互相改写。
   useEffect(() => {
     if (selectedId === null) {
       pageRequest.current += 1
       setPage(null)
       setPageError(null)
-      replaceRoute('entries')
       return
     }
-    replaceRoute('entries', {
-      entryId: selectedId,
-      entrySentenceId: selectedId === entryId ? entrySentenceId : null,
-      noteId: selectedId === entryId ? noteId : null
-    })
     const sequence = pageRequest.current + 1
     pageRequest.current = sequence
     setPageError(null)
@@ -210,7 +202,7 @@ export function EntriesPage({
         }
       }
     )
-  }, [selectedId, reloadToken, entryId, entrySentenceId, noteId])
+  }, [selectedId, reloadToken])
 
   useEffect(() => {
     if (page === null || page.entry.id !== entryId || entrySentenceId === null) return
@@ -242,7 +234,8 @@ export function EntriesPage({
   }
 
   function selectEntry(id: string): void {
-    setSelectedId(id)
+    // 左栏选择是页面内换对象：替换地址，不新增历史。
+    replaceRoute('entries', { entryId: id })
     setRailOpen(false)
     setActionError(null)
     setConfirmDelete(null)
@@ -312,8 +305,8 @@ export function EntriesPage({
       if (result.entryDeleted || result.entry === null) {
         setHint(`原句与「${page?.entry.mainForm ?? '这个词条'}」已删除。`)
         setPage(null)
-        setSelectedId(null)
         setRailOpen(false)
+        replaceRoute('entries')
         refresh()
         return
       }
@@ -336,8 +329,8 @@ export function EntriesPage({
 
   function entryGone(): void {
     setPage(null)
-    setSelectedId(null)
     setRailOpen(false)
+    replaceRoute('entries')
     refresh()
   }
 

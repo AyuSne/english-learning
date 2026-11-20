@@ -170,6 +170,21 @@ test.describe('收官验收 · 深色对比度', () => {
     ])
     await page.getByRole('searchbox', { name: '搜篇名或正文' }).fill('')
 
+    // 全局搜索结果的分组计数、命中类型与片段都是承载信息的文字，不能落到 --ink-3。
+    await page.getByRole('button', { name: '全局搜索' }).click()
+    const searchDialog = page.getByRole('dialog', { name: '全局搜索' })
+    await expect(searchDialog).toBeVisible()
+    await page.getByRole('searchbox', { name: '搜索词条与文章' }).fill('approach')
+    await expect(page.locator('.global-search-group-count').first()).toBeVisible()
+    await expectReadableText(page, [
+      { label: '搜索分组计数', selector: '.global-search-group-count' },
+      { label: '搜索命中类型', selector: '.global-search-hit-kind' },
+      { label: '搜索片段', selector: '.global-search-snippet' },
+      { label: '搜索命中高亮', selector: '.global-search-snippet mark' }
+    ])
+    await page.keyboard.press('Escape')
+    await expect(searchDialog).toHaveCount(0)
+
     await openArticle(page)
     await expectReadableText(page, [
       { label: '阅读正文', selector: '.reading-paragraph' },

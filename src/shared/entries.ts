@@ -1,5 +1,5 @@
 import type { PinSourceStatus } from './pins'
-import type { SearchHit } from './search'
+import type { SearchSnippet } from './search'
 
 /**
  * 词条与已收集原句的跨层类型。阅读页只认这些结构：谁被收集了、落在哪一句、
@@ -132,16 +132,39 @@ export type EntryListItem = {
   lastCollectedAt: string
   /**
    * 有搜索词时给出「为什么命中」：命中类型、高亮片段与定位 id。
-   * 空查询时没有这个字段；全局搜索（#55）复用同一份 SearchHit 契约。
+   * 空查询时没有这个字段；全局搜索（#55）复用同一份 EntrySearchHit 契约。
    */
   hit?: EntrySearchHit
 }
 
 /** 词条搜索的命中类型：主词形、已收原句、学习内容正文。 */
-export type EntrySearchMatch = 'main-form' | 'sentence' | 'learning-note'
+export type EntrySearchMatch = EntrySearchHit['match']
 
-/** 词条列表的一处命中；定位 id 让结果能直接跳到原句或那条学习内容。 */
-export type EntrySearchHit = SearchHit<EntrySearchMatch>
+/**
+ * 词条列表的一处命中。定位字段与命中类型绑定：主词形只带词条 id，
+ * 原句命中带原句关联 id，学习内容命中带那一条 id，不会留下「有 articleId 却
+ * 没有 paragraphId」这类无效组合。片段与高亮区间仍复用 shared/search.ts。
+ */
+export type EntrySearchHit =
+  | {
+      match: 'main-form'
+      snippet: SearchSnippet
+      entryId: string
+    }
+  | {
+      match: 'sentence'
+      snippet: SearchSnippet
+      entryId: string
+      /** 词条里命中的原句关联 id；跳回原文并定位原句时用。 */
+      entrySentenceId: string
+    }
+  | {
+      match: 'learning-note'
+      snippet: SearchSnippet
+      entryId: string
+      /** 命中的学习内容 id。 */
+      noteId: string
+    }
 
 /** 左栏的排序与筛选；搜索同时匹配主词形、已收原句与学习内容正文。 */
 export type EntryListRequest = {

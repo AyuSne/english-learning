@@ -12,6 +12,7 @@ import type {
   GlobalEntryResult
 } from '../../../shared/global-search'
 import { searchEverything } from '../api'
+import { focusablesIn, trapTabTarget } from '../components/focus-trap'
 import { ENTRY_SEARCH_MATCH_LABELS } from '../entries/format'
 import { failureText } from '../errors'
 import { navigate } from '../navigate'
@@ -102,17 +103,16 @@ export function GlobalSearch({
   function chooseEntry(result: GlobalEntryResult): void {
     rememberSearchSession({ query: state.query, originHash: currentLocationHash() })
     onClose()
-    const { entryId, entrySentenceId, noteId, match } = result.hit
-    if (entryId === null) return
-    if (match === 'sentence' && entrySentenceId !== null) {
-      navigate('entries', { entryId, entrySentenceId })
+    const hit = result.hit
+    if (hit.match === 'sentence') {
+      navigate('entries', { entryId: hit.entryId, entrySentenceId: hit.entrySentenceId })
       return
     }
-    if (match === 'learning-note' && noteId !== null) {
-      navigate('entries', { entryId, noteId })
+    if (hit.match === 'learning-note') {
+      navigate('entries', { entryId: hit.entryId, noteId: hit.noteId })
       return
     }
-    navigate('entries', { entryId })
+    navigate('entries', { entryId: hit.entryId })
   }
 
   function chooseArticle(result: GlobalArticleResult): void {
@@ -136,24 +136,16 @@ export function GlobalSearch({
     if (event.key !== 'Tab') return
     const panel = panelRef.current
     if (panel === null) return
-    const focusables = Array.from(
-      panel.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((element) => element.offsetParent !== null)
-    if (focusables.length === 0) return
-    const first = focusables[0] as HTMLElement
-    const last = focusables[focusables.length - 1] as HTMLElement
     const active = document.activeElement
-    if (event.shiftKey) {
-      if (active === first || !panel.contains(active)) {
-        event.preventDefault()
-        last.focus()
-      }
-    } else if (active === last || !panel.contains(active)) {
-      event.preventDefault()
-      first.focus()
-    }
+    const target = trapTabTarget(
+      focusablesIn(panel),
+      active,
+      event.shiftKey,
+      panel.contains(active)
+    )
+    if (target === null) return
+    event.preventDefault()
+    target.focus()
   }
 
   return (

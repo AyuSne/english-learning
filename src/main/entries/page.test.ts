@@ -174,12 +174,7 @@ describe('readEntryList search hits', () => {
     const mainFormHit = byMainForm.entries[0]?.hit
     expect(mainFormHit).toMatchObject({
       match: 'main-form',
-      entryId: approach.entry.id,
-      entrySentenceId: null,
-      noteId: null,
-      articleId: null,
-      paragraphId: null,
-      sentenceOrdinal: null
+      entryId: approach.entry.id
     })
     expect(snippetHighlights(mainFormHit!.snippet)).toEqual(['approach'])
 
@@ -190,11 +185,7 @@ describe('readEntryList search hits', () => {
     expect(sentenceHit).toMatchObject({
       match: 'sentence',
       entryId: approach.entry.id,
-      entrySentenceId: approach.sentence.id,
-      noteId: null,
-      articleId: firstArticle.id,
-      paragraphId: selection(firstArticle, 0, 'approach').paragraphId,
-      sentenceOrdinal: 0
+      entrySentenceId: approach.sentence.id
     })
     expect(snippetHighlights(sentenceHit!.snippet)).toEqual(['Employers'])
     expect(sentenceHit!.snippet.text).toContain('Employers approach hiring differently.')
@@ -206,9 +197,7 @@ describe('readEntryList search hits', () => {
     expect(noteHit).toMatchObject({
       match: 'learning-note',
       entryId: approach.entry.id,
-      entrySentenceId: null,
-      noteId: note.note.id,
-      articleId: null
+      noteId: note.note.id
     })
     expect(noteHit!.snippet.text).not.toContain('\n')
     expect(snippetHighlights(noteHit!.snippet)).toEqual(['途径'])

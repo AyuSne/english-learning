@@ -4,6 +4,7 @@ import { resolveTheme, type AppBootstrap } from '../../shared/types'
 import { loadBootstrap } from './api'
 import { setChatModel } from './chat/store'
 import { GlobalNav } from './components/GlobalNav'
+import { navCountsStore } from './nav-counts/instance'
 import { ChatPage } from './pages/ChatPage'
 import { EntriesPage } from './pages/EntriesPage'
 import { HomePage } from './pages/HomePage'
@@ -58,6 +59,12 @@ export function App() {
       systemPrefersDark
     )
   }, [themePreference, systemPrefersDark])
+
+  // 每次进入一个页面（包括阅读页，那里没有全局栏）非阻塞重查一次计数。
+  // store 自己在飞时只记一次补查：不轮询、不挡住导航；失败时保留已有数字。
+  useEffect(() => {
+    void navCountsStore.refresh()
+  }, [view.route])
 
   if (bootError !== null) {
     return (

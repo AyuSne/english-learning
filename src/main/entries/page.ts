@@ -38,9 +38,6 @@ type EntryListRow = {
 type EntrySentenceHitRow = {
   entry_id: string
   id: string
-  article_id: string
-  paragraph_id: string
-  sentence_ordinal: number
   text: string
 }
 
@@ -110,7 +107,7 @@ function readEntryHits(
   const wanted = new Set(rows.map((row) => row.id))
   const sentenceRows = database
     .prepare(
-      `SELECT es.entry_id, es.id, es.article_id, es.paragraph_id, es.sentence_ordinal, s.text
+      `SELECT es.entry_id, es.id, s.text
          FROM entry_sentence es
          JOIN sentence s
            ON s.article_id = es.article_id
@@ -148,12 +145,7 @@ function readEntryHits(
       hits.set(row.id, {
         match: 'main-form',
         snippet: buildSearchSnippet(row.main_form, pattern),
-        entryId: row.id,
-        entrySentenceId: null,
-        noteId: null,
-        articleId: null,
-        paragraphId: null,
-        sentenceOrdinal: null
+        entryId: row.id
       })
       continue
     }
@@ -163,11 +155,7 @@ function readEntryHits(
         match: 'sentence',
         snippet: buildSearchSnippet(sentence.text, pattern),
         entryId: row.id,
-        entrySentenceId: sentence.id,
-        noteId: null,
-        articleId: sentence.article_id,
-        paragraphId: sentence.paragraph_id,
-        sentenceOrdinal: sentence.sentence_ordinal
+        entrySentenceId: sentence.id
       })
       continue
     }
@@ -177,11 +165,7 @@ function readEntryHits(
         match: 'learning-note',
         snippet: buildSearchSnippet(note.body, pattern),
         entryId: row.id,
-        entrySentenceId: null,
-        noteId: note.id,
-        articleId: null,
-        paragraphId: null,
-        sentenceOrdinal: null
+        noteId: note.id
       })
     }
   }

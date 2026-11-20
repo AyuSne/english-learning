@@ -122,9 +122,7 @@ describe('searchEverything', () => {
       mainForm: 'Context',
       hit: {
         match: 'main-form',
-        entryId: contextEntryId,
-        entrySentenceId: null,
-        noteId: null
+        entryId: contextEntryId
       }
     })
     expect(mainForm.entries[0]?.hit.snippet.ranges).toEqual([{ start: 0, end: 7 }])
@@ -136,9 +134,11 @@ describe('searchEverything', () => {
       mainForm: 'approach',
       hit: { match: 'sentence' }
     })
-    expect(sentence.entries[0]?.hit.snippet.text).toContain('Employers approach hiring differently.')
-    expect(sentence.entries[0]?.hit.snippet.ranges).toHaveLength(1)
-    expect(sentence.entries[0]?.hit.entrySentenceId).not.toBeNull()
+    const sentenceHit = sentence.entries[0]?.hit
+    if (sentenceHit?.match !== 'sentence') throw new Error('期望原句命中')
+    expect(sentenceHit.snippet.text).toContain('Employers approach hiring differently.')
+    expect(sentenceHit.snippet.ranges).toHaveLength(1)
+    expect(sentenceHit.entrySentenceId).not.toBeNull()
 
     const note = searchEverything(database, '途径')
     expect(note.entries).toHaveLength(1)
@@ -147,8 +147,10 @@ describe('searchEverything', () => {
       mainForm: 'approach',
       hit: { match: 'learning-note' }
     })
-    expect(note.entries[0]?.hit.noteId).not.toBeNull()
-    expect(note.entries[0]?.hit.snippet.ranges).toEqual([{ start: 16, end: 18 }])
+    const noteHit = note.entries[0]?.hit
+    if (noteHit?.match !== 'learning-note') throw new Error('期望学习内容命中')
+    expect(noteHit.noteId).not.toBeNull()
+    expect(noteHit.snippet.ranges).toEqual([{ start: 16, end: 18 }])
   })
 
   it('文章篇名命中给出片段高亮，没有正文定位', () => {
@@ -174,6 +176,22 @@ describe('searchEverything', () => {
     expect(hit?.snippet.ranges).toEqual([{ start: 2, end: 7 }])
     // 未收集过的普通句只有文章组，不是词条命中。
     expect(result.entries).toHaveLength(0)
+  })
+
+  it('跨句正文命中仍落到真实段落，句序为空，片段用同一条查询高亮', () => {
+    // 同一段两句：任何一句都不含整条查询，段落正文却含。
+    const result = searchEverything(database, 'differently. Approaching')
+    expect(result.articles).toHaveLength(1)
+    const hit = result.articles[0]
+    expect(hit?.match).toBe('body')
+    expect(hit?.paragraphId).toBe('1')
+    expect(hit?.sentenceOrdinal).toBeNull()
+    expect(hit?.snippet.text).toContain(
+      'Employers approach hiring differently. Approaching a new desk takes patience.'
+    )
+    expect(hit?.snippet.ranges).toHaveLength(1)
+    const range = hit?.snippet.ranges[0]
+    expect(hit?.snippet.text.slice(range?.start, range?.end)).toBe('differently. Approaching')
   })
 
   it('生成文章正文也参与文章组，命中句定位到生成文章的段与句', () => {
