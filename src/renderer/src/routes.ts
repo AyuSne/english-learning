@@ -25,8 +25,19 @@ export type View = {
   threadId: string | null
   /** 阅读页或词条页要定位的原句。 */
   entrySentenceId: string | null
+  /** 词条页要定位的学习内容 id；从全局搜索点进来时用。 */
+  noteId: string | null
   /** 阅读页要把这条原句的范围换掉（重新圈定）。 */
   reselect: boolean
+  /**
+   * 全局搜索点进文章正文时的定位：段落 id + 段内句序（0 起）。
+   * 它与 `entrySentenceId` 是两回事——命中的普通句不一定被收集过，不能伪造一条原句；
+   * 只落到段落时 `searchSentenceOrdinal` 为 null。
+   */
+  searchParagraphId: string | null
+  searchSentenceOrdinal: number | null
+  /** 产生这次正文定位的搜索词；刷新后仍能说清「从哪次搜索来」。 */
+  searchQuery: string | null
   /** 对话页要从学习内容回跳定位的那条钉住。 */
   pinId: string | null
   /** 回跳时「回词条」要回到的词条。 */
@@ -44,6 +55,13 @@ export type RouteHashOptions = {
   entryId?: string | null
   threadId?: string | null
   entrySentenceId?: string | null
+  /** 词条页要定位的学习内容。 */
+  noteId?: string | null
+  /** 阅读页按全局搜索的命中段落与段内句序定位正文。 */
+  searchParagraphId?: string | null
+  searchSentenceOrdinal?: number | null
+  /** 产生这次定位的搜索词。 */
+  searchQuery?: string | null
   reselect?: boolean
   pinId?: string | null
   fromEntryId?: string | null
@@ -66,6 +84,25 @@ function decodeSegment(segment: string): string | null {
   }
 }
 
+/**
+ * 全局搜索的正文定位写成 `段落id[:段内句序]`。句序从 0 数，缺省或认不出时只落到段落；
+ * 段落 id 为空则整个定位作废。
+ */
+function parseSearchTarget(
+  raw: string | null
+): { paragraphId: string; sentenceOrdinal: number | null } | null {
+  if (raw === null || raw === '') return null
+  const separator = raw.lastIndexOf(':')
+  const paragraphId = decodeSegment(separator < 0 ? raw : raw.slice(0, separator))
+  if (paragraphId === null) return null
+  if (separator < 0) return { paragraphId, sentenceOrdinal: null }
+  const rawOrdinal = raw.slice(separator + 1)
+  const ordinal = Number(rawOrdinal)
+  const sentenceOrdinal =
+    rawOrdinal !== '' && Number.isInteger(ordinal) && ordinal >= 0 ? ordinal : null
+  return { paragraphId, sentenceOrdinal }
+}
+
 /** 只解析单段参数的路由；多一段就退回首页，不吃掉粘贴进来的怪 URL。 */
 function singleView(route: Route, segments: string[]): View {
   return segments.length === 1 ? blankView(route) : blankView('home')
@@ -78,7 +115,11 @@ function blankView(route: Route): View {
     entryId: null,
     threadId: null,
     entrySentenceId: null,
+    noteId: null,
     reselect: false,
+    searchParagraphId: null,
+    searchSentenceOrdinal: null,
+    searchQuery: null,
     pinId: null,
     fromEntryId: null,
     readingFrom: null,
@@ -131,13 +172,20 @@ export function parseView(hash: string): View {
     }
     const sentence = readingWords ? null : params.get('sentence')
     const entrySentenceId = sentence === null ? null : decodeSegment(sentence)
+    const searchTarget = readingWords ? null : parseSearchTarget(params.get('search'))
+    const searchQuery =
+      searchTarget === null ? null : decodeSegment(params.get('q') ?? '')
     return {
       route,
       articleId,
       entryId: null,
       threadId: null,
       entrySentenceId,
+      noteId: null,
       reselect: entrySentenceId !== null && params.get('reselect') === '1',
+      searchParagraphId: searchTarget?.paragraphId ?? null,
+      searchSentenceOrdinal: searchTarget?.sentenceOrdinal ?? null,
+      searchQuery,
       pinId: null,
       fromEntryId: null,
       readingFrom,
@@ -166,7 +214,8 @@ export function parseView(hash: string): View {
     return {
       ...blankView('entries'),
       entryId,
-      entrySentenceId: entryId === null ? null : params.get('sentence') || null
+      entrySentenceId: entryId === null ? null : params.get('sentence') || null,
+      noteId: entryId === null ? null : decodeSegment(params.get('note') ?? '')
     }
   }
 
@@ -202,6 +251,16 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
         params.push('reselect=1')
       }
     }
+    if (options.articleId && !words && options.searchParagraphId) {
+      const target =
+        options.searchSentenceOrdinal === null || options.searchSentenceOrdinal === undefined
+          ? options.searchParagraphId
+          : `${options.searchParagraphId}:${options.searchSentenceOrdinal}`
+      params.push(`search=${encodeURIComponent(target)}`)
+      if (options.searchQuery) {
+        params.push(`q=${encodeURIComponent(options.searchQuery)}`)
+      }
+    }
     if (options.readingFrom) params.push(`from=${options.readingFrom}`)
     if (words && (options.wordsFrom === 'reader' || options.wordsFrom === 'library')) {
       params.push(`wordsFrom=${options.wordsFrom}`)
@@ -211,9 +270,14 @@ export function routeHash(route: Route, options: RouteHashOptions = {}): string 
   }
   if (route === 'entries' && options.entryId) {
     const hash = `#/entries/${encodeURIComponent(options.entryId)}`
-    return options.entrySentenceId
-      ? `${hash}?sentence=${encodeURIComponent(options.entrySentenceId)}`
-      : hash
+    const params: string[] = []
+    if (options.entrySentenceId) {
+      params.push(`sentence=${encodeURIComponent(options.entrySentenceId)}`)
+    }
+    if (options.noteId) {
+      params.push(`note=${encodeURIComponent(options.noteId)}`)
+    }
+    return params.length === 0 ? hash : `${hash}?${params.join('&')}`
   }
   if (route === 'library' && options.articleId) {
     return `#/library/${encodeURIComponent(options.articleId)}`

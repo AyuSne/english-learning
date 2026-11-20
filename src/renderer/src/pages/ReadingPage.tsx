@@ -32,9 +32,16 @@ import { ErrorBlock } from '../components/error-block'
 import { failureText } from '../errors'
 import { useLaterMark } from '../later/use-later-mark'
 import { readingPointText } from '../library/format'
-import { forgetLibraryArticle, goBack, navigate, replaceRoute } from '../navigate'
+import {
+  forgetLibraryArticle,
+  goBack,
+  navigate,
+  replaceLocation,
+  replaceRoute
+} from '../navigate'
 import { buildReadingBlocks } from '../reading/content'
 import { readingBackTarget } from '../reading/back-target'
+import { readSearchSession } from '../search/session'
 import {
   CollectedPanelView,
   EntryPanelView,
@@ -54,6 +61,13 @@ type ReadingPageProps = {
   /** 定位的同时就把这条原句的范围换掉。 */
   reselect: boolean
   readingFrom: ReadingSource | null
+  /** 全局搜索命中的普通句：段落 id + 段内句序（0 起）；它与原句 id 是两回事。 */
+  searchParagraphId: string | null
+  searchSentenceOrdinal: number | null
+  /** 产生这次正文定位的搜索词。 */
+  searchQuery: string | null
+  /** 阅读顶栏的搜索入口：与全局栏共用同一个覆盖层。 */
+  onOpenSearch: (query?: string) => void
 }
 
 /** 本次圈下的表达：先画麦色底，收下后再补上词条 id，点它可以打开词条卡。 */
@@ -83,7 +97,16 @@ function entryIdOf(target: EventTarget | null): string | null {
  * 圈选一个词或短语就完成选词：当场麦色高亮，落成词条下的一条原句；
  * 已收集的表达在重读时弱高亮，点一下打开词条卡，可从卡里删原句。
  */
-export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom }: ReadingPageProps) {
+export function ReadingPage({
+  articleId,
+  entrySentenceId,
+  reselect,
+  readingFrom,
+  searchParagraphId,
+  searchSentenceOrdinal,
+  searchQuery,
+  onOpenSearch
+}: ReadingPageProps) {
   const [view, setView] = useState<ReadingView | null>(null)
   const [settings, setSettings] = useState<ReadingSettings | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -190,7 +213,49 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
     container.scrollTop = Math.max(0, container.scrollTop + offset)
   }, [view, focus, scrollRef])
 
-  // Esc 先取消词条定位，再关词条卡，再关设置，最后退回上一页。
+  // 全局搜索的正文定位：等正文渲染、上次读到的位置恢复之后再滚，
+  // 保证搜索目标最后覆盖旧进度；同一篇再次搜索也会重新落到新的一句。
+  useEffect(() => {
+    if (view === null || searchParagraphId === null) return
+    const container = scrollRef.current
+    if (!container) return
+    const sentences = Array.from(
+      container.querySelectorAll<HTMLElement>('.reading-sentence')
+    )
+    const target =
+      searchSentenceOrdinal === null
+        ? Array.from(container.querySelectorAll<HTMLElement>('.reading-paragraph')).find(
+            (element) => element.dataset.paragraphId === searchParagraphId
+          )
+        : sentences.find(
+            (element) =>
+              element.dataset.paragraphId === searchParagraphId &&
+              element.dataset.sentenceOrdinal === String(searchSentenceOrdinal)
+          )
+    if (!target) return
+    const offset =
+      target.getBoundingClientRect().top -
+      container.getBoundingClientRect().top -
+      container.clientHeight / 3
+    container.scrollTop = Math.max(0, container.scrollTop + offset)
+  }, [view, searchParagraphId, searchSentenceOrdinal, scrollRef])
+
+  /**
+   * 离开阅读页。来自全局搜索时，返回的是「搜索结果」本身：按原来的查询重新打开
+   * 覆盖层，并回到搜索前的那一页——不伪装标签，也不把用户丢到首页。
+   */
+  function leaveReading(): void {
+    if (readingFrom === 'search') {
+      const session = readSearchSession()
+      onOpenSearch(session?.query ?? '')
+      if (session !== null) replaceLocation(session.originHash)
+      return
+    }
+    const target = readingBackTarget(readingFrom, entrySentenceId)
+    goBack(target.route, target.options)
+  }
+
+  // Esc 先取消词条定位，再关词条卡，再关设置，最后离开阅读页（来自搜索时回搜索结果）。
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key !== 'Escape' || event.isComposing) return
@@ -207,20 +272,19 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
         setSettingsOpen(false)
         return
       }
-      goBack(
-        readingBackTarget(readingFrom, entrySentenceId).route,
-        readingBackTarget(readingFrom, entrySentenceId).options
-      )
+      leaveReading()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [focus, panel, settingsOpen, readingFrom, entrySentenceId])
+  }, [focus, panel, settingsOpen, readingFrom, entrySentenceId, onOpenSearch])
 
   useEffect(() => {
     if (!settingsOpen) return
     const onPointerDown = (event: PointerEvent): void => {
-      const target = event.target as Node | null
+      const target = event.target as Element | null
       if (target === null) return
+      // 全局搜索覆盖层上的点击不归阅读页处理，别顺手收掉前面的选中态。
+      if (target.closest('.global-search') !== null) return
       if (settingsPanelRef.current?.contains(target)) return
       if (settingsButtonRef.current?.contains(target)) return
       setSettingsOpen(false)
@@ -235,6 +299,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
     const onPointerDown = (event: PointerEvent): void => {
       const target = event.target as Element | null
       if (target === null) return
+      if (target.closest('.global-search') !== null) return
       if (panelRef.current?.contains(target)) return
       if (target.closest('.reading-settings') !== null) return
       if (settingsButtonRef.current?.contains(target)) return
@@ -739,7 +804,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
           type="button"
           className="reading-back"
           aria-label={backTarget.ariaLabel}
-          onClick={() => goBack(backTarget.route, backTarget.options)}
+          onClick={leaveReading}
         >
           <span aria-hidden="true">←</span> {backLabel || '返回'}
         </button>
@@ -747,6 +812,15 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
           <h1 className="reading-bar-title">{view?.article.title ?? '阅读'}</h1>
         </div>
         <div className="reading-bar-actions">
+          {/* 搜索入口与全局栏共用同一个覆盖层；阅读页收起全局栏后仍能搜。 */}
+          <button
+            type="button"
+            className="reading-tool reading-search-trigger"
+            aria-label="全局搜索"
+            onClick={() => onOpenSearch()}
+          >
+            搜索
+          </button>
           {view && settings ? (
             <>
               <button
@@ -806,7 +880,7 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
         </div>
       </header>
 
-      {focus === null ? null : (
+      {focus !== null ? (
         <div className="reading-context" role="status">
           <p className="reading-context-text">
             {focus.mode === 'reselect'
@@ -830,6 +904,21 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
             >
               回词条
             </button>
+          </div>
+        </div>
+      ) : searchParagraphId === null ? null : (
+        <div className="reading-context" role="status">
+          <p className="reading-context-text">
+            {searchQuery === null
+              ? '来自全局搜索 · 命中正文这一段'
+              : `来自搜索「${searchQuery}」· 命中正文这一段`}
+          </p>
+          <div className="reading-context-actions">
+            {readingFrom === 'search' ? (
+              <button type="button" className="reading-tool" onClick={leaveReading}>
+                回搜索结果
+              </button>
+            ) : null}
           </div>
         </div>
       )}
@@ -891,7 +980,9 @@ export function ReadingPage({ articleId, entrySentenceId, reselect, readingFrom 
                   focusedSentenceOrdinal={
                     focus !== null && focus.sentence.paragraphId === paragraph.id
                       ? focus.sentence.sentenceOrdinal
-                      : null
+                      : searchParagraphId === paragraph.id
+                        ? searchSentenceOrdinal
+                        : null
                   }
                 />
               ))}

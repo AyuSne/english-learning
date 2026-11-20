@@ -32,6 +32,7 @@ import type {
   UpdateLearningNoteRequest,
   WordEntryCard
 } from './entries'
+import type { GlobalSearchResults } from './global-search'
 import type {
   ArticleDeletionPreview,
   ArticleDetail,
@@ -129,6 +130,8 @@ export interface IpcContract {
   'library:reimport': { payload: undefined; result: ImportReport }
   'library:detail': { payload: { articleId: string }; result: ArticleDetail | null }
   'library:search': { payload: { query: string }; result: LibrarySearchResults }
+  /** 全局搜索（#55）：一次查询同时给出词条与文章两组命中。 */
+  'search:global': { payload: { query: string }; result: GlobalSearchResults }
   'library:rename': { payload: RenameArticleRequest; result: RenameArticleResult }
   'library:delete-preview': {
     payload: { articleId: string }
@@ -282,6 +285,7 @@ const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'library:reimport': true,
   'library:detail': true,
   'library:search': true,
+  'search:global': true,
   'library:rename': true,
   'library:delete-preview': true,
   'library:delete': true,

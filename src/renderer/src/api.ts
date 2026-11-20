@@ -1,5 +1,6 @@
 import type { DictionaryLookup } from '../../shared/dictionary'
 import type { ArticleWordsView } from '../../shared/article-words'
+import type { GlobalSearchResults } from '../../shared/global-search'
 import type {
   ArticleDeletionPreview,
   ArticleDetail,
@@ -134,6 +135,11 @@ export function loadArticleDetail(articleId: string): Promise<ArticleDetail | nu
 
 export function searchLibrary(query: string): Promise<LibrarySearchResults> {
   return window.api.invoke('library:search', { query })
+}
+
+/** 全局搜索：一次查询同时给出词条与文章两组命中。 */
+export function searchEverything(query: string): Promise<GlobalSearchResults> {
+  return window.api.invoke('search:global', { query })
 }
 
 /** 只改文章显示名；语料刷新后仍沿用这个名字。 */

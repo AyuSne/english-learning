@@ -308,6 +308,9 @@ export function ChatPage({
       return
     }
     const onMouseDown = (event: MouseEvent): void => {
+      // 全局搜索覆盖层盖在对话上时，点它不算点对话正文，别收掉选段卡。
+      const target = event.target
+      if (target instanceof Element && target.closest('.global-search') !== null) return
       if (selectionCardRef.current?.contains(event.target as Node)) {
         return
       }
@@ -377,7 +380,10 @@ export function ChatPage({
         .querySelector(`[data-answer-id="${sourceAnswerId}"]`)
         ?.scrollIntoView({ block: 'center' })
     }, 60)
-    const clearHit = (): void => {
+    const clearHit = (event: MouseEvent): void => {
+      // 在搜索覆盖层里点击不该清掉从学习内容回跳的高亮。
+      const target = event.target
+      if (target instanceof Element && target.closest('.global-search') !== null) return
       setSourceHitPinId(null)
       document.removeEventListener('mousedown', clearHit, true)
     }

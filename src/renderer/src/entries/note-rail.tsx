@@ -28,6 +28,7 @@ export function NoteRail({
   entries,
   open,
   overlay,
+  focusedNoteId = null,
   onToggle,
   onClose,
   onChanged,
@@ -40,6 +41,8 @@ export function NoteRail({
   open: boolean
   /** 覆盖抽屉模式：有遮罩、焦点进入并限制在抽屉里、Esc 关闭。 */
   overlay: boolean
+  /** 从全局搜索点进来的学习内容：滚到那一条并标出来。 */
+  focusedNoteId?: string | null
   onToggle: () => void
   onClose: () => void
   onChanged: (message: string) => void
@@ -67,6 +70,13 @@ export function NoteRail({
     node?.querySelector<HTMLElement>('.entries-rail-close')?.focus()
 
     const onKeyDown = (event: KeyboardEvent): void => {
+      // 全局搜索盖在右栏上时焦点与 Tab 归搜索覆盖层管，抽屉不再抢。
+      if (
+        event.target instanceof Element &&
+        event.target.closest('.global-search') !== null
+      ) {
+        return
+      }
       if (event.key === 'Escape') {
         event.preventDefault()
         onClose()
@@ -101,6 +111,17 @@ export function NoteRail({
       if (restore !== null && restore.isConnected) restore.focus()
     }
   }, [open, overlay, onClose])
+
+  // 全局搜索点学习内容命中：等右栏挂上再把那一条滚到眼前，窄屏覆盖抽屉里同样可见。
+  useEffect(() => {
+    if (!open || focusedNoteId === null) return
+    const frame = window.requestAnimationFrame(() => {
+      railRef.current
+        ?.querySelector<HTMLElement>(`[data-note-id="${focusedNoteId}"]`)
+        ?.scrollIntoView({ block: 'center' })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [open, focusedNoteId, page.entry.id])
 
   // 右栏的词典只读：按主词形查一次；查不到就明说，不影响下面写学习内容。
   const { lookup: dictionaryLookup, loading: dictionaryLoading } = useDictionaryLookup(
@@ -280,7 +301,12 @@ export function NoteRail({
             {page.notes.map((note) => {
               const sourcePin = note.sourcePin
               return (
-                <article className="entry-note" data-note-id={note.id} key={note.id}>
+                <article
+                  className="entry-note"
+                  data-note-id={note.id}
+                  data-focused={focusedNoteId === note.id ? 'true' : undefined}
+                  key={note.id}
+                >
                   <header className="entry-note-head">
                     {note.pinned ? <span className="entry-note-pin">已置顶</span> : null}
                     <div className="entry-note-actions">

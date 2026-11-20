@@ -54,6 +54,7 @@ import {
   readWordEntryCard
 } from './entries/queries'
 import { registerIpcHandlers } from './ipc/register'
+import { searchEverything } from './search/global'
 import {
   copyLearningInstruction,
   createLearningInstruction,
@@ -212,6 +213,8 @@ function start(): void {
     'library:reimport': () => importCorpus(opened, { directory: corpusDirectory() }),
     'library:detail': (payload) => readArticleDetail(opened, payload.articleId),
     'library:search': (payload) => searchLibrary(opened, payload.query),
+    // 全局搜索：词条与文章两组命中，词条复用词条页的命中契约，文章带回段落与句序。
+    'search:global': (payload) => searchEverything(opened, payload.query),
     'library:rename': (payload) => renameArticle(opened, payload),
     'library:delete-preview': (payload) =>
       readArticleDeletionPreview(opened, payload.articleId),

@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import type { EntryListResult } from '../../../shared/entries'
-import type { SearchSnippet } from '../../../shared/search'
-import { splitSearchSnippet } from '../../../shared/search'
+import { SearchSnippetText } from '../search/snippet-text'
 import { entriesViewState, updateEntriesViewState } from '../view-state'
 import { ENTRY_SEARCH_MATCH_LABELS, entryListMetaText } from './format'
 import { selectionCountText } from './selection'
@@ -217,16 +216,5 @@ export function EntryList({
         </ul>
       )}
     </aside>
-  )
-}
-
-/** 按服务端给的区间切出 <mark>，不拼 HTML；拼回去与片段文本逐字一致。 */
-function SearchSnippetText({ snippet }: { snippet: SearchSnippet }) {
-  return (
-    <>
-      {splitSearchSnippet(snippet).map((part, index) =>
-        part.highlighted ? <mark key={index}>{part.text}</mark> : <span key={index}>{part.text}</span>
-      )}
-    </>
   )
 }

@@ -2,7 +2,13 @@ import { navigateFromGlobal } from '../navigate'
 import { NAV_ITEMS } from '../navigation'
 import type { Route } from '../routes'
 
-export function GlobalNav({ route }: { route: Route }) {
+export function GlobalNav({
+  route,
+  onOpenSearch
+}: {
+  route: Route
+  onOpenSearch: () => void
+}) {
   return (
     <aside className="globals">
       <div className="brand">
@@ -11,6 +17,14 @@ export function GlobalNav({ route }: { route: Route }) {
         </span>
         素读
       </div>
+      <button
+        type="button"
+        className="nav-item nav-search"
+        aria-label="全局搜索"
+        onClick={onOpenSearch}
+      >
+        搜索
+      </button>
       <nav className="nav" aria-label="全局导航">
         {NAV_ITEMS.map((item) => (
           <button
