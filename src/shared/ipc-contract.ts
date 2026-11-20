@@ -6,6 +6,7 @@ import type {
   ChatStreamUpdate
 } from './chat'
 import type { ArticleWordsView } from './article-words'
+import type { NavCounts } from './counts'
 import type { DictionaryLookup, DictionaryLookupRequest } from './dictionary'
 import type {
   ChangeMainFormRequest,
@@ -124,6 +125,7 @@ import type { AppBootstrap } from './types'
  */
 export interface IpcContract {
   'app:bootstrap': { payload: undefined; result: AppBootstrap }
+  'counts:summary': { payload: undefined; result: NavCounts }
   'home:summary': { payload: undefined; result: HomeSummary }
   'library:list': { payload: undefined; result: LibraryListing }
   'library:reimport': { payload: undefined; result: ImportReport }
@@ -277,6 +279,7 @@ export type IpcEventChannel = keyof IpcEventContract
 // 用 Record 而不是数组列 channel：契约里加了 channel 却忘了登记，这里会编译失败。
 const CHANNEL_TABLE: Record<IpcChannel, true> = {
   'app:bootstrap': true,
+  'counts:summary': true,
   'home:summary': true,
   'library:list': true,
   'library:reimport': true,
