@@ -82,6 +82,7 @@ import {
 import { failureText } from '../errors'
 import { navigate } from '../navigate'
 import { parseView } from '../routes'
+import { searchUiOwns } from '../search/ownership'
 import { threadViewState, updateThreadViewState } from '../view-state'
 
 type PinSelection = AnswerSelection & { text: string }
@@ -308,9 +309,8 @@ export function ChatPage({
       return
     }
     const onMouseDown = (event: MouseEvent): void => {
-      // 全局搜索覆盖层盖在对话上时，点它不算点对话正文，别收掉选段卡。
-      const target = event.target
-      if (target instanceof Element && target.closest('.global-search') !== null) return
+      // 搜索覆盖层与它的入口不算点对话正文，别收掉选段卡。
+      if (searchUiOwns(event.target)) return
       if (selectionCardRef.current?.contains(event.target as Node)) {
         return
       }
@@ -381,9 +381,8 @@ export function ChatPage({
         ?.scrollIntoView({ block: 'center' })
     }, 60)
     const clearHit = (event: MouseEvent): void => {
-      // 在搜索覆盖层里点击不该清掉从学习内容回跳的高亮。
-      const target = event.target
-      if (target instanceof Element && target.closest('.global-search') !== null) return
+      // 搜索覆盖层与它的入口都不该清掉从学习内容回跳的高亮。
+      if (searchUiOwns(event.target)) return
       setSourceHitPinId(null)
       document.removeEventListener('mousedown', clearHit, true)
     }

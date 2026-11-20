@@ -82,6 +82,14 @@ test('全局栏显示词条/文章/未归档计数；0 显示 0，读回来之�
   await expect(nav(page).getByRole('button', { name: '词条', exact: true })).toBeVisible()
   await expect(nav(page).getByRole('button', { name: '文章库', exact: true })).toBeVisible()
 
+  // 对话的数字是「未归档」的钉住，不是线程数：读屏描述与可见悬停说明都不能写成「对话 N 个」。
+  const chatButton = nav(page).getByRole('button', { name: '对话', exact: true })
+  await expect(chatButton).toHaveAttribute('aria-describedby', 'nav-count-unfiled')
+  await expect(chatButton).toHaveAttribute('title', '未归档 0 条')
+  await expect(page.locator('#nav-count-unfiled')).toHaveText('未归档 0 条')
+  await expect(page.locator('#nav-count-entries')).toHaveText('词条 0 个')
+  await expect(page.locator('#nav-count-articles')).toHaveText('文章 2 篇')
+
   // 把计数查询换成一个慢回复：数字到齐之前不能先摆一个 0。
   if (handle.electronApp === null) throw new Error('开发态用例拿不到主进程句柄')
   await handle.electronApp.evaluate(({ ipcMain }, counts) => {
@@ -118,6 +126,63 @@ async function openArticleByLabel(page: Page, label: string): Promise<void> {
     .click()
   await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
 }
+
+test('初次计数失败后换页恢复：不显示假 0，也不阻塞导航', async ({ launch }) => {
+  const handle = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  const { page, electronApp } = handle
+  if (electronApp === null) throw new Error('开发态用例拿不到主进程句柄')
+  await expectCounts(page, { entries: 0, articles: 2, unfiled: 0 })
+
+  // 只在刷新后的第一次查询失败，之后正常返回；从这一刻起计数只能靠换页重查恢复。
+  await electronApp.evaluate(({ ipcMain }, counts) => {
+    let calls = 0
+    ipcMain.removeHandler('counts:summary')
+    ipcMain.handle('counts:summary', () => {
+      calls += 1
+      if (calls === 1) throw new Error('temporary count failure')
+      return counts
+    })
+  }, { entries: 5, articles: 2, unfiled: 3 })
+
+  await page.reload()
+  await expect(nav(page)).toBeVisible()
+  // 失败之后是「还没有数字」，不能把 0 当结果。
+  await expect(nav(page).locator('.nav-count')).toHaveCount(0)
+
+  // 失败的异步查询不挡导航：页面照常打开。
+  await nav(page).getByRole('button', { name: '文章库' }).click()
+  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+
+  // 进入新页面时非阻塞重查，读到真实数字后恢复。
+  await expectCounts(page, { entries: 5, articles: 2, unfiled: 3 })
+})
+
+test('已有旧数字时重查失败保留旧数，再次换页后按新数恢复', async ({ launch }) => {
+  const handle = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  const { page, electronApp } = handle
+  if (electronApp === null) throw new Error('开发态用例拿不到主进程句柄')
+  await expectCounts(page, { entries: 0, articles: 2, unfiled: 0 })
+
+  // 下次重查失败：旧数字必须留着，不退回 0、也不变成空白。
+  await electronApp.evaluate(({ ipcMain }) => {
+    ipcMain.removeHandler('counts:summary')
+    ipcMain.handle('counts:summary', () => {
+      throw new Error('temporary count failure')
+    })
+  })
+  await nav(page).getByRole('button', { name: '文章库' }).click()
+  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+  await expectCounts(page, { entries: 0, articles: 2, unfiled: 0 })
+
+  // 查询恢复后，再换一次页就读到新数字。
+  await electronApp.evaluate(({ ipcMain }, counts) => {
+    ipcMain.removeHandler('counts:summary')
+    ipcMain.handle('counts:summary', () => counts)
+  }, { entries: 7, articles: 2, unfiled: 1 })
+  await nav(page).getByRole('button', { name: '首页' }).click()
+  await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
+  await expectCounts(page, { entries: 7, articles: 2, unfiled: 1 })
+})
 
 test('收词后词条数即时更新；稍后看不计数；删最后一句连词条删、钉住退回未归档', async ({
   launch
@@ -226,6 +291,12 @@ test('钉住/撤销/归位/移动/丢弃/批量归位后未归档数即时更新
   seedUnfiledPins(userDataDirectory)
   const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
   await expectCounts(page, { entries: 1, articles: 2, unfiled: 2 })
+  // 有真实未归档时，读屏描述仍是「未归档 N 条」，不写成线程数。
+  await expect(nav(page).getByRole('button', { name: '对话', exact: true })).toHaveAttribute(
+    'title',
+    '未归档 2 条'
+  )
+  await expect(page.locator('#nav-count-unfiled')).toHaveText('未归档 2 条')
 
   const board = page.getByRole('complementary', { name: '钉板' })
   await nav(page).getByRole('button', { name: '对话' }).click()

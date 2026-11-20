@@ -46,11 +46,7 @@ describe('searchReducer', () => {
             match: 'sentence',
             snippet: { text: 'Employers approach hiring differently.', ranges: [{ start: 18, end: 24 }] },
             entryId: 'entry-1',
-            entrySentenceId: 'sentence-1',
-            noteId: null,
-            articleId: 'article-1',
-            paragraphId: '1',
-            sentenceOrdinal: 0
+            entrySentenceId: 'sentence-1'
           }
         }
       ],

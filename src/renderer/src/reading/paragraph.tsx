@@ -8,12 +8,18 @@ import type { ReadingBlock, ReadingPart } from './content'
 export function ReadingParagraphView({
   paragraph,
   blocks,
-  focusedSentenceOrdinal = null
+  focusedSentenceOrdinal = null,
+  focusedParagraph = false
 }: {
   paragraph: ReadingParagraph
   blocks: readonly ReadingBlock[]
-  /** 从词条跳过来时，这一句整句底色高亮。 */
+  /** 从词条跳过来或搜索命中一句时，这一句整句底色高亮。 */
   focusedSentenceOrdinal?: number | null
+  /**
+   * 全局搜索跨句命中：没有单一句可定位，但段落是真实目标。
+   * 整段标出来，不冒充某一句，也不写进原句定位 state。
+   */
+  focusedParagraph?: boolean
 }) {
   return (
     <div className="reading-row">
@@ -22,7 +28,12 @@ export function ReadingParagraphView({
           {paragraph.letter}
         </span>
       )}
-      <p className="reading-paragraph" data-paragraph-id={paragraph.id}>
+      <p
+        className={
+          focusedParagraph ? 'reading-paragraph reading-paragraph-focused' : 'reading-paragraph'
+        }
+        data-paragraph-id={paragraph.id}
+      >
         {blocks.map((block, index) =>
           block.kind === 'gap' ? (
             <span key={index}>{block.text}</span>

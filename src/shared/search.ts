@@ -1,8 +1,9 @@
 /**
- * 搜索命中片段的公共契约：片段文本、关键词区间，以及命中类型与定位 id。
+ * 搜索命中片段的公共契约：片段文本与关键词区间。
  *
- * 词条页左栏现在用它给出「为什么命中」；之后的全局搜索（词条 / 文章两组）直接复用
+ * 词条页左栏用它给出「为什么命中」，全局搜索（词条 / 文章两组）直接复用
  * 同一套结构，不再各自拼一套片段与高亮规则。片段只在这里算一次，界面只按区间切 <mark>。
+ * 具体命中类型的定位字段由各有明确组合的领域类型表达（见 `EntrySearchHit`）。
  */
 
 /** 片段里要高亮的一段，UTF-16 偏移，直接落在 `SearchSnippet.text` 上。 */
@@ -15,29 +16,6 @@ export type SearchRange = {
 export type SearchSnippet = {
   text: string
   ranges: SearchRange[]
-}
-
-/**
- * 一条搜索命中。`match` 由各搜索入口自己定义取值（词条页是主词形 / 原句 / 学习内容），
- * 其余字段是命中位置：全局搜索点开结果时靠它们跳到对应对象，不必再猜。
- */
-export type SearchHit<Match extends string> = {
-  /** 命中类型。 */
-  match: Match
-  /** 命中处的一小段，界面据此显示并高亮。 */
-  snippet: SearchSnippet
-  /** 词条 id；文章命中时为 null。 */
-  entryId: string | null
-  /** 词条里命中的原句关联 id；跳回原文并定位原句时用。 */
-  entrySentenceId: string | null
-  /** 命中的学习内容 id。 */
-  noteId: string | null
-  /** 命中的文章 id；阅读页据此打开原文。 */
-  articleId: string | null
-  /** 命中文本所在段落 id；文章内定位时用。 */
-  paragraphId: string | null
-  /** 段内句序，0 起；文章内定位时用。 */
-  sentenceOrdinal: number | null
 }
 
 /** 片段切出来的一段，界面直接渲染成普通文字或 <mark>。 */
