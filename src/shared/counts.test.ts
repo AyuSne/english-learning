@@ -52,6 +52,7 @@ describe('COUNT_AFFECTING_CHANNELS', () => {
       'pins:board',
       'chat:list',
       'chat:thread',
+      'search:global',
       'settings:overview'
     ]) {
       expect(affectsNavCounts(read)).toBe(false)

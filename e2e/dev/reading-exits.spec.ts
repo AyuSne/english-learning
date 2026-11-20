@@ -51,9 +51,19 @@ test('阅读页返回按钮标明来源，缺省时仍可返回', async ({ launc
   await expect(page.getByRole('button', { name: '返回词条' })).toContainText('词条')
   await page.getByRole('button', { name: '返回词条' }).click()
 
-  // 全局搜索尚未实现，先验证它可以通过来源参数标明返回目标。
+  // 全局搜索：直接带 from=search 打开时返回按钮写「搜索结果」；没有搜索记录时
+  // 点它打开搜索覆盖层，仍然停在阅读页，而不是假装跳首页。
   await page.evaluate((id) => { window.location.hash = `#/reading/${id}?from=search` }, article.id)
   await expect(page.getByRole('button', { name: '返回搜索结果' })).toContainText('搜索结果')
+  await page.getByRole('button', { name: '返回搜索结果' }).click()
+  const searchDialog = page.getByRole('dialog', { name: '全局搜索' })
+  await expect(searchDialog).toBeVisible()
+  await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(
+    `#/reading/${article.id}?from=search`
+  )
+  await page.keyboard.press('Escape')
+  await expect(searchDialog).toHaveCount(0)
+  await expect(page.locator('[data-reading-page="true"]')).toBeVisible()
   await page.evaluate((id) => { window.location.hash = `#/reading/${id}` }, article.id)
   await expect(page.getByRole('button', { name: '返回', exact: true })).toBeVisible()
   await page.getByRole('button', { name: '返回', exact: true }).click()

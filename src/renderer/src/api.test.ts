@@ -4,7 +4,8 @@ import {
   deleteArticle,
   loadEntryList,
   loadNavCounts,
-  saveGeneratedArticle
+  saveGeneratedArticle,
+  searchEverything
 } from './api'
 import {
   resetNavCountsInvalidationForTest,
@@ -77,6 +78,17 @@ describe('api 写成功边界', () => {
     invoke.mockResolvedValueOnce({ entries: 0, articles: 2, unfiled: 0 })
     await expect(loadNavCounts()).resolves.toEqual({ entries: 0, articles: 2, unfiled: 0 })
     expect(invoke).toHaveBeenCalledWith('counts:summary', undefined)
+    expect(notified).not.toHaveBeenCalled()
+  })
+
+  it('全局搜索是读操作，结果回来也不触发计数失效', async () => {
+    invoke.mockResolvedValueOnce({ query: 'hiring', entries: [], articles: [] })
+    await expect(searchEverything('hiring')).resolves.toEqual({
+      query: 'hiring',
+      entries: [],
+      articles: []
+    })
+    expect(invoke).toHaveBeenCalledWith('search:global', { query: 'hiring' })
     expect(notified).not.toHaveBeenCalled()
   })
 })

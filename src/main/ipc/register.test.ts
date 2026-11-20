@@ -15,6 +15,7 @@ import type {
   SetEntryLaterResult,
   WordEntryCard
 } from '../../shared/entries'
+import type { GlobalSearchResults } from '../../shared/global-search'
 import type {
   ArticleDeletionPreview,
   ArticleDetail,
@@ -153,6 +154,16 @@ function libraryHandlers() {
     'library:delete-preview': (): ArticleDeletionPreview | null => null,
     'library:delete': (): DeleteArticleResult => ({ status: 'missing' }),
     'library:save-generated': (): SaveGeneratedArticleResult => ({ status: 'missing' })
+  }
+}
+
+function searchHandlers() {
+  return {
+    'search:global': (payload: { query: string }): GlobalSearchResults => ({
+      query: payload.query,
+      entries: [],
+      articles: []
+    })
   }
 }
 
@@ -298,6 +309,7 @@ describe('registerIpcHandlers', () => {
     registerIpcHandlers(ipc, {
       ...chatHandlers(),
       ...libraryHandlers(),
+      ...searchHandlers(),
       ...readingHandlers(),
       ...entriesHandlers(),
       ...instructionsHandlers(),
@@ -334,6 +346,7 @@ describe('registerIpcHandlers', () => {
     const handlers = {
       ...chatHandlers(),
       ...libraryHandlers(),
+      ...searchHandlers(),
       ...readingHandlers(),
       ...entriesHandlers(),
       ...instructionsHandlers(),

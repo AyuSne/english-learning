@@ -3,9 +3,14 @@ import { NAV_ITEMS } from '../navigation'
 import { useNavCounts } from '../nav-counts/use-nav-counts'
 import type { Route } from '../routes'
 
-export function GlobalNav({ route }: { route: Route }) {
+export function GlobalNav({
+  route,
+  onOpenSearch
+}: {
+  route: Route
+  onOpenSearch: () => void
+}) {
   const counts = useNavCounts().counts
-
   return (
     <aside className="globals">
       <div className="brand">
@@ -14,6 +19,14 @@ export function GlobalNav({ route }: { route: Route }) {
         </span>
         素读
       </div>
+      <button
+        type="button"
+        className="nav-item nav-search"
+        aria-label="全局搜索"
+        onClick={onOpenSearch}
+      >
+        搜索
+      </button>
       <nav className="nav" aria-label="全局导航">
         {NAV_ITEMS.map((item) => {
           const value = item.count === undefined || counts === null ? null : counts[item.count]

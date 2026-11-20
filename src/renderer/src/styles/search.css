@@ -1,0 +1,231 @@
+/* ---------- 全局搜索覆盖层 ---------- */
+
+/* 全局栏里的搜索入口：与导航项同一套排版，单独留出间距。 */
+.nav-search {
+  margin-bottom: 8px;
+}
+
+/*
+ * 覆盖层只盖在当前页面上方：位置固定、独立焦点，不参与底页布局，
+ * 所以打开与关闭都不会重挂载底页，也不会改变它的滚动位置。
+ */
+
+.global-search {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 72px 16px 24px;
+}
+
+.global-search-backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, #1a1a17 28%, transparent);
+}
+
+[data-theme="dark"] .global-search-backdrop {
+  background: color-mix(in srgb, #000 55%, transparent);
+}
+
+.global-search-panel {
+  position: relative;
+  display: flex;
+  width: min(640px, calc(100vw - 32px));
+  max-height: min(70vh, 640px);
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow-dialog);
+}
+
+.global-search-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 10px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.global-search-input {
+  min-width: 0;
+  flex: 1;
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 22px;
+  outline: none;
+}
+
+.global-search-input::placeholder {
+  color: var(--ink-3);
+}
+
+.global-search-close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.global-search-close:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+.global-search-body {
+  min-height: 120px;
+  overflow-y: auto;
+  padding: 4px 8px 12px;
+}
+
+.global-search-hint,
+.global-search-status,
+.global-search-empty,
+.global-search-group-empty {
+  padding: 16px 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.global-search-error {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 8px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--rule));
+  border-radius: 10px;
+  background: var(--danger-bed);
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.global-search-group + .global-search-group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+}
+
+.global-search-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 4px;
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 16px;
+}
+
+.global-search-group-count {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.global-search-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.global-search-entry,
+.global-search-article {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.global-search-entry:hover,
+.global-search-article:hover {
+  background: var(--hover);
+}
+
+.global-search-entry:focus-visible,
+.global-search-article:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: -2px;
+}
+
+.global-search-hit-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.global-search-hit-title {
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.global-search-hit-kind {
+  flex: none;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.global-search-article-meta {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.global-search-snippet {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 18px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.global-search-snippet mark {
+  border-radius: 2px;
+  background: var(--bed-select);
+  color: var(--ink);
+}
+
+[data-theme="dark"] .global-search-snippet mark {
+  color: var(--ink);
+}
+
+@media (max-width: 520px) {
+  .global-search {
+    padding: 24px 8px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-search-entry,
+  .global-search-article {
+    transition: none;
+  }
+}

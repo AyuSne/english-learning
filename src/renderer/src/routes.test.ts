@@ -17,6 +17,10 @@ function view(route: Route, overrides: Partial<View> = {}): View {
     readingFrom: null,
     readingWords: false,
     readingWordsFrom: null,
+    noteId: null,
+    searchParagraphId: null,
+    searchSentenceOrdinal: null,
+    searchQuery: null,
     ...overrides
   }
 }
@@ -105,6 +109,49 @@ describe('parseView', () => {
     const hash = routeHash('entries', { entryId: 'entry 1', entrySentenceId: 'sentence 1' })
     expect(hash).toBe('#/entries/entry%201?sentence=sentence%201')
     expect(parseView(hash)).toEqual(view('entries', { entryId: 'entry 1', entrySentenceId: 'sentence 1' }))
+  })
+
+  it('词条页可带一条学习内容定位并从地址恢复', () => {
+    const hash = routeHash('entries', { entryId: 'entry 1', noteId: 'note 1' })
+    expect(hash).toBe('#/entries/entry%201?note=note%201')
+    expect(parseView(hash)).toEqual(
+      view('entries', { entryId: 'entry 1', noteId: 'note 1' })
+    )
+    expect(parseView('#/entries?note=note-1')).toEqual(view('entries'))
+  })
+
+  it('阅读页可带普通搜索句定位与查询原文，刷新后仍能恢复', () => {
+    const hash = routeHash('reading', {
+      articleId: 'a',
+      readingFrom: 'search',
+      searchParagraphId: '2',
+      searchSentenceOrdinal: 1,
+      searchQuery: 'zebra'
+    })
+    expect(hash).toBe('#/reading/a?search=2%3A1&q=zebra&from=search')
+    expect(parseView(hash)).toEqual(
+      view('reading', {
+        articleId: 'a',
+        readingFrom: 'search',
+        searchParagraphId: '2',
+        searchSentenceOrdinal: 1,
+        searchQuery: 'zebra'
+      })
+    )
+    // 只落到段落（查询跨句时没有句序）。
+    expect(parseView('#/reading/a?search=g1')).toEqual(
+      view('reading', { articleId: 'a', searchParagraphId: 'g1' })
+    )
+    // 句序非法时只认段落；段落为空时不认这个定位。
+    expect(parseView('#/reading/a?search=2%3Ax')).toEqual(
+      view('reading', { articleId: 'a', searchParagraphId: '2' })
+    )
+    expect(parseView('#/reading/a?search=%3A1')).toEqual(view('reading', { articleId: 'a' }))
+    // 没有文章就没有可定位的正文；本篇选词子视图不带正文定位。
+    expect(parseView('#/reading?search=1%3A0&q=zebra')).toEqual(view('reading'))
+    expect(parseView('#/reading/a/words?search=1%3A0&q=zebra')).toEqual(
+      view('reading', { articleId: 'a', readingWords: true })
+    )
   })
 
   it('文章库的选中项可以从地址恢复', () => {

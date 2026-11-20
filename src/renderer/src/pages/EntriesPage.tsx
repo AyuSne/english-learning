@@ -29,7 +29,16 @@ const LEARNING_RAIL_ID = 'entries-learning-rail'
  * 词条页：左列表、中原句、右学习内容。打开词条先看到原句，右栏默认收窄。
  * 原句按文章分组，组内按句序；每条能回到原文、重新圈定、拆到别的词条或删除。
  */
-export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | null; entrySentenceId: string | null }) {
+export function EntriesPage({
+  entryId,
+  entrySentenceId,
+  noteId = null
+}: {
+  entryId: string | null
+  entrySentenceId: string | null
+  /** 从全局搜索点进来的学习内容：打开右栏并定位到那一条。 */
+  noteId?: string | null
+}) {
   const [listing, setListing] = useState<EntryListResult | null>(null)
   const [allEntries, setAllEntries] = useState<EntryListResult | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(entryId)
@@ -59,6 +68,8 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   const groupRequest = useRef<AbortController | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const restoredScroll = useRef(false)
+  /** 这条搜索命中已经打开过右栏；之后用户自己收起，不因一次刷新又弹开。 */
+  const openedNoteId = useRef<string | null>(null)
   const selectedIdRef = useRef(selectedId)
   selectedIdRef.current = selectedId
 
@@ -122,6 +133,19 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     }
   }, [entryId])
 
+  // 从全局搜索点学习内容命中：右栏（窄屏是覆盖抽屉）自动打开并定位到那一条。
+  useEffect(() => {
+    if (noteId === null) {
+      openedNoteId.current = null
+      return
+    }
+    if (page === null || page.entry.id !== entryId) return
+    if (openedNoteId.current === noteId) return
+    if (!page.notes.some((note) => note.id === noteId)) return
+    openedNoteId.current = noteId
+    setRailOpen(true)
+  }, [noteId, entryId, page])
+
   useEffect(() => {
     const sequence = listRequest.current + 1
     listRequest.current = sequence
@@ -161,7 +185,11 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
       replaceRoute('entries')
       return
     }
-    replaceRoute('entries', { entryId: selectedId, entrySentenceId: selectedId === entryId ? entrySentenceId : null })
+    replaceRoute('entries', {
+      entryId: selectedId,
+      entrySentenceId: selectedId === entryId ? entrySentenceId : null,
+      noteId: selectedId === entryId ? noteId : null
+    })
     const sequence = pageRequest.current + 1
     pageRequest.current = sequence
     setPageError(null)
@@ -182,7 +210,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
         }
       }
     )
-  }, [selectedId, reloadToken, entryId, entrySentenceId])
+  }, [selectedId, reloadToken, entryId, entrySentenceId, noteId])
 
   useEffect(() => {
     if (page === null || page.entry.id !== entryId || entrySentenceId === null) return
@@ -540,6 +568,7 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
           entries={allEntries?.entries ?? []}
           open={railOpen}
           overlay={overlay}
+          focusedNoteId={page.entry.id === entryId ? noteId : null}
           onToggle={toggleRail}
           onClose={closeRail}
           onChanged={(message) => refresh(message)}

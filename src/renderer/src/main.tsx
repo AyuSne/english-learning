@@ -10,6 +10,7 @@ import './styles/dictionary.css'
 import './styles/library.css'
 import './styles/pins.css'
 import './styles/reading.css'
+import './styles/search.css'
 import './styles/article-words.css'
 import './styles/settings.css'
 

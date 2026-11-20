@@ -143,6 +143,17 @@ export function replaceRoute(route: Route, options: NavigateOptions = {}): void 
 }
 
 /**
+ * 把当前地址原地换成另一个 hash（不新增浏览历史）。从阅读页点「搜索结果」时用：
+ * 回到搜索前的那一页，而不是把搜索本身当成一个新的历史层级。
+ */
+export function replaceLocation(hash: string): void {
+  if (hash === window.location.hash) return
+  window.history.replaceState(null, '', hash)
+  rememberObject(hash)
+  window.dispatchEvent(new Event('route-replaced'))
+}
+
+/**
  * 退回上一层视图。hash 路由也进浏览历史，所以能用 history.back；
  * 直接从某篇阅读页启动（没有上一页）时退到首页。
  */

@@ -1,0 +1,315 @@
+import {
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode
+} from 'react'
+import type {
+  GlobalArticleResult,
+  GlobalEntryResult
+} from '../../../shared/global-search'
+import { searchEverything } from '../api'
+import { ENTRY_SEARCH_MATCH_LABELS } from '../entries/format'
+import { failureText } from '../errors'
+import { navigate } from '../navigate'
+import { currentLocationHash, rememberSearchSession } from './session'
+import { SearchSnippetText } from './snippet-text'
+import { INITIAL_SEARCH_MACHINE, searchReducer } from './state'
+
+const LOADING_TEXT = '正在搜索…'
+const ERROR_FALLBACK = '搜索没有完成，再试一次。'
+const IDLE_TEXT = '输入关键词，同时搜词条名、原句、学习内容与文章正文。'
+
+/**
+ * 全局搜索覆盖层。它只挂在当前页面上方，不改变地址、不重挂载底页：
+ * 关闭（Esc / 点外部）只是收起自己，底页的对象、草稿、筛选与滚动都不动。
+ * 只有点结果时才真正导航，并把这次搜索的查询与来源记下来，供阅读页返回「搜索结果」。
+ */
+export function GlobalSearch({
+  initialQuery,
+  onClose
+}: {
+  initialQuery: string
+  onClose: () => void
+}) {
+  const [machine, dispatch] = useReducer(searchReducer, INITIAL_SEARCH_MACHINE, (base) =>
+    initialQuery.trim() === ''
+      ? base
+      : searchReducer(base, { type: 'query-changed', query: initialQuery })
+  )
+  const [input, setInput] = useState(initialQuery)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const panelRef = useRef<HTMLElement>(null)
+  const restoreFocus = useRef<HTMLElement | null>(null)
+
+  // 打开就把焦点放进输入框；关闭时还给打开它的按钮，且不把底页滚回顶部。
+  useLayoutEffect(() => {
+    restoreFocus.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
+    inputRef.current?.focus({ preventScroll: true })
+    return () => {
+      const target = restoreFocus.current
+      restoreFocus.current = null
+      if (target !== null && target.isConnected) target.focus({ preventScroll: true })
+    }
+  }, [])
+
+  // Esc 在捕获阶段只关搜索：preventDefault + stopPropagation，不让阅读页退出、
+  // 对话停止生成或取消编辑；输入法组合态里的 Esc 交给输入法。
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape' || event.isComposing) return
+      event.preventDefault()
+      event.stopPropagation()
+      dispatch({ type: 'closed' })
+      onClose()
+    }
+    window.addEventListener('keydown', onKeyDown, true)
+    return () => window.removeEventListener('keydown', onKeyDown, true)
+  }, [onClose])
+
+  // 查询进入加载态才发请求；快速改词、清空或关闭后，旧回复靠代次丢弃。
+  useEffect(() => {
+    const state = machine.state
+    if (state.status !== 'loading') return
+    let active = true
+    const requestId = machine.requestId
+    searchEverything(state.query).then(
+      (results) => {
+        if (active) dispatch({ type: 'loaded', requestId, query: state.query, results })
+      },
+      (error: unknown) => {
+        if (active) {
+          dispatch({
+            type: 'failed',
+            requestId,
+            query: state.query,
+            message: failureText(error, ERROR_FALLBACK)
+          })
+        }
+      }
+    )
+    return () => {
+      active = false
+    }
+  }, [machine.state, machine.requestId])
+
+  const state = machine.state
+
+  function chooseEntry(result: GlobalEntryResult): void {
+    rememberSearchSession({ query: state.query, originHash: currentLocationHash() })
+    onClose()
+    const { entryId, entrySentenceId, noteId, match } = result.hit
+    if (entryId === null) return
+    if (match === 'sentence' && entrySentenceId !== null) {
+      navigate('entries', { entryId, entrySentenceId })
+      return
+    }
+    if (match === 'learning-note' && noteId !== null) {
+      navigate('entries', { entryId, noteId })
+      return
+    }
+    navigate('entries', { entryId })
+  }
+
+  function chooseArticle(result: GlobalArticleResult): void {
+    rememberSearchSession({ query: state.query, originHash: currentLocationHash() })
+    onClose()
+    navigate('reading', {
+      articleId: result.article.id,
+      readingFrom: 'search',
+      ...(result.paragraphId === null
+        ? {}
+        : {
+            searchParagraphId: result.paragraphId,
+            searchSentenceOrdinal: result.sentenceOrdinal
+          }),
+      ...(result.match === 'body' ? { searchQuery: state.query } : {})
+    })
+  }
+
+  /** Tab 只在覆盖层里循环；第一下 Tab 不会跑到下面的页面。 */
+  function handlePanelKeyDown(event: ReactKeyboardEvent<HTMLElement>): void {
+    if (event.key !== 'Tab') return
+    const panel = panelRef.current
+    if (panel === null) return
+    const focusables = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((element) => element.offsetParent !== null)
+    if (focusables.length === 0) return
+    const first = focusables[0] as HTMLElement
+    const last = focusables[focusables.length - 1] as HTMLElement
+    const active = document.activeElement
+    if (event.shiftKey) {
+      if (active === first || !panel.contains(active)) {
+        event.preventDefault()
+        last.focus()
+      }
+    } else if (active === last || !panel.contains(active)) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+
+  return (
+    <div
+      className="global-search"
+      role="presentation"
+      onPointerDown={(event) => event.stopPropagation()}
+    >
+      <div className="global-search-backdrop" aria-hidden="true" onClick={onClose} />
+      <section
+        ref={panelRef}
+        className="global-search-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="全局搜索"
+        onKeyDown={handlePanelKeyDown}
+      >
+        <header className="global-search-head">
+          <input
+            ref={inputRef}
+            type="search"
+            className="global-search-input"
+            aria-label="搜索词条与文章"
+            placeholder="搜词条名、原句、学习内容或文章正文"
+            value={input}
+            onChange={(event) => {
+              setInput(event.target.value)
+              dispatch({ type: 'query-changed', query: event.target.value })
+            }}
+          />
+          <button
+            type="button"
+            className="global-search-close"
+            aria-label="关闭搜索"
+            onClick={onClose}
+          >
+            ×
+          </button>
+        </header>
+
+        <div className="global-search-body">
+          {state.status === 'idle' ? <p className="global-search-hint">{IDLE_TEXT}</p> : null}
+          {state.status === 'loading' ? (
+            <p className="global-search-status" role="status">
+              {LOADING_TEXT}
+            </p>
+          ) : null}
+          {state.status === 'error' ? (
+            <div className="global-search-error" role="alert">
+              <p>{state.message}</p>
+              <button
+                type="button"
+                className="button"
+                onClick={() => dispatch({ type: 'retry' })}
+              >
+                重试
+              </button>
+            </div>
+          ) : null}
+          {state.status === 'empty' ? (
+            <p className="global-search-empty">没有搜到「{state.query}」。换个词试试。</p>
+          ) : null}
+          {state.status === 'results' ? (
+            <>
+              <ResultGroup
+                title="词条"
+                count={state.results.entries.length}
+                emptyText="没有命中的词条。"
+              >
+                <ul className="global-search-list">
+                  {state.results.entries.map((result) => (
+                    <li key={result.entryId}>
+                      <button
+                        type="button"
+                        className="global-search-entry"
+                        data-match={result.hit.match}
+                        onClick={() => chooseEntry(result)}
+                      >
+                        <span className="global-search-hit-head">
+                          <span className="global-search-hit-title">{result.mainForm}</span>
+                          <span className="global-search-hit-kind">
+                            {ENTRY_SEARCH_MATCH_LABELS[result.hit.match]}
+                          </span>
+                        </span>
+                        <span className="global-search-snippet">
+                          <SearchSnippetText snippet={result.hit.snippet} />
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </ResultGroup>
+
+              <ResultGroup
+                title="文章"
+                count={state.results.articles.length}
+                emptyText="没有命中的文章。"
+              >
+                <ul className="global-search-list">
+                  {state.results.articles.map((result) => (
+                    <li key={result.article.id}>
+                      <button
+                        type="button"
+                        className="global-search-article"
+                        data-match={result.match}
+                        data-source={result.article.sourceType}
+                        onClick={() => chooseArticle(result)}
+                      >
+                        <span className="global-search-hit-head">
+                          <span className="global-search-hit-title">
+                            {result.article.title}
+                          </span>
+                          <span className="global-search-hit-kind">
+                            {result.match === 'title' ? '篇名' : '正文'}
+                          </span>
+                        </span>
+                        <span className="global-search-article-meta">
+                          {result.article.sourceType === 'ai'
+                            ? 'AI 生成'
+                            : `${result.article.sessionLabel} · ${result.article.kindLabel}`}
+                        </span>
+                        <span className="global-search-snippet">
+                          <SearchSnippetText snippet={result.snippet} />
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </ResultGroup>
+            </>
+          ) : null}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+/** 结果的一组：标题带计数，空组也给一句明确的话，不整组消失。 */
+function ResultGroup({
+  title,
+  count,
+  emptyText,
+  children
+}: {
+  title: string
+  count: number
+  emptyText: string
+  children: ReactNode
+}) {
+  return (
+    <section className="global-search-group" aria-label={title}>
+      <h2 className="global-search-group-title">
+        {title}
+        <span className="global-search-group-count">{count}</span>
+      </h2>
+      {count === 0 ? <p className="global-search-group-empty">{emptyText}</p> : children}
+    </section>
+  )
+}

@@ -729,6 +729,13 @@
   background: var(--sunken);
 }
 
+/* 从全局搜索点进来的学习内容：整条标出来，等用户点别处再随搜索定位一起消失。 */
+.entry-note[data-focused='true'] {
+  border-color: var(--amber);
+  background: var(--bed-select);
+  box-shadow: 0 0 0 3px var(--bed-select);
+}
+
 .entry-note-head {
   display: flex;
   align-items: flex-start;

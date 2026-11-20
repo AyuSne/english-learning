@@ -116,6 +116,18 @@ function readArticleRow(database: AppDatabase, articleId: string): ArticleRow | 
 }
 
 /**
+ * 单篇文章的列表行：全局搜索按命中逐篇取它，不额外算详情里的计数。
+ * 文章不存在时返回 null。
+ */
+export function readLibraryArticle(
+  database: AppDatabase,
+  articleId: string
+): LibraryArticle | null {
+  const row = readArticleRow(database, articleId)
+  return row ? toArticle(database, row) : null
+}
+
+/**
  * 文章库：真题按场次从新到旧分组，组内打开过的按最近打开排前，其余按库内顺序；
  * 生成文章单独一列，按保存顺序从新到旧，不占场次、也不混进真题分组。
  */
