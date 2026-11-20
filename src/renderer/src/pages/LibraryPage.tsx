@@ -297,9 +297,7 @@ export function LibraryPage({
 
       <div className="library-columns">
         <div className="library-list">
-          {listing !== null && listing.articleCount === 0 && failureCount === 0 ? (
-            <p className="empty-line">还没有文章。语料随应用分发，重新启动会再导入一次。</p>
-          ) : found !== null ? (
+          {found !== null ? (
             <SearchResults
               query={found.query}
               results={found.results}

@@ -60,6 +60,17 @@ export type ThreadContextItem = {
   source: string
 }
 
+/** `word:` 前缀只在这里解析一次；不是词或 id 为空时返回 null。 */
+export function wordContextEntryId(
+  item: Pick<ThreadContextItem, 'id' | 'kind'>
+): string | null {
+  if (item.kind !== 'word' || !item.id.startsWith('word:')) {
+    return null
+  }
+  const entryId = item.id.slice('word:'.length)
+  return entryId === '' ? null : entryId
+}
+
 /** 一条线程一次最多带多少个不同的词条；界面与主进程边界共用同一个数。 */
 export const GROUP_WORD_LIMIT = 20
 

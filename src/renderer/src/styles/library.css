@@ -104,7 +104,7 @@
 .library-ai-section {
   margin-bottom: 24px;
   padding-top: 16px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--rule);
 }
 
 .library-ai-head {

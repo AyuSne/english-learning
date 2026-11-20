@@ -220,6 +220,44 @@ test('生成文章全链路：回答完成后存为文章，AI 段阅读、选�
   await expect(board).toContainText('Approach shapes how we read.')
 })
 
+test('停止后继续生成成功，整条回答可以存为文章并正常阅读', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, { picks })
+  const stub = await createStub({
+    kind: 'hang',
+    text: ['Half an answer starts here.']
+  })
+  const { page } = await launch({ env: launchEnv(stub) })
+
+  await startGeneratedThread(page, ['approach'])
+  await page.getByRole('textbox', { name: '输入问题' }).fill('写一篇短文。')
+  await page.getByRole('button', { name: '发送' }).click()
+  await expect(page.getByText('Half an answer starts here.')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByText('已停止 · 未完成')).toBeVisible()
+  await expect(saveButton(page)).toHaveCount(0)
+
+  // 续写成功之后，最后一段完成，整条正文（含早先停下的部分）都可保存。
+  stub.setScript({ kind: 'stream', text: [' The ending arrives cleanly.'] })
+  await page.getByRole('button', { name: '继续生成' }).click()
+  await expect(page.locator('.assistant-text')).toHaveText(
+    'Half an answer starts here. The ending arrives cleanly.'
+  )
+  await expect(saveButton(page)).toHaveCount(1)
+  await saveButton(page).click()
+  await expect(page.getByText(/已存为文章「/)).toBeVisible()
+
+  await openLibrary(page)
+  const aiRow = page.getByRole('region', { name: 'AI 生成' }).locator('.library-row').first()
+  await aiRow.click()
+  await page.getByRole('complementary', { name: '文章详情' }).getByRole('button', { name: '继续阅读' }).click()
+  await expect(page.locator('.reading-paragraph')).toHaveText([
+    'Half an answer starts here. The ending arrives cleanly.'
+  ])
+})
+
 test('没有词上下文就没有存为文章；同一回答重复保存新建两篇而不覆盖', async ({
   launch,
   userDataDirectory
@@ -261,6 +299,31 @@ test('没有词上下文就没有存为文章；同一回答重复保存新建�
   const aiSection = page.getByRole('region', { name: 'AI 生成' })
   await expect(aiSection.locator('.library-row')).toHaveCount(2)
   await expect(page.locator('.library-count')).toHaveText('3 篇 · 1 个场次')
+})
+
+test('文章库删到一篇不剩时，AI 空态入口仍可用且不再暗示已删文章会复活', async ({
+  launch
+}) => {
+  const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  await openLibrary(page)
+  await expect(page.locator('.library-row')).toHaveCount(1)
+  await page.locator('.library-row').first().click()
+
+  const detail = page.getByRole('complementary', { name: '文章详情' })
+  await detail.getByRole('button', { name: '删除文章', exact: true }).click()
+  await page
+    .getByRole('alertdialog', { name: '删除文章' })
+    .getByRole('button', { name: '确认删除', exact: true })
+    .click()
+
+  await expect(page.locator('.library-row')).toHaveCount(0)
+  await expect(
+    page.getByText('还没有文章。语料随应用分发，重新启动会再导入一次。', { exact: true })
+  ).toHaveCount(0)
+  const aiSection = page.getByRole('region', { name: 'AI 生成' })
+  await expect(aiSection).toContainText('用一组词生成第一篇')
+  await aiSection.getByRole('button', { name: '去词条页选词' }).click()
+  await expect(page.getByRole('heading', { name: '词条', level: 1 })).toBeVisible()
 })
 
 test('只有 AI 文章时默认选中第一篇，刷新后 URL 与选中一致', async ({

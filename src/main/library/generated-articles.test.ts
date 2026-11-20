@@ -2,6 +2,8 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import type { ChatError } from '../../shared/chat'
+import { canSaveAnswerAsArticle } from '../../renderer/src/chat/turns'
 import {
   createGroupThread,
   createThread,
@@ -94,7 +96,11 @@ function currentAnswerId(threadId: string): string {
 function answerWith(
   input: { threadId: string; questionId: string },
   text: string,
-  overrides: { phase?: 'done' | 'stopped' | 'error'; model?: string } = {}
+  overrides: {
+    phase?: 'done' | 'stopped' | 'error'
+    model?: string
+    error?: ChatError
+  } = {}
 ): string {
   const saved = saveAnswer(database, {
     threadId: input.threadId,
@@ -102,7 +108,8 @@ function answerWith(
     text,
     thinking: '',
     phase: overrides.phase ?? 'done',
-    ...(overrides.model === undefined ? {} : { model: overrides.model })
+    ...(overrides.model === undefined ? {} : { model: overrides.model }),
+    ...(overrides.error === undefined ? {} : { error: overrides.error })
   })
   if (saved.status !== 'saved') throw new Error('回答没保存')
   return currentAnswerId(input.threadId)
@@ -318,6 +325,83 @@ describe('saveGeneratedArticle', () => {
     expect(readReadingView(database, switchedSave.article.id)?.paragraphs[0]?.text).toBe(
       'Version one body. It has two sentences.'
     )
+  })
+
+  it('早先停止或出错、后来成功续写后，保存的是当前完整正文而不是历史状态', () => {
+    for (const phase of ['stopped', 'error'] as const) {
+      const input = askWithWords([approachEntryId])
+      const answerId = answerWith(input, 'Readers approach ', {
+        phase,
+        ...(phase === 'error' ? { error: { code: 'network' as const } } : {})
+      })
+      const continued = saveContinuation(database, {
+        threadId: input.threadId,
+        answerId,
+        text: 'new ideas with patience.',
+        thinking: '',
+        phase: 'done'
+      })
+      expect(continued.status).toBe('saved')
+
+      // 规范语义按最后一段聚合：成功续写后整条回答是 done，历史段状态只留在日志里。
+      const turn = readThreadView(database, input.threadId)?.turns[0]
+      expect(turn?.answer?.text).toBe('Readers approach new ideas with patience.')
+      expect(turn?.answer?.phase).toBe('done')
+      expect(turn?.answer?.error).toBeNull()
+      expect(canSaveAnswerAsArticle(turn!.question, turn!.answer, false)).toBe(true)
+
+      const saved = saveArticle(input.threadId, answerId)
+      expect(saved.status).toBe('saved')
+      if (saved.status !== 'saved') continue
+      expect(readReadingView(database, saved.article.id)?.paragraphs[0]?.text).toBe(
+        'Readers approach new ideas with patience.'
+      )
+    }
+  })
+
+  it('完成→停止→再成功续写仍可保存整版；最后一段停了就继续拒绝', () => {
+    const input = askWithWords([approachEntryId])
+    const answerId = answerWith(input, 'First complete sentence. ')
+    expect(
+      saveContinuation(database, {
+        threadId: input.threadId,
+        answerId,
+        text: 'A stopped middle. ',
+        thinking: '',
+        phase: 'stopped'
+      }).status
+    ).toBe('saved')
+    expect(saveArticle(input.threadId, answerId)).toEqual({
+      status: 'rejected',
+      reason: 'incomplete'
+    })
+    expect(
+      saveContinuation(database, {
+        threadId: input.threadId,
+        answerId,
+        text: 'A finished ending.',
+        thinking: '',
+        phase: 'done'
+      }).status
+    ).toBe('saved')
+
+    const saved = saveArticle(input.threadId, answerId)
+    expect(saved.status).toBe('saved')
+    if (saved.status !== 'saved') return
+    expect(readReadingView(database, saved.article.id)?.paragraphs[0]?.text).toBe(
+      'First complete sentence. A stopped middle. A finished ending.'
+    )
+  })
+
+  it('回答正文里的 Markdown 标记原样保存，不偷偷改写给阅读页', () => {
+    const input = askWithWords([approachEntryId])
+    const body = '**Approach** stays visible. *Context* stays literal too.'
+    const answerId = answerWith(input, body)
+
+    const saved = saveArticle(input.threadId, answerId)
+    expect(saved.status).toBe('saved')
+    if (saved.status !== 'saved') return
+    expect(readReadingView(database, saved.article.id)?.paragraphs[0]?.text).toBe(body)
   })
 
   it('拒绝未完成、空正文、没有词上下文与不存在的回答', () => {

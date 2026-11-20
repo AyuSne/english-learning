@@ -2,9 +2,13 @@ import type { ElectronApplication, Page } from '@playwright/test'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { openDatabase } from '../../src/main/db/database'
 import { fixtureArticle, writeCorpusDirectory } from '../../src/testing/corpus-fixture'
 import { startSseStub, type SseStub, type StubScript } from '../../src/testing/sse-stub'
 import { expect, test } from '../fixtures/app'
+import { holdIpcReply } from '../fixtures/bridge'
+import { seedAnsweredThread } from '../fixtures/chat'
+import { databasePath } from '../fixtures/database'
 import { seedWordEntries, type SeedPick } from '../fixtures/entries'
 
 /**
@@ -56,12 +60,11 @@ const manyWordPicks: SeedPick[] = ALPHA_WORDS.map((word, index) => ({
 const contextSummary = (page: Page) => page.getByTestId('context-summary')
 const selectionBar = (page: Page) => page.getByRole('group', { name: '已选词条' })
 const nextButton = (page: Page) => page.getByRole('button', { name: '用这些词学习' })
+const nav = (page: Page, name: string) =>
+  page.getByRole('navigation', { name: '全局导航' }).getByRole('button', { name, exact: true })
 
 async function openEntries(page: Page): Promise<void> {
-  await page
-    .getByRole('navigation', { name: '全局导航' })
-    .getByRole('button', { name: '词条' })
-    .click()
+  await nav(page, '词条').click()
   await expect(page.getByRole('heading', { name: '词条', level: 1 })).toBeVisible()
 }
 
@@ -218,6 +221,109 @@ test('多选两个词开一条新线程：带词与各自原句，可增删，�
   await nextButton(page).click()
   await expect(page.getByRole('heading', { name: 'approach 等 2 个词', level: 1 })).toBeVisible()
   expect(await threadIdOf(page)).not.toBe(firstThreadId)
+})
+
+test('新的组词线程不继承另一条线程的编辑态，打开后能直接提新问题', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, { picks: groupPicks.slice(0, 1) })
+  const database = openDatabase(databasePath(userDataDirectory))
+  try {
+    seedAnsweredThread(database, { question: '旧线程问题', answer: '旧线程回答' })
+  } finally {
+    database.close()
+  }
+
+  const stub = await createStub({ kind: 'stream', text: ['组词线程的新回答。'] })
+  const { page } = await launch({
+    env: {
+      CORPUS_DIRECTORY: corpusDirectory,
+      DEEPSEEK_BASE_URL: stub.baseUrl,
+      DEEPSEEK_API_KEY: 'e2e-test-key',
+      DEEPSEEK_MODEL: 'deepseek-flash'
+    }
+  })
+
+  await nav(page, '对话').click()
+  await page.locator('.thread-row').filter({ hasText: '旧线程问题' }).click()
+  await page.getByRole('button', { name: '编辑上一条提问' }).click()
+  await expect(page.locator('.edit-banner')).toBeVisible()
+
+  // 旧线程的编辑态只属于旧线程；从词条页新开一条组词线程后必须从干净输入框开始。
+  await openEntries(page)
+  await page.getByRole('checkbox', { name: '选择词条：approach' }).check()
+  await nextButton(page).click()
+  await expect(page.getByRole('heading', { name: 'approach', level: 1 })).toBeVisible()
+  await expect(page.locator('.edit-banner')).toHaveCount(0)
+
+  await page.getByRole('textbox', { name: '输入问题' }).fill('新线程自己的问题')
+  await page.getByRole('button', { name: '发送' }).click()
+  await expect(page.getByText('组词线程的新回答。')).toBeVisible()
+  await expect.poll(() => stub.requests.length).toBe(1)
+})
+
+test('取消选择后迟到的组词结果不重开页面，也不覆盖随后开始的新线程', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, { picks: groupPicks.slice(0, 1) })
+  const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  if (!electronApp) throw new Error('需要 Electron 主进程句柄')
+  await openEntries(page)
+
+  const approach = page.getByRole('checkbox', { name: '选择词条：approach' })
+  await approach.check()
+  const held = await holdIpcReply(electronApp, 'chat:create-group')
+  await nextButton(page).click()
+  await expect.poll(held.pending).toBe(true)
+
+  // 取消只清选择；旧请求仍在主进程里跑完，但它的结果已经不属于当前操作。
+  await page.getByRole('button', { name: '取消选择' }).click()
+  await expect(selectionBar(page)).toHaveCount(0)
+  await approach.check()
+  await expect(nextButton(page)).toBeEnabled()
+  await nextButton(page).click()
+  await expect(page.getByRole('heading', { name: 'approach', level: 1 })).toBeVisible()
+  const freshId = await threadIdOf(page)
+
+  // 旧结果晚到：不能把页面拉回它创建的那条线程，也不能把新线程的当前状态盖掉。
+  await held.release()
+  await page.evaluate(() => (window as unknown as {
+    api: { invoke(channel: string, payload?: unknown): Promise<unknown> }
+  }).api.invoke('chat:list'))
+  await expect(page).toHaveURL(new RegExp(`#/chat/${freshId}$`))
+  await expect(page.getByRole('heading', { name: 'approach', level: 1 })).toBeVisible()
+  // 主进程已经建成的旧线程不偷偷删除，稍后回到列表仍能看到。
+  await expect(page.locator('.thread-row')).toHaveCount(2)
+})
+
+test('离开词条页后迟到的组词结果不劫持导航，线程仍留在列表里', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seedWordEntries(userDataDirectory, corpusDirectory, { picks: groupPicks.slice(0, 1) })
+  const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+  if (!electronApp) throw new Error('需要 Electron 主进程句柄')
+  await openEntries(page)
+
+  await page.getByRole('checkbox', { name: '选择词条：approach' }).check()
+  const held = await holdIpcReply(electronApp, 'chat:create-group')
+  await nextButton(page).click()
+  await expect.poll(held.pending).toBe(true)
+
+  await nav(page, '首页').click()
+  await expect(nav(page, '首页')).toHaveAttribute('aria-current', 'page')
+  await held.release()
+  await page.evaluate(() => (window as unknown as {
+    api: { invoke(channel: string, payload?: unknown): Promise<unknown> }
+  }).api.invoke('chat:list'))
+
+  await expect(nav(page, '首页')).toHaveAttribute('aria-current', 'page')
+  await expect(page).not.toHaveURL(/#\/chat\//)
+  // 迟到结果只是不驱动界面；建成的线程仍应出现在对话列表。
+  await nav(page, '对话').click()
+  await expect(page.locator('.thread-row')).toHaveCount(1)
 })
 
 test('最多 20 个不同词条：第 21 个不准选并明确提示，主进程也拒绝超词数', async ({

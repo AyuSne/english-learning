@@ -138,6 +138,7 @@ export function canSaveAnswerAsArticle(
     !disabled &&
     answer !== null &&
     answer.phase === 'done' &&
+    answer.error === null &&
     answer.text.trim() !== '' &&
     question.wordCount > 0
   )

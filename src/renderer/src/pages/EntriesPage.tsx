@@ -55,6 +55,8 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
 
   const listRequest = useRef(0)
   const pageRequest = useRef(0)
+  /** 这一页发起的组词请求；取消选择或离开页面时中止它的界面生命周期。 */
+  const groupRequest = useRef<AbortController | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const restoredScroll = useRef(false)
   const selectedIdRef = useRef(selectedId)
@@ -198,6 +200,11 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
     return () => window.clearTimeout(timer)
   }, [hint])
 
+  useEffect(() => () => {
+    groupRequest.current?.abort()
+    groupRequest.current = null
+  }, [])
+
   function refresh(message?: string): void {
     setActionError(null)
     setReloadToken((token) => token + 1)
@@ -225,6 +232,10 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   }
 
   function clearSelection(): void {
+    // 取消选择同时作废还在等主进程回复的组词请求；用户可以立刻重新选词开始。
+    groupRequest.current?.abort()
+    groupRequest.current = null
+    setStartingGroup(false)
     setSelectedEntryIds([])
     setSelectionHint(null)
   }
@@ -232,14 +243,20 @@ export function EntriesPage({ entryId, entrySentenceId }: { entryId: string | nu
   /** 「用这些词学习」：一次新开一条线程，不复用已有的空白或组词线程。 */
   async function startGroup(): Promise<void> {
     if (selectedEntryIds.length === 0 || startingGroup) return
+    const controller = new AbortController()
+    groupRequest.current?.abort()
+    groupRequest.current = controller
     setStartingGroup(true)
     setActionError(null)
     setSelectionHint(null)
-    const opened = await openGroupThread(selectedEntryIds)
-    if (opened === null) {
+    const opened = await openGroupThread(selectedEntryIds, { signal: controller.signal })
+    // 取消、离开或后来的尝试已经接管了这次动作：旧回复连页面状态都不碰。
+    if (groupRequest.current !== controller) return
+    groupRequest.current = null
+    if (!controller.signal.aborted && opened === null) {
       setSelectionHint(getChatStore().error ?? '没能用这些词开线程，再试一次。')
     }
-    setStartingGroup(false)
+    if (!controller.signal.aborted) setStartingGroup(false)
   }
 
   function openReading(sentence: EntrySentence, reselect: boolean): void {
