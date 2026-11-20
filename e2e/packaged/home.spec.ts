@@ -11,7 +11,13 @@ test('打包产物能启动并显示首页', async ({ launch }) => {
 
   const navigation = page.getByRole('navigation', { name: '全局导航' })
   await expect(navigation).toBeVisible()
-  await expect(navigation.getByRole('button')).toHaveText(NAV_LABELS)
+  // 六个导航按钮的可访问名称保持原标签；数字是按钮里的独立计数元素。
+  await expect(navigation.getByRole('button')).toHaveCount(NAV_LABELS.length)
+  await expect(navigation.locator('.nav-label')).toHaveText(NAV_LABELS)
+  // 打包产物自带 63 篇语料；干净库里还没有词条与未归档。
+  await expect(navigation.locator('[data-nav-count="articles"]')).toHaveText('63')
+  await expect(navigation.locator('[data-nav-count="entries"]')).toHaveText('0')
+  await expect(navigation.locator('[data-nav-count="unfiled"]')).toHaveText('0')
   await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
 
   const bootstrap = await readBootstrap(page)

@@ -58,6 +58,20 @@ END`
 
 const PIN_COLUMNS = `p.*, ${PIN_SOURCE_STATUS_SQL} AS source_status`
 
+/**
+ * 未归档的判定：落点是未归档、落点 id 为空，或落点目标已经不存在。
+ * 钉板的全局未归档列表与左栏计数共用这一条，避免两处口径漂移：
+ * 目标已经没了的钉住，读的时候按未归档显示，数的时候也要算进去。
+ */
+export const UNFILED_PIN_SQL = `(
+  p.target_kind = 'unfiled'
+  OR p.target_id IS NULL
+  OR (p.target_kind = 'entry' AND NOT EXISTS (
+        SELECT 1 FROM word_entry w WHERE w.id = p.target_id))
+  OR (p.target_kind = 'article' AND NOT EXISTS (
+        SELECT 1 FROM article a WHERE a.id = p.target_id))
+)`
+
 function readPinRow(database: AppDatabase, pinId: string): PinRow | undefined {
   return database
     .prepare(`SELECT ${PIN_COLUMNS} FROM pin p WHERE id = ?`)
@@ -604,7 +618,7 @@ export function readPinBoard(database: AppDatabase, threadId: string | null): Pi
   const threadPins = threadRows.filter((pin) => pin.target.kind !== 'unfiled')
 
   const unfiled = new Map<string, Pin>()
-  for (const pin of readPinsWhere(database, "target_kind = 'unfiled'", null)) {
+  for (const pin of readPinsWhere(database, UNFILED_PIN_SQL, null)) {
     unfiled.set(pin.id, pin)
   }
   for (const pin of threadRows) {
