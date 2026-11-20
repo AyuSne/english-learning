@@ -1,7 +1,9 @@
 import { useLayoutEffect, useRef } from 'react'
 import type { EntryListResult } from '../../../shared/entries'
+import type { SearchSnippet } from '../../../shared/search'
+import { splitSearchSnippet } from '../../../shared/search'
 import { entriesViewState, updateEntriesViewState } from '../view-state'
-import { entryListMetaText } from './format'
+import { ENTRY_SEARCH_MATCH_LABELS, entryListMetaText } from './format'
 import { selectionCountText } from './selection'
 
 export type EntrySort = 'recent' | 'alpha'
@@ -73,11 +75,21 @@ export function EntryList({
       <label className="entries-search">
         <input
           type="search"
-          aria-label="搜词条名或原句"
-          placeholder="搜词条名或原句"
+          aria-label="搜词条名、原句或学习内容"
+          placeholder="搜词条名、原句或学习内容"
           value={query}
           onChange={(event) => onQuery(event.target.value)}
         />
+        {query === '' ? null : (
+          <button
+            type="button"
+            className="entries-search-clear"
+            aria-label="清空搜索"
+            onClick={() => onQuery('')}
+          >
+            清空
+          </button>
+        )}
       </label>
 
       <div className="entries-toolbar">
@@ -146,7 +158,11 @@ export function EntryList({
         <p className="empty-line entries-empty">
           {listing.total === 0
             ? '还没有词条。读的时候圈一个词，它就会出现在这里。'
-            : '没有对上的词条。换个词，或把筛选放回全部。'}
+            : query.trim() !== ''
+              ? filter === 'all'
+                ? `没有搜到「${query.trim()}」。换个词试试。`
+                : `没有搜到「${query.trim()}」。换个词，或把筛选放回全部。`
+              : '没有对上的词条。把筛选放回全部试试。'}
         </p>
       ) : (
         <ul
@@ -181,6 +197,16 @@ export function EntryList({
                 >
                   <span className="entries-row-name">{entry.mainForm}</span>
                   <span className="entries-row-meta">{entryListMetaText(entry)}</span>
+                  {entry.hit === undefined ? null : (
+                    <span className="entries-row-hit" data-match={entry.hit.match}>
+                      <span className="entries-row-hit-kind">
+                        {ENTRY_SEARCH_MATCH_LABELS[entry.hit.match]}
+                      </span>
+                      <span className="entries-row-hit-snippet">
+                        <SearchSnippetText snippet={entry.hit.snippet} />
+                      </span>
+                    </span>
+                  )}
                   {entry.noteCount > 0 ? (
                     <span className="entries-row-notes">学习 {entry.noteCount}</span>
                   ) : null}
@@ -191,5 +217,16 @@ export function EntryList({
         </ul>
       )}
     </aside>
+  )
+}
+
+/** 按服务端给的区间切出 <mark>，不拼 HTML；拼回去与片段文本逐字一致。 */
+function SearchSnippetText({ snippet }: { snippet: SearchSnippet }) {
+  return (
+    <>
+      {splitSearchSnippet(snippet).map((part, index) =>
+        part.highlighted ? <mark key={index}>{part.text}</mark> : <span key={index}>{part.text}</span>
+      )}
+    </>
   )
 }

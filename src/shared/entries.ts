@@ -1,4 +1,5 @@
 import type { PinSourceStatus } from './pins'
+import type { SearchHit } from './search'
 
 /**
  * 词条与已收集原句的跨层类型。阅读页只认这些结构：谁被收集了、落在哪一句、
@@ -129,9 +130,20 @@ export type EntryListItem = {
   articleCount: number
   noteCount: number
   lastCollectedAt: string
+  /**
+   * 有搜索词时给出「为什么命中」：命中类型、高亮片段与定位 id。
+   * 空查询时没有这个字段；全局搜索（#55）复用同一份 SearchHit 契约。
+   */
+  hit?: EntrySearchHit
 }
 
-/** 左栏的排序与筛选；搜索同时匹配主词形与原句正文。 */
+/** 词条搜索的命中类型：主词形、已收原句、学习内容正文。 */
+export type EntrySearchMatch = 'main-form' | 'sentence' | 'learning-note'
+
+/** 词条列表的一处命中；定位 id 让结果能直接跳到原句或那条学习内容。 */
+export type EntrySearchHit = SearchHit<EntrySearchMatch>
+
+/** 左栏的排序与筛选；搜索同时匹配主词形、已收原句与学习内容正文。 */
 export type EntryListRequest = {
   query?: string
   sort?: 'recent' | 'alpha'

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   EMPTY_LEARNING_NOTES_TEXT,
+  ENTRY_SEARCH_MATCH_LABELS,
   deleteLastSentenceText,
   entryHeadlineText,
   entryListMetaText,
@@ -8,6 +9,16 @@ import {
   noteSourceText,
   sentenceSourceText
 } from './format'
+
+describe('ENTRY_SEARCH_MATCH_LABELS', () => {
+  it('三类命中各有明确说法', () => {
+    expect(ENTRY_SEARCH_MATCH_LABELS).toEqual({
+      'main-form': '主词形',
+      sentence: '原句',
+      'learning-note': '学习内容'
+    })
+  })
+})
 
 describe('entryListMetaText', () => {
   it('左栏一行写几句几篇', () => {

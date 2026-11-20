@@ -410,12 +410,12 @@ test('取消或切页清空选择；筛选后计数如实、按稳定 id 选择�
   await expect(selectionBar(page)).toContainText('已选 1 个词')
 
   // 搜索过滤后已选不随可见行变化：计数仍如实说 1，按 id 取消也不会串到别的词。
-  await page.getByRole('searchbox', { name: '搜词条名或原句' }).fill('Context')
+  await page.getByRole('searchbox', { name: '搜词条名、原句或学习内容' }).fill('Context')
   await expect(page.locator('.entries-row')).toHaveCount(1)
   await expect(selectionBar(page)).toContainText('已选 1 个词')
   await context.check()
   await expect(selectionBar(page)).toContainText('已选 2 个词')
-  await page.getByRole('searchbox', { name: '搜词条名或原句' }).fill('')
+  await page.getByRole('searchbox', { name: '搜词条名、原句或学习内容' }).fill('')
   await expect(approach).toBeChecked()
   await expect(context).toBeChecked()
 
