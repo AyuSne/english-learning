@@ -98,6 +98,12 @@ test('全局栏显示词条/文章/未归档计数；0 显示 0，读回来之�
   await expect(nav(page).locator('.nav-count')).toHaveCount(0)
   await expect(nav(page).getByRole('button', { name: '词条', exact: true })).toHaveText('词条')
 
+  // 计数还在等：导航照常响应，不被这条异步查询挡住。
+  await nav(page).getByRole('button', { name: '文章库' }).click()
+  await expect(page.getByRole('heading', { name: '文章库', level: 1 })).toBeVisible()
+  await nav(page).getByRole('button', { name: '首页' }).click()
+  await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
+
   // 慢回复到齐后才出现数字，且就是这次读到的数。
   await expectCounts(page, { entries: 5, articles: 2, unfiled: 3 })
 })
@@ -224,6 +230,17 @@ test('钉住/撤销/归位/移动/丢弃/批量归位后未归档数即时更新
   const board = page.getByRole('complementary', { name: '钉板' })
   await nav(page).getByRole('button', { name: '对话' }).click()
   await page.locator('.thread-row').filter({ hasText: 'approach' }).click()
+
+  // 钉住一条到未归档再撤销：未归档先加一、再减回去。
+  await page.locator('.assistant-actions').getByRole('button', { name: '钉住' }).click()
+  const createDialog = page.getByRole('dialog', { name: '钉到哪儿' })
+  await createDialog.getByRole('button', { name: '未归档', exact: true }).click()
+  await createDialog.getByRole('button', { name: '钉住', exact: true }).click()
+  await expect(page.getByRole('status')).toContainText('已放进未归档')
+  await expectCounts(page, { entries: 1, articles: 2, unfiled: 3 })
+  await page.getByRole('button', { name: '撤销' }).click()
+  await expectCounts(page, { entries: 1, articles: 2, unfiled: 2 })
+
   await board.getByRole('button', { name: '未归档 2', exact: true }).click()
   await expect(page.getByRole('tab', { name: '未归档 2' })).toBeVisible()
 
