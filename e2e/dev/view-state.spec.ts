@@ -110,11 +110,14 @@ test('词条搜索、排序、筛选和两处滚动在切页后保持', async ({
   const { page } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
   const nav = page.getByRole('navigation', { name: '全局导航' })
   await nav.getByRole('button', { name: '词条' }).click()
-  await page.getByRole('searchbox', { name: '搜词条名或原句' }).fill('Vocabulary')
+  await page.getByRole('searchbox', { name: '搜词条名、原句或学习内容' }).fill('Vocabulary')
   await page.getByRole('button', { name: '字母' }).click()
   await page.getByLabel('按学习内容筛选').selectOption('no-notes')
   await expect(page.locator('.entries-row')).toHaveCount(31)
-  await page.locator('.entries-row').filter({ hasText: 'context' }).click()
+  await page
+    .locator('.entries-row')
+    .filter({ has: page.locator('.entries-row-name', { hasText: /^context$/ }) })
+    .click()
   await expect(page.locator('.entry-sentence')).toHaveCount(30)
 
   const list = page.locator('.entries-rows')
@@ -128,7 +131,7 @@ test('词条搜索、排序、筛选和两处滚动在切页后保持', async ({
 
   await nav.getByRole('button', { name: '设置' }).click()
   await nav.getByRole('button', { name: '词条' }).click()
-  await expect(page.getByRole('searchbox', { name: '搜词条名或原句' })).toHaveValue('Vocabulary')
+  await expect(page.getByRole('searchbox', { name: '搜词条名、原句或学习内容' })).toHaveValue('Vocabulary')
   await expect(page.getByRole('button', { name: '字母' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByLabel('按学习内容筛选')).toHaveValue('no-notes')
   await expect(page.getByRole('heading', { name: 'context', level: 2 })).toBeVisible()

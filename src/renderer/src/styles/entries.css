@@ -58,6 +58,11 @@
   line-height: 16px;
 }
 
+.entries-search {
+  position: relative;
+  display: block;
+}
+
 .entries-search input {
   width: 100%;
   padding: 8px 12px;
@@ -68,6 +73,40 @@
   font: inherit;
   font-size: 13px;
   line-height: 18px;
+}
+
+.entries-search input[type="search"] {
+  padding-right: 44px;
+}
+
+.entries-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.entries-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.entries-search-clear:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+.entries-search-clear:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
 }
 
 .entries-search input::placeholder {
@@ -201,6 +240,34 @@
   color: var(--ink-2);
   font-size: 12px;
   line-height: 16px;
+}
+
+/* 搜索命中说明：类型标签 + 真实片段，片段里的关键词按服务端给的区间高亮。 */
+.entries-row-hit {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 6px;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.entries-row-hit-kind {
+  flex: none;
+  color: var(--amber);
+}
+
+.entries-row-hit-snippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entries-row-hit-snippet mark {
+  background: transparent;
+  color: var(--amber);
+  border-bottom: 1.5px dashed var(--amber-underline);
 }
 
 .entries-row-notes {

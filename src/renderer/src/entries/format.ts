@@ -1,5 +1,6 @@
 import type {
   EntryListItem,
+  EntrySearchMatch,
   EntrySentence,
   EntrySummary,
   LearningNote,
@@ -7,6 +8,13 @@ import type {
 } from '../../../shared/entries'
 import { pinSourceIssueText } from '../chat/pin-text'
 import { formatDay } from '../library/format'
+
+/** 搜索命中类型的短标签；词条页左栏与之后的全局搜索共用同一套说法。 */
+export const ENTRY_SEARCH_MATCH_LABELS: Record<EntrySearchMatch, string> = {
+  'main-form': '主词形',
+  sentence: '原句',
+  'learning-note': '学习内容'
+}
 
 /** 左栏一行：「2 句 · 1 篇」。 */
 export function entryListMetaText(
