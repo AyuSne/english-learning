@@ -68,6 +68,8 @@ type ReadingPageProps = {
   searchSentenceOrdinal: number | null
   /** 产生这次正文定位的搜索词。 */
   searchQuery: string | null
+  /** 显式点搜索结果的代次；同 hash 时也靠它重新滚回命中句/段。 */
+  focusRevision: number
   /** 阅读顶栏的搜索入口：与全局栏共用同一个覆盖层。 */
   onOpenSearch: (query?: string) => void
 }
@@ -107,6 +109,7 @@ export function ReadingPage({
   searchParagraphId,
   searchSentenceOrdinal,
   searchQuery,
+  focusRevision,
   onOpenSearch
 }: ReadingPageProps) {
   const [view, setView] = useState<ReadingView | null>(null)
@@ -232,7 +235,7 @@ export function ReadingPage({
           )
     if (!target) return
     scrollTargetIntoReading(container, target)
-  }, [view, searchParagraphId, searchSentenceOrdinal, scrollRef])
+  }, [view, searchParagraphId, searchSentenceOrdinal, scrollRef, focusRevision])
 
   /**
    * 离开阅读页。来自全局搜索时，返回的是「搜索结果」本身：按原来的查询重新打开

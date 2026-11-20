@@ -31,6 +31,7 @@ export function NoteRail({
   open,
   overlay,
   focusedNoteId = null,
+  focusRevision = 0,
   onToggle,
   onClose,
   onChanged,
@@ -45,10 +46,13 @@ export function NoteRail({
   overlay: boolean
   /** 从全局搜索点进来的学习内容：滚到那一条并标出来。 */
   focusedNoteId?: string | null
+  /** 点同一条搜索结果时递增：即使已经开着也重新滚到那一条。 */
+  focusRevision?: number
   onToggle: () => void
   onClose: () => void
   onChanged: (message: string) => void
-  onEntryGone: () => void
+  /** 词条在异步操作后消失；带上发起操作的那一条，页面据此判断是否仍停在那里。 */
+  onEntryGone: (entryId: string) => void
 }) {
   const [draft, setDraft] = useState('')
   const [savingDraft, setSavingDraft] = useState(false)
@@ -110,7 +114,7 @@ export function NoteRail({
         ?.scrollIntoView({ block: 'center' })
     })
     return () => window.cancelAnimationFrame(frame)
-  }, [open, focusedNoteId, page.entry.id])
+  }, [open, focusedNoteId, page.entry.id, focusRevision])
 
   // 右栏的词典只读：按主词形查一次；查不到就明说，不影响下面写学习内容。
   const { lookup: dictionaryLookup, loading: dictionaryLoading } = useDictionaryLookup(
@@ -163,7 +167,7 @@ export function NoteRail({
       }
       if (result.status === 'rejected') {
         if (result.reason === 'entry') {
-          onEntryGone()
+          onEntryGone(page.entry.id)
           return
         }
         setError('学习内容不能是空的。')

@@ -32,12 +32,15 @@ const LEARNING_RAIL_ID = 'entries-learning-rail'
 export function EntriesPage({
   entryId,
   entrySentenceId,
-  noteId = null
+  noteId = null,
+  focusRevision = 0
 }: {
   entryId: string | null
   entrySentenceId: string | null
   /** 从全局搜索点进来的学习内容：打开右栏并定位到那一条。 */
   noteId?: string | null
+  /** 显式点搜索结果时递增；同 hash 时也用它重新打开右栏、滚回目标。 */
+  focusRevision?: number
 }) {
   const [listing, setListing] = useState<EntryListResult | null>(null)
   const [allEntries, setAllEntries] = useState<EntryListResult | null>(null)
@@ -70,10 +73,19 @@ export function EntriesPage({
   const groupRequest = useRef<AbortController | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const restoredScroll = useRef(false)
-  /** 这条搜索命中已经打开过右栏；之后用户自己收起，不因一次刷新又弹开。 */
-  const openedNoteId = useRef<string | null>(null)
+  /**
+   * 这次搜索定位已经执行过；用户自己收起后，普通刷新不重新弹开。
+   * 点同一条结果会带新的 focusRevision，才允许再执行一次。
+   */
+  const lastNoteFocus = useRef<{ noteId: string; revision: number } | null>(null)
   const selectedIdRef = useRef(selectedId)
   selectedIdRef.current = selectedId
+  const mountedRef = useRef(true)
+
+  /** 迟到的异步回复只有在页面还挂着、且用户仍停在发起操作的词条上才改界面。 */
+  function isCurrentEntry(id: string): boolean {
+    return mountedRef.current && selectedIdRef.current === id
+  }
 
   // 只看这一页真实拿到的容器宽度：全局栏、页面留白与滚动条都已经扣掉。
   // 容器变宽到三栏预算才内联，否则右栏是覆盖抽屉，绝不再把中栏挤窄。
@@ -130,17 +142,19 @@ export function EntriesPage({
   }, [entryId, entrySentenceId, listing, page, selectedId])
 
   // 从全局搜索点学习内容命中：右栏（窄屏是覆盖抽屉）自动打开并定位到那一条。
+  // 同一条结果再点一次也带新的 focusRevision：收起后要重新打开，不能因为 hash 没变就失效。
   useEffect(() => {
     if (noteId === null) {
-      openedNoteId.current = null
+      lastNoteFocus.current = null
       return
     }
     if (page === null || page.entry.id !== entryId) return
-    if (openedNoteId.current === noteId) return
     if (!page.notes.some((note) => note.id === noteId)) return
-    openedNoteId.current = noteId
+    const previous = lastNoteFocus.current
+    if (previous?.noteId === noteId && previous.revision === focusRevision) return
+    lastNoteFocus.current = { noteId, revision: focusRevision }
     setRailOpen(true)
-  }, [noteId, entryId, page])
+  }, [noteId, entryId, page, focusRevision])
 
   useEffect(() => {
     const sequence = listRequest.current + 1
@@ -212,7 +226,7 @@ export function EntriesPage({
       row?.scrollIntoView({ block: 'center' })
     })
     return () => window.cancelAnimationFrame(frame)
-  }, [page, entryId, entrySentenceId])
+  }, [page, entryId, entrySentenceId, focusRevision])
 
   useEffect(() => {
     if (hint === null) return
@@ -220,9 +234,13 @@ export function EntriesPage({
     return () => window.clearTimeout(timer)
   }, [hint])
 
-  useEffect(() => () => {
-    groupRequest.current?.abort()
-    groupRequest.current = null
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+      groupRequest.current?.abort()
+      groupRequest.current = null
+    }
   }, [])
 
   function refresh(message?: string): void {
@@ -291,28 +309,44 @@ export function EntriesPage({
 
   async function removeSentence(sentence: EntrySentence): Promise<void> {
     if (deleting) return
+    // 删除已发出后用户可能切页或切词条；迟到的成功回复只更新仍相关的那一页。
+    const entryId = page?.entry.id ?? null
+    const mainForm = page?.entry.mainForm ?? '这个词条'
     setDeleting(true)
     setActionError(null)
     try {
       const result = await deleteEntrySentence(sentence.id)
+      const stillHere = entryId !== null && isCurrentEntry(entryId)
       if (result.status === 'missing') {
-        setActionError('这条原句已经不在了。')
-        setConfirmDelete(null)
-        refresh()
+        if (stillHere) {
+          setActionError('这条原句已经不在了。')
+          setConfirmDelete(null)
+          refresh()
+        }
         return
       }
-      setConfirmDelete(null)
       if (result.entryDeleted || result.entry === null) {
-        setHint(`原句与「${page?.entry.mainForm ?? '这个词条'}」已删除。`)
-        setPage(null)
-        setRailOpen(false)
-        replaceRoute('entries')
-        refresh()
+        if (stillHere) {
+          setHint(`原句与「${mainForm}」已删除。`)
+          setConfirmDelete(null)
+          setPage(null)
+          setRailOpen(false)
+          replaceRoute('entries')
+          refresh()
+        } else if (mountedRef.current) {
+          // 用户已经选了另一条词条：只刷新列表，不把地址或选中拉回空页。
+          refresh()
+        }
         return
       }
-      refresh('原句已删除。')
+      if (stillHere) {
+        setConfirmDelete(null)
+        refresh('原句已删除。')
+      } else if (mountedRef.current) {
+        refresh()
+      }
     } catch (error) {
-      setActionError(failureText(error))
+      if (entryId === null || isCurrentEntry(entryId)) setActionError(failureText(error))
     } finally {
       setDeleting(false)
     }
@@ -327,7 +361,13 @@ export function EntriesPage({
     void removeSentence(sentence)
   }
 
-  function entryGone(): void {
+  /** 当前词条已不存在：还停在它上面才退回空词条页；已经切走就只刷新列表。 */
+  function entryGone(entryId: string): void {
+    if (!mountedRef.current) return
+    if (selectedIdRef.current !== entryId) {
+      refresh()
+      return
+    }
     setPage(null)
     setRailOpen(false)
     replaceRoute('entries')
@@ -562,6 +602,7 @@ export function EntriesPage({
           open={railOpen}
           overlay={overlay}
           focusedNoteId={page.entry.id === entryId ? noteId : null}
+          focusRevision={focusRevision}
           onToggle={toggleRail}
           onClose={closeRail}
           onChanged={(message) => refresh(message)}

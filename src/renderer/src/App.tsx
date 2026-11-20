@@ -31,6 +31,10 @@ export function App() {
   // 搜索覆盖层只是叠在当前页面上方：开关它不写路由、不重挂载底页。
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  // 点搜索结果是一次显式定位请求：即使地址与当前完全相同（同一条学习内容/同一句），
+  // 也要让底页重新执行一次「打开并滚到目标」。它与 URL 状态分开，不写历史、不重挂载。
+  const [focusRevision, setFocusRevision] = useState(0)
+  const requestTargetFocus = useCallback(() => setFocusRevision((revision) => revision + 1), [])
 
   useEffect(() => {
     let active = true
@@ -103,11 +107,16 @@ export function App() {
             searchParagraphId={view.searchParagraphId}
             searchSentenceOrdinal={view.searchSentenceOrdinal}
             searchQuery={view.searchQuery}
+            focusRevision={focusRevision}
             onOpenSearch={openSearch}
           />
         )}
         {searchOpen ? (
-          <GlobalSearch initialQuery={searchQuery} onClose={closeSearch} />
+          <GlobalSearch
+            initialQuery={searchQuery}
+            onClose={closeSearch}
+            onChooseResult={requestTargetFocus}
+          />
         ) : null}
       </>
     )
@@ -132,6 +141,7 @@ export function App() {
               entryId={view.entryId}
               entrySentenceId={view.entrySentenceId}
               noteId={view.noteId}
+              focusRevision={focusRevision}
             />
           ) : view.route === 'chat' ? (
             <ChatPage
@@ -151,7 +161,11 @@ export function App() {
         </main>
       </div>
       {searchOpen ? (
-        <GlobalSearch initialQuery={searchQuery} onClose={closeSearch} />
+        <GlobalSearch
+          initialQuery={searchQuery}
+          onClose={closeSearch}
+          onChooseResult={requestTargetFocus}
+        />
       ) : null}
     </>
   )
