@@ -3,10 +3,12 @@ import type {
   EntryListRequest,
   EntryListResult,
   EntryPage,
+  EntrySearchHit,
   EntrySentence,
   EntrySentenceGroup
 } from '../../shared/entries'
 import type { HomeEntryChip } from '../../shared/library'
+import { buildSearchSnippet } from '../../shared/search'
 import type { AppDatabase } from '../db/database'
 import type { Dictionary } from '../dictionary/dictionary'
 import { resolveEntryKey } from './key'
@@ -31,6 +33,21 @@ type EntryListRow = {
   sentence_count: number
   article_count: number
   note_count: number
+}
+
+type EntrySentenceHitRow = {
+  entry_id: string
+  id: string
+  article_id: string
+  paragraph_id: string
+  sentence_ordinal: number
+  text: string
+}
+
+type EntryNoteHitRow = {
+  entry_id: string
+  id: string
+  body: string
 }
 
 /**
@@ -82,8 +99,98 @@ export function readRecentEntryChips(
 }
 
 /**
- * 左栏列表。搜索匹配主词形与已收原句正文；`total` 始终是库里的词条总数，
- * 搜索与筛选只改 `entries`。
+ * 每个词条只给一处最能说明问题的命中：主词形 > 最近收集的命中原句 > 置顶/最新的学习内容。
+ * 一次批量读出，不按词条逐条查；片段与高亮区间都交给 shared/search.ts，界面只按区间切。
+ */
+function readEntryHits(
+  database: AppDatabase,
+  rows: readonly EntryListRow[],
+  pattern: string
+): Map<string, EntrySearchHit> {
+  const wanted = new Set(rows.map((row) => row.id))
+  const sentenceRows = database
+    .prepare(
+      `SELECT es.entry_id, es.id, es.article_id, es.paragraph_id, es.sentence_ordinal, s.text
+         FROM entry_sentence es
+         JOIN sentence s
+           ON s.article_id = es.article_id
+          AND s.paragraph_id = es.paragraph_id
+          AND s.ordinal = es.sentence_ordinal
+        WHERE instr(lower(s.text), ?) > 0
+        ORDER BY es.collected_at DESC, es.id DESC`
+    )
+    .all(pattern) as EntrySentenceHitRow[]
+  const firstSentence = new Map<string, EntrySentenceHitRow>()
+  for (const row of sentenceRows) {
+    if (wanted.has(row.entry_id) && !firstSentence.has(row.entry_id)) {
+      firstSentence.set(row.entry_id, row)
+    }
+  }
+
+  const noteRows = database
+    .prepare(
+      `SELECT ln.entry_id, ln.id, ln.body
+         FROM learning_note ln
+        WHERE instr(lower(ln.body), ?) > 0
+        ORDER BY ln.pinned DESC, ln.created_at DESC, ln.id DESC`
+    )
+    .all(pattern) as EntryNoteHitRow[]
+  const firstNote = new Map<string, EntryNoteHitRow>()
+  for (const row of noteRows) {
+    if (wanted.has(row.entry_id) && !firstNote.has(row.entry_id)) {
+      firstNote.set(row.entry_id, row)
+    }
+  }
+
+  const hits = new Map<string, EntrySearchHit>()
+  for (const row of rows) {
+    if (row.main_form.toLowerCase().includes(pattern)) {
+      hits.set(row.id, {
+        match: 'main-form',
+        snippet: buildSearchSnippet(row.main_form, pattern),
+        entryId: row.id,
+        entrySentenceId: null,
+        noteId: null,
+        articleId: null,
+        paragraphId: null,
+        sentenceOrdinal: null
+      })
+      continue
+    }
+    const sentence = firstSentence.get(row.id)
+    if (sentence) {
+      hits.set(row.id, {
+        match: 'sentence',
+        snippet: buildSearchSnippet(sentence.text, pattern),
+        entryId: row.id,
+        entrySentenceId: sentence.id,
+        noteId: null,
+        articleId: sentence.article_id,
+        paragraphId: sentence.paragraph_id,
+        sentenceOrdinal: sentence.sentence_ordinal
+      })
+      continue
+    }
+    const note = firstNote.get(row.id)
+    if (note) {
+      hits.set(row.id, {
+        match: 'learning-note',
+        snippet: buildSearchSnippet(note.body, pattern),
+        entryId: row.id,
+        entrySentenceId: null,
+        noteId: note.id,
+        articleId: null,
+        paragraphId: null,
+        sentenceOrdinal: null
+      })
+    }
+  }
+  return hits
+}
+
+/**
+ * 左栏列表。搜索匹配主词形、已收原句正文与学习内容正文；每条命中的词条带回
+ * 命中类型、高亮片段与定位 id。`total` 始终是库里的词条总数，搜索与筛选只改 `entries`。
  */
 export function readEntryList(
   database: AppDatabase,
@@ -107,25 +214,35 @@ export function readEntryList(
                    AND s.ordinal = es.sentence_ordinal
                  WHERE es.entry_id = we.id AND instr(lower(s.text), ?) > 0
               )
+           OR EXISTS (
+                SELECT 1 FROM learning_note ln
+                 WHERE ln.entry_id = we.id AND instr(lower(ln.body), ?) > 0
+              )
         ORDER BY ${
           sort === 'alpha'
             ? 'lower(we.main_form) ASC, we.id ASC'
             : 'we.last_collected_at DESC, we.id DESC'
         }`
     )
-    .all(query, query, query) as EntryListRow[]
+    .all(query, query, query, query) as EntryListRow[]
 
   const total = (database.prepare('SELECT COUNT(*) AS count FROM word_entry').get() as {
     count: number
   }).count
 
-  const entries: EntryListItem[] = rows
-    .filter((row) => {
-      if (filter === 'has-notes') return row.note_count > 0
-      if (filter === 'no-notes') return row.note_count === 0
-      return true
-    })
-    .map(toEntryListItem)
+  const matched = rows.filter((row) => {
+    if (filter === 'has-notes') return row.note_count > 0
+    if (filter === 'no-notes') return row.note_count === 0
+    return true
+  })
+  const entries: EntryListItem[] = matched.map(toEntryListItem)
+  if (query !== '') {
+    const hits = readEntryHits(database, matched, query)
+    for (const entry of entries) {
+      const hit = hits.get(entry.id)
+      if (hit !== undefined) entry.hit = hit
+    }
+  }
 
   return { total, entries }
 }

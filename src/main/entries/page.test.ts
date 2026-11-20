@@ -7,6 +7,7 @@ import { fixtureArticle, writeCorpusDirectory, type FixtureEntry } from '../../t
 import { importCorpus } from '../corpus/import'
 import { openDatabase, type AppDatabase } from '../db/database'
 import { migrate } from '../db/migrations'
+import { createLearningNote } from './notes'
 import { collectSelection } from './queries'
 import { readEntryList, readEntryPage } from './page'
 
@@ -147,6 +148,116 @@ describe('readEntryList', () => {
       'Context'
     ])
     expect(readEntryList(database, { query: 'zebra' })).toMatchObject({ total: 2, entries: [] })
+  })
+})
+
+function snippetHighlights(snippet: {
+  text: string
+  ranges: { start: number; end: number }[]
+}): string[] {
+  return snippet.ranges.map((range) => snippet.text.slice(range.start, range.end))
+}
+
+describe('readEntryList search hits', () => {
+  it('命中主词形、原句与学习内容时给出命中类型、片段与定位 id', () => {
+    const approach = collect(database, firstArticle, 0, 'approach', T0)
+    collect(database, firstArticle, 2, 'Context', T1)
+    const note = createLearningNote(database, {
+      entryId: approach.entry.id,
+      body: '记：approach 是「做法、途径」。\n第二段：approach to training。'
+    })
+    if (note.status !== 'saved') throw new Error('学习内容没有存下')
+
+    // 主词形命中：片段就是主词形本身，不再往原句里找。
+    const byMainForm = readEntryList(database, { query: 'approach' })
+    expect(byMainForm.entries.map((entry) => entry.mainForm)).toEqual(['approach'])
+    const mainFormHit = byMainForm.entries[0]?.hit
+    expect(mainFormHit).toMatchObject({
+      match: 'main-form',
+      entryId: approach.entry.id,
+      entrySentenceId: null,
+      noteId: null,
+      articleId: null,
+      paragraphId: null,
+      sentenceOrdinal: null
+    })
+    expect(snippetHighlights(mainFormHit!.snippet)).toEqual(['approach'])
+
+    // 原句命中：带上原句关联 id、文章、段落与句序，片段里高亮真实命中的词。
+    const bySentence = readEntryList(database, { query: 'EMPLOYERS' })
+    expect(bySentence.entries.map((entry) => entry.mainForm)).toEqual(['approach'])
+    const sentenceHit = bySentence.entries[0]?.hit
+    expect(sentenceHit).toMatchObject({
+      match: 'sentence',
+      entryId: approach.entry.id,
+      entrySentenceId: approach.sentence.id,
+      noteId: null,
+      articleId: firstArticle.id,
+      paragraphId: selection(firstArticle, 0, 'approach').paragraphId,
+      sentenceOrdinal: 0
+    })
+    expect(snippetHighlights(sentenceHit!.snippet)).toEqual(['Employers'])
+    expect(sentenceHit!.snippet.text).toContain('Employers approach hiring differently.')
+
+    // 学习内容命中：带上学习内容 id；换行被压成一行，高亮仍落在原词上。
+    const byNote = readEntryList(database, { query: '途径' })
+    expect(byNote.entries.map((entry) => entry.mainForm)).toEqual(['approach'])
+    const noteHit = byNote.entries[0]?.hit
+    expect(noteHit).toMatchObject({
+      match: 'learning-note',
+      entryId: approach.entry.id,
+      entrySentenceId: null,
+      noteId: note.note.id,
+      articleId: null
+    })
+    expect(noteHit!.snippet.text).not.toContain('\n')
+    expect(snippetHighlights(noteHit!.snippet)).toEqual(['途径'])
+  })
+
+  it('搜不到时返回空列表，总数仍是库里全部词条', () => {
+    collect(database, firstArticle, 0, 'approach')
+    collect(database, firstArticle, 2, 'Context')
+
+    expect(readEntryList(database, { query: 'zebra' })).toEqual({ total: 2, entries: [] })
+  })
+
+  it('搜索与排序、有无学习内容筛选组合时结果仍正确', () => {
+    const approach = collect(database, firstArticle, 0, 'approach', T0)
+    const context = collect(database, firstArticle, 2, 'Context', T1)
+    const conclusion = collect(database, secondArticle, 0, 'conclusion', T2)
+    createLearningNote(database, { entryId: approach.entry.id, body: 'approach 的搭配' })
+    createLearningNote(database, { entryId: context.entry.id, body: 'approach 的语境义' })
+
+    // 同一个查询词经不同字段命中：approach 走主词形，Context 只能走学习内容。
+    const hasNotes = readEntryList(database, { query: 'approach', filter: 'has-notes' })
+    expect(hasNotes.entries.map((entry) => entry.mainForm)).toEqual(['Context', 'approach'])
+    expect(hasNotes.entries.map((entry) => entry.hit?.match)).toEqual([
+      'learning-note',
+      'main-form'
+    ])
+
+    // 排序只改结果顺序，不改命中与筛选。
+    const alpha = readEntryList(database, {
+      query: 'approach',
+      sort: 'alpha',
+      filter: 'has-notes'
+    })
+    expect(alpha.entries.map((entry) => entry.mainForm)).toEqual(['approach', 'Context'])
+    expect(alpha.entries.map((entry) => entry.hit?.match)).toEqual([
+      'main-form',
+      'learning-note'
+    ])
+
+    // 没有学习内容的词条在 has-notes 下被筛掉，在 no-notes 下仍能按原句命中。
+    expect(
+      readEntryList(database, { query: 'reaches', filter: 'has-notes' }).entries
+    ).toEqual([])
+    const noNotes = readEntryList(database, { query: 'reaches', filter: 'no-notes' })
+    expect(noNotes.entries.map((entry) => entry.mainForm)).toEqual([conclusion.entry.mainForm])
+    expect(noNotes.entries[0]?.hit).toMatchObject({
+      match: 'sentence',
+      entrySentenceId: conclusion.sentence.id
+    })
   })
 })
 
