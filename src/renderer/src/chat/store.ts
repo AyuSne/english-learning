@@ -1,10 +1,11 @@
 import { useSyncExternalStore } from 'react'
 import type { ChatStreamUpdate } from '../../../shared/chat'
-import type {
-  ChatThreadView,
-  CreateThreadRequest,
-  ThreadContextItem,
-  ThreadListItem
+import {
+  GROUP_WORD_LIMIT,
+  type ChatThreadView,
+  type CreateThreadRequest,
+  type ThreadContextItem,
+  type ThreadListItem
 } from '../../../shared/threads'
 import {
   askThread,
@@ -78,6 +79,8 @@ let chatModel = ''
 /** 上下文改动连点时只认最后一次返回；界面先按本地算的摘要往前走。 */
 let contextSequence = 0
 let threadListSequence = 0
+/** 「用这些词学习」的调用序号；取消、离开或再开一次都会让旧结果失效。 */
+let groupOpenSequence = 0
 const deletedThreads = new Set<string>()
 
 export function isDeletedChatThread(threadId: string): boolean {
@@ -181,6 +184,25 @@ export function ensureChatEvents(): void {
 }
 
 /* ---------- 打开线程与列表 ---------- */
+
+/**
+ * 切换到一条已经拿到的线程。打开新线程时清掉上一条线程的编辑态，并让还在路上的
+ * 旧上下文请求失效；同一线程被再次打开时保留它自己的编辑草稿。
+ */
+function activateThread(view: ChatThreadView): void {
+  ++contextSequence
+  retryAction = null
+  state = {
+    ...state,
+    currentId: view.id,
+    current: view,
+    editing: state.currentId === view.id ? state.editing : null,
+    loading: false,
+    error: null,
+    canRetry: false
+  }
+  emit()
+}
 
 export function openChatThread(threadId: string | null): void {
   if (threadId === state.currentId && state.current !== null) {
@@ -300,16 +322,7 @@ async function openMainThread(
       return null
     }
     if (isDeletedChatThread(result.thread.id)) return null
-    retryAction = null
-    state = {
-      ...state,
-      currentId: result.thread.id,
-      current: result.thread,
-      loading: false,
-      error: null,
-      canRetry: false
-    }
-    emit()
+    activateThread(result.thread)
     navigate('chat', { threadId: result.thread.id })
     return result.thread.id
   } catch (error) {
@@ -325,7 +338,7 @@ async function openMainThread(
 /** 提问被拒时的说法；上下文超词数与空提问不是同一件事。 */
 function questionRejectText(reason: 'empty' | 'too-many-words'): string {
   return reason === 'too-many-words'
-    ? '一条线程最多带 20 个词，先移除一个再发。'
+    ? `一条线程最多带 ${GROUP_WORD_LIMIT} 个词，先移除一个再发。`
     : '这条提问是空的。'
 }
 
@@ -336,7 +349,7 @@ function groupThreadRejectText(reason: 'empty' | 'missing-word' | 'too-many-word
     case 'empty':
       return '先选几个词再开始。'
     case 'too-many-words':
-      return '一次最多选 20 个词。'
+      return `一次最多选 ${GROUP_WORD_LIMIT} 个词。`
     case 'missing-word':
       return '有词条已经不在了，刷新词条列表后再试。'
   }
@@ -346,32 +359,32 @@ function groupThreadRejectText(reason: 'empty' | 'missing-word' | 'too-many-word
  * 「用这些词学习」：每次都新开一条无主对象的线程，绝不复用旧的空白或组词线程。
  * 打开后跳到对话页；失败时把原因写在 store 里，由调用方就地提示。
  */
-export async function openGroupThread(entryIds: readonly string[]): Promise<string | null> {
+export async function openGroupThread(
+  entryIds: readonly string[],
+  options: { signal?: AbortSignal } = {}
+): Promise<string | null> {
   const ids = [...new Set(entryIds.map((id) => id.trim()).filter((id) => id !== ''))]
   if (ids.length === 0) {
     fail('先选几个词再开始。', '先选几个词再开始。', null)
     return null
   }
+  // caller 取消、离开页面或开始下一次尝试都会推进序号；迟到的结果不许再改当前状态。
+  const operation = ++groupOpenSequence
+  const isCurrent = (): boolean =>
+    operation === groupOpenSequence && options.signal?.aborted !== true
   try {
     const result = await createGroupThread({ entryIds: ids })
+    if (!isCurrent()) return null
     if (result.status === 'rejected') {
       const message = groupThreadRejectText(result.reason)
       fail(message, message, null)
       return null
     }
-    retryAction = null
-    state = {
-      ...state,
-      currentId: result.thread.id,
-      current: result.thread,
-      loading: false,
-      error: null,
-      canRetry: false
-    }
-    emit()
+    activateThread(result.thread)
     navigate('chat', { threadId: result.thread.id })
     return result.thread.id
   } catch (error) {
+    if (!isCurrent()) return null
     fail(error, '没能用这些词开线程，再试一次。', () => {
       void openGroupThread(ids)
     })
@@ -776,13 +789,21 @@ function changeContext(view: ChatThreadView, items: ThreadContextItem[]): void {
       if (result.status === 'rejected') {
         // 主进程边界拦下了超词数的上下文：把界面拉回已存下的那一份，并说清原因。
         fail(
-          '一条线程最多带 20 个词。',
-          '一条线程最多带 20 个词，先移除一个再加。',
+          `一条线程最多带 ${GROUP_WORD_LIMIT} 个词。`,
+          `一条线程最多带 ${GROUP_WORD_LIMIT} 个词，先移除一个再加。`,
           null
         )
         void loadThread(view.id).then(
           (latest) => {
-            if (state.currentId === view.id && latest !== null) set({ current: latest })
+            // 这次恢复读也必须服从发起时的上下文序号：等待期间用户可能已经成功改了上下文。
+            if (
+              sequence === contextSequence &&
+              state.currentId === view.id &&
+              latest !== null &&
+              latest.id === view.id
+            ) {
+              set({ current: latest })
+            }
           },
           () => undefined
         )

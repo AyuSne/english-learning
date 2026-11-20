@@ -4,13 +4,13 @@ import type {
   SaveGeneratedArticleResult
 } from '../../shared/library'
 import { ARTICLE_TITLE_MAX_LENGTH } from '../../shared/library'
-import type { ThreadContextItem } from '../../shared/threads'
+import { wordContextEntryId, type ThreadContextItem } from '../../shared/threads'
 import {
   readAnswerForArticle,
   wordEntryIdsOfQuestion
 } from '../chat/threads'
 import type { AppDatabase } from '../db/database'
-import { splitGeneratedText } from './generated-text'
+import { normalizeGeneratedText, splitGeneratedText } from './generated-text'
 import { readArticleDetail } from './queries'
 
 /**
@@ -39,9 +39,8 @@ function countWords(text: string): number {
 function sourceLabelsOf(context: readonly ThreadContextItem[]): Map<string, string> {
   const labels = new Map<string, string>()
   for (const item of context) {
-    if (item.kind !== 'word' || !item.id.startsWith('word:')) continue
-    const entryId = item.id.slice('word:'.length)
-    if (entryId === '' || labels.has(entryId)) continue
+    const entryId = wordContextEntryId(item)
+    if (entryId === null || labels.has(entryId)) continue
     const label = item.label.trim() !== '' ? item.label.trim() : item.text.trim()
     if (label !== '') labels.set(entryId, label)
   }
@@ -72,27 +71,6 @@ function defaultTitleOf(
     : `${characters.slice(0, ARTICLE_TITLE_MAX_LENGTH - 1).join('')}…`
 }
 
-function parseSourceIds(raw: string): string[] {
-  try {
-    const parsed: unknown = JSON.parse(raw)
-    if (!Array.isArray(parsed)) return []
-    return parsed.filter((value): value is string => typeof value === 'string' && value !== '')
-  } catch {
-    return []
-  }
-}
-
-/** 读最近一次写入的来源词条 id；只给测试与内部读取用。 */
-export function readArticleSourceEntryIds(database: AppDatabase, articleId: string): string[] {
-  const row = database
-    .prepare('SELECT source_entry_ids FROM article WHERE id = ?')
-    .get(articleId) as { source_entry_ids: string | null } | undefined
-  if (!row || row.source_entry_ids === null) {
-    return []
-  }
-  return parseSourceIds(row.source_entry_ids)
-}
-
 export function saveGeneratedArticle(
   database: AppDatabase,
   request: SaveGeneratedArticleRequest,
@@ -102,12 +80,12 @@ export function saveGeneratedArticle(
   if (answer === null) {
     return { status: 'missing' }
   }
-  // 停止或出错的回答不存文章：内容不完整，先让用户重试或继续生成。
-  if (answer.hasError || answer.phases.some((phase) => phase !== 'done')) {
+  // 与 ThreadAnswer 的规范语义一致：最后一段成功完成，历史段里的停止/出错不阻止保存。
+  if (answer.phase !== 'done' || answer.error !== null) {
     return { status: 'rejected', reason: 'incomplete' }
   }
 
-  const bodyText = answer.text.replace(/\r\n?/g, '\n').trim()
+  const bodyText = normalizeGeneratedText(answer.text)
   if (bodyText === '') {
     return { status: 'rejected', reason: 'empty' }
   }

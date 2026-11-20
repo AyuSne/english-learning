@@ -706,7 +706,7 @@
 }
 
 .instruction-save-open:disabled {
-  opacity: 0.5;
+  color: var(--ink-3);
   cursor: default;
 }
 
@@ -720,7 +720,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .instruction-subhead {
@@ -732,11 +732,11 @@
 .instruction-example-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .instruction-example {
-  padding: 4px 10px;
+  padding: 4px 12px;
   border: 1px solid var(--rule);
   border-radius: 999px;
   background: var(--sunken);
@@ -802,14 +802,14 @@
 .instruction-actions {
   display: flex;
   flex: none;
-  gap: 2px;
+  gap: 4px;
 }
 
 .instruction-form {
   display: flex;
   flex: 1 0 100%;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-top: 4px;
   padding: 8px;
   border: 1px solid var(--rule);
@@ -829,7 +829,7 @@
 .instruction-input,
 .instruction-textarea {
   width: 100%;
-  padding: 6px 8px;
+  padding: 10px 12px;
   border: 1px solid var(--rule);
   border-radius: 8px;
   background: var(--panel);

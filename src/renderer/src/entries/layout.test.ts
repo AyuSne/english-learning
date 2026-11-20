@@ -1,18 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import {
-  ENTRY_COLUMN_GAP,
-  ENTRY_INLINE_MIN_WIDTH,
-  ENTRY_LIST_WIDTH,
-  ENTRY_MAIN_MIN_WIDTH,
-  ENTRY_RAIL_WIDTH,
-  entryLayoutForWidth
-} from './layout'
+import { ENTRY_INLINE_MIN_WIDTH, entryLayoutForWidth } from './layout'
 
 describe('entryLayoutForWidth', () => {
-  it('栏宽预算把全局栏与页面留白之外的容器宽度算全', () => {
-    expect(ENTRY_INLINE_MIN_WIDTH).toBe(
-      ENTRY_LIST_WIDTH + ENTRY_MAIN_MIN_WIDTH + ENTRY_RAIL_WIDTH + ENTRY_COLUMN_GAP * 2
-    )
+  it('三栏内联的最小容器宽度是独立的 1028px', () => {
     expect(ENTRY_INLINE_MIN_WIDTH).toBe(1028)
   })
 

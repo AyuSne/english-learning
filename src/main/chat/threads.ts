@@ -33,7 +33,7 @@ import type {
   UpdateThreadContextRequest,
   UpdateThreadContextResult
 } from '../../shared/threads'
-import { GROUP_WORD_LIMIT } from '../../shared/threads'
+import { GROUP_WORD_LIMIT, wordContextEntryId } from '../../shared/threads'
 import { paragraphLetter } from '../corpus/letter'
 import type { AppDatabase } from '../db/database'
 
@@ -1391,9 +1391,9 @@ export function switchAnswer(
  */
 export type AnswerForArticle = {
   text: string
-  /** 根回答与每一段继续生成的完成状态；任何一段不是 done 都不算完整。 */
-  phases: AnswerPhase[]
-  hasError: boolean
+  /** 与 ThreadAnswer 相同的聚合语义：根回答加继续生成，最后一段决定完成状态。 */
+  phase: AnswerPhase
+  error: ChatError | null
   questionContext: ThreadContextItem[]
 }
 
@@ -1401,9 +1401,10 @@ export type AnswerForArticle = {
 function continuationChain(
   database: AppDatabase,
   threadId: string,
-  answer: ThreadEntryRow
+  answer: ThreadEntryRow,
+  entries?: readonly ThreadEntryRow[]
 ): ThreadEntryRow[] {
-  const rows = readThreadEntries(database, threadId)
+  const rows = entries ?? readThreadEntries(database, threadId)
   const chain = [answer]
   const seen = new Set([answer.id])
   let cursor = answer
@@ -1437,11 +1438,19 @@ export function readAnswerForArticle(
     return null
   }
 
-  const segments = continuationChain(database, threadId, answer).map(answerPayloadOf)
+  const entries = readThreadEntries(database, threadId)
+  const aggregated = buildAnswer(
+    entries,
+    continuationChain(database, threadId, answer, entries),
+    question.id
+  )
+  if (aggregated === null) {
+    return null
+  }
   return {
-    text: segments.map((segment) => segment.text).join(''),
-    phases: segments.map((segment) => segment.phase),
-    hasError: segments.some((segment) => segment.error !== null),
+    text: aggregated.text,
+    phase: aggregated.phase,
+    error: aggregated.error,
     questionContext: questionPayloadOf(question).context
   }
 }
@@ -1453,9 +1462,8 @@ export function wordEntryIdsOfQuestion(
   const ids: string[] = []
   const seen = new Set<string>()
   for (const item of questionContext) {
-    if (item.kind !== 'word' || !item.id.startsWith('word:')) continue
-    const entryId = item.id.slice('word:'.length)
-    if (entryId === '' || seen.has(entryId)) continue
+    const entryId = wordContextEntryId(item)
+    if (entryId === null || seen.has(entryId)) continue
     seen.add(entryId)
     ids.push(entryId)
   }
@@ -1501,9 +1509,8 @@ export function readContextCandidates(
     // 段落与学习内容。这样自由学习能加词、组词线程能补更多原句，移除的词也能加回来。
     for (const item of libraryWordItems(database)) push(item)
     for (const item of context) {
-      if (item.kind !== 'word' || !item.id.startsWith('word:')) continue
-      const entryId = item.id.slice('word:'.length)
-      if (entryId === '') continue
+      const entryId = wordContextEntryId(item)
+      if (entryId === null) continue
       for (const nested of sentenceItemsOfEntry(database, entryId)) push(nested)
       for (const nested of paragraphItemsOfEntry(database, entryId)) push(nested)
       for (const nested of noteItemsOfEntry(database, entryId)) push(nested)

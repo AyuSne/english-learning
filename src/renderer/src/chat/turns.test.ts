@@ -293,6 +293,14 @@ describe('版本与页头', () => {
     expect(canSaveAnswerAsArticle(question, answer({ phase: 'error', text: '半截' }), false)).toBe(
       false
     )
+    // 完成状态与错误按同一份最后一段聚合；不一致的数据也不能给出保存入口。
+    expect(
+      canSaveAnswerAsArticle(
+        question,
+        answer({ phase: 'done', error: { code: 'network' }, text: '半截' }),
+        false
+      )
+    ).toBe(false)
     expect(canSaveAnswerAsArticle(question, answer({ phase: 'done', text: '   ' }), false)).toBe(
       false
     )

@@ -65,7 +65,7 @@ export const LEARNING_INSTRUCTION_EXAMPLES: readonly LearningInstructionExample[
     id: 'generate-article',
     name: '生成文章',
     body:
-      '请用这些词写一篇 200 词左右的英文短文，主题连贯、难度适合六级，把这些词自然放进去并加粗；文末附中文大意和这些词的用法说明。'
+      '请用这些词写一篇 200 词左右的英文短文，主题连贯、难度适合六级，把这些词自然放进去。只输出适合直接阅读的英文正文，不要标题、Markdown 标记、中文翻译或用法清单。'
   }
 ]
 
