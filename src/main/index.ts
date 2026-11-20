@@ -24,6 +24,7 @@ import {
   updateThreadContext
 } from './chat/threads'
 import { importCorpus } from './corpus/import'
+import { readNavCounts } from './counts/counts'
 import { backupDirectoryOf, inspectBackupFile } from './data/backup'
 import { backupTo, restoreFrom } from './data/operations'
 import type { AppDatabase } from './db/database'
@@ -207,6 +208,8 @@ function start(): void {
 
   registerIpcHandlers(ipcMain, {
     'app:bootstrap': () => createBootstrap(opened, corpusImport, configuredModel),
+    // 左栏计数独立一条轻查询：首屏不跟它互相等，写成功后由渲染层发失效信号重查。
+    'counts:summary': () => readNavCounts(opened),
     'home:summary': () => readHomeSummary(opened),
     'library:list': () => readLibrary(opened),
     // 语料随包分发；导入失败时让文章库能原地重试，而不是只能重启。

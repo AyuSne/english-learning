@@ -12,7 +12,13 @@ test.describe('应用骨架', () => {
 
     const navigation = page.getByRole('navigation', { name: '全局导航' })
     await expect(navigation).toBeVisible()
-    await expect(navigation.getByRole('button')).toHaveText(NAV_LABELS)
+    // 六个按钮的可访问名称保持原标签；计数是独立元素，不并进按钮文本。
+    await expect(navigation.getByRole('button')).toHaveCount(NAV_LABELS.length)
+    await expect(navigation.locator('.nav-label')).toHaveText(NAV_LABELS)
+    // 空库：随包 63 篇语料，0 个词条、0 条未归档。
+    await expect(navigation.locator('[data-nav-count="articles"]')).toHaveText('63')
+    await expect(navigation.locator('[data-nav-count="entries"]')).toHaveText('0')
+    await expect(navigation.locator('[data-nav-count="unfiled"]')).toHaveText('0')
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
 
     await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()

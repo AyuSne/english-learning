@@ -61,6 +61,7 @@ import type {
 } from '../../shared/threads'
 import type { AppBootstrap } from '../../shared/types'
 import type { ArticleWordsView } from '../../shared/article-words'
+import type { NavCounts } from '../../shared/counts'
 import { IPC_CHANNELS } from '../../shared/ipc-contract'
 import {
   registerIpcHandlers,
@@ -319,7 +320,8 @@ describe('registerIpcHandlers', () => {
         received.push(payload)
         events.push(event)
         return bootstrap
-      }
+      },
+      'counts:summary': (): NavCounts => ({ entries: 0, articles: 0, unfiled: 0 })
     })
 
     expect([...registered.keys()].sort()).toEqual([...IPC_CHANNELS].sort())
@@ -352,6 +354,7 @@ describe('registerIpcHandlers', () => {
       ...dictionaryHandlers(),
       ...settingsHandlers(),
       'app:bootstrap': () => bootstrap,
+      'counts:summary': (): NavCounts => ({ entries: 0, articles: 0, unfiled: 0 }),
       'app:not-in-contract': () => bootstrap
     } as unknown as IpcHandlers
 
