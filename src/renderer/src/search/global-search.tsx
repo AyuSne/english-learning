@@ -31,10 +31,13 @@ const IDLE_TEXT = '输入关键词，同时搜词条名、原句、学习内容�
  */
 export function GlobalSearch({
   initialQuery,
-  onClose
+  onClose,
+  onChooseResult
 }: {
   initialQuery: string
   onClose: () => void
+  /** 点结果是一次显式目标定位；同 hash 时也靠它让底页重新执行 focus。 */
+  onChooseResult: () => void
 }) {
   const [machine, dispatch] = useReducer(searchReducer, INITIAL_SEARCH_MACHINE, (base) =>
     initialQuery.trim() === ''
@@ -102,6 +105,7 @@ export function GlobalSearch({
 
   function chooseEntry(result: GlobalEntryResult): void {
     rememberSearchSession({ query: state.query, originHash: currentLocationHash() })
+    onChooseResult()
     onClose()
     const hit = result.hit
     if (hit.match === 'sentence') {
@@ -117,6 +121,7 @@ export function GlobalSearch({
 
   function chooseArticle(result: GlobalArticleResult): void {
     rememberSearchSession({ query: state.query, originHash: currentLocationHash() })
+    onChooseResult()
     onClose()
     navigate('reading', {
       articleId: result.article.id,

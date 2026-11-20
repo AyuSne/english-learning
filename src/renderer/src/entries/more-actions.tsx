@@ -27,7 +27,7 @@ export function MoreActions({
   /** 全部词条，给合并、拆分与移动挑目标。 */
   entries: readonly EntryListItem[]
   onChanged: (message: string) => void
-  onEntryGone: () => void
+  onEntryGone: (entryId: string) => void
 }) {
   const [form, setForm] = useState<MoreForm | null>(null)
   const [busy, setBusy] = useState(false)
@@ -117,7 +117,7 @@ export function MoreActions({
         setForm(null)
         onChanged(`原句已拆到「${result.to.mainForm}」。`)
         if (result.from === null) {
-          onEntryGone()
+          onEntryGone(page.entry.id)
         }
         return
       }
@@ -152,7 +152,7 @@ export function MoreActions({
         setError('这个词形没有收集过。')
         return
       }
-      onEntryGone()
+      onEntryGone(page.entry.id)
     } catch (reason) {
       setError(failureText(reason, '这次没有提交成功，再点一次提交。'))
     } finally {

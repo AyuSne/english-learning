@@ -348,6 +348,37 @@ test('已挂载词条页内搜另一个词条：主词形/原句/学习内容都
   expect(await page.evaluate(() => window.history.length)).toBe(historyBefore)
 })
 
+test('同一条学习内容结果：手动收起右栏后再次点同一结果仍重新展开并定位', async ({
+  launch,
+  userDataDirectory
+}) => {
+  seed(userDataDirectory)
+  const { page } = await launch({ env: launchEnv() })
+  const entryResults = () =>
+    page.getByRole('region', { name: '词条' }).locator('.global-search-entry')
+  const rail = page.locator('.entries-rail-open')
+
+  await openSearch(page)
+  await searchInput(page).fill('途径')
+  await entryResults().click()
+  await expect(rail).toBeVisible()
+  await expect(page.locator('.entry-note[data-focused="true"]')).toContainText('做法、途径')
+  const targetHash = await page.evaluate(() => window.location.hash)
+
+  // 用户自己收起右栏：URL 仍停在这条学习内容上。
+  await page.getByRole('button', { name: '收起学习内容' }).click()
+  await expect(rail).toHaveCount(0)
+
+  // 再点同一条结果：地址不变，但目标定位必须重新活一次。
+  await openSearch(page)
+  await searchInput(page).fill('途径')
+  await entryResults().click()
+  await expect(rail).toBeVisible()
+  await expect(page.locator('.entry-note[data-focused="true"]')).toBeVisible()
+  await expect(page.locator('.entry-note[data-focused="true"]')).toContainText('做法、途径')
+  expect(await page.evaluate(() => window.location.hash)).toBe(targetHash)
+})
+
 test('词条学习内容命中：自动展开学习内容并定位高亮（窄屏抽屉也可见）', async ({
   launch,
   userDataDirectory
@@ -794,6 +825,110 @@ test('加载中、无结果、出错都有明确文案，重试可用', async ({
   })
   await searchDialog(page).getByRole('button', { name: '重试' }).click()
   await expect(searchDialog(page)).toContainText('没有搜到「boom」。换个词试试。')
+})
+
+test('同一篇文章的同一句：滚离后再次点同结果重新滚回命中句', async ({
+  launch,
+  userDataDirectory
+}) => {
+  const corpus = await mkdtemp(join(tmpdir(), 'english-learning-global-search-repeat-reading-'))
+  try {
+    const sentences = Array.from({ length: 16 }, (_, index) => [
+      `Paragraph number ${index + 1} keeps the reading column tall enough to scroll.`
+    ])
+    sentences[15] = ['The zebraquill marker appears only in the final paragraph.']
+    const longArticle = fixtureArticle({
+      id: 'fixture-global-search-repeat-reading',
+      year: 2024,
+      month: 6,
+      set: 1,
+      sentences
+    })
+    writeCorpusDirectory(corpus, [longArticle])
+    seedWordEntries(userDataDirectory, corpus, { picks: [] })
+    const { page } = await launch({ env: { CORPUS_DIRECTORY: corpus } })
+
+    await openSearch(page)
+    await searchInput(page).fill('zebraquill')
+    await page.getByRole('region', { name: '文章' }).locator('.global-search-article').click()
+    const focused = page.locator('.reading-sentence-focused')
+    await expect(focused).toHaveText('The zebraquill marker appears only in the final paragraph.')
+    await expect(focused).toBeInViewport()
+    const targetHash = await page.evaluate(() => window.location.hash)
+
+    // 用户往下读走，让命中句离开视口。
+    await page.evaluate(() => {
+      const scroll = document.querySelector<HTMLElement>('.reading-scroll')
+      if (scroll) scroll.scrollTop = 0
+    })
+    await expect(focused).not.toBeInViewport()
+
+    // 同一条结果、同一个 hash：定位仍要重新滚回那一句。
+    await openSearch(page)
+    await searchInput(page).fill('zebraquill')
+    await page.getByRole('region', { name: '文章' }).locator('.global-search-article').click()
+    await expect(focused).toBeInViewport()
+    expect(await page.evaluate(() => window.location.hash)).toBe(targetHash)
+  } finally {
+    await rm(corpus, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
+  }
+})
+
+test('同一条词条原句：滚离后再次点同结果重新定位到那一句', async ({
+  launch,
+  userDataDirectory
+}) => {
+  const corpus = await mkdtemp(join(tmpdir(), 'english-learning-global-search-repeat-entry-'))
+  try {
+    const sentences = Array.from({ length: 16 }, (_, index) => [
+      `Approach number ${index + 1} gives the entry page a long list to scroll through.`
+    ])
+    sentences[15] = ['Approach in the final paragraph carries the zebralast marker.']
+    const longArticle = fixtureArticle({
+      id: 'fixture-global-search-repeat-entry',
+      year: 2024,
+      month: 6,
+      set: 1,
+      sentences
+    })
+    writeCorpusDirectory(corpus, [longArticle])
+    seedWordEntries(userDataDirectory, corpus, {
+      picks: sentences.map((_, paragraphIndex) => ({
+        entry: longArticle,
+        paragraphIndex,
+        needle: 'Approach'
+      }))
+    })
+    const { page } = await launch({ env: { CORPUS_DIRECTORY: corpus } })
+
+    await openEntries(page)
+    await page.locator('.entries-row').first().click()
+    await expect(
+      page.getByRole('region', { name: '词条内容' }).getByRole('heading', { level: 2 })
+    ).toBeVisible()
+
+    await openSearch(page)
+    await searchInput(page).fill('zebralast')
+    await page.getByRole('region', { name: '词条' }).locator('.global-search-entry').click()
+    const focused = page.locator('.entry-sentence[data-focused="true"]')
+    await expect(focused).toContainText('zebralast')
+    await expect(focused).toBeInViewport()
+    const targetHash = await page.evaluate(() => window.location.hash)
+
+    await page.evaluate(() => {
+      const main = document.querySelector<HTMLElement>('main')
+      if (main) main.scrollTop = 0
+    })
+    await expect(focused).not.toBeInViewport()
+
+    await openSearch(page)
+    await searchInput(page).fill('zebralast')
+    await page.getByRole('region', { name: '词条' }).locator('.global-search-entry').click()
+    await expect(focused).toBeInViewport()
+    expect(await page.evaluate(() => window.location.hash)).toBe(targetHash)
+  } finally {
+    await rm(corpus, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
+  }
 })
 
 test('焦点与输入法：Tab 不跑出覆盖层，组合态的 Esc 不关闭搜索', async ({

@@ -400,6 +400,113 @@ test.describe('词条页', () => {
     await expect(dialog).not.toContainText('0 条')
   })
 
+  test('删最后一条原句的慢回复：用户切到首页后不被拉回词条页', async ({
+    launch,
+    userDataDirectory
+  }) => {
+    seed(userDataDirectory, [{ entry: firstArticle, paragraphIndex: 0, needle: 'approach' }])
+    const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+    if (electronApp === null) throw new Error('需要开发版 Electron 进程')
+    await openEntries(page)
+    await entryRow(page, 'approach').click()
+
+    await electronApp.evaluate(({ ipcMain }, result) => {
+      const flags = globalThis as { __deleteDone?: boolean; __deleteCalls?: number }
+      flags.__deleteDone = false
+      flags.__deleteCalls = 0
+      ipcMain.removeHandler('entries:delete-sentence')
+      ipcMain.handle('entries:delete-sentence', async () => {
+        flags.__deleteCalls = (flags.__deleteCalls ?? 0) + 1
+        await new Promise((resolve) => setTimeout(resolve, 700))
+        flags.__deleteDone = true
+        return result
+      })
+    }, {
+      status: 'deleted',
+      entryDeleted: true,
+      entry: null,
+      articleId: firstArticle.id,
+      marks: []
+    })
+
+    const main = page.getByRole('region', { name: '词条内容' })
+    const sentence = main.locator('.entry-sentence').first()
+    await sentence.hover()
+    await sentence.getByRole('button', { name: '删除' }).click()
+    await page
+      .getByRole('alertdialog', { name: '删除最后一条原句' })
+      .getByRole('button', { name: '删除词条与原句' })
+      .click()
+
+    // 删除还没回来就切走：迟到的回复不能把用户从首页拉回词条页。
+    await page
+      .getByRole('navigation', { name: '全局导航' })
+      .getByRole('button', { name: '首页' })
+      .click()
+    await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
+    await expect.poll(() =>
+      electronApp.evaluate(() => Boolean((globalThis as { __deleteDone?: boolean }).__deleteDone))
+    ).toBe(true)
+    await page.waitForTimeout(200)
+    await expect(page.getByRole('heading', { name: '先读一篇' })).toBeVisible()
+    expect(await page.evaluate(() => window.location.hash)).not.toContain('#/entries')
+    expect(
+      await electronApp.evaluate(() => (globalThis as { __deleteCalls?: number }).__deleteCalls)
+    ).toBe(1)
+  })
+
+  test('删最后一条原句的慢回复：用户切到另一词条后仍停在那一词条', async ({
+    launch,
+    userDataDirectory
+  }) => {
+    seed(userDataDirectory, [
+      { entry: firstArticle, paragraphIndex: 0, needle: 'approach' },
+      { entry: firstArticle, paragraphIndex: 1, needle: 'Context' }
+    ])
+    const { page, electronApp } = await launch({ env: { CORPUS_DIRECTORY: corpusDirectory } })
+    if (electronApp === null) throw new Error('需要开发版 Electron 进程')
+    await openEntries(page)
+    await entryRow(page, 'approach').click()
+
+    await electronApp.evaluate(({ ipcMain }, result) => {
+      const flags = globalThis as { __deleteDone?: boolean }
+      flags.__deleteDone = false
+      ipcMain.removeHandler('entries:delete-sentence')
+      ipcMain.handle('entries:delete-sentence', async () => {
+        await new Promise((resolve) => setTimeout(resolve, 700))
+        flags.__deleteDone = true
+        return result
+      })
+    }, {
+      status: 'deleted',
+      entryDeleted: true,
+      entry: null,
+      articleId: firstArticle.id,
+      marks: []
+    })
+
+    const sentence = page.getByRole('region', { name: '词条内容' }).locator('.entry-sentence').first()
+    await sentence.hover()
+    await sentence.getByRole('button', { name: '删除' }).click()
+    await page
+      .getByRole('alertdialog', { name: '删除最后一条原句' })
+      .getByRole('button', { name: '删除词条与原句' })
+      .click()
+
+    // 删除还没回来就切到另一词条：迟到的回复不能清空当前选择或拉回空页。
+    await entryRow(page, 'Context').click()
+    const heading = page
+      .getByRole('region', { name: '词条内容' })
+      .getByRole('heading', { level: 2 })
+    await expect(heading).toHaveText('Context')
+    await expect.poll(() =>
+      electronApp.evaluate(() => Boolean((globalThis as { __deleteDone?: boolean }).__deleteDone))
+    ).toBe(true)
+    await page.waitForTimeout(200)
+    await expect(heading).toHaveText('Context')
+    await expect(page.getByText('在左边选一个词条。')).toHaveCount(0)
+  })
+
   test('删最后一条原句先确认，删完词条与学习内容一起消失', async ({ launch, userDataDirectory }) => {
     seed(
       userDataDirectory,
